@@ -1,0 +1,58 @@
+{
+  "schema": "krishna-v23-clean-onset-protocol-freeze-v1",
+  "frozen_before_model_results": true,
+  "purpose": "Strict network-only unseen-family future forecasting with clean pre-attack history and event-level lead time.",
+  "dataset_family": "ToN-IoT network traffic with timestamp-preserving source and security-event-compatible labels",
+  "development_families": [
+    "password",
+    "scanning",
+    "injection",
+    "dos",
+    "xss"
+  ],
+  "final_validation_families_untouched": [
+    "ransomware",
+    "backdoor",
+    "ddos",
+    "mitm"
+  ],
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_minutes": 8,
+    "future_horizons_minutes": [1, 2, 4],
+    "clean_history_definition": "No attack-labelled network window of any family in the complete preceding 8-minute history.",
+    "positive_definition": "A held-out-family event begins after the cutoff and within the stated future horizon; held-out-family examples are absent from train/calibration/policy.",
+    "negative_definition": "Complete clean future horizon with no attack label and complete 8-minute benign history.",
+    "split_rule": "Time/campaign disjoint. All windows overlapping a held-out-family campaign are excluded from train, calibration, and policy.",
+    "threshold_rule": "Threshold selected only on policy benign/known-development traffic to meet the frozen FPR budget; final validation is never used for threshold selection."
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_source_ip_as_model_feature": false,
+    "raw_destination_ip_as_model_feature": false,
+    "process_system_telemetry": false,
+    "allowed_feature_classes": [
+      "flow packet byte duration statistics",
+      "protocol and service",
+      "connection state",
+      "DNS HTTP SSL network-protocol metadata",
+      "destination-port semantics or hashed occupancy",
+      "topology counts/fanout/concentration without raw IP identity",
+      "temporal deltas and burst/retry statistics"
+    ]
+  },
+  "development_gate": {
+    "macro_benign_fpr_max": 0.02,
+    "macro_event_level_unseen_recall_min": 0.80,
+    "all_development_family_event_recall_min": 0.70,
+    "minimum_clean_onset_events_per_scored_family": 3
+  },
+  "final_claim_gate": {
+    "macro_benign_fpr_max": 0.02,
+    "macro_event_level_unseen_recall_min": 0.80,
+    "minimum_clean_onset_events_per_scored_family": 3,
+    "minimum_final_families_with_support": 3,
+    "claim_if_passed": "Garuda demonstrated future warning on attack families excluded from model development, with measured clean-history lead time.",
+    "forbidden_claim": "detects every zero-day attack"
+  }
+}
