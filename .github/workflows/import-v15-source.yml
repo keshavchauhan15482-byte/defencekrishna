@@ -1,0 +1,39 @@
+name: Import exact V15 source
+
+on:
+  push:
+    branches: [garuda-v15-system-integration]
+    paths:
+      - 'import-v15-source.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  import-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: garuda-v15-system-integration
+          fetch-depth: 0
+      - name: Import pinned validated sources
+        run: |
+          set -euo pipefail
+          mkdir -p garuda_v3/experiments/v15
+          curl -fsSL 'https://raw.githubusercontent.com/keshavchauhan15482-byte/daily-current-affairs-/2e66dbbb28db8038017a915a82198e1690015cec/krishna_v15/v15_xiiotid_pilot_v2.py' -o garuda_v3/experiments/v15/v15_xiiotid_pilot_v2.py
+          curl -fsSL 'https://raw.githubusercontent.com/keshavchauhan15482-byte/daily-current-affairs-/271e5bb2625e138e9025a63c2131257127fc29a6/krishna_v15/v15_xiiotid_gnn_lstm.py' -o garuda_v3/experiments/v15/v15_xiiotid_gnn_lstm.py
+          python -m py_compile garuda_v3/experiments/v15/v15_xiiotid_pilot_v2.py garuda_v3/experiments/v15/v15_xiiotid_gnn_lstm.py
+          sha256sum garuda_v3/experiments/v15/v15_xiiotid_pilot_v2.py garuda_v3/experiments/v15/v15_xiiotid_gnn_lstm.py > garuda_v3/experiments/v15/SOURCE_SHA256.txt
+      - name: Persist source on integration branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/experiments/v15/v15_xiiotid_pilot_v2.py garuda_v3/experiments/v15/v15_xiiotid_gnn_lstm.py garuda_v3/experiments/v15/SOURCE_SHA256.txt
+          if git diff --cached --quiet; then
+            echo 'Pinned V15 sources already current.'
+          else
+            git commit -m 'Import pinned validated V15 experiment sources'
+            git push origin garuda-v15-system-integration
+          fi
