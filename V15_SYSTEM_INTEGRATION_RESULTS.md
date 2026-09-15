@@ -19,17 +19,17 @@ Before changing the system, GitHub Actions run `34989115072` established a clean
 - 12 actual loopback HTTP enforcement checks passed.
 - 2 V11 evidence unit tests passed in the V11 script.
 
-After integration, run `34989697972` passed the complete regression with:
+The code-complete integration run `34990723033` then passed:
 
-- 89 Garuda Python tests passed, including 5 restored V13 policy tests, 7 restored V14 verified-campaign/data-gate tests, and 8 V15 system-integration tests.
-- 7 NTRO data-integrity checks passed.
-- 5 proxy-exposure checks passed.
-- 15 V11 strict Node control checks passed.
-- 12 actual loopback HTTP enforcement checks passed.
-- 2 V11 evidence tests passed in the V11 script.
-- The 8 V15 integration tests also passed as a separately named CI step.
+- **91 Garuda Python tests**, including 5 restored V13 policy tests, 7 restored V14 verified-campaign/data-gate tests, and 10 V15 system-integration tests.
+- **7 NTRO data-integrity tests**.
+- **5 proxy-exposure checks**.
+- **15 V11 strict Node control checks**.
+- **12 actual loopback HTTP enforcement checks** with upstream receipt verification.
+- **2 V11 evidence unit tests** in the V11 script.
+- The **10 V15 system-integration tests** also passed as a separately named CI step.
 
-A later post-V14-CLI integration run `34989809635` also completed successfully.
+Earlier integration runs `34989697972` and `34989809635` were also green while the integration was being built. Run `34990723033` is the first cited run containing the 10-test V15 contract and 91-test full Garuda suite together.
 
 ## Fresh V15 forecasting evidence now stored in the system
 
@@ -55,16 +55,17 @@ For the LSTM, “0.0000% observed FPR” means **zero false positives were obser
 
 The GNN branch is implemented and tested on 84,120 unique minute-level source→destination edges, but it does not outperform the LSTM. It remains useful for topology/state/explanation research rather than being presented as the best risk scorer.
 
-## What is now integrated into the real system
+## What is integrated into the real system
 
 1. **Pinned V15 experiment source and evidence** live inside the full repository under `garuda_v3/experiments/v15/` and `datasets/v15/`.
 2. **V15 evidence bridge** validates provenance and exposes the latest LSTM/GNN metrics to the real Garuda/defence path.
 3. **Fail-closed authority gate** prevents a strong research forecast from silently becoming an autonomous unknown-attack block.
-4. **Actual response coordinator** now distinguishes reviewed Arjuna memory from unknown Krishna forecast signals. Current V15 unknown forecasts remain shadow-only even when the lab target is armed.
+4. **Actual response coordinator** distinguishes reviewed Arjuna memory from unknown Krishna forecast signals. Current V15 unknown forecasts remain shadow-only even when the lab target is armed.
 5. **Sudarshana/operator path** retains the existing scoped signed enforcement mechanics and explicit breach escalation.
 6. **Integrated server entrypoint** (`npm run demo:v15`) runs the existing hash-checked Garuda graph forecaster while attaching V15 evidence and policy status to each forecast.
-7. **Dashboard** surfaces V15 LSTM recall/FPR, untouched-test support, clean-onset count, network-only audit status, runtime-schema compatibility, and whether autonomous unknown containment is approved.
-8. **V13/V14 evidence hygiene** is restored: fail-closed threshold export, verified campaign manifests, explicit benign intervals, immutable campaign split support, training-only grouped hard-negative support, and readiness checks.
+7. **Existing `/api/status` and forecast responses** expose integrated V15 evidence/gate state when the integrated app is used.
+8. **Dashboard** surfaces V15 LSTM recall/FPR, untouched-test support, clean-onset count, network-only audit status, runtime-schema compatibility, and whether autonomous unknown containment is approved.
+9. **V13/V14 evidence hygiene** is restored: fail-closed threshold export, verified campaign manifests, explicit benign intervals, immutable campaign split support, training-only grouped hard-negative support, readiness checks and a controlled-campaign CLI.
 
 ## Why the live runtime model is not silently replaced by V15
 
