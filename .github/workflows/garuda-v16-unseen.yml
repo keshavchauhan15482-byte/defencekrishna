@@ -1,4 +1,4 @@
-name: Garuda V16 Unseen-Family Forecast
+name: Garuda Unseen-Family Forecast Development
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  unseen-forecast:
+  unseen-forecast-dev:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -30,15 +30,15 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
-      - name: Run V16 protocol tests
+      - name: Run unseen protocol tests
         run: python -m unittest garuda_v3.tests.test_v16_unseen -v
-      - name: Run block-disjoint unseen-family future forecasting experiment
+      - name: Run V17 development unknown ensemble
         working-directory: garuda_v3/experiments/v16
-        run: python v16_xiiotid_unseen_forecast_v2.py
-      - name: Upload V16 evidence
+        run: python v17_dev_unknown_ensemble.py
+      - name: Upload V17 development evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: garuda-v16-unseen-evidence
-          path: garuda_v3/experiments/v16/artifacts/v16_blocked/
+          name: garuda-v17-dev-evidence
+          path: garuda_v3/experiments/v16/artifacts/v17_dev/
           if-no-files-found: warn
