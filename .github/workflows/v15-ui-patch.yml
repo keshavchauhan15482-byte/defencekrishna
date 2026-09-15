@@ -1,0 +1,48 @@
+name: Patch V15 dashboard status
+
+on:
+  push:
+    branches: [garuda-v15-system-integration]
+    paths:
+      - 'v15-ui-patch.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: garuda-v15-system-integration
+          fetch-depth: 0
+      - name: Add V15 evidence and containment status to dashboard
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('garuda_v3/ui/app.js')
+          s=p.read_text()
+          old="text('provenance',f.uncertainty+' · SHA-256 '+f.model_sha256.slice(0,20)+'…');$('features').replaceChildren();"
+          new="const v15=f.garuda_v15;if(v15){const gate=v15.autonomous_unknown_containment_approved?'APPROVED':'SHADOW ONLY';text('provenance',f.uncertainty+' · runtime SHA-256 '+f.model_sha256.slice(0,14)+'… · V15 LSTM recall '+pct(v15.lstm.recall)+' · observed FPR '+pct(v15.lstm.observed_fpr));text('evidenceLimit','GARUDA V15 · X-IIoTID · 8 min history → 4 min future malicious-traffic · untouched test '+v15.test_support.n+' ('+v15.test_support.benign+' benign / '+v15.test_support.attack+' attack) · clean-history future-positive n='+v15.clean_history_future_positive_n+' · network-only audit '+(v15.network_only_feature_audit_passed?'PASS':'PENDING')+' · live-schema compatibility '+(v15.runtime_graph_schema_compatible?'PASS':'PENDING')+' · unknown auto-containment '+gate+'. Pre-compromise lead time is not verified.');}else{text('provenance',f.uncertainty+' · SHA-256 '+f.model_sha256.slice(0,20)+'…');}$('features').replaceChildren();"
+          if old not in s:
+              raise SystemExit('Expected provenance insertion point not found')
+          s=s.replace(old,new,1)
+          old2="notice('Forecast recorded · '+f.validation_scope+(f.defence_signal?' · routed to '+f.defence_signal.route.toUpperCase():''));"
+          new2="notice('Forecast recorded · '+f.validation_scope+(f.defence_signal?' · routed to '+f.defence_signal.route.toUpperCase():'')+(f.garuda_v15&&!f.garuda_v15.autonomous_unknown_containment_approved?' · V15 unknown forecast remains shadow-only':''));"
+          if old2 not in s:
+              raise SystemExit('Expected notice insertion point not found')
+          s=s.replace(old2,new2,1)
+          p.write_text(s)
+          PY
+          grep -q "garuda_v15" garuda_v3/ui/app.js
+          grep -q "clean-history future-positive" garuda_v3/ui/app.js
+      - name: Persist dashboard integration
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/ui/app.js
+          git commit -m 'Show Garuda V15 evidence gates in dashboard'
+          git push origin garuda-v15-system-integration
