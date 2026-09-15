@@ -7,6 +7,7 @@ from garuda_v3.integrated_server import IntegratedApp
 from garuda_v3.v15_bridge import V15EvidenceBridge
 
 ARTIFACTS = Path(__file__).resolve().parents[1] / 'artifacts/residual_run'
+UI_APP = Path(__file__).resolve().parents[1] / 'ui/app.js'
 
 
 class V15SystemIntegrationTests(unittest.TestCase):
@@ -49,6 +50,19 @@ class V15SystemIntegrationTests(unittest.TestCase):
         s = self.bridge.public_status()
         self.assertLess(s['lstm']['brier'], s['gnn_lstm']['brier'])
         self.assertGreater(s['lstm']['recall'], s['gnn_lstm']['recall'])
+
+    def test_integrated_status_exposes_v15_and_fail_closed_response_state(self):
+        status = self.app.integrated_status()
+        self.assertIn('v15', status)
+        self.assertFalse(status['v15']['autonomous_unknown_containment_approved'])
+        self.assertFalse(status['response']['unknown_forecast_autonomous_containment_approved'])
+
+    def test_dashboard_surfaces_v15_evidence_and_limits(self):
+        source = UI_APP.read_text()
+        self.assertIn('garuda_v15', source)
+        self.assertIn('clean-history future-positive', source)
+        self.assertIn('network-only audit', source)
+        self.assertIn('shadow-only', source)
 
     def test_real_forecast_is_decorated_with_v15_and_system_roles(self):
         out = self.app.forecast(self.graph)
