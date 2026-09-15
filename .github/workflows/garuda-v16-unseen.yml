@@ -32,12 +32,13 @@ jobs:
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Run V16 protocol tests
         run: python -m unittest garuda_v3.tests.test_v16_unseen -v
-      - name: Run unseen-family future forecasting experiment
-        run: python garuda_v3/experiments/v16/v16_xiiotid_unseen_forecast.py
+      - name: Run block-disjoint unseen-family future forecasting experiment
+        working-directory: garuda_v3/experiments/v16
+        run: python v16_xiiotid_unseen_forecast_v2.py
       - name: Upload V16 evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: garuda-v16-unseen-evidence
-          path: artifacts/v16/
+          path: garuda_v3/experiments/v16/artifacts/v16_blocked/
           if-no-files-found: warn
