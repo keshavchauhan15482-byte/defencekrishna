@@ -1,4 +1,4 @@
-name: Garuda V23 Clean-Onset Forecast Development
+name: Garuda V24 Clean-Onset Forecast Development
 
 on:
   pull_request:
@@ -13,44 +13,6 @@ permissions:
   contents: read
 
 jobs:
-  source-audit:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    env:
-      OPENBLAS_NUM_THREADS: '1'
-      OMP_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install source-audit dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install 'numpy<2.1' 'pandas<2.3' 'kagglehub<0.4'
-      - name: Audit timestamp-preserving ToN-IoT network sources
-        continue-on-error: true
-        working-directory: garuda_v3/experiments/v23
-        run: python v23_toniot_source_audit.py
-      - name: Audit official IoT-23 clean-onset chronology
-        working-directory: garuda_v3/experiments/v23
-        run: python v23_iot23_onset_audit.py
-      - name: Upload ToN-IoT source audit
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: garuda-v23-toniot-source-audit
-          path: garuda_v3/experiments/v23/artifacts/source_audit/
-          if-no-files-found: warn
-      - name: Upload IoT-23 onset audit
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: garuda-v23-iot23-onset-audit
-          path: garuda_v3/experiments/v23/artifacts/iot23_onset_audit/
-          if-no-files-found: error
-
   forecast-dev:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -67,13 +29,32 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
-      - name: Run V23 strict-network unseen clean-onset forecast
+      - name: Run V24 adaptive strict-network unseen clean-onset forecast
         working-directory: garuda_v3/experiments/v23
-        run: python v23_iot23_unseen_forecast_fast.py
-      - name: Upload V23 forecast evidence
+        run: python v24_iot23_adaptive_forecast.py
+      - name: Upload V24 forecast evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: garuda-v23-iot23-unseen-forecast
-          path: garuda_v3/experiments/v23/artifacts/iot23_unseen_forecast/
+          name: garuda-v24-iot23-adaptive-forecast
+          path: garuda_v3/experiments/v23/artifacts/iot23_adaptive_v24/
           if-no-files-found: warn
+
+  onset-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit official IoT-23 clean-onset chronology
+        working-directory: garuda_v3/experiments/v23
+        run: python v23_iot23_onset_audit.py
+      - name: Upload IoT-23 onset audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v24-iot23-onset-audit
+          path: garuda_v3/experiments/v23/artifacts/iot23_onset_audit/
+          if-no-files-found: error
