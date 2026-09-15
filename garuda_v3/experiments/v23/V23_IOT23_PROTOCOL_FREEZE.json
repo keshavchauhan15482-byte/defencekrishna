@@ -1,0 +1,56 @@
+{
+  "schema": "krishna-v23-iot23-clean-onset-freeze-v1",
+  "frozen_before_model_results": true,
+  "source": "Official CTU IoT-23 timestamped Zeek conn.log.labeled scenarios",
+  "development_clean_onset_families": [
+    "c&c-heartbeat",
+    "c&c",
+    "partofahorizontalportscan"
+  ],
+  "development_clean_onset_scenarios": [
+    "CTU-IoT-Malware-Capture-7-1",
+    "CTU-IoT-Malware-Capture-8-1",
+    "CTU-IoT-Malware-Capture-9-1"
+  ],
+  "audit_support_seconds_before_first_attack": {
+    "c&c-heartbeat": 624.933217048645,
+    "c&c": 4132.8257739543915,
+    "partofahorizontalportscan": 16502.9180021286
+  },
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_minutes": 8,
+    "future_horizons_minutes": [1, 2, 4],
+    "primary_horizon_minutes": 4,
+    "clean_history": "All 16 preceding 30-second bins contain no malicious-labelled flow of any family.",
+    "heldout_rule": "For each scored family, all blocks containing that family in history or future are excluded from train/calibration/policy.",
+    "negative_rule": "Reserved test blocks with complete benign history and no attack in the future horizon.",
+    "split_rule": "One-hour block-disjoint deterministic split; sequences used for train/calibration/policy cannot cross their block boundary.",
+    "threshold_rule": "Threshold comes only from policy benign scores at a pre-enumerated FPR budget; no test-derived threshold."
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_ip_identity_as_model_feature": false,
+    "raw_uid_as_model_feature": false,
+    "process_or_host_telemetry": false,
+    "allowed": [
+      "flow count and temporal burst statistics",
+      "unique source/destination/port/topology counts",
+      "destination and destination-port concentration",
+      "duration byte packet statistics",
+      "protocol service connection-state occupancy",
+      "hashed destination-port occupancy",
+      "history trend delta volatility and acceleration"
+    ]
+  },
+  "model_family_frozen_for_first_run": "HistGradientBoostingClassifier over strict-network temporal summaries; StandardScaler and probability calibration fit on development only.",
+  "seeds": [42, 43, 44],
+  "policy_fpr_budgets": [0.005, 0.01, 0.02, 0.03, 0.05],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.02,
+    "macro_event_level_unseen_recall_min": 0.80,
+    "all_three_clean_onset_events_detected_at_4min_horizon": true,
+    "minimum_detected_event_lead_time_seconds": 30
+  },
+  "claim_boundary": "Passing this development gate demonstrates warning on three attack behaviours excluded from each corresponding training/calibration/policy set. It is not a claim that every zero-day attack is detectable."
+}
