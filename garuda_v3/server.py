@@ -92,7 +92,11 @@ class Handler(BaseHTTPRequestHandler):
         if not role:return self.respond(401,{'error':'Bearer token required'})
         if not app.rate_ok(role):return self.respond(429,{'error':'Request quota reached; retry after one minute'})
         if method=='GET':
-            if url.path=='/api/status':return self.respond(200,dict(role=role,model=app.service.meta,model_sha256=app.service.model_hash,policies=app.policy.active(),audit_integrity=app.policy.verify(),enforcement_enabled=app.policy.enforce))
+            if url.path=='/api/status':
+                status=dict(role=role,model=app.service.meta,model_sha256=app.service.model_hash,policies=app.policy.active(),audit_integrity=app.policy.verify(),enforcement_enabled=app.policy.enforce)
+                if hasattr(app,'integrated_status'):status.update(app.integrated_status())
+                status['role']=role
+                return self.respond(200,status)
             if url.path=='/api/response':return self.respond(200,app.response.status())
             if url.path=='/api/metrics':return self.respond(200,app.service.metrics)
             if url.path=='/api/benchmarks':return self.respond(200,summarize())
@@ -157,7 +161,6 @@ class Server(ThreadingHTTPServer):
     def process_request_thread(self,request,client_address):
         try:super().process_request_thread(request,client_address)
         finally:self.slots.release()
-
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--port',type=int,default=8090);p.add_argument('--artifacts',default='garuda_v3/artifacts/residual_run');p.add_argument('--runtime',default='garuda_v3/runtime');args=p.parse_args()
     runtime=Path(args.runtime);runtime.mkdir(parents=True,exist_ok=True);os.chmod(runtime,0o700)

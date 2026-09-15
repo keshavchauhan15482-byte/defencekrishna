@@ -5,8 +5,12 @@ import hashlib,ipaddress,json,time,uuid
 
 LAB_NETS=[ipaddress.ip_network(n) for n in ('10.0.0.0/8','172.16.0.0/12','192.168.0.0/16','192.0.2.0/24','198.51.100.0/24','203.0.113.0/24')]
 class ResponseCoordinator:
-    def __init__(self,policy,lab_enabled=False):
+    def __init__(self,policy,lab_enabled=False,unknown_auto_approved=True):
         self.policy=policy;self.lab_enabled=lab_enabled;self.arm_state=None
+        # Backward-compatible default keeps the explicitly armed V11 lab rehearsal
+        # unchanged. The V15 integrated server passes False until independent
+        # clean-onset/network-only/runtime-compatibility evidence approves it.
+        self.unknown_auto_approved=bool(unknown_auto_approved)
         with policy.lock:
             policy.db.execute('CREATE TABLE IF NOT EXISTS response_events (id TEXT PRIMARY KEY, created REAL, payload TEXT)')
             policy.db.execute('CREATE TABLE IF NOT EXISTS threat_memory (fingerprint TEXT PRIMARY KEY, attack_type TEXT, evidence TEXT, approved REAL)')
@@ -17,6 +21,7 @@ class ResponseCoordinator:
             events=[json.loads(row[0]) for row in self.policy.db.execute('SELECT payload FROM response_events ORDER BY created DESC LIMIT 40')]
             memory=[dict(fingerprint=f,attack_type=a,evidence=e,approved=t) for f,a,e,t in self.policy.db.execute('SELECT * FROM threat_memory ORDER BY approved DESC LIMIT 40')]
             return dict(lab_enabled=self.lab_enabled,armed=self.arm_state,events=events,memory=memory,
+                unknown_forecast_autonomous_containment_approved=self.unknown_auto_approved,
                 scope='Application-proxy containment; signing authenticates policies, not data encryption or a breach-prevention guarantee')
     def arm(self,target,ttl=30,duration=120):
         ip=ipaddress.ip_address(target)
@@ -55,8 +60,16 @@ class ResponseCoordinator:
                 attack_type=match[0] if match else None,risk=max(t['malicious_flow_probability'] for t in forecast['trajectory']),
                 forecast_alert=alert,source=forecast.get('data_source'),model_sha256=forecast['model_sha256'],
                 review_status='approved_match' if match else 'pending' if alert else 'not_requested',
-                features=forecast.get('explanation',{}).get('feature_attributions',[])[:5],sudarshana='standby')
-            if alert or match:self._contain(event)
+                features=forecast.get('explanation',{}).get('feature_attributions',[])[:5],sudarshana='standby',
+                unknown_forecast_autonomous_containment_approved=self.unknown_auto_approved)
+            if match:
+                # Arjuna exact reviewed memory is separate from unknown-forecast authority.
+                self._contain(event)
+            elif alert and self.unknown_auto_approved:
+                self._contain(event)
+            elif alert:
+                event['sudarshana']='standby_unapproved_forecast'
+                event['containment_gate']='Garuda forecast remains shadow-only until evidence gate approves autonomous unknown containment'
             self.policy.event('defence_signal',dict(id=event['id'],route=route,fingerprint=fingerprint,sudarshana=event['sudarshana']))
             self._save(event)
             return event

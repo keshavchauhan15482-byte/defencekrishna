@@ -1,0 +1,37 @@
+{
+  "schema": "krishna-v15-xiiotid-graphsage-lstm-v1",
+  "claim_scope": "One-hop GraphSAGE-style source-to-destination message aggregation plus LSTM temporal encoder on the same chronological X-IIoTID protocol; not verified compromise forecasting or production approval.",
+  "provenance": {
+    "dataset": "X-IIoTID",
+    "transport_mirror": "munaalhawawreh/xiiotid-iiot-intrusion-dataset",
+    "filename": "X-IIoTID dataset.csv",
+    "bytes": 355308902,
+    "sha256": "7b9290057ee42e784da3c0d84b781815502c9205c74175c96374e71a5ffd98a0",
+    "rows": 820834,
+    "columns": 68
+  },
+  "graph": {
+    "unique_minute_edges": 84120,
+    "self_state_features": 74,
+    "neighbor_message_features": 28,
+    "message_rule": "mean destination-node state at same minute; no future graph rows"
+  },
+  "protocol": {
+    "history_minutes": 8,
+    "future_horizon_minutes": 4,
+    "embargo_seconds": 720,
+    "seeds": [42, 43, 44],
+    "test": {"n": 2521, "benign": 1366, "attack": 1155},
+    "runtime_graph_schema_compatible": false
+  },
+  "seeds": {
+    "42": {"threshold": 0.0026268800626321038, "tn": 1346, "fp": 20, "fn": 217, "tp": 938, "fpr": 0.014641288433382138, "recall": 0.8121212121212121, "precision": 0.9791231732776617, "f1": 0.8878371982962613, "pr_auc": 0.9706722383794094, "brier": 0.23642051432140376, "clean_history_future_positive_n": 0},
+    "43": {"threshold": 0.0017644043060675144, "tn": 1365, "fp": 1, "fn": 211, "tp": 944, "fpr": 0.0007320644216691069, "recall": 0.8173160173160173, "precision": 0.9989417989417989, "f1": 0.8990476190476191, "pr_auc": 0.9950397549111841, "brier": 0.229936750852979, "clean_history_future_positive_n": 0},
+    "44": {"threshold": 0.00035758818760019015, "tn": 1356, "fp": 10, "fn": 265, "tp": 890, "fpr": 0.007320644216691069, "recall": 0.7705627705627706, "precision": 0.9888888888888889, "f1": 0.8661800486618005, "pr_auc": 0.9855864265231873, "brier": 0.35497972557498764, "clean_history_future_positive_n": 0}
+  },
+  "three_seed_mean": {"fpr": 0.007564665690580771, "recall": 0.7999999999999999, "precision": 0.9889846203694499, "f1": 0.884354955335227, "pr_auc": 0.9837661399379268, "brier": 0.2737789969164568},
+  "engineering_gate": {"mean_boundary_recall_display_percent": 80.0, "strict_every_seed_recall_80_pass": false},
+  "production_containment_approved": false,
+  "pre_compromise_warning_verified": false,
+  "evidence_limit": "Zero clean-history future-positive test examples; GNN branch does not outperform the LSTM and is retained for topology/state/explanation work."
+}

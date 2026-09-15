@@ -1,0 +1,34 @@
+{
+  "schema": "krishna-v15-xiiotid-temporal-pilot-v2",
+  "claim_scope": "Fresh chronological X-IIoTID future-malicious-traffic pilot; not verified compromise forecasting, campaign-independent validation, MITRE stage validation, or production approval.",
+  "provenance": {
+    "dataset": "X-IIoTID",
+    "official_repo": "https://github.com/Alhawawreh/X-IIoTID",
+    "transport_mirror": "munaalhawawreh/xiiotid-iiot-intrusion-dataset",
+    "filename": "X-IIoTID dataset.csv",
+    "bytes": 355308902,
+    "sha256": "7b9290057ee42e784da3c0d84b781815502c9205c74175c96374e71a5ffd98a0",
+    "rows": 820834,
+    "columns": 68
+  },
+  "protocol": {
+    "history_minutes": 8,
+    "future_horizon_minutes": 4,
+    "embargo_seconds": 720,
+    "seeds": [42, 43, 44],
+    "test": {"n": 2521, "benign": 1366, "attack": 1155},
+    "network_only_feature_audit_passed": false,
+    "runtime_graph_schema_compatible": false,
+    "compatibility_reason": "V15 uses 60-second host-minute X-IIoTID telemetry and its selected numeric feature set includes process/system fields; current Garuda serving uses 10-second graph checkpoint schema."
+  },
+  "seeds": {
+    "42": {"threshold": 0.845, "tn": 1366, "fp": 0, "fn": 161, "tp": 994, "fpr": 0.0, "recall": 0.8606060606060606, "precision": 1.0, "f1": 0.9250814332247557, "pr_auc": 0.9900297784832474, "brier": 0.047494440623214486, "clean_history_future_positive_n": 0},
+    "43": {"threshold": 0.51, "tn": 1366, "fp": 0, "fn": 186, "tp": 969, "fpr": 0.0, "recall": 0.8389610389610389, "precision": 1.0, "f1": 0.9124293785310734, "pr_auc": 0.9854820651572799, "brier": 0.06494694298836565, "clean_history_future_positive_n": 0},
+    "44": {"threshold": 0.865, "tn": 1366, "fp": 0, "fn": 135, "tp": 1020, "fpr": 0.0, "recall": 0.8831168831168831, "precision": 1.0, "f1": 0.9379310344827586, "pr_auc": 0.9989876229559095, "brier": 0.025986181623777586, "clean_history_future_positive_n": 0}
+  },
+  "three_seed_mean": {"fpr": 0.0, "recall": 0.8608946608946608, "precision": 1.0, "f1": 0.9251472820795293, "pr_auc": 0.9914998221988123, "brier": 0.046142521745119236},
+  "engineering_gate": {"fpr_recall_pass": true, "all_seed_thresholds_valid": true},
+  "production_containment_approved": false,
+  "pre_compromise_warning_verified": false,
+  "evidence_limit": "Zero clean-history future-positive test examples in every seed; no pre-attack/pre-compromise lead-time claim."
+}

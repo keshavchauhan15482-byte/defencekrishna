@@ -1,4 +1,12 @@
-## V12 measured risk-readout experiment
+## V15 integrated Krishna Defence System
+
+See [V15_SYSTEM_INTEGRATION_RESULTS.md](V15_SYSTEM_INTEGRATION_RESULTS.md) for the measured system integration. Garuda V15 is now part of the real Krishna Defence forecast/response path as the latest X-IIoTID evidence and a fail-closed response-policy gate. Start the integrated local demo with `npm run demo:v15`.
+
+Important boundary: the live compatible runtime remains the hash-checked Garuda v3 10-second graph forecaster. V15 was evaluated on 60-second X-IIoTID host-minute telemetry and still needs a strict network-only audit plus a schema-compatible checkpoint export before it can honestly replace that runtime model. Current V15 unknown-forecast containment therefore remains shadow-only. Arjuna reviewed/known enforcement and operator-scoped Sudarshana lab controls retain their separately tested behavior.
+
+Fresh V15 X-IIoTID evidence: LSTM three-seed mean recall **86.09%** with **0 false positives observed among 1,366 benign test sequences per seed** on this finite chronological holdout; GraphSAGE-style+LSTM mean observed FPR **0.7565%** and recall **80.00%**. The untouched test has zero clean-history future-positive examples, so verified pre-compromise warning is not claimed.
+
+## Historical V12 measured risk-readout experiment
 
 See [V12_RESULTS.md](V12_RESULTS.md). 27 diagnostic fits tested whether frozen state forecasts help future malicious-flow prediction. Attack-risk gates failed; no model was promoted. Calibration/policy data readiness is now checked explicitly.
 
@@ -14,9 +22,9 @@ See [V10_RESULTS.md](V10_RESULTS.md): dataset-separated and controlled three-see
 
 See [V9_DATASET_RESULTS.md](V9_DATASET_RESULTS.md) for the added CICAPT/CTU data, reproducible comparison and limitations. Existing IDS2018 data and default models are preserved. The new candidate did not beat persistence and is not promoted.
 
-> Latest experiment and autoplay update: [V8_RESULTS.md](V8_RESULTS.md). Experimental results do not pass the enterprise release gates.
+> Historical V8 experiment and autoplay update: [V8_RESULTS.md](V8_RESULTS.md). Experimental results do not pass the enterprise release gates.
 
-> Latest core-pipeline work: read [CORE_UPGRADE_RESULTS.md](CORE_UPGRADE_RESULTS.md) for calibrated/masked training, the fresh DoS holdout, shadow collector and failed release gates. New experimental models are not production-approved.
+> Historical core-pipeline work: read [CORE_UPGRADE_RESULTS.md](CORE_UPGRADE_RESULTS.md) for calibrated/masked training, the fresh DoS holdout, shadow collector and failed release gates. New experimental models are not production-approved.
 
 > **Console 5:** stage hints, matched three-seed comparisons, a 51-host replay and hosted HTTP protection rehearsal. See [CONSOLE_V5.md](CONSOLE_V5.md).
 
@@ -40,25 +48,27 @@ Use Python 3.12. Install dependencies once on a connected machine:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r garuda_v3/requirements.txt
-python -m garuda_v3.server
+python -m garuda_v3.integrated_server
 ```
 
 Open **http://127.0.0.1:8090**. Copy a viewer token from `garuda_v3/runtime/access.json` into the access field, connect, then choose **Explore recorded traffic** or **Run alert replay**. The token file is created locally with restricted permissions; it is never packaged. Inference uses NumPy and local model artifacts, without cloud APIs. Training additionally uses scikit-learn.
 
-On Windows, activate with `.venv\Scripts\activate` before the Python commands. `run_demo.sh` now launches this v3 demo on Unix-like systems.
+On Windows, activate with `.venv\Scripts\activate` before the Python commands. `npm run demo:v15` launches the integrated local demo.
 
 ## What is included
 
 - `garuda_v3/artifacts/Thursday.npz` and `Friday.npz`: 6,453 observed protocol/service graph windows from the supplied CSVs.
-- `garuda_v3/artifacts/residual_run`: current primary checkpoints, test predictions, hashes and metrics. `artifacts/run` retains the previous model.
-- `garuda_v3/artifacts/residual_seed7`, `residual_seed19`, `residual_comparison.json`: current initialization comparison; older seed runs are retained.
+- `garuda_v3/artifacts/residual_run`: current primary runtime checkpoints, test predictions, hashes and metrics. `artifacts/run` retains the previous model.
+- `garuda_v3/experiments/v15`: pinned validated V15 LSTM/logistic and GraphSAGE-style+LSTM experiment sources and source hashes.
+- `datasets/v15`: persisted fresh X-IIoTID V15 evidence and provenance.
+- `garuda_v3/v15_bridge.py` and `garuda_v3/integrated_server.py`: measured V15 evidence/policy integration into the real Krishna Defence path.
 - `garuda_v3/V3_README.md`: architecture, commands, model card, deployment boundary and limitations.
 - `sih_submission`: previous-revision PPTX/PDF and recording script. Read `READ_BEFORE_PRESENTING.md`; their numerical results predate this update.
-- `garuda_v3/tests`: model/data/security/PCAP and live local proxy enforcement tests.
+- `garuda_v3/tests`: model/data/security/PCAP, V13/V14 integrity, V15 system integration and live local proxy enforcement tests.
 
 ## Measured result, with scope
 
-Primary seed 42, 160 chronological test examples, target = malicious flow presence in the fourth future 10-second window:
+The current live compatible runtime checkpoint still uses the existing 10-second Garuda v3 graph schema. Its historical primary seed-42 internal result remains:
 
 | Model | F1 | Precision | Recall | FPR |
 |---|---:|---:|---:|---:|
@@ -66,9 +76,11 @@ Primary seed 42, 160 chronological test examples, target = malicious flow presen
 | Residual LSTM | 95.8% | 98.3% | 93.4% | 5.1% |
 | Residual GNN + LSTM | 94.9% | 98.2% | 91.7% | 5.1% |
 
-Three-seed residual GNN mean F1 is 96.0%. These are reused internal holdout results, not a new blind evaluation or demonstrated compromise warning. The clean-history test has only one future positive and it is still missed. Primary GNN state MSE is now 0.0127064 versus 0.0127354 persistence; the small improvement has a paired interval crossing zero. The residual LSTM remains stronger on this dataset. No model is approved for production automatic containment. Console v4 adds explicitly armed, operator-bound lab automation only; see CONSOLE_V4.md.
+The newer V15 X-IIoTID experiment is the stronger fresh temporal-risk evidence, but it is not yet a schema-compatible runtime checkpoint. Its LSTM three-seed mean observed FPR is 0 on the finite test population with 86.09% recall; the topology-aware GNN+LSTM mean observed FPR is 0.7565% with 80.00% recall. See the V15 integration report for exact scope and limitations.
 
-The supplied Friday file is labelled Bot/Benign, despite its Infiltration filename. Source/destination IPs are absent, so the trained graphs describe protocol/service relationships. Host graphs and packet parsing are implemented, but real host/packet-trained checkpoints and supervised MITRE stages require additional annotated telemetry.
+These are future-malicious-traffic results, not verified compromise prediction. No model is approved for production automatic containment. Current V15 unknown forecasts are shadow-only; reviewed Arjuna memory and explicit operator-scoped Sudarshana lab enforcement remain separately tested.
+
+The supplied Friday file is labelled Bot/Benign, despite its Infiltration filename. Source/destination IPs are absent, so the older trained graphs describe protocol/service relationships. Host graphs and packet parsing are implemented, but a strict network-only, schema-compatible V15 checkpoint and supervised MITRE stages require additional annotated telemetry.
 
 ## Tests
 
@@ -76,12 +88,13 @@ The supplied Friday file is labelled Bot/Benign, despite its Infiltration filena
 OPENBLAS_NUM_THREADS=1 python -m unittest discover -s garuda_v3/tests -v
 python ntro-world-model/tests/test_data_integrity.py
 python tests/test_proxy_exposure.py
+npm run test:v11
 ```
 
-Node.js is needed for the proxy integration test (tested with Node 24.19.0). See `garuda_v3/VERIFICATION.md`.
+The final integrated branch passed 91 Garuda Python tests, 7 NTRO integrity tests, 5 proxy exposure checks, 15 strict V11 controls, 12 real loopback HTTP checks, 2 V11 evidence tests, and a separately executed 10-test V15 system-integration contract. See `V15_SYSTEM_INTEGRATION_RESULTS.md` for run IDs and evidence scope.
 
 ## Legacy modules
 
 The original WAF/detection engines remain available via `node proxy.js`; the listener defaults to loopback. Legacy management routes now require `GARUDA_OPERATOR_TOKEN` with at least 32 characters. Forwarded client IPs are trusted only for explicitly configured `TRUSTED_PROXY_IPS`. The old prediction-to-lockdown route is retired.
 
-`ntro-world-model`, `LEGACY_README.md`, old HTML reports and old benchmark scripts are historical reference. Their prior production, zero-day, accuracy or lead-time claims are superseded by the v3 model card and measured artifacts. Do not use legacy metrics in the SIH presentation.
+`ntro-world-model`, `LEGACY_README.md`, old HTML reports and old benchmark scripts are historical reference. Their prior production, zero-day, accuracy or lead-time claims are superseded by the v3/V15 model cards and measured artifacts. Do not use legacy metrics in the SIH presentation.
