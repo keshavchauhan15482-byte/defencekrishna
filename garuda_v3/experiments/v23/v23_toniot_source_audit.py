@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
+import urllib.request
+import zipfile
 from pathlib import Path
 
 import numpy as np
@@ -9,17 +12,18 @@ import pandas as pd
 
 OUT = Path("artifacts/source_audit")
 OUT.mkdir(parents=True, exist_ok=True)
+CACHE = Path("artifacts/source_cache")
+CACHE.mkdir(parents=True, exist_ok=True)
 
-# Prefer mirrors that cite the canonical UNSW ToN-IoT collection. The audit does
-# not trust labels blindly: it first verifies that a real timestamp and network
-# endpoint columns are present before a source can be used for forecasting.
 CANDIDATE_DATASETS = [
     "medworldmed/ton-iot-datasets",
     "arnobbhowmik/ton-iot-network-dataset",
 ]
+ZENODO_URL = "https://zenodo.org/records/19367312/files/Ton_Iot.zip?download=1"
+ZENODO_EXPECTED_MD5 = "fd9607905ec11c4a4ff6c57c43f83ffa"
 TIMESTAMP_NAMES = {"ts", "timestamp", "time", "date_time", "datetime"}
-SRC_NAMES = {"src_ip", "source_ip", "srcip", "id_orig_h"}
-DST_NAMES = {"dst_ip", "destination_ip", "dstip", "id_resp_h"}
+SRC_NAMES = {"src_ip", "source_ip", "srcip", "id_orig_h", "id.orig_h"}
+DST_NAMES = {"dst_ip", "destination_ip", "dstip", "id_resp_h", "id.resp_h"}
 FAMILY_NAMES = {"type", "attack_type", "category", "attack_cat"}
 LABEL_NAMES = {"label", "binary_label", "class"}
 
@@ -28,8 +32,8 @@ def norm(x: str) -> str:
     return str(x).strip().lower().replace("-", "_").replace(" ", "_")
 
 
-def sha256(path: Path) -> str:
-    h = hashlib.sha256()
+def digest(path: Path, algo="sha256") -> str:
+    h = hashlib.new(algo)
     with path.open("rb") as f:
         for chunk in iter(lambda: f.read(8 * 1024 * 1024), b""):
             h.update(chunk)
@@ -39,8 +43,8 @@ def sha256(path: Path) -> str:
 def find_col(cols, names):
     by = {norm(c): c for c in cols}
     for n in names:
-        if n in by:
-            return by[n]
+        if norm(n) in by:
+            return by[norm(n)]
     return None
 
 
@@ -92,8 +96,6 @@ def audit_csv(path: Path) -> dict:
         return row
 
     use = [ts, src, dst, family, label]
-    # A bounded chronology audit is enough to decide whether a mirror is usable;
-    # the full V23 training run will stream the chosen source separately.
     d = pd.read_csv(path, usecols=use, nrows=500_000, low_memory=False)
     dt = parse_ts(d[ts])
     valid = dt.notna()
@@ -117,15 +119,61 @@ def audit_csv(path: Path) -> dict:
         and len(row["sample_family_counts"]) >= 2
     )
     if path.stat().st_size <= 400 * 1024 * 1024:
-        row["sha256"] = sha256(path)
+        row["sha256"] = digest(path)
     return row
+
+
+def audit_tree(root: Path, source_name: str, report: dict):
+    entries = []
+    csvs = sorted(root.rglob("*.csv"), key=lambda p: p.stat().st_size, reverse=True)
+    for path in csvs[:120]:
+        try:
+            a = audit_csv(path)
+            entries.append(a)
+            if a.get("forecast_source_candidate"):
+                report["viable_sources"].append({"dataset": source_name, **a})
+        except Exception as e:
+            entries.append({"path": str(path), "size_bytes": path.stat().st_size, "error": repr(e)})
+    report["datasets"][source_name] = {"root": str(root), "csv_count": len(csvs), "files": entries}
+
+
+def audit_zenodo(report: dict):
+    name = "zenodo:19367312/Ton_Iot.zip"
+    zpath = CACHE / "Ton_Iot.zip"
+    extract = CACHE / "zenodo_ton_iot"
+    try:
+        print(f"AUDIT dataset={name}", flush=True)
+        if not zpath.exists():
+            req = urllib.request.Request(ZENODO_URL, headers={"User-Agent": "KrishnaDefence-V23/1.0"})
+            with urllib.request.urlopen(req, timeout=120) as r, zpath.open("wb") as f:
+                shutil.copyfileobj(r, f, length=8 * 1024 * 1024)
+        md5 = digest(zpath, "md5")
+        if md5 != ZENODO_EXPECTED_MD5:
+            raise RuntimeError(f"Zenodo archive MD5 mismatch: {md5}")
+        if extract.exists():
+            shutil.rmtree(extract)
+        extract.mkdir(parents=True)
+        with zipfile.ZipFile(zpath) as z:
+            z.extractall(extract)
+            members = z.namelist()
+        report["datasets"][name] = {
+            "archive_size_bytes": zpath.stat().st_size,
+            "archive_md5": md5,
+            "archive_members": members[:300],
+        }
+        # audit_tree writes the canonical file audit; preserve archive metadata.
+        archive_meta = report["datasets"].pop(name)
+        audit_tree(extract, name, report)
+        report["datasets"][name].update(archive_meta)
+    except Exception as e:
+        report["datasets"][name] = {"error": repr(e)}
 
 
 def main():
     import kagglehub
 
     report = {
-        "schema": "krishna-v23-toniot-source-audit-v1",
+        "schema": "krishna-v23-toniot-source-audit-v2",
         "purpose": "Find a timestamp-preserving strict-network ToN-IoT source for clean-history future forecasting.",
         "canonical_reference": "UNSW ToN-IoT network + SecurityEvents ground truth",
         "datasets": {},
@@ -135,19 +183,11 @@ def main():
         print(f"AUDIT dataset={slug}", flush=True)
         try:
             root = Path(kagglehub.dataset_download(slug))
-            entries = []
-            csvs = sorted(root.rglob("*.csv"), key=lambda p: p.stat().st_size, reverse=True)
-            for path in csvs[:80]:
-                try:
-                    a = audit_csv(path)
-                    entries.append(a)
-                    if a.get("forecast_source_candidate"):
-                        report["viable_sources"].append({"dataset": slug, **a})
-                except Exception as e:
-                    entries.append({"path": str(path), "size_bytes": path.stat().st_size, "error": repr(e)})
-            report["datasets"][slug] = {"root": str(root), "csv_count": len(csvs), "files": entries}
+            audit_tree(root, slug, report)
         except Exception as e:
             report["datasets"][slug] = {"error": repr(e)}
+
+    audit_zenodo(report)
 
     report["ready_for_v23_training"] = bool(report["viable_sources"])
     (OUT / "results.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
