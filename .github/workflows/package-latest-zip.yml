@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/package-latest-zip.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'package-trigger.txt'
   workflow_dispatch:
 
 permissions:
@@ -14,12 +18,15 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout latest main
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Build clean complete ZIP
+        with:
+          fetch-depth: 0
+      - name: Build clean complete ZIP from exact main
         run: |
           set -euo pipefail
-          git archive --format=zip --prefix=KrishnaDefence_Integrated_V15_Latest/ -o KrishnaDefence_Integrated_V15_Latest.zip HEAD
+          git fetch origin main --force
+          git archive --format=zip --prefix=KrishnaDefence_Integrated_V15_Latest/ -o KrishnaDefence_Integrated_V15_Latest.zip origin/main
           sha256sum KrishnaDefence_Integrated_V15_Latest.zip > KrishnaDefence_Integrated_V15_Latest.zip.sha256
           unzip -t KrishnaDefence_Integrated_V15_Latest.zip
       - name: Upload complete package
