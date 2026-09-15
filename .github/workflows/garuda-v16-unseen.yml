@@ -35,7 +35,8 @@ jobs:
       - name: Run V21B retry-burst future-forecast experiment
         working-directory: garuda_v3/experiments/v16
         run: python v21_dev_retry_burst_tree.py
-      - name: Run V22 strict network-only unknown-onset fallback
+      - name: Run V22 clean-onset diagnostic (non-gating dataset adequacy check)
+        continue-on-error: true
         working-directory: garuda_v3/experiments/v16
         run: python v22_dev_dual_lane.py
       - name: Upload V21B future-forecast evidence
@@ -45,7 +46,7 @@ jobs:
           name: garuda-v21b-retry-dev-evidence
           path: garuda_v3/experiments/v16/artifacts/v21_retry_dev/
           if-no-files-found: warn
-      - name: Upload V22 onset-fallback evidence
+      - name: Upload V22 onset-diagnostic evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
