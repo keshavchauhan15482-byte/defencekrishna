@@ -1,4 +1,4 @@
-"""V21 development gate: generic retry/burst-aware unseen-family forecasting.
+"""V21B development gate: generic retry/burst-aware unseen-family forecasting.
 
 This keeps the frozen unseen-family protocol and the V20 30-second / 8-minute
 history / 4-minute future horizon, but restores generic network-only signals that
@@ -14,6 +14,7 @@ used by the model.
 """
 from pathlib import Path
 import json
+import hashlib
 
 import numpy as np
 import pandas as pd
@@ -26,6 +27,13 @@ PORT_BUCKETS = 32
 def _safe_ratio(num, den):
     den = den.astype(float).replace(0.0, np.nan)
     return (num.astype(float) / den).fillna(0.0)
+
+
+def _stable_bucket(value, buckets):
+    return int.from_bytes(
+        hashlib.blake2b(str(value).strip().lower().encode("utf-8", errors="ignore"), digest_size=4).digest(),
+        "big",
+    ) % buckets
 
 
 def build_state(df, dt, y, family_col, binary_col, date_col, ts_col):
@@ -61,7 +69,7 @@ def build_state(df, dt, y, family_col, binary_col, date_col, ts_col):
     ):
         if col:
             values = df[col].fillna("__missing__").astype(str)
-            b = values.map(lambda x: v19.bucket(x) if buckets == v19.HASH_BUCKETS else int.from_bytes(__import__("hashlib").blake2b(str(x).strip().lower().encode("utf-8", errors="ignore"), digest_size=4).digest(), "big") % buckets).to_numpy()
+            b = values.map(lambda x: _stable_bucket(x, buckets)).to_numpy()
             for k in range(buckets):
                 name = f"{prefix}_b{k}"
                 f[name] = (b == k).astype(np.float32)
@@ -71,9 +79,6 @@ def build_state(df, dt, y, family_col, binary_col, date_col, ts_col):
     f = f.sort_values(["src", "dt"]).reset_index(drop=True)
     f["bin"] = f["dt"].dt.floor(f"{v19.WINDOW_SECONDS}s")
     f["y"] = f["y"].astype(int)
-
-    # Generic temporal retry/burst signal.  The first event for each source has no
-    # prior inter-arrival and is left NaN so group statistics remain unbiased.
     f["interarrival_ms"] = f.groupby("src", sort=False)["dt"].diff().dt.total_seconds() * 1000.0
 
     g = f.groupby(["src", "bin"], sort=True)
@@ -128,19 +133,17 @@ def build_state(df, dt, y, family_col, binary_col, date_col, ts_col):
 
 
 def main():
-    # Keep exactly the V20 temporal setup; only feature representation changes.
     v19.WINDOW_SECONDS = 30
     v19.HISTORY_WINDOWS = 16
     v19.FUTURE_WINDOWS = 8
-    v19.OUT = Path("artifacts/v21_dev")
+    v19.OUT = Path("artifacts/v21_retry_dev")
     v19.OUT.mkdir(parents=True, exist_ok=True)
     v19.build_state = build_state
     v19.main()
 
-    # Rewrite metadata only; measured metrics remain exactly those emitted by v19.main.
     results_path = v19.OUT / "results.json"
     report = json.loads(results_path.read_text())
-    report["schema"] = "krishna-v21-dev-retry-burst-tree-v1"
+    report["schema"] = "krishna-v21b-dev-retry-burst-tree-v1"
     report["purpose"] = "Development only; generic network-only retry/burst features; frozen final families not scored."
     report["window_seconds"] = 30
     report["generic_retry_burst_features"] = [
@@ -152,7 +155,7 @@ def main():
     ]
     results_path.write_text(json.dumps(report, indent=2))
     (v19.OUT / "REPORT.md").write_text(
-        "# V21 retry/burst-aware unseen-family development\n\n"
+        "# V21B retry/burst-aware unseen-family development\n\n"
         "Strict network-only generic features; frozen final families remain unscored.\n\n"
         "```json\n" + json.dumps({
             "chosen_policy_budget": report.get("chosen_policy_budget"),
