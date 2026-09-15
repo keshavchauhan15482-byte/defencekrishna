@@ -1,0 +1,7 @@
+# Separate research/training environment; not required by the production-facing Garuda v3 server.
+numpy<2.1
+pandas<2.3
+scikit-learn<1.7
+kagglehub<0.4
+# Install CPU PyTorch separately for reproducibility:
+# python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
