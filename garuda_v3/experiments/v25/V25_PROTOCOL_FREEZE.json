@@ -1,0 +1,63 @@
+{
+  "schema": "krishna-v25-benign-world-model-freeze-v1",
+  "frozen_before_model_results": true,
+  "purpose": "Forecast unseen malicious network transitions from benign-trained dynamics rather than attack-family classification.",
+  "development_behaviours": [
+    {"dataset": "ToN-IoT", "behaviour": "scanning", "source": "Network_dataset_1.csv"},
+    {"dataset": "ToN-IoT", "behaviour": "dos", "source": "Network_dataset_10.csv"},
+    {"dataset": "IoT-23", "behaviour": "c&c-heartbeat", "source": "CTU-IoT-Malware-Capture-7-1"}
+  ],
+  "training_rule": "World-model parameters are fit only on histories whose complete 8-minute history and complete next-4-minute target are benign. No attack-family label is an input or training target.",
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_minutes": 8,
+    "future_minutes": 4,
+    "history_windows": 16,
+    "future_windows": 8,
+    "evaluation_positive": "clean 8-minute history ending 30-240 seconds before a target attack onset",
+    "evaluation_negative": "clean history followed by a complete benign 4-minute future",
+    "minimum_lead_seconds": 30
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_ip_identity_feature": false,
+    "raw_uid_feature": false,
+    "process_or_host_telemetry": false,
+    "harmonized_state": [
+      "flow_count",
+      "unique_source_count",
+      "unique_destination_count",
+      "unique_destination_port_count",
+      "unique_edge_count",
+      "destination_concentration",
+      "destination_port_concentration",
+      "destination_port_pair_concentration",
+      "duration_mean_std_max",
+      "source_bytes_mean_std_max",
+      "destination_bytes_mean_std_max",
+      "source_packets_mean_std_max",
+      "destination_packets_mean_std_max",
+      "protocol_occupancy_tcp_udp_icmp_other",
+      "service_occupancy_dns_http_ssl_ssh_dhcp_other"
+    ],
+    "environment_normalization": "Each cutoff uses only its own preceding 8-minute history median and IQR to form a causal coordinate system."
+  },
+  "world_model": {
+    "family": "multi-output Ridge linear dynamics",
+    "alpha": 10.0,
+    "training": "benign-only one-step transitions in normalized state coordinates",
+    "rollout": "recursive 8-step / 4-minute rollout",
+    "risk": "maximum robust distance of predicted future states from the benign future-state envelope",
+    "risk_calibration": "empirical percentile on calibration benign rollouts",
+    "threshold_selection": "policy benign quantiles only",
+    "policy_fpr_budgets": [0.005, 0.01, 0.02]
+  },
+  "seeds": [42, 43, 44],
+  "development_gate": {
+    "reserved_benign_fpr_max": 0.02,
+    "macro_event_recall_min": 0.80,
+    "all_three_behaviours_detected": true,
+    "positive_lead_time_min_seconds": 30
+  },
+  "claim_boundary": "A passing result supports unseen-behaviour future warning under these three held-out campaigns. It does not imply detection of every zero-day attack."
+}
