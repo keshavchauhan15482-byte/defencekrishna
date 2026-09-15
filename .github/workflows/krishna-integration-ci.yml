@@ -1,6 +1,8 @@
 name: Krishna Defence Full Integration CI
 
 on:
+  push:
+    branches: [garuda-v15-system-integration]
   pull_request:
     branches: [main]
   workflow_dispatch:
