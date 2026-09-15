@@ -50,3 +50,30 @@ jobs:
           name: garuda-v23-iot23-onset-audit
           path: garuda_v3/experiments/v23/artifacts/iot23_onset_audit/
           if-no-files-found: error
+
+  forecast-dev:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install forecast dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Run V23 strict-network unseen clean-onset forecast
+        working-directory: garuda_v3/experiments/v23
+        run: python v23_iot23_unseen_forecast.py
+      - name: Upload V23 forecast evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v23-iot23-unseen-forecast
+          path: garuda_v3/experiments/v23/artifacts/iot23_unseen_forecast/
+          if-no-files-found: warn
