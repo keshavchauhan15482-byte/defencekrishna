@@ -2,7 +2,7 @@ name: Krishna Defence Full Integration CI
 
 on:
   push:
-    branches: [garuda-v15-system-integration]
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -41,3 +41,5 @@ jobs:
       - name: Krishna V15 integration contract
         if: ${{ hashFiles('garuda_v3/tests/test_v15_system_integration.py') != '' }}
         run: python -m unittest garuda_v3.tests.test_v15_system_integration -v
+      - name: Localhost launcher smoke test
+        run: python start_local.py --smoke --current-python --skip-install --no-browser
