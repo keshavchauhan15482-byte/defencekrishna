@@ -1,0 +1,41 @@
+name: Garuda V23 ToN-IoT Clean-Onset Forecast Development
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'garuda_v3/experiments/v23/**'
+      - 'garuda_v3/tests/test_v23_toniot.py'
+      - '.github/workflows/garuda-v23-toniot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install source-audit dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'kagglehub<0.4'
+      - name: Audit timestamp-preserving ToN-IoT network sources
+        working-directory: garuda_v3/experiments/v23
+        run: python v23_toniot_source_audit.py
+      - name: Upload V23 source audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v23-toniot-source-audit
+          path: garuda_v3/experiments/v23/artifacts/source_audit/
+          if-no-files-found: error
