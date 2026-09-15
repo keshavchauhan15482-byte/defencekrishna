@@ -1,0 +1,19 @@
+{
+  "market_ready": false,
+  "gates": {
+    "trained_graph_temporal_model": true,
+    "future_targets_and_baseline_report": true,
+    "primary_gnn_f1_exceeds_lr": false,
+    "gnn_state_error_beats_persistence": false,
+    "paired_state_error_interval_below_zero": false,
+    "adequate_clean_history_positive_cases": false,
+    "verified_clean_history_incident_warning": false,
+    "validated_mitre_stage_supervision": false,
+    "host_and_packet_trained_checkpoint": true,
+    "independent_campaign_evaluation": false,
+    "independent_security_and_load_review": false
+  },
+  "purpose": "prevent unsupported readiness claims; minimum counts are internal engineering checks, not official SIH criteria or certification",
+  "scope": "exploratory cross-family PCAP holdout; schedule-assisted weak labels",
+  "independent_review_status": "not supplied"
+}

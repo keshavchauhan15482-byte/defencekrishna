@@ -1,0 +1,37 @@
+{
+  "history": 8,
+  "horizon": 4,
+  "stride": 2,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "horizons": [
+    1,
+    2,
+    4
+  ],
+  "train_fraction": 0.7,
+  "calibration_end_fraction": 0.85,
+  "embargo_windows": 12,
+  "variants": [
+    "history_only",
+    "history_plus_lstm",
+    "history_plus_gnn_lstm"
+  ],
+  "readout": {
+    "type": "logistic_regression",
+    "C": 1.0,
+    "max_iter": 2000,
+    "class_weight": "balanced"
+  },
+  "fpr_budget": 0.01,
+  "calibration": "monotone Platt; separate development block",
+  "policy_selection": "separate final development block; no test optimization",
+  "test_scope": "Reused DoS15 and infiltration March1 capture diagnostics",
+  "target": "Any malicious-flow-labelled window in next 1/2/4 minutes",
+  "verified_compromise_target": false,
+  "supervised_stage_target": false,
+  "automatic_containment_approved": false
+}

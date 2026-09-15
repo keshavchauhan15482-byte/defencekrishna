@@ -1,0 +1,83 @@
+{
+  "modified_or_added": [
+    "AUDIT.md",
+    "README.md",
+    "ntro-world-model/dataset_audit.json",
+    "ntro-world-model/dataset_pipeline.py",
+    "ntro-world-model/fastapi_server.py",
+    "ntro-world-model/forecast_dataset.py",
+    "ntro-world-model/tests/test_data_integrity.py",
+    "ntro-world-model/train_forecast_v2.py",
+    "proxy.js",
+    "requirements.txt",
+    "tests/test_proxy_exposure.py",
+    "world-model-engine.js"
+  ],
+  "residual_revision": {
+    "description": "Residual GNN retraining; verified-incident accounting; annotated host/packet training and supervised MITRE head support",
+    "primary_artifacts": "garuda_v3/artifacts/residual_run",
+    "evidence_scope": "development_reused_holdout",
+    "new_modules": [
+      "garuda_v3/annotations.py",
+      "garuda_v3/event_evaluation.py",
+      "garuda_v3/state_evaluation.py",
+      "garuda_v3/compare_residual.py",
+      "garuda_v3/tests/test_forecast_evidence.py"
+    ],
+    "still_missing": [
+      "verified pre-compromise warning",
+      "real host/packet-trained checkpoint",
+      "independently validated MITRE stage performance"
+    ],
+    "previous_submission_documents": "Retained as prior-revision artifacts; read sih_submission/READ_BEFORE_PRESENTING.md"
+  },
+  "ids2018_revision": {
+    "real_capture_days": 4,
+    "pcap_bytes": 199958864,
+    "graph_windows": 1549,
+    "trained_artifact": "garuda_v3/artifacts/ids2018_host_run",
+    "default_promoted": false,
+    "heldout_false_positives": 40,
+    "heldout_negatives": 40,
+    "label_quality": "schedule-assisted weak labels",
+    "stage_or_compromise_verified": false,
+    "report": "garuda_v3/IDS2018_RESULTS.md"
+  },
+  "v9_additive_datasets": {
+    "sources": [
+      "CICAPT-IIoT2024 phases 1/2",
+      "CTU-13 scenarios 5/7"
+    ],
+    "existing_data_preserved": true,
+    "experimental_models_promoted": false,
+    "report": "V9_DATASET_RESULTS.md"
+  },
+  "v10": {
+    "report": "V10_RESULTS.md",
+    "new_datasets_added": false,
+    "experiments": 36,
+    "default_risk_model_changed": false,
+    "fixes": [
+      "state-only loss",
+      "state-MSE selection including persistence checkpoint",
+      "small-holdout bootstrap guard",
+      "state inference isolated from attack scores"
+    ]
+  },
+  "v11": {
+    "report": "V11_RESULTS.md",
+    "python_tests": 65,
+    "control_checks": 15,
+    "http_checks": 12,
+    "supervised_progression_trained": false,
+    "default_model_changed": false
+  },
+  "v12": {
+    "report": "V12_RESULTS.md",
+    "risk_readout_fits": 27,
+    "world_forecasters_retrained": false,
+    "new_datasets_added": false,
+    "models_promoted": 0,
+    "readiness_gate": "failed"
+  }
+}

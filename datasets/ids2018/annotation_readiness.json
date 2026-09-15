@@ -1,0 +1,222 @@
+{
+  "captures": [
+    {
+      "file": "datasets/ids2018/labelled/Thursday-22-02-2018.npz",
+      "capture_sha256": "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644",
+      "campaign": "Thursday-22-02-2018",
+      "family": "web",
+      "label_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "windows": 545,
+      "binary_labels": {
+        "-1": 19,
+        "0": 416,
+        "1": 110
+      },
+      "verified_incident_records": 0,
+      "stages": {
+        "reconnaissance": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 545
+        },
+        "initial_access": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 545
+        },
+        "lateral_movement": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 545
+        },
+        "command_and_control": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 545
+        },
+        "exfiltration": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 545
+        }
+      }
+    },
+    {
+      "file": "datasets/ids2018/labelled/Friday-23-02-2018.npz",
+      "capture_sha256": "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440",
+      "campaign": "Friday-23-02-2018",
+      "family": "web",
+      "label_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "windows": 552,
+      "binary_labels": {
+        "-1": 15,
+        "0": 403,
+        "1": 134
+      },
+      "verified_incident_records": 0,
+      "stages": {
+        "reconnaissance": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 552
+        },
+        "initial_access": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 552
+        },
+        "lateral_movement": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 552
+        },
+        "command_and_control": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 552
+        },
+        "exfiltration": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 552
+        }
+      }
+    },
+    {
+      "file": "datasets/ids2018/labelled/Thursday-01-03-2018.npz",
+      "capture_sha256": "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5",
+      "campaign": "Thursday-01-03-2018",
+      "family": "infiltration",
+      "label_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "windows": 32,
+      "binary_labels": {
+        "-1": 1,
+        "0": 0,
+        "1": 31
+      },
+      "verified_incident_records": 0,
+      "stages": {
+        "reconnaissance": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 32
+        },
+        "initial_access": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 32
+        },
+        "lateral_movement": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 32
+        },
+        "command_and_control": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 32
+        },
+        "exfiltration": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 32
+        }
+      }
+    },
+    {
+      "file": "datasets/ids2018/labelled/Friday-02-03-2018.npz",
+      "capture_sha256": "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334",
+      "campaign": "Friday-02-03-2018",
+      "family": "botnet",
+      "label_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "windows": 420,
+      "binary_labels": {
+        "-1": 193,
+        "0": 138,
+        "1": 89
+      },
+      "verified_incident_records": 0,
+      "stages": {
+        "reconnaissance": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 420
+        },
+        "initial_access": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 420
+        },
+        "lateral_movement": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 420
+        },
+        "command_and_control": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 420
+        },
+        "exfiltration": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 420
+        }
+      }
+    },
+    {
+      "file": "datasets/ids2018/fresh_holdout/labelled_graph.npz",
+      "capture_sha256": "e014495a36764d766b5812b126c9c3f7f18795343dbc79ee07d0073585d64e53",
+      "campaign": "Thursday-15-02-2018",
+      "family": "dos",
+      "label_status": "schedule-assisted weak labels; UTC-04:00 assumption unverified",
+      "timezone_assumption": null,
+      "windows": 479,
+      "binary_labels": {
+        "-1": 31,
+        "0": 389,
+        "1": 59
+      },
+      "verified_incident_records": 0,
+      "stages": {
+        "reconnaissance": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 479
+        },
+        "initial_access": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 479
+        },
+        "lateral_movement": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 479
+        },
+        "command_and_control": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 479
+        },
+        "exfiltration": {
+          "positive": 0,
+          "negative": 0,
+          "unknown": 479
+        }
+      }
+    }
+  ],
+  "review_required": [
+    "Confirm timestamp timezone from capture/system logs",
+    "Supply evidence references for successful compromise times; attack-start times are not compromise times",
+    "Review positive and explicit-negative tactic intervals separately; missing entries remain unknown"
+  ],
+  "supervised_stage_training_ready": false,
+  "warning_evidence_ready": false,
+  "limitation": "Presence of supplied references is not independent verification."
+}

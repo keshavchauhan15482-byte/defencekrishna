@@ -1,0 +1,92 @@
+{
+  "1": {
+    "counts": [
+      {
+        "benign": 256,
+        "malicious": 129,
+        "unknown": 87
+      },
+      {
+        "benign": 62,
+        "malicious": 8,
+        "unknown": 3
+      },
+      {
+        "benign": 77,
+        "malicious": 0,
+        "unknown": 1
+      },
+      {
+        "benign": 32,
+        "malicious": 35,
+        "unknown": 12
+      }
+    ],
+    "ready_for_supervised_policy_evaluation": false,
+    "reasons": [
+      "Calibration has fewer than 20 cases in one class",
+      "Policy selection lacks both known classes"
+    ],
+    "limitation": "Count gate alone does not establish independent incidents or deployment readiness"
+  },
+  "2": {
+    "counts": [
+      {
+        "benign": 252,
+        "malicious": 132,
+        "unknown": 88
+      },
+      {
+        "benign": 61,
+        "malicious": 10,
+        "unknown": 2
+      },
+      {
+        "benign": 77,
+        "malicious": 0,
+        "unknown": 1
+      },
+      {
+        "benign": 32,
+        "malicious": 37,
+        "unknown": 10
+      }
+    ],
+    "ready_for_supervised_policy_evaluation": false,
+    "reasons": [
+      "Calibration has fewer than 20 cases in one class",
+      "Policy selection lacks both known classes"
+    ],
+    "limitation": "Count gate alone does not establish independent incidents or deployment readiness"
+  },
+  "4": {
+    "counts": [
+      {
+        "benign": 247,
+        "malicious": 137,
+        "unknown": 88
+      },
+      {
+        "benign": 61,
+        "malicious": 11,
+        "unknown": 1
+      },
+      {
+        "benign": 77,
+        "malicious": 0,
+        "unknown": 1
+      },
+      {
+        "benign": 32,
+        "malicious": 39,
+        "unknown": 8
+      }
+    ],
+    "ready_for_supervised_policy_evaluation": false,
+    "reasons": [
+      "Calibration has fewer than 20 cases in one class",
+      "Policy selection lacks both known classes"
+    ],
+    "limitation": "Count gate alone does not establish independent incidents or deployment readiness"
+  }
+}

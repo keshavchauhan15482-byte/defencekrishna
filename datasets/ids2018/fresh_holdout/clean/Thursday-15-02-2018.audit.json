@@ -1,0 +1,14 @@
+{
+  "original_sha256": "5c6f52774e23c91e35cb485f65ad4addff285c8045e740912bd4113fbc7ce3ed",
+  "derivative_sha256": "e014495a36764d766b5812b126c9c3f7f18795343dbc79ee07d0073585d64e53",
+  "retained_records": 424625,
+  "removed_records": {
+    "incomplete_record_payload": 1
+  },
+  "excluded_windows": [
+    1518729960
+  ],
+  "first_epoch": 1518697510,
+  "last_epoch": 1518730004,
+  "method": "Preserve complete original records; exclude every graph window touching an invalid/truncated record. No imputation."
+}

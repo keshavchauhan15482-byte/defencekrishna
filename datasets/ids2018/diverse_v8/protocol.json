@@ -1,0 +1,46 @@
+{
+  "created_at": "2026-09-13T10:30:39.531985+00:00",
+  "development": [
+    "Thursday-22-02-2018",
+    "Friday-23-02-2018",
+    "Friday-02-03-2018",
+    "Thursday-15-02-2018"
+  ],
+  "test": [
+    "Wednesday-28-02-2018"
+  ],
+  "development_fraction": 0.7,
+  "embargo_windows": 12,
+  "member": {
+    "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.24- part1",
+    "size": 98445934,
+    "compressed": 90027418,
+    "offset": 31605811664,
+    "crc": 841171055
+  },
+  "source_url": "https://cse-cic-ids2018.s3.amazonaws.com/Original%20Network%20Traffic%20and%20Log%20data/Wednesday-28-02-2018/pcap.zip",
+  "training": {
+    "epochs": 20,
+    "seed": 42,
+    "history": 8,
+    "horizon": 4,
+    "stride": 2,
+    "calibrate": true,
+    "balance_risk": true,
+    "allow_unknown_labels": true
+  },
+  "scope": "New capture-day and held-out infiltration family; previously evaluated DoS/botnet data explicitly reused as development. Partial victim capture; weak schedule labels, not zero-day or verified-compromise evidence.",
+  "schedule": [
+    [
+      "10:50",
+      "12:05"
+    ],
+    [
+      "13:42",
+      "14:40"
+    ]
+  ],
+  "attacker": "13.58.225.34",
+  "timezone_assumption": "UTC-04:00 unverified",
+  "source": "https://www.unb.ca/cic/datasets/ids-2018.html"
+}

@@ -1,0 +1,73 @@
+{
+  "schema": "garuda-public-sources-v1",
+  "sources": {
+    "cicapt_network": {
+      "url": "https://www.kaggle.com/api/v1/datasets/download/jvn3jean/cicapt-iiot2024?datasetVersionNumber=1",
+      "mirror": "jvn3jean/cicapt-iiot2024",
+      "version": 1,
+      "bytes": 521071526,
+      "sha256": "bc17bc258350d58e61dcd333fe9ccf128f4c613c8ee62d60e2e44b861ccc2817",
+      "official_source": "https://www.unb.ca/cic/datasets/iiot-dataset-2024.html",
+      "license_status": "Mirror claims MIT; original redistribution/commercial terms unverified",
+      "filename": "cicapt-iiot2024-v1.zip",
+      "members": [
+        {
+          "name": "1stPhase-timed-Merged.pcap",
+          "bytes": 1489686576,
+          "sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6"
+        },
+        {
+          "name": "2ndPhase-timed-MergedV2.pcap",
+          "bytes": 1371279808,
+          "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3"
+        }
+      ]
+    },
+    "cicapt_provenance": {
+      "url": "https://www.kaggle.com/api/v1/datasets/download/trungtrch/cicapt-iiot-dataset?datasetVersionNumber=1",
+      "mirror": "trungtrch/cicapt-iiot-dataset",
+      "version": 1,
+      "bytes": 6525709,
+      "sha256": "ffcbbd92541eeb3cdcebe53380d202bb2a453907585f80edb70952f1b40040be",
+      "license_status": "Unknown",
+      "filename": "cicapt-provenance-mirror.zip",
+      "members": [
+        {
+          "name": "Phase1_Provenance.csv",
+          "bytes": 33265548,
+          "sha256": "195f3180f0853d23bade70517b4a3edb81d905b86bfc0f0eae249a0df61edfe4"
+        },
+        {
+          "name": "Phase2_Provenance.csv",
+          "bytes": 29896119,
+          "sha256": "7f858f479e90ccbe27c3d4f487ddf2f15a26ad0bfa7f472abff3aa68e332976d"
+        }
+      ]
+    },
+    "ctu_scenario5": {
+      "url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-46/detailed-bidirectional-flow-labels/capture20110815-2.binetflow",
+      "scenario": 5,
+      "capture": 46,
+      "bytes": 17766203,
+      "sha256": "ef5c9ed6895d4ca5aec723449dae30054ccd1f6b091713a52ffcb681ff78a02c",
+      "official_source": "https://www.stratosphereips.org/datasets-ctu13",
+      "filename": "capture20110815-2.binetflow"
+    },
+    "ctu_scenario7": {
+      "url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-48/detailed-bidirectional-flow-labels/capture20110816-2.binetflow",
+      "scenario": 7,
+      "capture": 48,
+      "bytes": 15630512,
+      "sha256": "df0b5338190b967bd340a0d6c1bb3c34d1bbfb4b7ffa764c2dd26f77f1a26680",
+      "official_source": "https://www.stratosphereips.org/datasets-ctu13",
+      "filename": "capture20110816-2.binetflow"
+    }
+  },
+  "existing_cic_ids_2018": "Preserved without replacement",
+  "rules": [
+    "No cross-campaign concatenation",
+    "Unknown labels are masked",
+    "Mirrors are not authoritative annotation verification",
+    "Commercial rights require source terms verification"
+  ]
+}

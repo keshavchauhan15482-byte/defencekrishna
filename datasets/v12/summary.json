@@ -1,0 +1,2076 @@
+{
+  "config": {
+    "history": 8,
+    "horizon": 4,
+    "stride": 2,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "horizons": [
+      1,
+      2,
+      4
+    ],
+    "train_fraction": 0.7,
+    "calibration_end_fraction": 0.85,
+    "embargo_windows": 12,
+    "variants": [
+      "history_only",
+      "history_plus_lstm",
+      "history_plus_gnn_lstm"
+    ],
+    "readout": {
+      "type": "logistic_regression",
+      "C": 1.0,
+      "max_iter": 2000,
+      "class_weight": "balanced"
+    },
+    "fpr_budget": 0.01,
+    "calibration": "monotone Platt; separate development block",
+    "policy_selection": "separate final development block; no test optimization",
+    "test_scope": "Reused DoS15 and infiltration March1 capture diagnostics",
+    "target": "Any malicious-flow-labelled window in next 1/2/4 minutes",
+    "verified_compromise_target": false,
+    "supervised_stage_target": false,
+    "automatic_containment_approved": false
+  },
+  "rows": [
+    {
+      "variant": "history_only",
+      "horizon_minutes": 1,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.5824805378887883,
+          "seed_sd": 0.0
+        },
+        "samples": 56,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.9375,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.8333333333333334,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.4000000000000001,
+          "seed_sd": 6.798699777552591e-17
+        },
+        "f1": {
+          "mean": 0.5405405405405406,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.5824805378887883,
+          "seed_sd": 0.0
+        },
+        "samples": 56,
+        "confusion_matrices": [
+          [
+            [
+              2,
+              30
+            ],
+            [
+              4,
+              20
+            ]
+          ],
+          [
+            [
+              2,
+              30
+            ],
+            [
+              4,
+              20
+            ]
+          ],
+          [
+            [
+              2,
+              30
+            ],
+            [
+              4,
+              20
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_only",
+      "horizon_minutes": 1,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.18288635295365918,
+          "seed_sd": 0.0
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.7272727272727272,
+          "seed_sd": 1.3597399555105182e-16
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8421052631578947,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.18288635295365918,
+          "seed_sd": 0.0
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_only",
+      "horizon_minutes": 2,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.555672415938377,
+          "seed_sd": 0.0
+        },
+        "samples": 58,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.96875,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.9615384615384616,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.44642857142857145,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.6097560975609756,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.555672415938377,
+          "seed_sd": 0.0
+        },
+        "samples": 58,
+        "confusion_matrices": [
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              25
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              25
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              25
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_only",
+      "horizon_minutes": 2,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.21795066167461088,
+          "seed_sd": 3.3993498887762956e-17
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.7272727272727272,
+          "seed_sd": 1.3597399555105182e-16
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8421052631578947,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.21795066167461088,
+          "seed_sd": 3.3993498887762956e-17
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_only",
+      "horizon_minutes": 4,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.5298640623678404,
+          "seed_sd": 0.0
+        },
+        "samples": 60,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.96875,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.9642857142857143,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.46551724137931033,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.627906976744186,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.5298640623678404,
+          "seed_sd": 0.0
+        },
+        "samples": 60,
+        "confusion_matrices": [
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              27
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              27
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              27
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_only",
+      "horizon_minutes": 4,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.2542986972653217,
+          "seed_sd": 0.0
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.7272727272727272,
+          "seed_sd": 1.3597399555105182e-16
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8421052631578947,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.2542986972653217,
+          "seed_sd": 0.0
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_lstm",
+      "horizon_minutes": 1,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.1539365554470756,
+          "seed_sd": 0.14416277552737425
+        },
+        "samples": 56,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.3333333333333333,
+          "seed_sd": 0.29036166384929907
+        },
+        "recall": {
+          "mean": 0.9861111111111112,
+          "seed_sd": 0.024056261216234387
+        },
+        "precision": {
+          "mean": 0.7205387205387206,
+          "seed_sd": 0.18485009474745578
+        },
+        "f1": {
+          "mean": 0.8249299719887956,
+          "seed_sd": 0.13526105690672333
+        },
+        "brier": {
+          "mean": 0.1539365554470756,
+          "seed_sd": 0.14416277552737425
+        },
+        "samples": 56,
+        "confusion_matrices": [
+          [
+            [
+              29,
+              3
+            ],
+            [
+              0,
+              24
+            ]
+          ],
+          [
+            [
+              24,
+              8
+            ],
+            [
+              0,
+              24
+            ]
+          ],
+          [
+            [
+              11,
+              21
+            ],
+            [
+              1,
+              23
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_lstm",
+      "horizon_minutes": 1,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.1392976846003207,
+          "seed_sd": 0.08939931275250323
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.7878787878787877,
+          "seed_sd": 0.10497277621629557
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8788638262322473,
+          "seed_sd": 0.06366769885800384
+        },
+        "brier": {
+          "mean": 0.1392976846003207,
+          "seed_sd": 0.08939931275250323
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              10
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_lstm",
+      "horizon_minutes": 2,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.31065108013297654,
+          "seed_sd": 0.2096912392944393
+        },
+        "samples": 58,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.625,
+          "seed_sd": 0.39897329171261575
+        },
+        "recall": {
+          "mean": 0.9871794871794872,
+          "seed_sd": 0.02220577958421636
+        },
+        "precision": {
+          "mean": 0.5965136054421769,
+          "seed_sd": 0.1917271882004893
+        },
+        "f1": {
+          "mean": 0.73321371834408,
+          "seed_sd": 0.1474983616430066
+        },
+        "brier": {
+          "mean": 0.31065108013297654,
+          "seed_sd": 0.2096912392944393
+        },
+        "samples": 58,
+        "confusion_matrices": [
+          [
+            [
+              26,
+              6
+            ],
+            [
+              0,
+              26
+            ]
+          ],
+          [
+            [
+              9,
+              23
+            ],
+            [
+              0,
+              26
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              25
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_lstm",
+      "horizon_minutes": 2,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.19106100447905186,
+          "seed_sd": 0.06753797043720376
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.787878787878788,
+          "seed_sd": 0.05248638810814781
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8807017543859649,
+          "seed_sd": 0.033425541900452056
+        },
+        "brier": {
+          "mean": 0.19106100447905186,
+          "seed_sd": 0.06753797043720376
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              9
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              9
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_lstm",
+      "horizon_minutes": 4,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.4830167879120846,
+          "seed_sd": 0.1416802299944335
+        },
+        "samples": 60,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.8541666666666666,
+          "seed_sd": 0.19846415503393386
+        },
+        "recall": {
+          "mean": 0.9285714285714285,
+          "seed_sd": 0.12371791482634839
+        },
+        "precision": {
+          "mean": 0.49100131471413855,
+          "seed_sd": 0.08531369346336865
+        },
+        "f1": {
+          "mean": 0.641243380908636,
+          "seed_sd": 0.09683907328676628
+        },
+        "brier": {
+          "mean": 0.4830167879120846,
+          "seed_sd": 0.1416802299944335
+        },
+        "samples": 60,
+        "confusion_matrices": [
+          [
+            [
+              12,
+              20
+            ],
+            [
+              0,
+              28
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              0,
+              28
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              6,
+              22
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_lstm",
+      "horizon_minutes": 4,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.16507139087182346,
+          "seed_sd": 0.04392702414559029
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.7575757575757575,
+          "seed_sd": 0.05248638810814781
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8614035087719297,
+          "seed_sd": 0.033425541900452056
+        },
+        "brier": {
+          "mean": 0.16507139087182346,
+          "seed_sd": 0.04392702414559029
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              9
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_gnn_lstm",
+      "horizon_minutes": 1,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.30713539607739365,
+          "seed_sd": 0.1863684007256274
+        },
+        "samples": 56,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.6145833333333334,
+          "seed_sd": 0.31302040002743164
+        },
+        "recall": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.569488777423114,
+          "seed_sd": 0.1310879436845734
+        },
+        "f1": {
+          "mean": 0.7197962442429761,
+          "seed_sd": 0.10614112640477105
+        },
+        "brier": {
+          "mean": 0.30713539607739365,
+          "seed_sd": 0.1863684007256274
+        },
+        "samples": 56,
+        "confusion_matrices": [
+          [
+            [
+              2,
+              30
+            ],
+            [
+              0,
+              24
+            ]
+          ],
+          [
+            [
+              13,
+              19
+            ],
+            [
+              0,
+              24
+            ]
+          ],
+          [
+            [
+              22,
+              10
+            ],
+            [
+              0,
+              24
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_gnn_lstm",
+      "horizon_minutes": 1,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.16656817260986356,
+          "seed_sd": 0.09678848978402423
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.7575757575757575,
+          "seed_sd": 0.05248638810814781
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8614035087719297,
+          "seed_sd": 0.033425541900452056
+        },
+        "brier": {
+          "mean": 0.16656817260986356,
+          "seed_sd": 0.09678848978402423
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              9
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_gnn_lstm",
+      "horizon_minutes": 2,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.49420773219805963,
+          "seed_sd": 0.07385760221820559
+        },
+        "samples": 58,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              26,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.9270833333333334,
+          "seed_sd": 0.07216878364870323
+        },
+        "recall": {
+          "mean": 0.9743589743589745,
+          "seed_sd": 0.02220577958421636
+        },
+        "precision": {
+          "mean": 0.461141060197664,
+          "seed_sd": 0.025482778053854762
+        },
+        "f1": {
+          "mean": 0.6259133477410723,
+          "seed_sd": 0.027985178222528922
+        },
+        "brier": {
+          "mean": 0.49420773219805963,
+          "seed_sd": 0.07385760221820559
+        },
+        "samples": 58,
+        "confusion_matrices": [
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              25
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              25
+            ]
+          ],
+          [
+            [
+              5,
+              27
+            ],
+            [
+              0,
+              26
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_gnn_lstm",
+      "horizon_minutes": 2,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.19600967918057552,
+          "seed_sd": 0.07129056781881066
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.7878787878787877,
+          "seed_sd": 0.10497277621629557
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8788638262322473,
+          "seed_sd": 0.06366769885800384
+        },
+        "brier": {
+          "mean": 0.19600967918057552,
+          "seed_sd": 0.07129056781881066
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              10
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_gnn_lstm",
+      "horizon_minutes": 4,
+      "campaign": "Thursday-15-02-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.5576438702993683,
+          "seed_sd": 0.04253695865876475
+        },
+        "samples": 60,
+        "confusion_matrices": [
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ],
+          [
+            [
+              32,
+              0
+            ],
+            [
+              28,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": {
+          "mean": 0.96875,
+          "seed_sd": 0.0
+        },
+        "recall": {
+          "mean": 0.8809523809523809,
+          "seed_sd": 0.12542444943872308
+        },
+        "precision": {
+          "mean": 0.4416169988203887,
+          "seed_sd": 0.03560970089688409
+        },
+        "f1": {
+          "mean": 0.5879720853858785,
+          "seed_sd": 0.05967179102549589
+        },
+        "brier": {
+          "mean": 0.5576438702993683,
+          "seed_sd": 0.04253695865876475
+        },
+        "samples": 60,
+        "confusion_matrices": [
+          [
+            [
+              1,
+              31
+            ],
+            [
+              7,
+              21
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              3,
+              25
+            ]
+          ],
+          [
+            [
+              1,
+              31
+            ],
+            [
+              0,
+              28
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "variant": "history_plus_gnn_lstm",
+      "horizon_minutes": 4,
+      "campaign": "Thursday-01-03-2018",
+      "actionable_seeds": 0,
+      "validation_selected_policy": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "brier": {
+          "mean": 0.18534623422145347,
+          "seed_sd": 0.05851334217614564
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "fpr": null,
+        "recall": {
+          "mean": 0.787878787878788,
+          "seed_sd": 0.05248638810814781
+        },
+        "precision": {
+          "mean": 1.0,
+          "seed_sd": 0.0
+        },
+        "f1": {
+          "mean": 0.8807017543859649,
+          "seed_sd": 0.033425541900452056
+        },
+        "brier": {
+          "mean": 0.18534623422145347,
+          "seed_sd": 0.05851334217614564
+        },
+        "samples": 11,
+        "confusion_matrices": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              9
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              9
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        ]
+      }
+    }
+  ],
+  "fitted_readouts": 27
+}

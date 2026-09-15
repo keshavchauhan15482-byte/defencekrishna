@@ -1,0 +1,1092 @@
+{
+  "schema": "garuda-observed-graph-v3.1",
+  "config": {
+    "graphs": [
+      "garuda_v3/artifacts/Thursday.npz",
+      "garuda_v3/artifacts/Friday.npz"
+    ],
+    "output": "garuda_v3/artifacts/residual_seed19",
+    "epochs": 20,
+    "history": 8,
+    "horizon": 4,
+    "stride": 8,
+    "seed": 19,
+    "decoder": "residual",
+    "stage_supervision": false,
+    "split_manifest": null,
+    "evaluation_scope": "development_reused_holdout"
+  },
+  "split_boundaries": {
+    "train_before": 1519958040,
+    "validation_before": 1519982770
+  },
+  "sources": [
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32,
+      "source_sha256": "a4443f35866a84c8c5d49f8ef2dbd6c3745d7dbd1e1da8a4465e6efb1e505947",
+      "source_filename": "Thursday-01-03-2018_Infiltration.csv",
+      "row_labels": {
+        "0": 49995
+      },
+      "windows": 3307,
+      "timestamp_semantics": "completed_flow_end_time; naive timestamps assumed UTC",
+      "packet_features": false,
+      "topology": "protocol-to-service incidence",
+      "synthetic": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32,
+      "source_sha256": "da5fe05e12007725acb76fd9b5ffd60691d129d4155cd0a7fbedeaa55ef2be99",
+      "source_filename": "Friday-02-03-2018_Infiltration_REAL.csv",
+      "row_labels": {
+        "0": 37093,
+        "1": 162906
+      },
+      "windows": 3146,
+      "timestamp_semantics": "completed_flow_end_time; naive timestamps assumed UTC",
+      "packet_features": false,
+      "topology": "protocol-to-service incidence",
+      "synthetic": false
+    }
+  ],
+  "split_counts": [
+    {
+      "examples": 456,
+      "future_positive_windows": 280,
+      "clean_histories": 386,
+      "clean_history_future_positive_examples": 0
+    },
+    {
+      "examples": 158,
+      "future_positive_windows": 238,
+      "clean_histories": 97,
+      "clean_history_future_positive_examples": 0
+    },
+    {
+      "examples": 160,
+      "future_positive_windows": 488,
+      "clean_histories": 38,
+      "clean_history_future_positive_examples": 1
+    }
+  ],
+  "target": "malicious flow present in each FUTURE completed-flow window; not compromise probability",
+  "selection": "validation loss checkpoint; validation F1 thresholds; test not used for checkpoint selection",
+  "evaluation_scope": "development_reused_holdout",
+  "models": {
+    "logistic_regression": {
+      "threshold": 0.49999999999999994,
+      "test": {
+        "samples": 160,
+        "positives": 121,
+        "f1": 0.9162995594713657,
+        "precision": 0.9811320754716981,
+        "recall": 0.859504132231405,
+        "fpr": 0.05128205128205128,
+        "pr_auc": 0.9945047971274411,
+        "brier": 0.08829993299855227,
+        "confusion_matrix": [
+          [
+            37,
+            2
+          ],
+          [
+            17,
+            104
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 38,
+        "positives": 1,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.038461538461538464,
+        "brier": 0.03681633670594817,
+        "confusion_matrix": [
+          [
+            37,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      }
+    },
+    "lstm": {
+      "threshold": 0.95,
+      "best_epoch": 19,
+      "training_seconds": 2.73,
+      "test": {
+        "samples": 160,
+        "positives": 121,
+        "f1": 0.9491525423728814,
+        "precision": 0.9739130434782609,
+        "recall": 0.9256198347107438,
+        "fpr": 0.07692307692307693,
+        "pr_auc": 0.9944255812895081,
+        "brier": 0.061856843531131744,
+        "confusion_matrix": [
+          [
+            36,
+            3
+          ],
+          [
+            9,
+            112
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 38,
+        "positives": 1,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.02702702702702703,
+        "pr_auc": 0.03225806451612903,
+        "brier": 0.07397813349962234,
+        "confusion_matrix": [
+          [
+            36,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "horizon_metrics": [
+        {
+          "samples": 160,
+          "positives": 122,
+          "f1": 0.9482758620689655,
+          "precision": 1.0,
+          "recall": 0.9016393442622951,
+          "fpr": 0.0,
+          "pr_auc": 0.9991257711459004,
+          "brier": 0.03908612206578255,
+          "confusion_matrix": [
+            [
+              38,
+              0
+            ],
+            [
+              12,
+              110
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 123,
+          "f1": 0.9620253164556962,
+          "precision": 1.0,
+          "recall": 0.926829268292683,
+          "fpr": 0.0,
+          "pr_auc": 0.997314835517841,
+          "brier": 0.04857552796602249,
+          "confusion_matrix": [
+            [
+              37,
+              0
+            ],
+            [
+              9,
+              114
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 122,
+          "f1": 0.9576271186440678,
+          "precision": 0.9912280701754386,
+          "recall": 0.9262295081967213,
+          "fpr": 0.02631578947368421,
+          "pr_auc": 0.9960869461894174,
+          "brier": 0.055766887962818146,
+          "confusion_matrix": [
+            [
+              37,
+              1
+            ],
+            [
+              9,
+              113
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 121,
+          "f1": 0.9491525423728814,
+          "precision": 0.9739130434782609,
+          "recall": 0.9256198347107438,
+          "fpr": 0.07692307692307693,
+          "pr_auc": 0.9944255812895081,
+          "brier": 0.061856843531131744,
+          "confusion_matrix": [
+            [
+              36,
+              3
+            ],
+            [
+              9,
+              112
+            ]
+          ]
+        }
+      ],
+      "state_mse": 0.010892045684158802,
+      "gaussian_95pct_coverage": 0.9870535714285714,
+      "bootstrap": {
+        "f1_95pct_interval": [
+          0.8660844331078333,
+          0.9937106918238994
+        ],
+        "method": "contiguous-example block bootstrap",
+        "block_examples": 20
+      },
+      "training_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.6322483817736307,
+          "validation_loss": 1.0622812509536743
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.6036902785301208,
+          "validation_loss": 0.906642496585846
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.5552979330221812,
+          "validation_loss": 0.8783881664276123
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.5228321194648743,
+          "validation_loss": 0.7689513564109802
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.4080673515796661,
+          "validation_loss": 0.6503446102142334
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.30137853026390077,
+          "validation_loss": 0.587191104888916
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.2990973631540934,
+          "validation_loss": 0.5411719083786011
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.2613381654024124,
+          "validation_loss": 0.3825669586658478
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.2056547522544861,
+          "validation_loss": 0.45329543948173523
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.21770222385724386,
+          "validation_loss": 0.6534713506698608
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.18898243208726248,
+          "validation_loss": 0.2078496515750885
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.16691886683305104,
+          "validation_loss": 0.17246964573860168
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.16584655046463012,
+          "validation_loss": 0.17737622559070587
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.15347984929879507,
+          "validation_loss": 0.21554633975028992
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.17035530209541322,
+          "validation_loss": 0.1761503964662552
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.143801553050677,
+          "validation_loss": 0.1860930174589157
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.15337184568246207,
+          "validation_loss": 0.14195604622364044
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.13935753603776296,
+          "validation_loss": 0.17737993597984314
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.1353810951113701,
+          "validation_loss": 0.1323307305574417
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.13226435581843057,
+          "validation_loss": 0.14462220668792725
+        }
+      ],
+      "onset_alerts": {
+        "unique_future_malicious_window_onsets_alerted": 0,
+        "lead_seconds": [],
+        "interpretation": "flow-labelled onset, not compromise; only clean observation histories"
+      },
+      "measured_compromise_lead_time_seconds": null,
+      "validation_state_mse": 0.01308863703161478,
+      "validation_persistence_mse": 0.015490640886127949,
+      "alert_policy": {
+        "threshold": 0.9591032266616821,
+        "status": "validation_only_fpr_budget",
+        "validation_fpr_budget": 0.05,
+        "test": {
+          "samples": 160,
+          "positives": 123,
+          "f1": 0.957983193277311,
+          "precision": 0.991304347826087,
+          "recall": 0.926829268292683,
+          "fpr": 0.02702702702702703,
+          "pr_auc": 0.9971776365630913,
+          "brier": 0.047790832817554474,
+          "confusion_matrix": [
+            [
+              36,
+              1
+            ],
+            [
+              9,
+              114
+            ]
+          ]
+        }
+      },
+      "clean_history_warning_policy": {
+        "threshold": 1.0,
+        "status": "insufficient_validation_classes",
+        "validation_fpr_budget": 0.05,
+        "validation_positive_examples": 0,
+        "test": {
+          "samples": 38,
+          "positives": 1,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "pr_auc": 0.030303030303030304,
+          "brier": 0.07394726574420929,
+          "confusion_matrix": [
+            [
+              37,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      "incident_evaluation": {
+        "status": "no_verified_incident_annotations",
+        "incidents": [],
+        "total_incidents": 0,
+        "eligible_incidents": 0,
+        "uncovered_incidents": 0,
+        "detected_incidents": 0,
+        "missed_eligible_incidents": 0,
+        "event_recall": null,
+        "clean_history_eligible_incidents": 0,
+        "clean_history_detected_incidents": 0,
+        "clean_history_event_recall": null,
+        "fully_benign_future_examples": 37,
+        "false_alert_examples": 1,
+        "benign_future_alert_fraction": 0.02702702702702703,
+        "limitation": "External timestamps are supplied annotations, not independently authenticated. Overlapping examples are correlated; flow risk is not a calibrated compromise probability."
+      },
+      "supervised_stages": [],
+      "state_evidence": {
+        "per_feature": {
+          "flow_count_log": {
+            "model_mse": 0.005084720440208912,
+            "persistence_mse": 0.005442827939987183
+          },
+          "bytes_log": {
+            "model_mse": 0.011505672708153725,
+            "persistence_mse": 0.01288612000644207
+          },
+          "packets_log": {
+            "model_mse": 0.003898242022842169,
+            "persistence_mse": 0.003904703538864851
+          },
+          "duration_ms_log": {
+            "model_mse": 0.01549605280160904,
+            "persistence_mse": 0.018607070669531822
+          },
+          "syn_fraction": {
+            "model_mse": 0.005153810605406761,
+            "persistence_mse": 0.007919424213469028
+          },
+          "ack_fraction": {
+            "model_mse": 0.02278650924563408,
+            "persistence_mse": 0.022515732795000076
+          },
+          "rst_fraction": {
+            "model_mse": 0.02935590222477913,
+            "persistence_mse": 0.03329510614275932
+          },
+          "fin_fraction": {
+            "model_mse": 5.5410509958164766e-05,
+            "persistence_mse": 0.00025376115809194744
+          },
+          "backward_packet_fraction": {
+            "model_mse": 0.01129462756216526,
+            "persistence_mse": 0.01275065541267395
+          },
+          "tcp_fraction": {
+            "model_mse": 0.06000876426696777,
+            "persistence_mse": 0.06693775951862335
+          },
+          "udp_fraction": {
+            "model_mse": 0.023332104086875916,
+            "persistence_mse": 0.03028106316924095
+          },
+          "active": {
+            "model_mse": 1.7532864266325832e-12,
+            "persistence_mse": 0.0
+          },
+          "iat_ms_log": {
+            "model_mse": 0.012276703491806984,
+            "persistence_mse": 0.016362616792321205
+          },
+          "tcp_window_log": {
+            "model_mse": 0.028484424576163292,
+            "persistence_mse": 0.03628715127706528
+          },
+          "ttl_mean_scaled": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "ttl_variance_scaled": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "fragment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "duplicate_payload_segment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "packet_features_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_present": {
+            "model_mse": 2.7699391225155523e-08,
+            "persistence_mse": 0.0
+          },
+          "tcp_window_present": {
+            "model_mse": 2.190921402633883e-11,
+            "persistence_mse": 0.0
+          }
+        },
+        "per_horizon": [
+          {
+            "model_mse": 0.010842929594218731,
+            "persistence_mse": 0.011701656505465508
+          },
+          {
+            "model_mse": 0.010245069861412048,
+            "persistence_mse": 0.011709214188158512
+          },
+          {
+            "model_mse": 0.010961380787193775,
+            "persistence_mse": 0.013339972123503685
+          },
+          {
+            "model_mse": 0.011518805287778378,
+            "persistence_mse": 0.014190871268510818
+          }
+        ],
+        "changed_entries": 7056,
+        "changed_entry_model_mse": 0.020713672041893005,
+        "changed_entry_persistence_mse": 0.024257957935333252,
+        "paired_mse_difference": -0.0018433822551742196,
+        "paired_block_bootstrap_95pct": [
+          -0.002299888152629137,
+          -0.0015271495416527613
+        ],
+        "bootstrap_block_examples": 20,
+        "interpretation": "Negative difference favors model. Correlated internal samples; not independent campaign evidence."
+      }
+    },
+    "gnn_lstm": {
+      "threshold": 0.95,
+      "best_epoch": 20,
+      "training_seconds": 5.06,
+      "test": {
+        "samples": 160,
+        "positives": 121,
+        "f1": 0.979253112033195,
+        "precision": 0.9833333333333333,
+        "recall": 0.9752066115702479,
+        "fpr": 0.05128205128205128,
+        "pr_auc": 0.9964516980946417,
+        "brier": 0.03097163513302803,
+        "confusion_matrix": [
+          [
+            37,
+            2
+          ],
+          [
+            3,
+            118
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 38,
+        "positives": 1,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.02857142857142857,
+        "brier": 0.026240261271595955,
+        "confusion_matrix": [
+          [
+            37,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "horizon_metrics": [
+        {
+          "samples": 160,
+          "positives": 122,
+          "f1": 0.9790794979079498,
+          "precision": 1.0,
+          "recall": 0.9590163934426229,
+          "fpr": 0.0,
+          "pr_auc": 0.9999333599893376,
+          "brier": 0.01316912192851305,
+          "confusion_matrix": [
+            [
+              38,
+              0
+            ],
+            [
+              5,
+              117
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 123,
+          "f1": 0.9834710743801653,
+          "precision": 1.0,
+          "recall": 0.967479674796748,
+          "fpr": 0.0,
+          "pr_auc": 0.9985152298732025,
+          "brier": 0.018804149702191353,
+          "confusion_matrix": [
+            [
+              37,
+              0
+            ],
+            [
+              4,
+              119
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 122,
+          "f1": 0.9834710743801653,
+          "precision": 0.9916666666666667,
+          "recall": 0.9754098360655737,
+          "fpr": 0.02631578947368421,
+          "pr_auc": 0.9974811384191231,
+          "brier": 0.02487265132367611,
+          "confusion_matrix": [
+            [
+              37,
+              1
+            ],
+            [
+              3,
+              119
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 121,
+          "f1": 0.979253112033195,
+          "precision": 0.9833333333333333,
+          "recall": 0.9752066115702479,
+          "fpr": 0.05128205128205128,
+          "pr_auc": 0.9964516980946417,
+          "brier": 0.03097163513302803,
+          "confusion_matrix": [
+            [
+              37,
+              2
+            ],
+            [
+              3,
+              118
+            ]
+          ]
+        }
+      ],
+      "state_mse": 0.012028026394546032,
+      "gaussian_95pct_coverage": 0.987202380952381,
+      "bootstrap": {
+        "f1_95pct_interval": [
+          0.9528556685461136,
+          0.9968652037617555
+        ],
+        "method": "contiguous-example block bootstrap",
+        "block_examples": 20
+      },
+      "training_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.6822929382324219,
+          "validation_loss": 0.9450609683990479
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.5718174238999685,
+          "validation_loss": 0.9555487632751465
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.5752655784289042,
+          "validation_loss": 0.9303588271141052
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.5655951420466105,
+          "validation_loss": 0.8779441118240356
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.49136240283648175,
+          "validation_loss": 0.6757089495658875
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.34620012640953063,
+          "validation_loss": 0.3821377158164978
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.22827953696250916,
+          "validation_loss": 0.23731648921966553
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.197426442305247,
+          "validation_loss": 0.19245947897434235
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.18348560531934102,
+          "validation_loss": 0.1741487830877304
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.16176444590091704,
+          "validation_loss": 0.16540081799030304
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.15721375743548074,
+          "validation_loss": 0.16102507710456848
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.17430103123188018,
+          "validation_loss": 0.15783029794692993
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.1657582422097524,
+          "validation_loss": 0.1543806940317154
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.15281404157479603,
+          "validation_loss": 0.15335777401924133
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.15108199020226795,
+          "validation_loss": 0.15166398882865906
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.15514452308416365,
+          "validation_loss": 0.25545039772987366
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.16363344043493272,
+          "validation_loss": 0.15021874010562897
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.14912836949030558,
+          "validation_loss": 0.14945942163467407
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.15026574780543644,
+          "validation_loss": 0.1483667641878128
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.15029731293519338,
+          "validation_loss": 0.14827382564544678
+        }
+      ],
+      "onset_alerts": {
+        "unique_future_malicious_window_onsets_alerted": 0,
+        "lead_seconds": [],
+        "interpretation": "flow-labelled onset, not compromise; only clean observation histories"
+      },
+      "measured_compromise_lead_time_seconds": null,
+      "validation_state_mse": 0.014754107221961021,
+      "validation_persistence_mse": 0.015490640886127949,
+      "alert_policy": {
+        "threshold": 0.9885254502296448,
+        "status": "validation_only_fpr_budget",
+        "validation_fpr_budget": 0.05,
+        "test": {
+          "samples": 160,
+          "positives": 123,
+          "f1": 0.975,
+          "precision": 1.0,
+          "recall": 0.9512195121951219,
+          "fpr": 0.0,
+          "pr_auc": 0.9985152298732026,
+          "brier": 0.01868944801390171,
+          "confusion_matrix": [
+            [
+              37,
+              0
+            ],
+            [
+              6,
+              117
+            ]
+          ]
+        }
+      },
+      "clean_history_warning_policy": {
+        "threshold": 1.0,
+        "status": "insufficient_validation_classes",
+        "validation_fpr_budget": 0.05,
+        "validation_positive_examples": 0,
+        "test": {
+          "samples": 38,
+          "positives": 1,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "pr_auc": 0.037037037037037035,
+          "brier": 0.026195770129561424,
+          "confusion_matrix": [
+            [
+              37,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      "incident_evaluation": {
+        "status": "no_verified_incident_annotations",
+        "incidents": [],
+        "total_incidents": 0,
+        "eligible_incidents": 0,
+        "uncovered_incidents": 0,
+        "detected_incidents": 0,
+        "missed_eligible_incidents": 0,
+        "event_recall": null,
+        "clean_history_eligible_incidents": 0,
+        "clean_history_detected_incidents": 0,
+        "clean_history_event_recall": null,
+        "fully_benign_future_examples": 37,
+        "false_alert_examples": 0,
+        "benign_future_alert_fraction": 0.0,
+        "limitation": "External timestamps are supplied annotations, not independently authenticated. Overlapping examples are correlated; flow risk is not a calibrated compromise probability."
+      },
+      "supervised_stages": [],
+      "edge_removal_ablation": {
+        "samples": 160,
+        "positives": 121,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.8614693595447245,
+        "brier": 0.7538135647773743,
+        "confusion_matrix": [
+          [
+            39,
+            0
+          ],
+          [
+            121,
+            0
+          ]
+        ]
+      },
+      "single_example_mean_latency_ms": 0.9125132000008307,
+      "state_evidence": {
+        "per_feature": {
+          "flow_count_log": {
+            "model_mse": 0.00547740887850523,
+            "persistence_mse": 0.005442827939987183
+          },
+          "bytes_log": {
+            "model_mse": 0.01298485416918993,
+            "persistence_mse": 0.01288612000644207
+          },
+          "packets_log": {
+            "model_mse": 0.00395997753366828,
+            "persistence_mse": 0.003904703538864851
+          },
+          "duration_ms_log": {
+            "model_mse": 0.018811827525496483,
+            "persistence_mse": 0.018607070669531822
+          },
+          "syn_fraction": {
+            "model_mse": 0.005211104638874531,
+            "persistence_mse": 0.007919424213469028
+          },
+          "ack_fraction": {
+            "model_mse": 0.022719774395227432,
+            "persistence_mse": 0.022515732795000076
+          },
+          "rst_fraction": {
+            "model_mse": 0.03418951854109764,
+            "persistence_mse": 0.03329510614275932
+          },
+          "fin_fraction": {
+            "model_mse": 4.22634111600928e-05,
+            "persistence_mse": 0.00025376115809194744
+          },
+          "backward_packet_fraction": {
+            "model_mse": 0.012670132331550121,
+            "persistence_mse": 0.01275065541267395
+          },
+          "tcp_fraction": {
+            "model_mse": 0.061066173017024994,
+            "persistence_mse": 0.06693775951862335
+          },
+          "udp_fraction": {
+            "model_mse": 0.023025449365377426,
+            "persistence_mse": 0.03028106316924095
+          },
+          "active": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_ms_log": {
+            "model_mse": 0.016412366181612015,
+            "persistence_mse": 0.016362616792321205
+          },
+          "tcp_window_log": {
+            "model_mse": 0.03601769357919693,
+            "persistence_mse": 0.03628715127706528
+          },
+          "ttl_mean_scaled": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "ttl_variance_scaled": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "fragment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "duplicate_payload_segment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "packet_features_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "tcp_window_present": {
+            "model_mse": 1.3155659894792393e-09,
+            "persistence_mse": 0.0
+          }
+        },
+        "per_horizon": [
+          {
+            "model_mse": 0.011157361790537834,
+            "persistence_mse": 0.011701656505465508
+          },
+          {
+            "model_mse": 0.011077256873250008,
+            "persistence_mse": 0.011709214188158512
+          },
+          {
+            "model_mse": 0.01262400671839714,
+            "persistence_mse": 0.013339972123503685
+          },
+          {
+            "model_mse": 0.013253476470708847,
+            "persistence_mse": 0.014190871268510818
+          }
+        ],
+        "changed_entries": 7056,
+        "changed_entry_model_mse": 0.022886933758854866,
+        "changed_entry_persistence_mse": 0.024257957935333252,
+        "paired_mse_difference": -0.0007074027671478689,
+        "paired_block_bootstrap_95pct": [
+          -0.0010123483749339356,
+          -0.00044517571586766275
+        ],
+        "bootstrap_block_examples": 20,
+        "interpretation": "Negative difference favors model. Correlated internal samples; not independent campaign evidence."
+      }
+    }
+  },
+  "limitations": [
+    "single dataset family",
+    "overlapping examples are correlated",
+    "service graphs do not describe host lateral movement",
+    "no incident-stage/compromise labels",
+    "no external deployment validation"
+  ],
+  "oracle_label_persistence_diagnostic": {
+    "samples": 160,
+    "positives": 121,
+    "f1": 0.9876543209876543,
+    "precision": 0.9836065573770492,
+    "recall": 0.9917355371900827,
+    "fpr": 0.05128205128205128,
+    "pr_auc": 0.9817275775640157,
+    "brier": 0.01875,
+    "confusion_matrix": [
+      [
+        37,
+        2
+      ],
+      [
+        1,
+        120
+      ]
+    ]
+  },
+  "state_persistence_mse": 0.012735428288578987,
+  "checkpoint_sha256": {
+    "gnn_lstm_test_predictions.npz": "726f693d753622ebf259b32baa0c96cdeb5cef3d1ad35ac82118bde03bf01244",
+    "lstm_test_predictions.npz": "fc85be10c8c4488cbe370a1fb51f73e90c17de2012c4637edfa1901bdc19a3fc",
+    "logistic_regression.npz": "ed1e192129415f443ae2989454c15b9c3b88a0614128b95cf2fe4af8d55147b4",
+    "lstm.npz": "17c95df8dc5c16d81028507518d0c21f6ea27665a9915702bc887683e64f3062",
+    "gnn_lstm.npz": "01e624ca6a3892ee28a91af5e0a18a840f86a11a6f0822a1afcda42baeb800f2"
+  }
+}

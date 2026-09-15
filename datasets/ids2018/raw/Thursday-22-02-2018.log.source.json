@@ -1,0 +1,10 @@
+{
+  "name": "logs/U172.31.69.28",
+  "size": 87842,
+  "compressed": 15697,
+  "offset": 190551459,
+  "crc": 4147839812,
+  "source_url": "https://cse-cic-ids2018.s3.amazonaws.com/Original%20Network%20Traffic%20and%20Log%20data/Thursday-22-02-2018/logs.zip",
+  "sha256": "274b4b37cdc0ec8f5f18a9a50e9f3665793858719be29e096752fa2806eae837",
+  "original_member_crc_verified": true
+}

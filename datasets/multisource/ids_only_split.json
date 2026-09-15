@@ -1,0 +1,14 @@
+{
+  "development": [
+    "Thursday-22-02-2018",
+    "Friday-23-02-2018",
+    "Friday-02-03-2018"
+  ],
+  "test": [
+    "cicapt_phase2"
+  ],
+  "development_fraction": 0.7,
+  "embargo_windows": 12,
+  "declared_before_model_fitting": true,
+  "purpose": "Cross-phase state forecast transfer; CICAPT risk ground truth unavailable; no zero-day claim"
+}

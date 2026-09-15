@@ -1,0 +1,155 @@
+{
+  "experiments": {
+    "ids_only": {
+      "lstm": {
+        "mean_mse": 0.010534386150538921,
+        "seed_sd": 0.0006576012200191164,
+        "runs": [
+          {
+            "seed": 42,
+            "state_mse": 0.011250794865190983,
+            "difference_vs_persistence": 0.0014271537074819207,
+            "block_interval": [
+              0.0013045141386101022,
+              0.0015516412910073997
+            ]
+          },
+          {
+            "seed": 43,
+            "state_mse": 0.009958217851817608,
+            "difference_vs_persistence": 0.00013457724708132446,
+            "block_interval": [
+              0.00011586632554099197,
+              0.00015371936897281557
+            ]
+          },
+          {
+            "seed": 44,
+            "state_mse": 0.010394145734608173,
+            "difference_vs_persistence": 0.0005705042858608067,
+            "block_interval": [
+              0.0005158408093848266,
+              0.0006311208751867525
+            ]
+          }
+        ]
+      },
+      "gnn_lstm": {
+        "mean_mse": 0.010713255653778711,
+        "seed_sd": 0.0006636405999746974,
+        "runs": [
+          {
+            "seed": 42,
+            "state_mse": 0.009948068298399448,
+            "difference_vs_persistence": 0.0001244272425537929,
+            "block_interval": [
+              0.00010898724158323603,
+              0.0001416264221916208
+            ]
+          },
+          {
+            "seed": 43,
+            "state_mse": 0.011060001328587532,
+            "difference_vs_persistence": 0.0012363590067252517,
+            "block_interval": [
+              0.001130578134325333,
+              0.0013451264472678305
+            ]
+          },
+          {
+            "seed": 44,
+            "state_mse": 0.011131697334349155,
+            "difference_vs_persistence": 0.0013080565258860588,
+            "block_interval": [
+              0.0011964749370235949,
+              0.0014349471835885196
+            ]
+          }
+        ]
+      }
+    },
+    "ids_plus_cicapt": {
+      "lstm": {
+        "mean_mse": 0.010855107878645262,
+        "seed_sd": 0.0005481446474102804,
+        "runs": [
+          {
+            "seed": 42,
+            "state_mse": 0.011487930081784725,
+            "difference_vs_persistence": 0.0016642891569063067,
+            "block_interval": [
+              0.0015491755824768917,
+              0.0017955878749489785
+            ]
+          },
+          {
+            "seed": 43,
+            "state_mse": 0.010549401864409447,
+            "difference_vs_persistence": 0.0007257609395310283,
+            "block_interval": [
+              0.0006523089687107131,
+              0.0007965753728058189
+            ]
+          },
+          {
+            "seed": 44,
+            "state_mse": 0.010527991689741611,
+            "difference_vs_persistence": 0.0007043502992019057,
+            "block_interval": [
+              0.0006485272431746125,
+              0.000772135888109915
+            ]
+          }
+        ]
+      },
+      "gnn_lstm": {
+        "mean_mse": 0.011589261703193188,
+        "seed_sd": 0.0006162553991479157,
+        "runs": [
+          {
+            "seed": 42,
+            "state_mse": 0.011774185113608837,
+            "difference_vs_persistence": 0.0019505430245772004,
+            "block_interval": [
+              0.001828053276403807,
+              0.0020946643315255644
+            ]
+          },
+          {
+            "seed": 43,
+            "state_mse": 0.010901717469096184,
+            "difference_vs_persistence": 0.001078075380064547,
+            "block_interval": [
+              0.0009908233681926505,
+              0.0011660923977615313
+            ]
+          },
+          {
+            "seed": 44,
+            "state_mse": 0.012091882526874542,
+            "difference_vs_persistence": 0.002268241485580802,
+            "block_interval": [
+              0.002133966947440058,
+              0.0024203596578445284
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "persistence_mse": 0.009823641739785671,
+  "test_examples": 270,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "target": "Four future one-minute pooled network states",
+  "scope": "One held-out CICAPT phase; seed variation is not independent dataset replication",
+  "risk_fpr_recall": null,
+  "warning_lead_time": null,
+  "supervised_stage_accuracy": null,
+  "reason": "CICAPT network ground truth and compromise timeline unverified",
+  "automatic_containment_approved": false,
+  "default_model_changed": false
+}

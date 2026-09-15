@@ -1,0 +1,23 @@
+{
+  "source_filename": "Phase1_Provenance.csv",
+  "source_sha256": "195f3180f0853d23bade70517b4a3edb81d905b86bfc0f0eae249a0df61edfe4",
+  "label_counts": [
+    {
+      "label": "0",
+      "stage": "0",
+      "rows": 222120
+    }
+  ],
+  "labelled_rows_without_numeric_timestamp": 0,
+  "events": [],
+  "status": "candidate_provenance_events_only",
+  "risk_labels_applied": false,
+  "stage_labels_applied": false,
+  "limitations": [
+    "Mirror labels not verified against Caldera Attack_info.csv",
+    "Process/Artifact labels are not packet labels",
+    "Zero labels do not prove complete negative coverage",
+    "First seen timestamps do not establish compromise time",
+    "Discovery is not automatically pre-compromise Reconnaissance"
+  ]
+}

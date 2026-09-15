@@ -1,0 +1,75 @@
+{
+  "manifest": {
+    "development": [
+      "Thursday-22-02-2018",
+      "Friday-23-02-2018",
+      "Friday-02-03-2018"
+    ],
+    "test": [
+      "cicapt_phase2",
+      "Thursday-15-02-2018"
+    ],
+    "development_fraction": 0.7,
+    "embargo_windows": 12
+  },
+  "boundaries": {
+    "method": "blocked development validation with embargo and entire held-out test campaigns",
+    "boundaries": [
+      {
+        "campaign": "Thursday-22-02-2018",
+        "cut": 381,
+        "embargo_windows": 12,
+        "test_only": false
+      },
+      {
+        "campaign": "Friday-23-02-2018",
+        "cut": 386,
+        "embargo_windows": 12,
+        "test_only": false
+      },
+      {
+        "campaign": "Friday-02-03-2018",
+        "cut": 294,
+        "embargo_windows": 12,
+        "test_only": false
+      },
+      {
+        "campaign": "cicapt_phase2",
+        "cut": 3026,
+        "embargo_windows": 12,
+        "test_only": true
+      },
+      {
+        "campaign": "Thursday-15-02-2018",
+        "cut": 335,
+        "embargo_windows": 12,
+        "test_only": true
+      }
+    ],
+    "manifest": {
+      "development": [
+        "Thursday-22-02-2018",
+        "Friday-23-02-2018",
+        "Friday-02-03-2018"
+      ],
+      "test": [
+        "cicapt_phase2",
+        "Thursday-15-02-2018"
+      ],
+      "development_fraction": 0.7,
+      "embargo_windows": 12
+    }
+  },
+  "source_hashes": [
+    "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644",
+    "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440",
+    "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334",
+    "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+    "e014495a36764d766b5812b126c9c3f7f18795343dbc79ee07d0073585d64e53"
+  ],
+  "split_examples": [
+    60,
+    22,
+    278
+  ]
+}

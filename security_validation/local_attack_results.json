@@ -1,0 +1,445 @@
+{
+  "scope": "Local loopback proxy and inert upstream only; payload probes are not successful exploitation tests",
+  "isolation": "Temporary copy of shipped JS/JSON; unique simulated client IP per payload. Trusted-forwarder topology is explicit. Online signature learning can affect later cases.",
+  "cases": [
+    {
+      "name": "home",
+      "status": 200,
+      "reached_upstream": true,
+      "latency_ms": 5.81,
+      "reason": null,
+      "details": null,
+      "policy_id": null,
+      "kind": "benign"
+    },
+    {
+      "name": "ordinary_search",
+      "status": 200,
+      "reached_upstream": true,
+      "latency_ms": 5.62,
+      "reason": null,
+      "details": null,
+      "policy_id": null,
+      "kind": "benign"
+    },
+    {
+      "name": "apostrophe_name",
+      "status": 200,
+      "reached_upstream": true,
+      "latency_ms": 3.03,
+      "reason": null,
+      "details": null,
+      "policy_id": null,
+      "kind": "benign"
+    },
+    {
+      "name": "union_word",
+      "status": 200,
+      "reached_upstream": true,
+      "latency_ms": 4.13,
+      "reason": null,
+      "details": null,
+      "policy_id": null,
+      "kind": "benign"
+    },
+    {
+      "name": "json_note",
+      "status": 200,
+      "reached_upstream": true,
+      "latency_ms": 3.09,
+      "reason": null,
+      "details": null,
+      "policy_id": null,
+      "kind": "benign"
+    },
+    {
+      "name": "sqli_query",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 44.74,
+      "reason": "Request intercepted by Krishna Force AI (Zero-Day Threat Contained & Arjuna Force Trained)",
+      "details": [
+        "SQL AST: Boolean Tautology Injection Fingerprint (libinjection signature)",
+        "request matches a known SQL injection pattern",
+        "Krishna Force AI intercepted novel zero-day structural anomaly (unknown threat contained at boundary)",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +7400 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "sqli_union",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 55.25,
+      "reason": "Neutralized on front line by Arjuna Force (<1ms Bloom Filter)",
+      "details": [
+        "matches attack pattern trained by Attack Team AI engine \u2014 neutralized directly on front line by Defence Team (learned 2:37:22 PM, blocked 338x since)",
+        "SQL AST: UNION SELECT Data Extraction Fingerprint",
+        "request matches a known SQL injection pattern",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +7400 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "xss_script",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 43.62,
+      "reason": "Neutralized on front line by Arjuna Force (<1ms Bloom Filter)",
+      "details": [
+        "matches attack pattern trained by Attack Team AI engine \u2014 neutralized directly on front line by Defence Team (learned 4:31:05 AM, blocked 113x since)",
+        "request matches a known cross-site scripting (XSS) pattern",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +264 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "xss_svg",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 42.87,
+      "reason": "Neutralized on front line by Arjuna Force (<1ms Bloom Filter)",
+      "details": [
+        "matches attack pattern trained by Attack Team AI engine \u2014 neutralized directly on front line by Defence Team (learned 8:32:23 PM, blocked 8x since)",
+        "request matches a known cross-site scripting (XSS) pattern",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +264 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "path_traversal",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 42.13,
+      "reason": "Neutralized on front line by Arjuna Force (<1ms Bloom Filter)",
+      "details": [
+        "matches attack pattern trained by Attack Team AI engine \u2014 neutralized directly on front line by Defence Team (learned 4:09:55 PM, blocked 3900x since)",
+        "request attempts to access files outside the intended directory",
+        "Krishna Force AI intercepted novel zero-day structural anomaly (unknown threat contained at boundary)",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +240 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "command_injection",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 44.15,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "request matches a known command injection pattern",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +264 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "template_expression",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 42.35,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "request matches a server-side template injection pattern",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +632 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "nosql_json",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 44.99,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "Positive Security: nested operator/privilege object in \"username\" rejected in body",
+        "Positive Security: nested operator/privilege object in \"password\" rejected in body",
+        "request matches NoSQL injection syntax",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +96 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "sqli_form",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 44.51,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "SQL AST: Boolean Tautology Injection Fingerprint (libinjection signature)",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +7400 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "xxe_xml",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 44.27,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "request attempts server-side request forgery (SSRF) against internal or metadata services",
+        "request contains XML external entity (XXE) indicators",
+        "unusual content type for POST request: application/xml",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +824 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "ssrf_parameter",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 43.72,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "request attempts server-side request forgery (SSRF) against internal or metadata services",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +848 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    },
+    {
+      "name": "sqli_double_encoded",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 44.36,
+      "reason": "Request intercepted by Krishna Force AI (Zero-Day Threat Contained & Arjuna Force Trained)",
+      "details": [
+        "SQL AST: Boolean Tautology Injection Fingerprint (libinjection signature)",
+        "request matches a known SQL injection pattern",
+        "Krishna Force AI intercepted novel zero-day structural anomaly (unknown threat contained at boundary)",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +7408 (adaptive learning)"
+      ],
+      "policy_id": null,
+      "kind": "attack_probe"
+    }
+  ],
+  "management": [
+    {
+      "name": "unauth_stats",
+      "status": 401,
+      "reached_upstream": false,
+      "latency_ms": 1.01,
+      "reason": "Operator bearer token required; use Garuda v3 dashboard",
+      "details": null,
+      "policy_id": null
+    },
+    {
+      "name": "retired_predictive_lockdown",
+      "status": 410,
+      "reached_upstream": false,
+      "latency_ms": 0.52,
+      "reason": "Legacy unvalidated prediction-to-lockdown path retired; use v3 operator policy",
+      "details": null,
+      "policy_id": null
+    }
+  ],
+  "login_sequence": [
+    {
+      "name": "login_1",
+      "status": 401,
+      "reached_upstream": true,
+      "latency_ms": 4.3,
+      "reason": null,
+      "details": null,
+      "policy_id": null
+    },
+    {
+      "name": "login_2",
+      "status": 401,
+      "reached_upstream": true,
+      "latency_ms": 3.2,
+      "reason": null,
+      "details": null,
+      "policy_id": null
+    },
+    {
+      "name": "login_3",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 43.87,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "3 failed login attempts on /api/login in 5 minutes",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +320 (adaptive learning)"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_4",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 43.77,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "source IP already blocklisted from a prior incident",
+        "4 failed login attempts on /api/login in 5 minutes",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +328 (adaptive learning)"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_5",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 43.39,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "source IP already blocklisted from a prior incident",
+        "5 failed login attempts on /api/login from this IP in 5 minutes",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +328 (adaptive learning)"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_6",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 43.84,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "source IP already blocklisted from a prior incident",
+        "6 failed login attempts on /api/login from this IP in 5 minutes",
+        "source IP has accumulated suspicious behavior across prior requests",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +328 (adaptive learning)"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_7",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 44.0,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "source IP already blocklisted from a prior incident",
+        "7 failed login attempts on /api/login from this IP in 5 minutes",
+        "source IP has accumulated suspicious behavior across prior requests",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +328 (adaptive learning)"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_8",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 44.0,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "source IP already blocklisted from a prior incident",
+        "8 failed login attempts on /api/login from this IP in 5 minutes \u2014 sustained brute-force",
+        "source IP has accumulated suspicious behavior across prior requests",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +328 (adaptive learning)"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_9",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 43.49,
+      "reason": "Request blocked at Front Line by Arjuna Force",
+      "details": [
+        "source IP already blocklisted from a prior incident",
+        "9 failed login attempts on /api/login from this IP in 5 minutes \u2014 sustained brute-force",
+        "source IP has accumulated suspicious behavior across prior requests",
+        "this attack type has caused confirmed breaches before \u2014 sensitivity raised by +328 (adaptive learning)"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_10",
+      "status": 429,
+      "reached_upstream": false,
+      "latency_ms": 1.21,
+      "reason": "Too Many Requests \u2014 Login rate limit exceeded",
+      "details": [
+        "brute-force attack detected: 10 login attempts for \"lab_user\" \u2014 locked for 5 minutes"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_11",
+      "status": 429,
+      "reached_upstream": false,
+      "latency_ms": 0.8,
+      "reason": "Too Many Requests \u2014 Login rate limit exceeded",
+      "details": [
+        "brute-force lockout: 10 login attempts for \"lab_user\" in 5min \u2014 locked for 300s more"
+      ],
+      "policy_id": null
+    },
+    {
+      "name": "login_12",
+      "status": 429,
+      "reached_upstream": false,
+      "latency_ms": 0.81,
+      "reason": "Too Many Requests \u2014 Login rate limit exceeded",
+      "details": [
+        "brute-force lockout: 10 login attempts for \"lab_user\" in 5min \u2014 locked for 300s more"
+      ],
+      "policy_id": null
+    }
+  ],
+  "forecast_to_enforcement": {
+    "snapshot_selection": "highest-risk stored held-out service snapshot; integration probe only",
+    "peak_probability": 0.9180627465248108,
+    "alert": true,
+    "automatic_containment": false,
+    "before": {
+      "name": "before_prediction",
+      "status": 200,
+      "reached_upstream": true,
+      "latency_ms": 4.75,
+      "reason": null,
+      "details": null,
+      "policy_id": null
+    },
+    "after_prediction": {
+      "name": "after_prediction",
+      "status": 200,
+      "reached_upstream": true,
+      "latency_ms": 4.19,
+      "reason": null,
+      "details": null,
+      "policy_id": null
+    },
+    "after_operator_policy": {
+      "name": "operator_policy_active",
+      "status": 403,
+      "reached_upstream": false,
+      "latency_ms": 1.64,
+      "reason": null,
+      "details": null,
+      "policy_id": "8b7f3a4c-caaa-4f58-88c5-37feab044de2"
+    },
+    "after_revocation": {
+      "name": "operator_policy_revoked",
+      "status": 200,
+      "reached_upstream": true,
+      "latency_ms": 4.89,
+      "reason": null,
+      "details": null,
+      "policy_id": null
+    },
+    "attribution_limit": "The service graph does not identify the simulated client IP; operator policy uses a deliberately chosen lab IP. This is not autonomous model-to-IP containment."
+  },
+  "summary": {
+    "attack_probes": 12,
+    "attack_probes_not_forwarded": 12,
+    "benign_probes": 5,
+    "benign_probes_not_forwarded": 0,
+    "forecast_triggered_automatic_block": false,
+    "operator_rule_enforced": true,
+    "revocation_restores": true
+  }
+}

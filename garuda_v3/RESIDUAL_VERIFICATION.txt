@@ -1,0 +1,33 @@
+test_auth_and_role (test_api.ApiTests.test_auth_and_role) ... ok
+test_checkpoint_tampering_fails (test_api.ApiTests.test_checkpoint_tampering_fails) ... ok
+test_host_and_origin_rejected (test_api.ApiTests.test_host_and_origin_rejected) ... ok
+test_no_cross_client_history_or_schema_confusion (test_api.ApiTests.test_no_cross_client_history_or_schema_confusion) ... ok
+test_nonfinite_and_masked_edges_rejected (test_api.ApiTests.test_nonfinite_and_masked_edges_rejected) ... ok
+test_replay_runs_trained_model_and_explanation (test_api.ApiTests.test_replay_runs_trained_model_and_explanation) ... ok
+test_flow_end_time_and_host_rejection (test_core.DataTests.test_flow_end_time_and_host_rejection) ... ok
+test_split_disjoint (test_core.DataTests.test_split_disjoint) ... ok
+test_unknown_labels_remain_unknown (test_core.DataTests.test_unknown_labels_remain_unknown) ... ok
+test_checkpoint_roundtrip (test_core.ModelTests.test_checkpoint_roundtrip) ... ok
+test_full_gnn_lstm_gradient_finite_difference (test_core.ModelTests.test_full_gnn_lstm_gradient_finite_difference) ... ok
+test_future_not_consumed (test_core.ModelTests.test_future_not_consumed) ... ok
+test_graph_edges_affect_prediction (test_core.ModelTests.test_graph_edges_affect_prediction) ... ok
+test_node_permutation_invariance (test_core.ModelTests.test_node_permutation_invariance) ... ok
+test_optimizer_reduces_joint_loss (test_core.ModelTests.test_optimizer_reduces_joint_loss) ... ok
+test_audit_tamper_detected (test_core.PolicyTests.test_audit_tamper_detected) ... ok
+test_revoke_expire_kill_switch (test_core.PolicyTests.test_revoke_expire_kill_switch) ... ok
+test_scope_dry_run_and_audit (test_core.PolicyTests.test_scope_dry_run_and_audit) ... ok
+test_alert_threshold_requires_validation_positives_and_limits_fpr (test_forecast_evidence.ForecastEvidenceTests.test_alert_threshold_requires_validation_positives_and_limits_fpr) ... ok
+test_annotated_host_training_to_inference_smoke (test_forecast_evidence.ForecastEvidenceTests.test_annotated_host_training_to_inference_smoke) ... ok
+test_annotation_binding_unknown_boundaries_and_roundtrip (test_forecast_evidence.ForecastEvidenceTests.test_annotation_binding_unknown_boundaries_and_roundtrip) ... ok
+test_campaign_split_rejects_overlap_and_missing_assignment (test_forecast_evidence.ForecastEvidenceTests.test_campaign_split_rejects_overlap_and_missing_assignment) ... ok
+test_incident_misses_uncovered_and_no_post_event_alert_credit (test_forecast_evidence.ForecastEvidenceTests.test_incident_misses_uncovered_and_no_post_event_alert_credit) ... ok
+test_residual_starts_at_persistence_and_gradient_updates (test_forecast_evidence.ForecastEvidenceTests.test_residual_starts_at_persistence_and_gradient_updates) ... ok
+test_unknown_stages_have_zero_stage_head_gradient (test_forecast_evidence.ForecastEvidenceTests.test_unknown_stages_have_zero_stage_head_gradient) ... ok
+test_real_packet_fields_and_unknown_labels (test_pcap.PcapTests.test_real_packet_fields_and_unknown_labels) ... ok
+test_truncated_capture_rejected (test_pcap.PcapTests.test_truncated_capture_rejected) ... ok
+test_signed_policy_blocks_then_revoke_restores_traffic (test_proxy_policy.ProxyPolicyTests.test_signed_policy_blocks_then_revoke_restores_traffic) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 12.146s
+
+OK

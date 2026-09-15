@@ -1,0 +1,10 @@
+{
+  "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.13 part2",
+  "size": 36372624,
+  "compressed": 29272564,
+  "offset": 32993773763,
+  "crc": 4172528167,
+  "source_url": "https://cse-cic-ids2018.s3.amazonaws.com/Original%20Network%20Traffic%20and%20Log%20data/Thursday-01-03-2018/pcap.zip",
+  "sha256": "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5",
+  "original_member_crc_verified": true
+}

@@ -1,0 +1,99 @@
+{
+  "checks": [
+    {
+      "name": "Legitimate request reaches protected app",
+      "status": 200,
+      "upstream_receipts": 1,
+      "passed": true
+    },
+    {
+      "name": "Unauthenticated management denied",
+      "status": 401,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Fabricated prediction mitigation retired",
+      "status": 410,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Signed scoped policy prevents upstream delivery",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Unrelated client stays available",
+      "status": 200,
+      "upstream_receipts": 1,
+      "passed": true
+    },
+    {
+      "name": "Forwarded header cannot evade scoped policy",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Invalid signature does not lift containment",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Stale signed revoke rejected",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Emergency signed revoke restores delivery",
+      "status": 200,
+      "upstream_receipts": 1,
+      "passed": true
+    },
+    {
+      "name": "Short TTL policy initially blocks",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Expired policy no longer blocks",
+      "status": 200,
+      "upstream_receipts": 1,
+      "passed": true
+    },
+    {
+      "name": "Known SQL injection is denied by detection engine",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    }
+  ],
+  "passed": 12,
+  "upstream_receipts": [
+    {
+      "path": "/baseline",
+      "time": 1789352521.5796883
+    },
+    {
+      "path": "/other-client",
+      "time": 1789352521.8906686
+    },
+    {
+      "path": "/recovered",
+      "time": 1789352522.8071232
+    },
+    {
+      "path": "/ttl-expired",
+      "time": 1789352524.1128736
+    }
+  ],
+  "scope": "Loopback HTTP proxy enforcement; operator-signed policies and known-payload detection",
+  "garuda_forecast_trigger_tested": false,
+  "unknown_attack_generalisation_tested": false,
+  "production_effectiveness_proven": false
+}

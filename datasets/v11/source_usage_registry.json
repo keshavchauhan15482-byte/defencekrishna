@@ -1,0 +1,52 @@
+{
+  "previously_used_source_hashes": [
+    "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5",
+    "77d9eed710a7e026b9ccd0175d26eb3040db293c8cfadccdf3b4d3a6c93d1cd2",
+    "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644",
+    "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334",
+    "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+    "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440",
+    "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+    "df0b5338190b967bd340a0d6c1bb3c34d1bbfb4b7ffa764c2dd26f77f1a26680",
+    "e014495a36764d766b5812b126c9c3f7f18795343dbc79ee07d0073585d64e53",
+    "ef5c9ed6895d4ca5aec723449dae30054ccd1f6b091713a52ffcb681ff78a02c",
+    "f3412318a76a9de67dd1b4fdb143613080adecec3fdcc477fc06463d227e58d3"
+  ],
+  "paths": {
+    "77d9eed710a7e026b9ccd0175d26eb3040db293c8cfadccdf3b4d3a6c93d1cd2": [
+      "datasets/ids2018/diverse_v8/labelled_graph.npz"
+    ],
+    "f3412318a76a9de67dd1b4fdb143613080adecec3fdcc477fc06463d227e58d3": [
+      "datasets/ids2018/diverse_v8_extension/labelled_graph.npz"
+    ],
+    "e014495a36764d766b5812b126c9c3f7f18795343dbc79ee07d0073585d64e53": [
+      "datasets/ids2018/fresh_holdout/labelled_graph.npz"
+    ],
+    "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440": [
+      "datasets/ids2018/labelled/Friday-23-02-2018.npz"
+    ],
+    "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5": [
+      "datasets/ids2018/labelled/Thursday-01-03-2018.npz"
+    ],
+    "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644": [
+      "datasets/ids2018/labelled/Thursday-22-02-2018.npz"
+    ],
+    "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334": [
+      "datasets/ids2018/labelled/Friday-02-03-2018.npz"
+    ],
+    "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6": [
+      "datasets/multisource/graphs/cicapt_phase1.npz"
+    ],
+    "ef5c9ed6895d4ca5aec723449dae30054ccd1f6b091713a52ffcb681ff78a02c": [
+      "datasets/multisource/graphs/ctu_scenario5.npz"
+    ],
+    "df0b5338190b967bd340a0d6c1bb3c34d1bbfb4b7ffa764c2dd26f77f1a26680": [
+      "datasets/multisource/graphs/ctu_scenario7.npz"
+    ],
+    "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3": [
+      "datasets/multisource/graphs/cicapt_phase2.npz"
+    ]
+  },
+  "policy": "Conservatively mark all previously prepared research graphs as already seen",
+  "independent_review_complete": false
+}

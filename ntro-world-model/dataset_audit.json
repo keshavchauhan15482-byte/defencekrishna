@@ -1,0 +1,42 @@
+{
+  "files": [
+    {
+      "file": "Friday-02-03-2018_Infiltration_REAL.csv",
+      "rows": 199999,
+      "labels": {
+        "Benign": 37093,
+        "Bot": 162906
+      },
+      "windows": 3136,
+      "attack_windows": 2020,
+      "contiguous_future_examples": 3044,
+      "sha256": "da5fe05e12007725acb76fd9b5ffd60691d129d4155cd0a7fbedeaa55ef2be99"
+    },
+    {
+      "file": "Thursday-01-03-2018_Infiltration.csv",
+      "rows": 49999,
+      "labels": {
+        "Benign": 49995,
+        "Label": 4
+      },
+      "windows": 3309,
+      "attack_windows": 0,
+      "contiguous_future_examples": 3002,
+      "sha256": "a4443f35866a84c8c5d49f8ef2dbd6c3745d7dbd1e1da8a4465e6efb1e505947"
+    }
+  ],
+  "future_split": [
+    {
+      "examples": 3537,
+      "positive": 535
+    },
+    {
+      "examples": 1220,
+      "positive": 472
+    },
+    {
+      "examples": 1243,
+      "positive": 978
+    }
+  ]
+}

@@ -1,0 +1,1463 @@
+{
+  "schema": "garuda-observed-graph-v3.1",
+  "config": {
+    "graphs": [
+      "datasets/ids2018/labelled/Thursday-22-02-2018.npz",
+      "datasets/ids2018/labelled/Friday-23-02-2018.npz",
+      "datasets/ids2018/labelled/Thursday-01-03-2018.npz",
+      "datasets/ids2018/labelled/Friday-02-03-2018.npz"
+    ],
+    "output": "garuda_v3/artifacts/ids2018_host_run",
+    "epochs": 20,
+    "history": 8,
+    "horizon": 4,
+    "stride": 2,
+    "seed": 42,
+    "decoder": "residual",
+    "stage_supervision": false,
+    "split_manifest": "datasets/ids2018/split.json",
+    "evaluation_scope": "development_reused_holdout"
+  },
+  "split_boundaries": {
+    "method": "predeclared campaign holdout",
+    "manifest": {
+      "train": [
+        "Thursday-22-02-2018"
+      ],
+      "validation": [
+        "Friday-23-02-2018"
+      ],
+      "test": [
+        "Thursday-01-03-2018",
+        "Friday-02-03-2018"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644",
+      "source_filename": "Thursday-22-02-2018.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 545,
+      "timestamp_semantics": "closed packet windows; unknown ground truth",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "Thursday-22-02-2018",
+      "original_sha256": "1488978ba2ae7cfc17c0dcb378bd821a6394caf6ae7b5aa097243f9966303f4b",
+      "preprocessing_audit": {
+        "original_sha256": "1488978ba2ae7cfc17c0dcb378bd821a6394caf6ae7b5aa097243f9966303f4b",
+        "derivative_sha256": "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644",
+        "retained_records": 47714,
+        "removed_records": {
+          "incomplete_record_payload": 1
+        },
+        "excluded_windows": [
+          1519334940
+        ],
+        "first_epoch": 1519302291,
+        "last_epoch": 1519334993,
+        "method": "Preserve complete original records; exclude every graph window touching an invalid/truncated record. No imputation."
+      },
+      "attack_family": "web",
+      "annotation_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "label_method": "1: published interval interior AND observed attacker endpoint; -1: boundaries, attack interval without matched endpoint, or attacker outside schedule; 0: no matched attacker and outside schedule (benchmark benign assumption)",
+      "schedule_source": "https://www.unb.ca/cic/datasets/ids-2018.html",
+      "schedule_utc_ranges": [
+        [
+          1519309020,
+          1519313040
+        ],
+        [
+          1519321800,
+          1519324140
+        ],
+        [
+          1519330500,
+          1519331340
+        ]
+      ],
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "annotation_intervals": [],
+      "incidents": [],
+      "stage_supervised": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440",
+      "source_filename": "Friday-23-02-2018.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 552,
+      "timestamp_semantics": "closed packet windows; unknown ground truth",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "Friday-23-02-2018",
+      "original_sha256": "b74427ade8b7dfed5683b42f84781075ca1d1740c28b65418ce656972f4b58fc",
+      "preprocessing_audit": {
+        "original_sha256": "b74427ade8b7dfed5683b42f84781075ca1d1740c28b65418ce656972f4b58fc",
+        "derivative_sha256": "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440",
+        "retained_records": 55101,
+        "removed_records": {
+          "incomplete_record_payload": 1
+        },
+        "excluded_windows": [
+          1519421340
+        ],
+        "first_epoch": 1519388260,
+        "last_epoch": 1519421395,
+        "method": "Preserve complete original records; exclude every graph window touching an invalid/truncated record. No imputation."
+      },
+      "attack_family": "web",
+      "annotation_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "label_method": "1: published interval interior AND observed attacker endpoint; -1: boundaries, attack interval without matched endpoint, or attacker outside schedule; 0: no matched attacker and outside schedule (benchmark benign assumption)",
+      "schedule_source": "https://www.unb.ca/cic/datasets/ids-2018.html",
+      "schedule_utc_ranges": [
+        [
+          1519394580,
+          1519398180
+        ],
+        [
+          1519405200,
+          1519409400
+        ],
+        [
+          1519412700,
+          1519413480
+        ]
+      ],
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "annotation_intervals": [],
+      "incidents": [],
+      "stage_supervised": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5",
+      "source_filename": "Thursday-01-03-2018.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 32,
+      "timestamp_semantics": "closed packet windows; unknown ground truth",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "Thursday-01-03-2018",
+      "original_sha256": "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5",
+      "preprocessing_audit": {
+        "original_sha256": "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5",
+        "derivative_sha256": "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5",
+        "retained_records": 121383,
+        "removed_records": {},
+        "excluded_windows": [],
+        "first_epoch": 1519913029,
+        "last_epoch": 1519914953,
+        "method": "Preserve complete original records; exclude every graph window touching an invalid/truncated record. No imputation."
+      },
+      "attack_family": "infiltration",
+      "annotation_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "label_method": "1: published interval interior AND observed attacker endpoint; -1: boundaries, attack interval without matched endpoint, or attacker outside schedule; 0: no matched attacker and outside schedule (benchmark benign assumption)",
+      "schedule_source": "https://www.unb.ca/cic/datasets/ids-2018.html",
+      "schedule_utc_ranges": [
+        [
+          1519912620,
+          1519916100
+        ],
+        [
+          1519927200,
+          1519933020
+        ]
+      ],
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "annotation_intervals": [],
+      "incidents": [],
+      "stage_supervised": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334",
+      "source_filename": "Friday-02-03-2018.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 420,
+      "timestamp_semantics": "closed packet windows; unknown ground truth",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "Friday-02-03-2018",
+      "original_sha256": "56fc8375d9104615ec08952bf811cc17e0579af5d2fc98e54dea669cc9d5d58e",
+      "preprocessing_audit": {
+        "original_sha256": "56fc8375d9104615ec08952bf811cc17e0579af5d2fc98e54dea669cc9d5d58e",
+        "derivative_sha256": "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334",
+        "retained_records": 313661,
+        "removed_records": {
+          "invalid_ip_length": 2536
+        },
+        "excluded_windows": [
+          1519994820,
+          1519994880,
+          1519994940,
+          1519995000,
+          1519995060,
+          1519995120,
+          1519995180,
+          1519995240,
+          1519995300,
+          1519995360,
+          1519995420,
+          1519995480,
+          1519995540,
+          1519995600,
+          1519995660,
+          1519995720,
+          1519995780,
+          1519995840,
+          1519995900,
+          1519995960,
+          1519996020,
+          1519996080,
+          1519996140,
+          1519996200,
+          1519996260,
+          1519996320,
+          1519996380,
+          1519996440,
+          1519996500,
+          1519996860,
+          1519997220,
+          1519998180,
+          1519998300,
+          1519998420,
+          1519998480,
+          1519998540,
+          1519998720,
+          1519998840,
+          1520000520,
+          1520000640,
+          1520001900,
+          1520002020,
+          1520002200,
+          1520003160,
+          1520003220,
+          1520003280,
+          1520003340,
+          1520003400,
+          1520003460,
+          1520003520,
+          1520003580,
+          1520003640,
+          1520003700,
+          1520003760,
+          1520003820,
+          1520003880,
+          1520003940,
+          1520004000,
+          1520004060,
+          1520004120,
+          1520004180,
+          1520004240,
+          1520004300,
+          1520004360,
+          1520004420,
+          1520004480,
+          1520004540,
+          1520004600,
+          1520004660,
+          1520004720,
+          1520004780,
+          1520004840,
+          1520007120,
+          1520014980,
+          1520015040,
+          1520015100,
+          1520015160,
+          1520015220,
+          1520015280,
+          1520019060,
+          1520019120,
+          1520019180,
+          1520019240,
+          1520019300,
+          1520019360,
+          1520019420,
+          1520019480,
+          1520019540,
+          1520019600,
+          1520019660,
+          1520019720,
+          1520019780,
+          1520019840,
+          1520019900,
+          1520019960,
+          1520020020,
+          1520020080,
+          1520020140,
+          1520020200,
+          1520020260,
+          1520020320,
+          1520020380,
+          1520023260,
+          1520026200
+        ],
+        "first_epoch": 1519994836,
+        "last_epoch": 1520026204,
+        "method": "Preserve complete original records; exclude every graph window touching an invalid/truncated record. No imputation."
+      },
+      "attack_family": "botnet",
+      "annotation_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "label_method": "1: published interval interior AND observed attacker endpoint; -1: boundaries, attack interval without matched endpoint, or attacker outside schedule; 0: no matched attacker and outside schedule (benchmark benign assumption)",
+      "schedule_source": "https://www.unb.ca/cic/datasets/ids-2018.html",
+      "schedule_utc_ranges": [
+        [
+          1519999860,
+          1520004840
+        ],
+        [
+          1520015040,
+          1520020500
+        ]
+      ],
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "annotation_intervals": [],
+      "incidents": [],
+      "stage_supervised": false
+    }
+  ],
+  "split_counts": [
+    {
+      "examples": 226,
+      "future_positive_windows": 160,
+      "clean_histories": 186,
+      "clean_history_future_positive_examples": 0
+    },
+    {
+      "examples": 232,
+      "future_positive_windows": 208,
+      "clean_histories": 180,
+      "clean_history_future_positive_examples": 0
+    },
+    {
+      "examples": 77,
+      "future_positive_windows": 148,
+      "clean_histories": 40,
+      "clean_history_future_positive_examples": 0
+    }
+  ],
+  "target": "malicious flow present in each FUTURE completed-flow window; not compromise probability",
+  "selection": "validation loss checkpoint; validation F1 thresholds; test not used for checkpoint selection",
+  "evaluation_scope": "exploratory cross-family PCAP holdout; schedule-assisted weak labels",
+  "models": {
+    "logistic_regression": {
+      "threshold": 0.475,
+      "test": {
+        "samples": 77,
+        "positives": 37,
+        "f1": 0.6491228070175439,
+        "precision": 0.4805194805194805,
+        "recall": 1.0,
+        "fpr": 1.0,
+        "pr_auc": 0.8511598357331689,
+        "brier": 0.5167456974675655,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            37
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 40,
+        "positives": 0,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 1.0,
+        "pr_auc": null,
+        "brier": 0.9947353933239235,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "lstm": {
+      "threshold": 0.32499999999999996,
+      "best_epoch": 15,
+      "training_seconds": 3.07,
+      "test": {
+        "samples": 77,
+        "positives": 37,
+        "f1": 0.6491228070175439,
+        "precision": 0.4805194805194805,
+        "recall": 1.0,
+        "fpr": 1.0,
+        "pr_auc": 0.6596582752876962,
+        "brier": 0.40131476521492004,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            37
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 40,
+        "positives": 0,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 1.0,
+        "pr_auc": null,
+        "brier": 0.7579575777053833,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      "horizon_metrics": [
+        {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.8609932187494276,
+          "brier": 0.38502776622772217,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        },
+        {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.7158075493423088,
+          "brier": 0.39774081110954285,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        },
+        {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.7065873806746934,
+          "brier": 0.3994409739971161,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        },
+        {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.6596582752876962,
+          "brier": 0.40131476521492004,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        }
+      ],
+      "state_evidence": {
+        "per_feature": {
+          "flow_count_log": {
+            "model_mse": 0.0006570030236616731,
+            "persistence_mse": 0.0006694559124298394
+          },
+          "bytes_log": {
+            "model_mse": 0.002234778832644224,
+            "persistence_mse": 0.0021174142602831125
+          },
+          "packets_log": {
+            "model_mse": 0.0014476876240223646,
+            "persistence_mse": 0.00144397490657866
+          },
+          "duration_ms_log": {
+            "model_mse": 0.008615330792963505,
+            "persistence_mse": 0.008681980893015862
+          },
+          "syn_fraction": {
+            "model_mse": 0.03105071932077408,
+            "persistence_mse": 0.03100254386663437
+          },
+          "ack_fraction": {
+            "model_mse": 0.04374915733933449,
+            "persistence_mse": 0.043847016990184784
+          },
+          "rst_fraction": {
+            "model_mse": 0.052681200206279755,
+            "persistence_mse": 0.049474816769361496
+          },
+          "fin_fraction": {
+            "model_mse": 0.014268484897911549,
+            "persistence_mse": 0.014085757546126842
+          },
+          "backward_packet_fraction": {
+            "model_mse": 0.00830783974379301,
+            "persistence_mse": 0.008024273440241814
+          },
+          "tcp_fraction": {
+            "model_mse": 0.014817903749644756,
+            "persistence_mse": 0.01487509161233902
+          },
+          "udp_fraction": {
+            "model_mse": 0.012729968875646591,
+            "persistence_mse": 0.012973378412425518
+          },
+          "active": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_ms_log": {
+            "model_mse": 0.0056477757170796394,
+            "persistence_mse": 0.005714592058211565
+          },
+          "tcp_window_log": {
+            "model_mse": 0.011997902765870094,
+            "persistence_mse": 0.011921965517103672
+          },
+          "ttl_mean_scaled": {
+            "model_mse": 0.007997283712029457,
+            "persistence_mse": 0.007980858907103539
+          },
+          "ttl_variance_scaled": {
+            "model_mse": 0.010494447313249111,
+            "persistence_mse": 0.00946830678731203
+          },
+          "fragment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "duplicate_payload_segment_fraction": {
+            "model_mse": 0.0005235224962234497,
+            "persistence_mse": 0.0005164218018762767
+          },
+          "packet_features_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_present": {
+            "model_mse": 0.04328586533665657,
+            "persistence_mse": 0.043931640684604645
+          },
+          "tcp_window_present": {
+            "model_mse": 0.014688688330352306,
+            "persistence_mse": 0.01487509161233902
+          }
+        },
+        "per_horizon": [
+          {
+            "model_mse": 0.01294918917119503,
+            "persistence_mse": 0.012863079085946083
+          },
+          {
+            "model_mse": 0.013469061814248562,
+            "persistence_mse": 0.0134130185469985
+          },
+          {
+            "model_mse": 0.014216934330761433,
+            "persistence_mse": 0.013925173319876194
+          },
+          {
+            "model_mse": 0.013687779195606709,
+            "persistence_mse": 0.013437696732580662
+          }
+        ],
+        "changed_entries": 5183,
+        "changed_entry_model_mse": 0.01694348268210888,
+        "changed_entry_persistence_mse": 0.01673436351120472,
+        "paired_mse_difference": 0.00017099904653150588,
+        "paired_block_bootstrap_95pct": [
+          0.00012192228223284474,
+          0.0002614505276142154
+        ],
+        "bootstrap_block_examples": 20,
+        "interpretation": "Negative difference favors model. Correlated internal samples; not independent campaign evidence."
+      },
+      "state_mse": 0.013580741360783577,
+      "gaussian_95pct_coverage": 0.9941249226963512,
+      "bootstrap": {
+        "f1_95pct_interval": [
+          0.07312500000000004,
+          0.9154929577464789
+        ],
+        "method": "contiguous-example block bootstrap",
+        "block_examples": 20
+      },
+      "training_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.8656007871031761,
+          "validation_loss": 0.7832434177398682
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.8116039782762527,
+          "validation_loss": 0.7890449166297913
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.6922178976237774,
+          "validation_loss": 0.7687057256698608
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.7741862758994102,
+          "validation_loss": 0.7517931461334229
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.6673304624855518,
+          "validation_loss": 0.7347259521484375
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.670116625726223,
+          "validation_loss": 0.7268761992454529
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.6256394051015377,
+          "validation_loss": 0.6993618011474609
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.6179874017834663,
+          "validation_loss": 0.646763265132904
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.5265585295855999,
+          "validation_loss": 0.5517288446426392
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.4826040379703045,
+          "validation_loss": 0.5022774338722229
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.40947047993540764,
+          "validation_loss": 0.4556352198123932
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.3780011758208275,
+          "validation_loss": 0.48334676027297974
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.3437329400330782,
+          "validation_loss": 0.4297211766242981
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.3452184572815895,
+          "validation_loss": 0.4157823622226715
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.3265873771160841,
+          "validation_loss": 0.4006471037864685
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.30887431278824806,
+          "validation_loss": 0.43201759457588196
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.3583671860396862,
+          "validation_loss": 0.4060421586036682
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.4146817922592163,
+          "validation_loss": 0.49385866522789
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.33319439366459846,
+          "validation_loss": 0.40150222182273865
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.3295712023973465,
+          "validation_loss": 0.4821440279483795
+        }
+      ],
+      "onset_alerts": {
+        "unique_future_malicious_window_onsets_alerted": 0,
+        "lead_seconds": [],
+        "interpretation": "flow-labelled onset, not compromise; only clean observation histories"
+      },
+      "measured_compromise_lead_time_seconds": null,
+      "validation_state_mse": 0.024466393515467644,
+      "validation_persistence_mse": 0.025612687692046165,
+      "alert_policy": {
+        "threshold": 0.7451558709144592,
+        "status": "validation_only_fpr_budget",
+        "validation_fpr_budget": 0.05,
+        "test": {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.6596582752876962,
+          "brier": 0.40131476521492004,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        }
+      },
+      "clean_history_warning_policy": {
+        "threshold": 1.0,
+        "status": "insufficient_validation_classes",
+        "validation_fpr_budget": 0.05,
+        "validation_positive_examples": 0,
+        "test": {
+          "samples": 40,
+          "positives": 0,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "pr_auc": null,
+          "brier": 0.7579575777053833,
+          "confusion_matrix": [
+            [
+              40,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      },
+      "incident_evaluation": {
+        "status": "no_verified_incident_annotations",
+        "incidents": [],
+        "incident_scope": "All annotated incidents in evaluated captures; no candidate window means uncovered, never a successful warning",
+        "total_incidents": 0,
+        "eligible_incidents": 0,
+        "uncovered_incidents": 0,
+        "detected_incidents": 0,
+        "missed_eligible_incidents": 0,
+        "event_recall": null,
+        "clean_history_eligible_incidents": 0,
+        "clean_history_detected_incidents": 0,
+        "clean_history_event_recall": null,
+        "fully_benign_future_examples": 40,
+        "false_alert_examples": 40,
+        "benign_future_alert_fraction": 1.0,
+        "limitation": "External timestamps are supplied annotations, not independently authenticated. Overlapping examples are correlated; flow risk is not a calibrated compromise probability."
+      },
+      "supervised_stages": []
+    },
+    "gnn_lstm": {
+      "threshold": 0.9249999999999999,
+      "best_epoch": 18,
+      "training_seconds": 7.08,
+      "test": {
+        "samples": 77,
+        "positives": 37,
+        "f1": 0.6491228070175439,
+        "precision": 0.4805194805194805,
+        "recall": 1.0,
+        "fpr": 1.0,
+        "pr_auc": 0.6726385822043521,
+        "brier": 0.47842323780059814,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            37
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 40,
+        "positives": 0,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 1.0,
+        "pr_auc": null,
+        "brier": 0.9195583462715149,
+        "confusion_matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      "horizon_metrics": [
+        {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.8800776625520026,
+          "brier": 0.4613451361656189,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        },
+        {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.7751567917567004,
+          "brier": 0.47373735904693604,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        },
+        {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.6916050815416015,
+          "brier": 0.47718921303749084,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        },
+        {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.6726385822043521,
+          "brier": 0.47842323780059814,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        }
+      ],
+      "state_evidence": {
+        "per_feature": {
+          "flow_count_log": {
+            "model_mse": 0.0007882884237915277,
+            "persistence_mse": 0.0006694559124298394
+          },
+          "bytes_log": {
+            "model_mse": 0.002164819510653615,
+            "persistence_mse": 0.0021174142602831125
+          },
+          "packets_log": {
+            "model_mse": 0.0014578219270333648,
+            "persistence_mse": 0.00144397490657866
+          },
+          "duration_ms_log": {
+            "model_mse": 0.008698884397745132,
+            "persistence_mse": 0.008681980893015862
+          },
+          "syn_fraction": {
+            "model_mse": 0.030965697020292282,
+            "persistence_mse": 0.03100254386663437
+          },
+          "ack_fraction": {
+            "model_mse": 0.043867211788892746,
+            "persistence_mse": 0.043847016990184784
+          },
+          "rst_fraction": {
+            "model_mse": 0.05334658548235893,
+            "persistence_mse": 0.049474816769361496
+          },
+          "fin_fraction": {
+            "model_mse": 0.013397537171840668,
+            "persistence_mse": 0.014085757546126842
+          },
+          "backward_packet_fraction": {
+            "model_mse": 0.008087147027254105,
+            "persistence_mse": 0.008024273440241814
+          },
+          "tcp_fraction": {
+            "model_mse": 0.01490370649844408,
+            "persistence_mse": 0.01487509161233902
+          },
+          "udp_fraction": {
+            "model_mse": 0.012795152142643929,
+            "persistence_mse": 0.012973378412425518
+          },
+          "active": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_ms_log": {
+            "model_mse": 0.005718919914215803,
+            "persistence_mse": 0.005714592058211565
+          },
+          "tcp_window_log": {
+            "model_mse": 0.011956029571592808,
+            "persistence_mse": 0.011921965517103672
+          },
+          "ttl_mean_scaled": {
+            "model_mse": 0.00809422880411148,
+            "persistence_mse": 0.007980858907103539
+          },
+          "ttl_variance_scaled": {
+            "model_mse": 0.009474057704210281,
+            "persistence_mse": 0.00946830678731203
+          },
+          "fragment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "duplicate_payload_segment_fraction": {
+            "model_mse": 0.0006534092244692147,
+            "persistence_mse": 0.0005164218018762767
+          },
+          "packet_features_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_present": {
+            "model_mse": 0.04180450737476349,
+            "persistence_mse": 0.043931640684604645
+          },
+          "tcp_window_present": {
+            "model_mse": 0.014909688383340836,
+            "persistence_mse": 0.01487509161233902
+          }
+        },
+        "per_horizon": [
+          {
+            "model_mse": 0.012838554568588734,
+            "persistence_mse": 0.012863079085946083
+          },
+          {
+            "model_mse": 0.013367988169193268,
+            "persistence_mse": 0.0134130185469985
+          },
+          {
+            "model_mse": 0.014127871952950954,
+            "persistence_mse": 0.013925173319876194
+          },
+          {
+            "model_mse": 0.013586288318037987,
+            "persistence_mse": 0.013437696732580662
+          }
+        ],
+        "changed_entries": 5183,
+        "changed_entry_model_mse": 0.01681540720164776,
+        "changed_entry_persistence_mse": 0.01673436351120472,
+        "paired_mse_difference": 7.043404912110418e-05,
+        "paired_block_bootstrap_95pct": [
+          -3.694664237627876e-05,
+          0.0002214278287283378
+        ],
+        "bootstrap_block_examples": 20,
+        "interpretation": "Negative difference favors model. Correlated internal samples; not independent campaign evidence."
+      },
+      "state_mse": 0.013480176217854023,
+      "gaussian_95pct_coverage": 0.9842300556586271,
+      "bootstrap": {
+        "f1_95pct_interval": [
+          0.07312500000000004,
+          0.9154929577464789
+        ],
+        "method": "contiguous-example block bootstrap",
+        "block_examples": 20
+      },
+      "training_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.7726267352700233,
+          "validation_loss": 0.7843276262283325
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.7143781669437885,
+          "validation_loss": 0.8083660006523132
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.7934529557824135,
+          "validation_loss": 0.7507452964782715
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.7524299919605255,
+          "validation_loss": 0.6771841645240784
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.6007441431283951,
+          "validation_loss": 0.6170365810394287
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.48606617003679276,
+          "validation_loss": 0.5085660815238953
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.4382782094180584,
+          "validation_loss": 0.46495378017425537
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.40595629066228867,
+          "validation_loss": 0.4003419578075409
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.37504908815026283,
+          "validation_loss": 0.37251418828964233
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.3536355569958687,
+          "validation_loss": 0.43739521503448486
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.35116998851299286,
+          "validation_loss": 0.31118345260620117
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.3089771755039692,
+          "validation_loss": 0.3116062879562378
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.3080821670591831,
+          "validation_loss": 0.31598737835884094
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.27288014255464077,
+          "validation_loss": 0.2882293462753296
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.2829338200390339,
+          "validation_loss": 0.431803822517395
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.2941045891493559,
+          "validation_loss": 0.30805569887161255
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.2649014601483941,
+          "validation_loss": 0.2937369644641876
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.2748874370008707,
+          "validation_loss": 0.28212371468544006
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.26545820012688637,
+          "validation_loss": 0.4544069766998291
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.2810598090291023,
+          "validation_loss": 0.307478129863739
+        }
+      ],
+      "onset_alerts": {
+        "unique_future_malicious_window_onsets_alerted": 0,
+        "lead_seconds": [],
+        "interpretation": "flow-labelled onset, not compromise; only clean observation histories"
+      },
+      "measured_compromise_lead_time_seconds": null,
+      "validation_state_mse": 0.023973047733306885,
+      "validation_persistence_mse": 0.025612687692046165,
+      "alert_policy": {
+        "threshold": 0.9400164484977722,
+        "status": "validation_only_fpr_budget",
+        "validation_fpr_budget": 0.05,
+        "test": {
+          "samples": 77,
+          "positives": 37,
+          "f1": 0.6491228070175439,
+          "precision": 0.4805194805194805,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "pr_auc": 0.6726385822043521,
+          "brier": 0.47842323780059814,
+          "confusion_matrix": [
+            [
+              0,
+              40
+            ],
+            [
+              0,
+              37
+            ]
+          ]
+        }
+      },
+      "clean_history_warning_policy": {
+        "threshold": 1.0,
+        "status": "insufficient_validation_classes",
+        "validation_fpr_budget": 0.05,
+        "validation_positive_examples": 0,
+        "test": {
+          "samples": 40,
+          "positives": 0,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "pr_auc": null,
+          "brier": 0.9195583462715149,
+          "confusion_matrix": [
+            [
+              40,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      },
+      "incident_evaluation": {
+        "status": "no_verified_incident_annotations",
+        "incidents": [],
+        "incident_scope": "All annotated incidents in evaluated captures; no candidate window means uncovered, never a successful warning",
+        "total_incidents": 0,
+        "eligible_incidents": 0,
+        "uncovered_incidents": 0,
+        "detected_incidents": 0,
+        "missed_eligible_incidents": 0,
+        "event_recall": null,
+        "clean_history_eligible_incidents": 0,
+        "clean_history_detected_incidents": 0,
+        "clean_history_event_recall": null,
+        "fully_benign_future_examples": 40,
+        "false_alert_examples": 40,
+        "benign_future_alert_fraction": 1.0,
+        "limitation": "External timestamps are supplied annotations, not independently authenticated. Overlapping examples are correlated; flow risk is not a calibrated compromise probability."
+      },
+      "supervised_stages": [],
+      "edge_removal_ablation": {
+        "samples": 77,
+        "positives": 37,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.8408055534675658,
+        "brier": 0.26862633228302,
+        "confusion_matrix": [
+          [
+            40,
+            0
+          ],
+          [
+            37,
+            0
+          ]
+        ]
+      },
+      "single_example_mean_latency_ms": 1.0070061999954305
+    }
+  },
+  "limitations": [
+    "overlapping examples are correlated",
+    "no external deployment validation",
+    "no incident/compromise labels",
+    "no supervised stage head",
+    "timezone UTC-04:00 inferred from schedule alignment, not publisher-confirmed",
+    "only selected victim captures; not all days or traffic",
+    "no clean-history future positives survive conservative exclusion",
+    "test support differs strongly from training; 40/40 negative examples falsely alert before gate"
+  ],
+  "oracle_label_persistence_diagnostic": {
+    "samples": 77,
+    "positives": 37,
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "fpr": 0.0,
+    "pr_auc": 1.0,
+    "brier": 0.0,
+    "confusion_matrix": [
+      [
+        40,
+        0
+      ],
+      [
+        0,
+        37
+      ]
+    ]
+  },
+  "state_persistence_mse": 0.013409741222858429,
+  "checkpoint_sha256": {
+    "lstm_test_predictions.npz": "26881f32654e5c3e24ee1ca09ecf57dcebe0752957241febf41cdb8d702ca449",
+    "gnn_lstm.npz": "f98d8f4d6abdd4971cf291f220e506f2bb30f9e0eca8895439bfa9729bd0ed8a",
+    "logistic_regression.npz": "72e6b718df4e15c8f7810dbbb44ba4238afa190f3888e37efb88f4718e23a7c8",
+    "gnn_lstm_test_predictions.npz": "ef44748b19131e43687a0c6dbbaf46317134c84b6ebc28ef9e1cd61b42401956",
+    "lstm.npz": "92cb42b84dbe9a291805684b421ea40b0ede380642ca340369e9b19bbf1c990d",
+    "support_gate.json": "011b3082866d70ece272ca89b57770df099071ae29ff82a51972bbbaa75011cf"
+  },
+  "support_gate_diagnostic": {
+    "evaluation_scope": "development diagnostic added after observing ungated holdout failure; NOT a new blind test",
+    "test_examples": 77,
+    "accepted_examples": 44,
+    "abstained_examples": 33,
+    "coverage": 0.5714285714285714,
+    "accepted_test": {
+      "samples": 44,
+      "positives": 5,
+      "f1": 0.20408163265306123,
+      "precision": 0.11363636363636363,
+      "recall": 1.0,
+      "fpr": 1.0,
+      "pr_auc": 0.30303030303030304,
+      "brier": 0.8152172565460205,
+      "confusion_matrix": [
+        [
+          0,
+          39
+        ],
+        [
+          0,
+          5
+        ]
+      ]
+    },
+    "interpretation": "Abstentions are unknown, not benign or prevented attacks. Overall ungated failures remain in report."
+  }
+}

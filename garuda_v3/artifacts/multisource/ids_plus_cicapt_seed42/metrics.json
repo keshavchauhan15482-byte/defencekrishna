@@ -1,0 +1,1191 @@
+{
+  "schema": "garuda-observed-graph-v3.1",
+  "config": {
+    "graphs": [
+      "datasets/ids2018/labelled/Thursday-22-02-2018.npz",
+      "datasets/ids2018/labelled/Friday-23-02-2018.npz",
+      "datasets/ids2018/labelled/Friday-02-03-2018.npz",
+      "datasets/multisource/graphs/cicapt_phase1.npz",
+      "datasets/multisource/graphs/cicapt_phase2.npz"
+    ],
+    "output": "garuda_v3/artifacts/multisource/ids_plus_cicapt_seed42",
+    "epochs": 12,
+    "history": 8,
+    "horizon": 4,
+    "stride": 16,
+    "seed": 42,
+    "decoder": "residual",
+    "allow_unknown_labels": true,
+    "calibrate": true,
+    "balance_risk": true,
+    "fpr_budget": 0.01,
+    "stage_supervision": false,
+    "split_manifest": "datasets/multisource/ids_plus_cicapt_split.json",
+    "evaluation_scope": "new_predeclared_holdout"
+  },
+  "split_boundaries": {
+    "method": "blocked development validation with embargo and entire held-out test campaigns",
+    "boundaries": [
+      {
+        "campaign": "Thursday-22-02-2018",
+        "cut": 381,
+        "embargo_windows": 12,
+        "test_only": false
+      },
+      {
+        "campaign": "Friday-23-02-2018",
+        "cut": 386,
+        "embargo_windows": 12,
+        "test_only": false
+      },
+      {
+        "campaign": "Friday-02-03-2018",
+        "cut": 294,
+        "embargo_windows": 12,
+        "test_only": false
+      },
+      {
+        "campaign": "cicapt_phase1",
+        "cut": 4026,
+        "embargo_windows": 12,
+        "test_only": false
+      },
+      {
+        "campaign": "cicapt_phase2",
+        "cut": 3026,
+        "embargo_windows": 12,
+        "test_only": true
+      }
+    ],
+    "manifest": {
+      "development": [
+        "Thursday-22-02-2018",
+        "Friday-23-02-2018",
+        "Friday-02-03-2018",
+        "cicapt_phase1"
+      ],
+      "test": [
+        "cicapt_phase2"
+      ],
+      "development_fraction": 0.7,
+      "embargo_windows": 12,
+      "declared_before_model_fitting": true,
+      "purpose": "Cross-phase state forecast transfer; CICAPT risk ground truth unavailable; no zero-day claim"
+    }
+  },
+  "sources": [
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644",
+      "source_filename": "Thursday-22-02-2018.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 545,
+      "timestamp_semantics": "closed packet windows; unknown ground truth",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "Thursday-22-02-2018",
+      "original_sha256": "1488978ba2ae7cfc17c0dcb378bd821a6394caf6ae7b5aa097243f9966303f4b",
+      "preprocessing_audit": {
+        "original_sha256": "1488978ba2ae7cfc17c0dcb378bd821a6394caf6ae7b5aa097243f9966303f4b",
+        "derivative_sha256": "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644",
+        "retained_records": 47714,
+        "removed_records": {
+          "incomplete_record_payload": 1
+        },
+        "excluded_windows": [
+          1519334940
+        ],
+        "first_epoch": 1519302291,
+        "last_epoch": 1519334993,
+        "method": "Preserve complete original records; exclude every graph window touching an invalid/truncated record. No imputation."
+      },
+      "attack_family": "web",
+      "annotation_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "label_method": "1: published interval interior AND observed attacker endpoint; -1: boundaries, attack interval without matched endpoint, or attacker outside schedule; 0: no matched attacker and outside schedule (benchmark benign assumption)",
+      "schedule_source": "https://www.unb.ca/cic/datasets/ids-2018.html",
+      "schedule_utc_ranges": [
+        [
+          1519309020,
+          1519313040
+        ],
+        [
+          1519321800,
+          1519324140
+        ],
+        [
+          1519330500,
+          1519331340
+        ]
+      ],
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "annotation_intervals": [],
+      "incidents": [],
+      "stage_supervised": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440",
+      "source_filename": "Friday-23-02-2018.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 552,
+      "timestamp_semantics": "closed packet windows; unknown ground truth",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "Friday-23-02-2018",
+      "original_sha256": "b74427ade8b7dfed5683b42f84781075ca1d1740c28b65418ce656972f4b58fc",
+      "preprocessing_audit": {
+        "original_sha256": "b74427ade8b7dfed5683b42f84781075ca1d1740c28b65418ce656972f4b58fc",
+        "derivative_sha256": "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440",
+        "retained_records": 55101,
+        "removed_records": {
+          "incomplete_record_payload": 1
+        },
+        "excluded_windows": [
+          1519421340
+        ],
+        "first_epoch": 1519388260,
+        "last_epoch": 1519421395,
+        "method": "Preserve complete original records; exclude every graph window touching an invalid/truncated record. No imputation."
+      },
+      "attack_family": "web",
+      "annotation_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "label_method": "1: published interval interior AND observed attacker endpoint; -1: boundaries, attack interval without matched endpoint, or attacker outside schedule; 0: no matched attacker and outside schedule (benchmark benign assumption)",
+      "schedule_source": "https://www.unb.ca/cic/datasets/ids-2018.html",
+      "schedule_utc_ranges": [
+        [
+          1519394580,
+          1519398180
+        ],
+        [
+          1519405200,
+          1519409400
+        ],
+        [
+          1519412700,
+          1519413480
+        ]
+      ],
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "annotation_intervals": [],
+      "incidents": [],
+      "stage_supervised": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334",
+      "source_filename": "Friday-02-03-2018.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 420,
+      "timestamp_semantics": "closed packet windows; unknown ground truth",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "Friday-02-03-2018",
+      "original_sha256": "56fc8375d9104615ec08952bf811cc17e0579af5d2fc98e54dea669cc9d5d58e",
+      "preprocessing_audit": {
+        "original_sha256": "56fc8375d9104615ec08952bf811cc17e0579af5d2fc98e54dea669cc9d5d58e",
+        "derivative_sha256": "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334",
+        "retained_records": 313661,
+        "removed_records": {
+          "invalid_ip_length": 2536
+        },
+        "excluded_windows": [
+          1519994820,
+          1519994880,
+          1519994940,
+          1519995000,
+          1519995060,
+          1519995120,
+          1519995180,
+          1519995240,
+          1519995300,
+          1519995360,
+          1519995420,
+          1519995480,
+          1519995540,
+          1519995600,
+          1519995660,
+          1519995720,
+          1519995780,
+          1519995840,
+          1519995900,
+          1519995960,
+          1519996020,
+          1519996080,
+          1519996140,
+          1519996200,
+          1519996260,
+          1519996320,
+          1519996380,
+          1519996440,
+          1519996500,
+          1519996860,
+          1519997220,
+          1519998180,
+          1519998300,
+          1519998420,
+          1519998480,
+          1519998540,
+          1519998720,
+          1519998840,
+          1520000520,
+          1520000640,
+          1520001900,
+          1520002020,
+          1520002200,
+          1520003160,
+          1520003220,
+          1520003280,
+          1520003340,
+          1520003400,
+          1520003460,
+          1520003520,
+          1520003580,
+          1520003640,
+          1520003700,
+          1520003760,
+          1520003820,
+          1520003880,
+          1520003940,
+          1520004000,
+          1520004060,
+          1520004120,
+          1520004180,
+          1520004240,
+          1520004300,
+          1520004360,
+          1520004420,
+          1520004480,
+          1520004540,
+          1520004600,
+          1520004660,
+          1520004720,
+          1520004780,
+          1520004840,
+          1520007120,
+          1520014980,
+          1520015040,
+          1520015100,
+          1520015160,
+          1520015220,
+          1520015280,
+          1520019060,
+          1520019120,
+          1520019180,
+          1520019240,
+          1520019300,
+          1520019360,
+          1520019420,
+          1520019480,
+          1520019540,
+          1520019600,
+          1520019660,
+          1520019720,
+          1520019780,
+          1520019840,
+          1520019900,
+          1520019960,
+          1520020020,
+          1520020080,
+          1520020140,
+          1520020200,
+          1520020260,
+          1520020320,
+          1520020380,
+          1520023260,
+          1520026200
+        ],
+        "first_epoch": 1519994836,
+        "last_epoch": 1520026204,
+        "method": "Preserve complete original records; exclude every graph window touching an invalid/truncated record. No imputation."
+      },
+      "attack_family": "botnet",
+      "annotation_status": "schedule-assisted weak labels; not independently verified packet truth",
+      "label_method": "1: published interval interior AND observed attacker endpoint; -1: boundaries, attack interval without matched endpoint, or attacker outside schedule; 0: no matched attacker and outside schedule (benchmark benign assumption)",
+      "schedule_source": "https://www.unb.ca/cic/datasets/ids-2018.html",
+      "schedule_utc_ranges": [
+        [
+          1519999860,
+          1520004840
+        ],
+        [
+          1520015040,
+          1520020500
+        ]
+      ],
+      "timezone_assumption": "Published wall time interpreted UTC-04:00; consistent with web attack packet activity, not a publisher-confirmed timezone declaration",
+      "annotation_intervals": [],
+      "incidents": [],
+      "stage_supervised": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+      "source_filename": "1stPhase-timed-Merged.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 5752,
+      "timestamp_semantics": "PCAPNG IDB resolution/offset; completed packet windows",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "cicapt_phase1",
+      "dataset_id": "CICAPT-IIoT2024",
+      "raw_records": 12103705,
+      "excluded_windows": [],
+      "removed_records": {},
+      "label_provenance": "No verified attack timeline supplied; all risk/stage labels unknown",
+      "preprocessing": "Ten-minute bounded chunks; first and final partial windows excluded",
+      "commercial_rights_verified": false,
+      "automatic_containment_approved": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "host",
+      "window_seconds": 60,
+      "max_nodes": 64,
+      "source_sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+      "source_filename": "2ndPhase-timed-MergedV2.pcap",
+      "packet_features": true,
+      "synthetic": false,
+      "windows": 4323,
+      "timestamp_semantics": "PCAPNG IDB resolution/offset; completed packet windows",
+      "limitations": [
+        "duplicate TCP payload segments are a retransmission indicator, not full TCP reassembly",
+        "classic PCAP Ethernet/raw IPv4 supported; other families need an adapter",
+        "capture-end partial window excluded"
+      ],
+      "campaign_id": "cicapt_phase2",
+      "dataset_id": "CICAPT-IIoT2024",
+      "raw_records": 9571528,
+      "excluded_windows": [],
+      "removed_records": {},
+      "label_provenance": "No verified attack timeline supplied; all risk/stage labels unknown",
+      "preprocessing": "Ten-minute bounded chunks; first and final partial windows excluded",
+      "commercial_rights_verified": false,
+      "automatic_containment_approved": false
+    }
+  ],
+  "split_counts": [
+    {
+      "examples": 311,
+      "future_positive_windows": 65,
+      "clean_histories": 32,
+      "clean_history_future_positive_examples": 1
+    },
+    {
+      "examples": 128,
+      "future_positive_windows": 7,
+      "clean_histories": 18,
+      "clean_history_future_positive_examples": 0
+    },
+    {
+      "examples": 270,
+      "future_positive_windows": 0,
+      "clean_histories": 0,
+      "clean_history_future_positive_examples": 0
+    }
+  ],
+  "target": "malicious flow present in each FUTURE completed-flow window; not compromise probability",
+  "selection": "validation loss checkpoint; validation F1 thresholds; test not used for checkpoint selection",
+  "evaluation_scope": "new_predeclared_holdout",
+  "models": {
+    "logistic_regression": {
+      "threshold": 0.175,
+      "test": {
+        "samples": 0,
+        "status": "insufficient_samples"
+      },
+      "clean_history_test": {
+        "samples": 0,
+        "status": "insufficient_samples"
+      }
+    },
+    "lstm": {
+      "calibration": {
+        "status": "insufficient_development_support",
+        "counts": [
+          80,
+          7
+        ],
+        "slope": 1.0,
+        "intercept": 0.0,
+        "scope": "validation only; no test labels used"
+      },
+      "validation_alert_selection": {
+        "threshold": null,
+        "status": "no_useful_validation_policy",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.0,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.1684334709830853
+        ],
+        "recall_95pct": [
+          0.0,
+          0.841886116991581
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "per_family_alert_metrics": {
+        "unspecified": {
+          "examples": 0,
+          "unknown_target_examples": 270,
+          "positives": 0,
+          "negatives": 0,
+          "false_positives": 0,
+          "true_positives": 0,
+          "fpr": null,
+          "recall": null,
+          "fpr_95pct": [
+            null,
+            null
+          ],
+          "recall_95pct": [
+            null,
+            null
+          ],
+          "policy_enabled": false,
+          "passed": false
+        }
+      },
+      "threshold": 0.25,
+      "best_epoch": 5,
+      "training_seconds": 1.92,
+      "test": {
+        "samples": 0,
+        "status": "insufficient_samples"
+      },
+      "clean_history_test": {
+        "samples": 0,
+        "status": "insufficient_samples"
+      },
+      "horizon_metrics": [
+        {
+          "samples": 0,
+          "status": "insufficient_samples"
+        },
+        {
+          "samples": 0,
+          "status": "insufficient_samples"
+        },
+        {
+          "samples": 0,
+          "status": "insufficient_samples"
+        },
+        {
+          "samples": 0,
+          "status": "insufficient_samples"
+        }
+      ],
+      "state_evidence": {
+        "per_feature": {
+          "flow_count_log": {
+            "model_mse": 0.0008272305713035166,
+            "persistence_mse": 0.000859178660903126
+          },
+          "bytes_log": {
+            "model_mse": 0.00045561263686977327,
+            "persistence_mse": 0.00045315170427784324
+          },
+          "packets_log": {
+            "model_mse": 0.0006686708074994385,
+            "persistence_mse": 0.0007441462366841733
+          },
+          "duration_ms_log": {
+            "model_mse": 0.0033005785662680864,
+            "persistence_mse": 0.0031787585467100143
+          },
+          "syn_fraction": {
+            "model_mse": 0.0191899873316288,
+            "persistence_mse": 0.016092726960778236
+          },
+          "ack_fraction": {
+            "model_mse": 0.04140626639127731,
+            "persistence_mse": 0.034702811390161514
+          },
+          "rst_fraction": {
+            "model_mse": 0.002476148772984743,
+            "persistence_mse": 0.003079233691096306
+          },
+          "fin_fraction": {
+            "model_mse": 0.007666465826332569,
+            "persistence_mse": 0.007449515629559755
+          },
+          "backward_packet_fraction": {
+            "model_mse": 0.007150744553655386,
+            "persistence_mse": 0.0064864265732467175
+          },
+          "tcp_fraction": {
+            "model_mse": 0.040926314890384674,
+            "persistence_mse": 0.03190293535590172
+          },
+          "udp_fraction": {
+            "model_mse": 0.028244463726878166,
+            "persistence_mse": 0.03018665686249733
+          },
+          "active": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_ms_log": {
+            "model_mse": 0.002965889172628522,
+            "persistence_mse": 0.0029162319842725992
+          },
+          "tcp_window_log": {
+            "model_mse": 0.029430367052555084,
+            "persistence_mse": 0.02242068573832512
+          },
+          "ttl_mean_scaled": {
+            "model_mse": 0.004264205694198608,
+            "persistence_mse": 0.004027425777167082
+          },
+          "ttl_variance_scaled": {
+            "model_mse": 0.00952099822461605,
+            "persistence_mse": 0.007278014440089464
+          },
+          "fragment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "duplicate_payload_segment_fraction": {
+            "model_mse": 0.0022867952939122915,
+            "persistence_mse": 0.0025399764999747276
+          },
+          "packet_features_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_present": {
+            "model_mse": 7.566333079012111e-05,
+            "persistence_mse": 7.566333079012111e-05
+          },
+          "tcp_window_present": {
+            "model_mse": 0.04039014130830765,
+            "persistence_mse": 0.03190293535590172
+          }
+        },
+        "per_horizon": [
+          {
+            "model_mse": 0.01670699752867222,
+            "persistence_mse": 0.015592442825436592
+          },
+          {
+            "model_mse": 0.005497664213180542,
+            "persistence_mse": 0.005085075739771128
+          },
+          {
+            "model_mse": 0.016324125230312347,
+            "persistence_mse": 0.012547588907182217
+          },
+          {
+            "model_mse": 0.00742293382063508,
+            "persistence_mse": 0.006069457624107599
+          }
+        ],
+        "changed_entries": 16945,
+        "changed_entry_model_mse": 0.015332103706896305,
+        "changed_entry_persistence_mse": 0.013148432597517967,
+        "paired_mse_difference": 0.0016642891569063067,
+        "paired_block_bootstrap_95pct": [
+          0.0015491755824768917,
+          0.0017955878749489785
+        ],
+        "bootstrap_block_examples": 20,
+        "interpretation": "Negative difference favors model. Correlated internal samples; not independent campaign evidence."
+      },
+      "state_mse": 0.011487930081784725,
+      "gaussian_95pct_coverage": 0.9899911816578483,
+      "bootstrap": null,
+      "training_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 1.074689519405365,
+          "validation_loss": 0.8083280324935913
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.0894915342330933,
+          "validation_loss": 0.9049108624458313
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.9979372918605804,
+          "validation_loss": 0.9386155009269714
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.9739873945713043,
+          "validation_loss": 0.9111390113830566
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.9645014047622681,
+          "validation_loss": 0.7551083564758301
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.8693230032920838,
+          "validation_loss": 0.9687138199806213
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.8631296813488006,
+          "validation_loss": 0.9380592107772827
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.7566388607025146,
+          "validation_loss": 0.8812762498855591
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.810744795203209,
+          "validation_loss": 0.929099440574646
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.719188392162323,
+          "validation_loss": 1.0403261184692383
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.6259435176849365,
+          "validation_loss": 1.1180167198181152
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.8801867559552192,
+          "validation_loss": 1.1242891550064087
+        }
+      ],
+      "onset_alerts": {
+        "unique_future_malicious_window_onsets_alerted": 0,
+        "lead_seconds": [],
+        "interpretation": "flow-labelled onset, not compromise; only clean observation histories"
+      },
+      "measured_compromise_lead_time_seconds": null,
+      "validation_state_mse": 0.015554769895970821,
+      "validation_persistence_mse": 0.016346368938684464,
+      "alert_policy": {
+        "threshold": 1.000001,
+        "status": "no_useful_validation_policy",
+        "validation_fpr_budget": 0.01,
+        "test": {
+          "samples": 0,
+          "status": "insufficient_samples"
+        }
+      },
+      "clean_history_warning_policy": {
+        "threshold": 1.000001,
+        "status": "insufficient_validation_classes",
+        "validation_fpr_budget": 0.01,
+        "validation_positive_examples": 0,
+        "test": {
+          "samples": 0,
+          "status": "insufficient_samples"
+        }
+      },
+      "incident_evaluation": {
+        "status": "no_verified_incident_annotations",
+        "incidents": [],
+        "incident_scope": "All annotated incidents in evaluated captures; no candidate window means uncovered, never a successful warning",
+        "total_incidents": 0,
+        "eligible_incidents": 0,
+        "uncovered_incidents": 0,
+        "detected_incidents": 0,
+        "missed_eligible_incidents": 0,
+        "event_recall": null,
+        "clean_history_eligible_incidents": 0,
+        "clean_history_detected_incidents": 0,
+        "clean_history_event_recall": null,
+        "fully_benign_future_examples": 0,
+        "false_alert_examples": 0,
+        "benign_future_alert_fraction": null,
+        "limitation": "External timestamps are supplied annotations, not independently authenticated. Overlapping examples are correlated; flow risk is not a calibrated compromise probability."
+      },
+      "supervised_stages": []
+    },
+    "gnn_lstm": {
+      "calibration": {
+        "status": "insufficient_development_support",
+        "counts": [
+          80,
+          7
+        ],
+        "slope": 1.0,
+        "intercept": 0.0,
+        "scope": "validation only; no test labels used"
+      },
+      "validation_alert_selection": {
+        "threshold": null,
+        "status": "no_useful_validation_policy",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.0,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.1684334709830853
+        ],
+        "recall_95pct": [
+          0.0,
+          0.841886116991581
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "per_family_alert_metrics": {
+        "unspecified": {
+          "examples": 0,
+          "unknown_target_examples": 270,
+          "positives": 0,
+          "negatives": 0,
+          "false_positives": 0,
+          "true_positives": 0,
+          "fpr": null,
+          "recall": null,
+          "fpr_95pct": [
+            null,
+            null
+          ],
+          "recall_95pct": [
+            null,
+            null
+          ],
+          "policy_enabled": false,
+          "passed": false
+        }
+      },
+      "threshold": 0.42499999999999993,
+      "best_epoch": 3,
+      "training_seconds": 9.3,
+      "test": {
+        "samples": 0,
+        "status": "insufficient_samples"
+      },
+      "clean_history_test": {
+        "samples": 0,
+        "status": "insufficient_samples"
+      },
+      "horizon_metrics": [
+        {
+          "samples": 0,
+          "status": "insufficient_samples"
+        },
+        {
+          "samples": 0,
+          "status": "insufficient_samples"
+        },
+        {
+          "samples": 0,
+          "status": "insufficient_samples"
+        },
+        {
+          "samples": 0,
+          "status": "insufficient_samples"
+        }
+      ],
+      "state_evidence": {
+        "per_feature": {
+          "flow_count_log": {
+            "model_mse": 0.0008669269154779613,
+            "persistence_mse": 0.000859178660903126
+          },
+          "bytes_log": {
+            "model_mse": 0.0004654318618122488,
+            "persistence_mse": 0.00045315170427784324
+          },
+          "packets_log": {
+            "model_mse": 0.0007371624233201146,
+            "persistence_mse": 0.0007441462366841733
+          },
+          "duration_ms_log": {
+            "model_mse": 0.00323915621265769,
+            "persistence_mse": 0.0031787585467100143
+          },
+          "syn_fraction": {
+            "model_mse": 0.019126329571008682,
+            "persistence_mse": 0.016092726960778236
+          },
+          "ack_fraction": {
+            "model_mse": 0.04151182621717453,
+            "persistence_mse": 0.034702811390161514
+          },
+          "rst_fraction": {
+            "model_mse": 0.0026481046807020903,
+            "persistence_mse": 0.003079233691096306
+          },
+          "fin_fraction": {
+            "model_mse": 0.010068420320749283,
+            "persistence_mse": 0.007449515629559755
+          },
+          "backward_packet_fraction": {
+            "model_mse": 0.008565658703446388,
+            "persistence_mse": 0.0064864265732467175
+          },
+          "tcp_fraction": {
+            "model_mse": 0.0420805886387825,
+            "persistence_mse": 0.03190293535590172
+          },
+          "udp_fraction": {
+            "model_mse": 0.027419831603765488,
+            "persistence_mse": 0.03018665686249733
+          },
+          "active": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_ms_log": {
+            "model_mse": 0.0029850706923753023,
+            "persistence_mse": 0.0029162319842725992
+          },
+          "tcp_window_log": {
+            "model_mse": 0.029217250645160675,
+            "persistence_mse": 0.02242068573832512
+          },
+          "ttl_mean_scaled": {
+            "model_mse": 0.00435755867511034,
+            "persistence_mse": 0.004027425777167082
+          },
+          "ttl_variance_scaled": {
+            "model_mse": 0.009055247530341148,
+            "persistence_mse": 0.007278014440089464
+          },
+          "fragment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "duplicate_payload_segment_fraction": {
+            "model_mse": 0.003342327196151018,
+            "persistence_mse": 0.0025399764999747276
+          },
+          "packet_features_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_present": {
+            "model_mse": 7.566333079012111e-05,
+            "persistence_mse": 7.566333079012111e-05
+          },
+          "tcp_window_present": {
+            "model_mse": 0.04149531200528145,
+            "persistence_mse": 0.03190293535590172
+          }
+        },
+        "per_horizon": [
+          {
+            "model_mse": 0.016854533925652504,
+            "persistence_mse": 0.015592442825436592
+          },
+          {
+            "model_mse": 0.005627177190035582,
+            "persistence_mse": 0.005085075739771128
+          },
+          {
+            "model_mse": 0.01683989353477955,
+            "persistence_mse": 0.012547588907182217
+          },
+          {
+            "model_mse": 0.0077751330099999905,
+            "persistence_mse": 0.006069457624107599
+          }
+        ],
+        "changed_entries": 16945,
+        "changed_entry_model_mse": 0.015709951519966125,
+        "changed_entry_persistence_mse": 0.013148432597517967,
+        "paired_mse_difference": 0.0019505430245772004,
+        "paired_block_bootstrap_95pct": [
+          0.001828053276403807,
+          0.0020946643315255644
+        ],
+        "bootstrap_block_examples": 20,
+        "interpretation": "Negative difference favors model. Correlated internal samples; not independent campaign evidence."
+      },
+      "state_mse": 0.011774185113608837,
+      "gaussian_95pct_coverage": 0.9923280423280423,
+      "bootstrap": null,
+      "training_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 1.1212729454040526,
+          "validation_loss": 0.9076520204544067
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.03927983045578,
+          "validation_loss": 0.9249144792556763
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.9293346166610718,
+          "validation_loss": 0.8888580799102783
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.7932396709918976,
+          "validation_loss": 0.9078004956245422
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.6922274857759476,
+          "validation_loss": 1.0252281427383423
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.5963181123137474,
+          "validation_loss": 1.0589412450790405
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.6231489717960358,
+          "validation_loss": 1.04988694190979
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.5246087431907653,
+          "validation_loss": 1.0714632272720337
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.5921848148107529,
+          "validation_loss": 1.0855083465576172
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.48644284158945084,
+          "validation_loss": 1.12727952003479
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.5758197322487831,
+          "validation_loss": 1.1752002239227295
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.4631374955177307,
+          "validation_loss": 1.1578963994979858
+        }
+      ],
+      "onset_alerts": {
+        "unique_future_malicious_window_onsets_alerted": 0,
+        "lead_seconds": [],
+        "interpretation": "flow-labelled onset, not compromise; only clean observation histories"
+      },
+      "measured_compromise_lead_time_seconds": null,
+      "validation_state_mse": 0.015705546364188194,
+      "validation_persistence_mse": 0.016346368938684464,
+      "alert_policy": {
+        "threshold": 1.000001,
+        "status": "no_useful_validation_policy",
+        "validation_fpr_budget": 0.01,
+        "test": {
+          "samples": 0,
+          "status": "insufficient_samples"
+        }
+      },
+      "clean_history_warning_policy": {
+        "threshold": 1.000001,
+        "status": "insufficient_validation_classes",
+        "validation_fpr_budget": 0.01,
+        "validation_positive_examples": 0,
+        "test": {
+          "samples": 0,
+          "status": "insufficient_samples"
+        }
+      },
+      "incident_evaluation": {
+        "status": "no_verified_incident_annotations",
+        "incidents": [],
+        "incident_scope": "All annotated incidents in evaluated captures; no candidate window means uncovered, never a successful warning",
+        "total_incidents": 0,
+        "eligible_incidents": 0,
+        "uncovered_incidents": 0,
+        "detected_incidents": 0,
+        "missed_eligible_incidents": 0,
+        "event_recall": null,
+        "clean_history_eligible_incidents": 0,
+        "clean_history_detected_incidents": 0,
+        "clean_history_event_recall": null,
+        "fully_benign_future_examples": 0,
+        "false_alert_examples": 0,
+        "benign_future_alert_fraction": null,
+        "limitation": "External timestamps are supplied annotations, not independently authenticated. Overlapping examples are correlated; flow risk is not a calibrated compromise probability."
+      },
+      "supervised_stages": [],
+      "edge_removal_ablation": {
+        "samples": 0,
+        "status": "insufficient_samples"
+      },
+      "single_example_mean_latency_ms": 1.8573286999981065
+    }
+  },
+  "limitations": [
+    "overlapping examples are correlated",
+    "no external deployment validation",
+    "no incident/compromise labels",
+    "no supervised stage head"
+  ],
+  "training_positive_weight": [
+    2.1875,
+    2.125,
+    2.0625,
+    1.9411764705882353
+  ],
+  "feature_scaling": "Fixed documented physical/log transforms, no dataset-fitted scaling.",
+  "oracle_label_persistence_diagnostic": {
+    "samples": 0,
+    "status": "insufficient_samples"
+  },
+  "state_persistence_mse": 0.009823641739785671,
+  "checkpoint_sha256": {
+    "lstm_validation_predictions.npz": "c5b686736f383d20f0a3de948952ecd6a80fb04b2a9ba82f071a798ff497be51",
+    "lstm_test_predictions.npz": "effaabbb3ca7be00a39c50904d0cbb209ab92c47fea531ad1ee258813e41c402",
+    "gnn_lstm_test_predictions.npz": "1b7dc4397bf394dc21293d5caa89fff5f88ef2dd634957f281bc89690bdf912b",
+    "gnn_lstm_validation_predictions.npz": "01397037de7a2a110d7579e68969f3df9422212b49e5c2d48a5dec2dc99be6cd",
+    "logistic_regression.npz": "6b37a4e9b6b62bbf4de16a3fb2130cf14768d5e16b5b31902e8cdc384e31b1c1",
+    "gnn_lstm.npz": "a8caea0ae6d7a878a543476c9cb70525ade8967b01a24231021f128ff1a04785",
+    "lstm.npz": "96a5f3f88097afbb31cc84b2b6ef6e5edbb3e9a5e8ba6e9061fdbf60ad9c6455"
+  }
+}

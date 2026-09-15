@@ -1,0 +1,710 @@
+{
+  "schema": "garuda-observed-graph-v3.1",
+  "config": {
+    "graphs": [
+      "garuda_v3/artifacts/Thursday.npz",
+      "garuda_v3/artifacts/Friday.npz"
+    ],
+    "output": "garuda_v3/artifacts/seed19",
+    "epochs": 20,
+    "history": 8,
+    "horizon": 4,
+    "stride": 8,
+    "seed": 19
+  },
+  "split_boundaries": {
+    "train_before": 1519958040,
+    "validation_before": 1519982770
+  },
+  "sources": [
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32,
+      "source_sha256": "a4443f35866a84c8c5d49f8ef2dbd6c3745d7dbd1e1da8a4465e6efb1e505947",
+      "source_filename": "Thursday-01-03-2018_Infiltration.csv",
+      "row_labels": {
+        "0": 49995
+      },
+      "windows": 3307,
+      "timestamp_semantics": "completed_flow_end_time; naive timestamps assumed UTC",
+      "packet_features": false,
+      "topology": "protocol-to-service incidence",
+      "synthetic": false
+    },
+    {
+      "schema": "garuda-observed-graph-v3.1",
+      "features": [
+        "flow_count_log",
+        "bytes_log",
+        "packets_log",
+        "duration_ms_log",
+        "syn_fraction",
+        "ack_fraction",
+        "rst_fraction",
+        "fin_fraction",
+        "backward_packet_fraction",
+        "tcp_fraction",
+        "udp_fraction",
+        "active",
+        "iat_ms_log",
+        "tcp_window_log",
+        "ttl_mean_scaled",
+        "ttl_variance_scaled",
+        "fragment_fraction",
+        "duplicate_payload_segment_fraction",
+        "packet_features_present",
+        "iat_present",
+        "tcp_window_present"
+      ],
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32,
+      "source_sha256": "da5fe05e12007725acb76fd9b5ffd60691d129d4155cd0a7fbedeaa55ef2be99",
+      "source_filename": "Friday-02-03-2018_Infiltration_REAL.csv",
+      "row_labels": {
+        "0": 37093,
+        "1": 162906
+      },
+      "windows": 3146,
+      "timestamp_semantics": "completed_flow_end_time; naive timestamps assumed UTC",
+      "packet_features": false,
+      "topology": "protocol-to-service incidence",
+      "synthetic": false
+    }
+  ],
+  "split_counts": [
+    {
+      "examples": 456,
+      "future_positive_windows": 280,
+      "clean_histories": 386
+    },
+    {
+      "examples": 158,
+      "future_positive_windows": 238,
+      "clean_histories": 97
+    },
+    {
+      "examples": 160,
+      "future_positive_windows": 488,
+      "clean_histories": 38
+    }
+  ],
+  "target": "malicious flow present in each FUTURE completed-flow window; not compromise probability",
+  "selection": "validation loss checkpoint; validation F1 thresholds; test not used for selection",
+  "models": {
+    "logistic_regression": {
+      "threshold": 0.49999999999999994,
+      "test": {
+        "samples": 160,
+        "positives": 121,
+        "f1": 0.9162995594713657,
+        "precision": 0.9811320754716981,
+        "recall": 0.859504132231405,
+        "fpr": 0.05128205128205128,
+        "pr_auc": 0.9945047971274411,
+        "brier": 0.08829993299855227,
+        "confusion_matrix": [
+          [
+            37,
+            2
+          ],
+          [
+            17,
+            104
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 38,
+        "positives": 1,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.038461538461538464,
+        "brier": 0.03681633670594817,
+        "confusion_matrix": [
+          [
+            37,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      }
+    },
+    "lstm": {
+      "threshold": 0.95,
+      "best_epoch": 19,
+      "training_seconds": 1.43,
+      "test": {
+        "samples": 160,
+        "positives": 121,
+        "f1": 0.9583333333333334,
+        "precision": 0.9663865546218487,
+        "recall": 0.9504132231404959,
+        "fpr": 0.10256410256410256,
+        "pr_auc": 0.9940974189200069,
+        "brier": 0.06083667278289795,
+        "confusion_matrix": [
+          [
+            35,
+            4
+          ],
+          [
+            6,
+            115
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 38,
+        "positives": 1,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.05405405405405406,
+        "pr_auc": 0.027777777777777776,
+        "brier": 0.07393943518400192,
+        "confusion_matrix": [
+          [
+            35,
+            2
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "horizon_metrics": [
+        {
+          "samples": 160,
+          "positives": 122,
+          "f1": 0.9203539823008849,
+          "precision": 1.0,
+          "recall": 0.8524590163934426,
+          "fpr": 0.0,
+          "pr_auc": 0.9990725191636336,
+          "brier": 0.03669542819261551,
+          "confusion_matrix": [
+            [
+              38,
+              0
+            ],
+            [
+              18,
+              104
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 123,
+          "f1": 0.9576271186440678,
+          "precision": 1.0,
+          "recall": 0.9186991869918699,
+          "fpr": 0.0,
+          "pr_auc": 0.997215625195192,
+          "brier": 0.04552232474088669,
+          "confusion_matrix": [
+            [
+              37,
+              0
+            ],
+            [
+              10,
+              113
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 122,
+          "f1": 0.9531914893617022,
+          "precision": 0.9911504424778761,
+          "recall": 0.9180327868852459,
+          "fpr": 0.02631578947368421,
+          "pr_auc": 0.9961543984647864,
+          "brier": 0.05370284244418144,
+          "confusion_matrix": [
+            [
+              37,
+              1
+            ],
+            [
+              10,
+              112
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 121,
+          "f1": 0.9583333333333334,
+          "precision": 0.9663865546218487,
+          "recall": 0.9504132231404959,
+          "fpr": 0.10256410256410256,
+          "pr_auc": 0.9940974189200069,
+          "brier": 0.06083667278289795,
+          "confusion_matrix": [
+            [
+              35,
+              4
+            ],
+            [
+              6,
+              115
+            ]
+          ]
+        }
+      ],
+      "state_mse": 0.009787223301827908,
+      "gaussian_95pct_coverage": 0.9795386904761905,
+      "bootstrap": {
+        "f1_95pct_interval": [
+          0.899178970917226,
+          0.9937106918238994
+        ],
+        "method": "contiguous-example block bootstrap",
+        "block_examples": 20
+      },
+      "training_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.4230224460363388,
+          "validation_loss": 0.8142300248146057
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.33841222027937573,
+          "validation_loss": 0.626661479473114
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.2537284215291341,
+          "validation_loss": 0.6138819456100464
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.2181056966384252,
+          "validation_loss": 0.5281213521957397
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.1185755342245102,
+          "validation_loss": 0.38713306188583374
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.047522106766700746,
+          "validation_loss": 0.3053339421749115
+        },
+        {
+          "epoch": 7,
+          "train_loss": -0.03774627645810445,
+          "validation_loss": 0.22396521270275116
+        },
+        {
+          "epoch": 8,
+          "train_loss": -0.12988997548818587,
+          "validation_loss": 0.18011194467544556
+        },
+        {
+          "epoch": 9,
+          "train_loss": -0.14146005014578503,
+          "validation_loss": 0.22139745950698853
+        },
+        {
+          "epoch": 10,
+          "train_loss": -0.18471269210179647,
+          "validation_loss": 0.17840206623077393
+        },
+        {
+          "epoch": 11,
+          "train_loss": -0.23867989083131155,
+          "validation_loss": -0.1663472056388855
+        },
+        {
+          "epoch": 12,
+          "train_loss": -0.2729305028915405,
+          "validation_loss": -0.1908559799194336
+        },
+        {
+          "epoch": 13,
+          "train_loss": -0.3055377721786499,
+          "validation_loss": -0.20531339943408966
+        },
+        {
+          "epoch": 14,
+          "train_loss": -0.2974924027919769,
+          "validation_loss": -0.19218093156814575
+        },
+        {
+          "epoch": 15,
+          "train_loss": -0.30981921950976055,
+          "validation_loss": -0.25262337923049927
+        },
+        {
+          "epoch": 16,
+          "train_loss": -0.34206221501032513,
+          "validation_loss": -0.22328805923461914
+        },
+        {
+          "epoch": 17,
+          "train_loss": -0.3278227150440216,
+          "validation_loss": -0.29929473996162415
+        },
+        {
+          "epoch": 18,
+          "train_loss": -0.35429916977882386,
+          "validation_loss": -0.2948208153247833
+        },
+        {
+          "epoch": 19,
+          "train_loss": -0.35607470671335856,
+          "validation_loss": -0.3142949640750885
+        },
+        {
+          "epoch": 20,
+          "train_loss": -0.3645468215147654,
+          "validation_loss": -0.30938154458999634
+        }
+      ],
+      "onset_alerts": {
+        "unique_future_malicious_window_onsets_alerted": 0,
+        "lead_seconds": [],
+        "interpretation": "flow-labelled onset, not compromise; only clean observation histories"
+      },
+      "measured_compromise_lead_time_seconds": null
+    },
+    "gnn_lstm": {
+      "threshold": 0.95,
+      "best_epoch": 20,
+      "training_seconds": 3.67,
+      "test": {
+        "samples": 160,
+        "positives": 121,
+        "f1": 0.9707112970711297,
+        "precision": 0.9830508474576272,
+        "recall": 0.9586776859504132,
+        "fpr": 0.05128205128205128,
+        "pr_auc": 0.9944942610662924,
+        "brier": 0.03880482167005539,
+        "confusion_matrix": [
+          [
+            37,
+            2
+          ],
+          [
+            5,
+            116
+          ]
+        ]
+      },
+      "clean_history_test": {
+        "samples": 38,
+        "positives": 1,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.029411764705882353,
+        "brier": 0.02616047114133835,
+        "confusion_matrix": [
+          [
+            37,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "horizon_metrics": [
+        {
+          "samples": 160,
+          "positives": 122,
+          "f1": 0.9833333333333333,
+          "precision": 1.0,
+          "recall": 0.9672131147540983,
+          "fpr": 0.0,
+          "pr_auc": 0.9999333599893376,
+          "brier": 0.023135963827371597,
+          "confusion_matrix": [
+            [
+              38,
+              0
+            ],
+            [
+              4,
+              118
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 123,
+          "f1": 0.979253112033195,
+          "precision": 1.0,
+          "recall": 0.959349593495935,
+          "fpr": 0.0,
+          "pr_auc": 0.998108215107218,
+          "brier": 0.028644010424613953,
+          "confusion_matrix": [
+            [
+              37,
+              0
+            ],
+            [
+              5,
+              118
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 122,
+          "f1": 0.975,
+          "precision": 0.9915254237288136,
+          "recall": 0.9590163934426229,
+          "fpr": 0.02631578947368421,
+          "pr_auc": 0.9971290151874558,
+          "brier": 0.033710941672325134,
+          "confusion_matrix": [
+            [
+              37,
+              1
+            ],
+            [
+              5,
+              117
+            ]
+          ]
+        },
+        {
+          "samples": 160,
+          "positives": 121,
+          "f1": 0.9707112970711297,
+          "precision": 0.9830508474576272,
+          "recall": 0.9586776859504132,
+          "fpr": 0.05128205128205128,
+          "pr_auc": 0.9944942610662924,
+          "brier": 0.03880482167005539,
+          "confusion_matrix": [
+            [
+              37,
+              2
+            ],
+            [
+              5,
+              116
+            ]
+          ]
+        }
+      ],
+      "state_mse": 0.0074613397009670734,
+      "gaussian_95pct_coverage": 0.9771577380952381,
+      "bootstrap": {
+        "f1_95pct_interval": [
+          0.9294383521043272,
+          0.9958759869405169
+        ],
+        "method": "contiguous-example block bootstrap",
+        "block_examples": 20
+      },
+      "training_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.45921306709448495,
+          "validation_loss": 0.6931425929069519
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.28177293837070466,
+          "validation_loss": 0.664810061454773
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.24363224506378173,
+          "validation_loss": 0.6002370715141296
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.15807538231213888,
+          "validation_loss": 0.26968106627464294
+        },
+        {
+          "epoch": 5,
+          "train_loss": -0.014544375240802765,
+          "validation_loss": 0.16721031069755554
+        },
+        {
+          "epoch": 6,
+          "train_loss": -0.11129244069258372,
+          "validation_loss": -0.08795379102230072
+        },
+        {
+          "epoch": 7,
+          "train_loss": -0.1861547331015269,
+          "validation_loss": -0.16252698004245758
+        },
+        {
+          "epoch": 8,
+          "train_loss": -0.2520290523767471,
+          "validation_loss": -0.2171820104122162
+        },
+        {
+          "epoch": 9,
+          "train_loss": -0.28924673398335776,
+          "validation_loss": -0.16457609832286835
+        },
+        {
+          "epoch": 10,
+          "train_loss": -0.31339943210283916,
+          "validation_loss": -0.26061102747917175
+        },
+        {
+          "epoch": 11,
+          "train_loss": -0.3319844722747803,
+          "validation_loss": -0.27179157733917236
+        },
+        {
+          "epoch": 12,
+          "train_loss": -0.3440722207228343,
+          "validation_loss": -0.29367807507514954
+        },
+        {
+          "epoch": 13,
+          "train_loss": -0.3506297866503398,
+          "validation_loss": -0.2939019799232483
+        },
+        {
+          "epoch": 14,
+          "train_loss": -0.3580678621927897,
+          "validation_loss": -0.3054647445678711
+        },
+        {
+          "epoch": 15,
+          "train_loss": -0.3613981107870738,
+          "validation_loss": -0.315910667181015
+        },
+        {
+          "epoch": 16,
+          "train_loss": -0.36523258288701377,
+          "validation_loss": -0.3241651952266693
+        },
+        {
+          "epoch": 17,
+          "train_loss": -0.3689101755619049,
+          "validation_loss": -0.32807832956314087
+        },
+        {
+          "epoch": 18,
+          "train_loss": -0.37074745893478395,
+          "validation_loss": -0.336138516664505
+        },
+        {
+          "epoch": 19,
+          "train_loss": -0.37205970684687295,
+          "validation_loss": -0.3412415683269501
+        },
+        {
+          "epoch": 20,
+          "train_loss": -0.375235782066981,
+          "validation_loss": -0.3444350063800812
+        }
+      ],
+      "onset_alerts": {
+        "unique_future_malicious_window_onsets_alerted": 0,
+        "lead_seconds": [],
+        "interpretation": "flow-labelled onset, not compromise; only clean observation histories"
+      },
+      "measured_compromise_lead_time_seconds": null,
+      "edge_removal_ablation": {
+        "samples": 160,
+        "positives": 121,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.9947418708431575,
+        "brier": 0.7514108419418335,
+        "confusion_matrix": [
+          [
+            39,
+            0
+          ],
+          [
+            121,
+            0
+          ]
+        ]
+      },
+      "single_example_mean_latency_ms": 0.7594109999899956
+    }
+  },
+  "limitations": [
+    "single dataset family",
+    "overlapping examples are correlated",
+    "service graphs do not describe host lateral movement",
+    "no incident-stage/compromise labels",
+    "no external deployment validation"
+  ],
+  "oracle_label_persistence_diagnostic": {
+    "samples": 160,
+    "positives": 121,
+    "f1": 0.9876543209876543,
+    "precision": 0.9836065573770492,
+    "recall": 0.9917355371900827,
+    "fpr": 0.05128205128205128,
+    "pr_auc": 0.9817275775640157,
+    "brier": 0.01875,
+    "confusion_matrix": [
+      [
+        37,
+        2
+      ],
+      [
+        1,
+        120
+      ]
+    ]
+  },
+  "state_persistence_mse": 0.012735428288578987,
+  "checkpoint_sha256": {
+    "gnn_lstm.npz": "ba92d9771f4b1c31c2a83af01519ceec570c26737f377bc9d38d049cc024fc3b",
+    "gnn_lstm_test_predictions.npz": "ccc18812707857ee1a99eb2b37ffaa9a6a0b303dfc1b6c52f514eb200c3f7100",
+    "logistic_regression.npz": "ed1e192129415f443ae2989454c15b9c3b88a0614128b95cf2fe4af8d55147b4",
+    "lstm.npz": "04e7a19a419b3a038a820e95a91b7e982e49d2446bb4ee316e371241d7eff7c6",
+    "lstm_test_predictions.npz": "ca86ff06bfc951f5556dbf584bf2f087039696641ab23a916031488b7e9fb7f5"
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "name": "history_plus_gnn_lstm_seed42_h1",
+  "variant": "history_plus_gnn_lstm",
+  "seed": 42,
+  "horizon_minutes": 1,
+  "source_state_checkpoint_sha256": "eacd891f5e47a8c19cb5420d312960d4ddc337761b303da6ebeb14c4eeaa13cf",
+  "class_counts": [
+    {
+      "unknown": 87,
+      "benign": 256,
+      "malicious": 129
+    },
+    {
+      "unknown": 3,
+      "benign": 62,
+      "malicious": 8
+    },
+    {
+      "unknown": 1,
+      "benign": 77,
+      "malicious": 0
+    },
+    {
+      "unknown": 12,
+      "benign": 32,
+      "malicious": 35
+    }
+  ],
+  "calibration": {
+    "status": "insufficient_development_support",
+    "counts": [
+      62,
+      8
+    ],
+    "slope": 1.0,
+    "intercept": 0.0,
+    "scope": "validation only; no test labels used"
+  },
+  "validation_policy": {
+    "threshold": null,
+    "status": "insufficient_validation_classes",
+    "fpr_budget": 0.01
+  },
+  "actionable": false,
+  "automatic_containment_approved": false,
+  "test": {
+    "Thursday-15-02-2018": {
+      "validation_selected_policy": {
+        "samples": 56,
+        "positives": 24,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.9059027777777777,
+        "brier": 0.49941942211251517,
+        "confusion_matrix": [
+          [
+            32,
+            0
+          ],
+          [
+            24,
+            0
+          ]
+        ],
+        "policy_enabled": false,
+        "fpr_95pct": [
+          0.0,
+          0.10888116067935288
+        ],
+        "recall_95pct": [
+          0.0,
+          0.14247359772252563
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "samples": 56,
+        "positives": 24,
+        "f1": 0.6153846153846154,
+        "precision": 0.4444444444444444,
+        "recall": 1.0,
+        "fpr": 0.9375,
+        "pr_auc": 0.9059027777777777,
+        "brier": 0.49941942211251517,
+        "confusion_matrix": [
+          [
+            2,
+            30
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        "policy_enabled": true,
+        "fpr_95pct": [
+          0.7919305701049926,
+          0.9923392636535436
+        ],
+        "recall_95pct": [
+          0.8575264022774743,
+          1.0
+        ]
+      },
+      "clean_history": {
+        "samples": 28,
+        "positives": 0,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": null,
+        "brier": 0.8602094251793098,
+        "confusion_matrix": [
+          [
+            28,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "policy_enabled": false,
+        "fpr_95pct": [
+          0.0,
+          0.12343611850026381
+        ],
+        "recall_95pct": [
+          null,
+          null
+        ]
+      },
+      "unknown_targets": 12,
+      "clean_history_future_positive_cases": 0
+    },
+    "Thursday-01-03-2018": {
+      "validation_selected_policy": {
+        "samples": 11,
+        "positives": 11,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": null,
+        "pr_auc": null,
+        "brier": 0.056088259855345,
+        "confusion_matrix": [
+          [
+            0,
+            0
+          ],
+          [
+            11,
+            0
+          ]
+        ],
+        "policy_enabled": false,
+        "fpr_95pct": [
+          null,
+          null
+        ],
+        "recall_95pct": [
+          0.0,
+          0.28491415291815436
+        ]
+      },
+      "fixed_half_threshold_diagnostic": {
+        "samples": 11,
+        "positives": 11,
+        "f1": 0.9,
+        "precision": 1.0,
+        "recall": 0.8181818181818182,
+        "fpr": null,
+        "pr_auc": null,
+        "brier": 0.056088259855345,
+        "confusion_matrix": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            9
+          ]
+        ],
+        "policy_enabled": true,
+        "fpr_95pct": [
+          null,
+          null
+        ],
+        "recall_95pct": [
+          0.4822441476398273,
+          0.9771688017000404
+        ]
+      },
+      "clean_history": {
+        "samples": 0,
+        "status": "unknown_targets_only"
+      },
+      "unknown_targets": 0,
+      "clean_history_future_positive_cases": 0
+    }
+  },
+  "warning_lead_time": null,
+  "stage_accuracy": null,
+  "evidence_scope": "Reused DoS15 and infiltration March1 capture diagnostics",
+  "checkpoint_sha256": {
+    "test_predictions.npz": "045c932471d9834a44f0d5d470f38d59959bbabe873575b956495ead99a1ebad",
+    "risk_readout.npz": "efb6643063c00b6ee0464eb1020f9c4d7034b5417494c0f253ee73e907bbef92"
+  }
+}

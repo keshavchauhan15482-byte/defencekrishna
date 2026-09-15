@@ -1,0 +1,3135 @@
+{
+  "url": "https://cse-cic-ids2018.s3.amazonaws.com/Original%20Network%20Traffic%20and%20Log%20data/Thursday-22-02-2018/logs.zip",
+  "size": 204766212,
+  "members": [
+    {
+      "name": "logs/",
+      "size": 0,
+      "compressed": 0,
+      "offset": 0,
+      "crc": 0
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.111.evtx",
+      "size": 2166784,
+      "compressed": 232083,
+      "offset": 35,
+      "crc": 1317776252
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.115.evtx",
+      "size": 2166784,
+      "compressed": 221761,
+      "offset": 232187,
+      "crc": 3594753459
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.118.evtx",
+      "size": 2166784,
+      "compressed": 218869,
+      "offset": 454017,
+      "crc": 2956870355
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.122.evtx",
+      "size": 2166784,
+      "compressed": 219972,
+      "offset": 672955,
+      "crc": 792296815
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.125.evtx",
+      "size": 2166784,
+      "compressed": 231345,
+      "offset": 892996,
+      "crc": 1303635685
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.126.evtx",
+      "size": 2166784,
+      "compressed": 229877,
+      "offset": 1124410,
+      "crc": 3202040941
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.17.evtx",
+      "size": 2166784,
+      "compressed": 228707,
+      "offset": 1354356,
+      "crc": 3669475817
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.26.evtx",
+      "size": 2166784,
+      "compressed": 220550,
+      "offset": 1583131,
+      "crc": 2712909043
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.35.evtx",
+      "size": 2166784,
+      "compressed": 228822,
+      "offset": 1803749,
+      "crc": 1669652372
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.38.evtx",
+      "size": 2166784,
+      "compressed": 230816,
+      "offset": 2032639,
+      "crc": 3841560053
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.46.evtx",
+      "size": 2166784,
+      "compressed": 220465,
+      "offset": 2263523,
+      "crc": 3473507680
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.54.evtx",
+      "size": 2166784,
+      "compressed": 218644,
+      "offset": 2484056,
+      "crc": 2906144727
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.63.evtx",
+      "size": 2166784,
+      "compressed": 228619,
+      "offset": 2702768,
+      "crc": 3757738362
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.67.evtx",
+      "size": 2166784,
+      "compressed": 232388,
+      "offset": 2931455,
+      "crc": 2538899616
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.71.evtx",
+      "size": 2166784,
+      "compressed": 218479,
+      "offset": 3163911,
+      "crc": 2654943719
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.75.evtx",
+      "size": 2166784,
+      "compressed": 220151,
+      "offset": 3382458,
+      "crc": 2224616280
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.76.evtx",
+      "size": 2166784,
+      "compressed": 230256,
+      "offset": 3602677,
+      "crc": 3307182929
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.84.evtx",
+      "size": 2166784,
+      "compressed": 229536,
+      "offset": 3833001,
+      "crc": 3126908664
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.95.evtx",
+      "size": 2166784,
+      "compressed": 220039,
+      "offset": 4062605,
+      "crc": 1682262853
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.64.99.evtx",
+      "size": 2166784,
+      "compressed": 229284,
+      "offset": 4282712,
+      "crc": 2052963578
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.10.evtx",
+      "size": 2166784,
+      "compressed": 230819,
+      "offset": 4512064,
+      "crc": 2314892810
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.113.evtx",
+      "size": 2166784,
+      "compressed": 219641,
+      "offset": 4742951,
+      "crc": 3837426492
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.123.evtx",
+      "size": 2166784,
+      "compressed": 218063,
+      "offset": 4962661,
+      "crc": 410426811
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.124.evtx",
+      "size": 2166784,
+      "compressed": 229952,
+      "offset": 5180793,
+      "crc": 334995866
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.126.evtx",
+      "size": 2166784,
+      "compressed": 220070,
+      "offset": 5410814,
+      "crc": 3982964618
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.14.evtx",
+      "size": 2166784,
+      "compressed": 221162,
+      "offset": 5630953,
+      "crc": 449768941
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.28.evtx",
+      "size": 2166784,
+      "compressed": 221266,
+      "offset": 5852183,
+      "crc": 1689065782
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.29.evtx",
+      "size": 2166784,
+      "compressed": 228508,
+      "offset": 6073517,
+      "crc": 715121918
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.34.evtx",
+      "size": 2166784,
+      "compressed": 220719,
+      "offset": 6302093,
+      "crc": 3552721854
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.40.evtx",
+      "size": 2166784,
+      "compressed": 228009,
+      "offset": 6522880,
+      "crc": 2370434706
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.50.evtx",
+      "size": 2166784,
+      "compressed": 220364,
+      "offset": 6750957,
+      "crc": 1809718638
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.56.evtx",
+      "size": 2166784,
+      "compressed": 230412,
+      "offset": 6971389,
+      "crc": 3538824110
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.66.evtx",
+      "size": 2166784,
+      "compressed": 229145,
+      "offset": 7201869,
+      "crc": 1207254227
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.76.evtx",
+      "size": 2166784,
+      "compressed": 227172,
+      "offset": 7431082,
+      "crc": 3600961636
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.81.evtx",
+      "size": 2166784,
+      "compressed": 218467,
+      "offset": 7658322,
+      "crc": 527837503
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.86.evtx",
+      "size": 2166784,
+      "compressed": 228614,
+      "offset": 7876857,
+      "crc": 2653626262
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.65.88.evtx",
+      "size": 2166784,
+      "compressed": 219957,
+      "offset": 8105539,
+      "crc": 3224919487
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.100.evtx",
+      "size": 2166784,
+      "compressed": 230506,
+      "offset": 8325564,
+      "crc": 3019317577
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.101.evtx",
+      "size": 2166784,
+      "compressed": 230709,
+      "offset": 8556139,
+      "crc": 2735489391
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.112.evtx",
+      "size": 2166784,
+      "compressed": 232134,
+      "offset": 8786917,
+      "crc": 1669488512
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.114.evtx",
+      "size": 2166784,
+      "compressed": 230960,
+      "offset": 9019120,
+      "crc": 2558728668
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.115.evtx",
+      "size": 2166784,
+      "compressed": 221807,
+      "offset": 9250149,
+      "crc": 766884621
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.120.evtx",
+      "size": 2166784,
+      "compressed": 230052,
+      "offset": 9472025,
+      "crc": 777784348
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.123.evtx",
+      "size": 2166784,
+      "compressed": 220074,
+      "offset": 9702146,
+      "crc": 1226268928
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.22.evtx",
+      "size": 2166784,
+      "compressed": 227685,
+      "offset": 9922289,
+      "crc": 4034391752
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.41.evtx",
+      "size": 2166784,
+      "compressed": 220599,
+      "offset": 10150042,
+      "crc": 6245213
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.42.evtx",
+      "size": 2166784,
+      "compressed": 217919,
+      "offset": 10370709,
+      "crc": 4138522181
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.43.evtx",
+      "size": 2166784,
+      "compressed": 221805,
+      "offset": 10588696,
+      "crc": 3957442335
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.49.evtx",
+      "size": 2166784,
+      "compressed": 228217,
+      "offset": 10810569,
+      "crc": 467338389
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.54.evtx",
+      "size": 2166784,
+      "compressed": 220309,
+      "offset": 11038854,
+      "crc": 2529856072
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.62.evtx",
+      "size": 2166784,
+      "compressed": 228738,
+      "offset": 11259231,
+      "crc": 192612342
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.63.evtx",
+      "size": 2166784,
+      "compressed": 219653,
+      "offset": 11488037,
+      "crc": 3226972922
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.72.evtx",
+      "size": 2166784,
+      "compressed": 232187,
+      "offset": 11707758,
+      "crc": 3932264340
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.76.evtx",
+      "size": 2166784,
+      "compressed": 222250,
+      "offset": 11940013,
+      "crc": 1722122890
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.82.evtx",
+      "size": 2166784,
+      "compressed": 221472,
+      "offset": 12162331,
+      "crc": 71038547
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.85.evtx",
+      "size": 2166784,
+      "compressed": 220094,
+      "offset": 12383871,
+      "crc": 3271949101
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.66.89.evtx",
+      "size": 2166784,
+      "compressed": 228753,
+      "offset": 12604033,
+      "crc": 3555390703
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.10.evtx",
+      "size": 2166784,
+      "compressed": 220084,
+      "offset": 12832854,
+      "crc": 3385782513
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.101.evtx",
+      "size": 2166784,
+      "compressed": 221261,
+      "offset": 13053006,
+      "crc": 4070783320
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.116.evtx",
+      "size": 2166784,
+      "compressed": 230073,
+      "offset": 13274336,
+      "crc": 352408129
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.119.evtx",
+      "size": 2166784,
+      "compressed": 220036,
+      "offset": 13504478,
+      "crc": 1753723366
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.125.evtx",
+      "size": 2166784,
+      "compressed": 231305,
+      "offset": 13724583,
+      "crc": 1734472785
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.13.evtx",
+      "size": 2166784,
+      "compressed": 220853,
+      "offset": 13955957,
+      "crc": 1551766053
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.15.evtx",
+      "size": 2166784,
+      "compressed": 228917,
+      "offset": 14176878,
+      "crc": 2310279784
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.21.evtx",
+      "size": 2166784,
+      "compressed": 230226,
+      "offset": 14405863,
+      "crc": 2144724618
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.32.evtx",
+      "size": 2166784,
+      "compressed": 222157,
+      "offset": 14636157,
+      "crc": 4243921777
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.41.evtx",
+      "size": 2166784,
+      "compressed": 230142,
+      "offset": 14858382,
+      "crc": 971270499
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.46.evtx",
+      "size": 2166784,
+      "compressed": 221436,
+      "offset": 15088592,
+      "crc": 3985467675
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.50.evtx",
+      "size": 2166784,
+      "compressed": 220440,
+      "offset": 15310096,
+      "crc": 4154727915
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.54.evtx",
+      "size": 2166784,
+      "compressed": 229480,
+      "offset": 15530604,
+      "crc": 2931405344
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.63.evtx",
+      "size": 2166784,
+      "compressed": 232174,
+      "offset": 15760152,
+      "crc": 3193783469
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.80.evtx",
+      "size": 2166784,
+      "compressed": 219624,
+      "offset": 15992394,
+      "crc": 1907615153
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.81.evtx",
+      "size": 2166784,
+      "compressed": 220667,
+      "offset": 16212086,
+      "crc": 3541873104
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.86.evtx",
+      "size": 2166784,
+      "compressed": 231299,
+      "offset": 16432821,
+      "crc": 3192857243
+    },
+    {
+      "name": "logs/DESKTOP-AN3U28N-172.31.67.94.evtx",
+      "size": 2166784,
+      "compressed": 221119,
+      "offset": 16664188,
+      "crc": 2035787895
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.100.evtx",
+      "size": 3215360,
+      "compressed": 436741,
+      "offset": 16885375,
+      "crc": 761737663
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.101.evtx",
+      "size": 3215360,
+      "compressed": 436828,
+      "offset": 17322185,
+      "crc": 3073784412
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.103.evtx",
+      "size": 3215360,
+      "compressed": 449110,
+      "offset": 17759082,
+      "crc": 1262256121
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.104.evtx",
+      "size": 3215360,
+      "compressed": 437711,
+      "offset": 18208261,
+      "crc": 340311713
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.107.evtx",
+      "size": 3215360,
+      "compressed": 436624,
+      "offset": 18646041,
+      "crc": 1931625576
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.108.evtx",
+      "size": 3215360,
+      "compressed": 436824,
+      "offset": 19082734,
+      "crc": 179102048
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.109.evtx",
+      "size": 3215360,
+      "compressed": 435996,
+      "offset": 19519627,
+      "crc": 3304569971
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.11.evtx",
+      "size": 3215360,
+      "compressed": 448774,
+      "offset": 19955692,
+      "crc": 2078091757
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.110.evtx",
+      "size": 3215360,
+      "compressed": 436375,
+      "offset": 20404534,
+      "crc": 2573223057
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.119.evtx",
+      "size": 3215360,
+      "compressed": 437215,
+      "offset": 20840978,
+      "crc": 2663663185
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.123.evtx",
+      "size": 3215360,
+      "compressed": 437247,
+      "offset": 21278262,
+      "crc": 386290418
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.124.evtx",
+      "size": 3215360,
+      "compressed": 448031,
+      "offset": 21715578,
+      "crc": 1214487467
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.13.evtx",
+      "size": 3215360,
+      "compressed": 436805,
+      "offset": 22163678,
+      "crc": 3064223821
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.16.evtx",
+      "size": 3215360,
+      "compressed": 448956,
+      "offset": 22600551,
+      "crc": 4025462771
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.19.evtx",
+      "size": 3215360,
+      "compressed": 424807,
+      "offset": 23049575,
+      "crc": 3754408851
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.27.evtx",
+      "size": 3215360,
+      "compressed": 424657,
+      "offset": 23474450,
+      "crc": 1362538760
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.28.evtx",
+      "size": 3215360,
+      "compressed": 437563,
+      "offset": 23899175,
+      "crc": 1909990247
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.29.evtx",
+      "size": 3215360,
+      "compressed": 436712,
+      "offset": 24336806,
+      "crc": 2678983823
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.4.evtx",
+      "size": 3215360,
+      "compressed": 436860,
+      "offset": 24773586,
+      "crc": 2251575732
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.42.evtx",
+      "size": 3215360,
+      "compressed": 449208,
+      "offset": 25210513,
+      "crc": 189530614
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.44.evtx",
+      "size": 3215360,
+      "compressed": 437087,
+      "offset": 25659789,
+      "crc": 1289222458
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.45.evtx",
+      "size": 3215360,
+      "compressed": 437041,
+      "offset": 26096944,
+      "crc": 926076967
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.49.evtx",
+      "size": 3215360,
+      "compressed": 449158,
+      "offset": 26534053,
+      "crc": 952297754
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.51.evtx",
+      "size": 3215360,
+      "compressed": 449429,
+      "offset": 26983279,
+      "crc": 1366662228
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.58.evtx",
+      "size": 3215360,
+      "compressed": 436228,
+      "offset": 27432776,
+      "crc": 1160833564
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.60.evtx",
+      "size": 3215360,
+      "compressed": 436311,
+      "offset": 27869072,
+      "crc": 2381877515
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.68.evtx",
+      "size": 3215360,
+      "compressed": 437428,
+      "offset": 28305451,
+      "crc": 1210029803
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.69.evtx",
+      "size": 3215360,
+      "compressed": 435429,
+      "offset": 28742947,
+      "crc": 3306058407
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.7.evtx",
+      "size": 3215360,
+      "compressed": 436426,
+      "offset": 29178444,
+      "crc": 2883844554
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.70.evtx",
+      "size": 3215360,
+      "compressed": 436912,
+      "offset": 29614937,
+      "crc": 2708657075
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.72.evtx",
+      "size": 3215360,
+      "compressed": 436798,
+      "offset": 30051917,
+      "crc": 924378725
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.73.evtx",
+      "size": 3215360,
+      "compressed": 437049,
+      "offset": 30488783,
+      "crc": 2418252853
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.77.evtx",
+      "size": 3215360,
+      "compressed": 449430,
+      "offset": 30925900,
+      "crc": 2914874813
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.79.evtx",
+      "size": 3215360,
+      "compressed": 436626,
+      "offset": 31375398,
+      "crc": 479677228
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.8.evtx",
+      "size": 3215360,
+      "compressed": 436543,
+      "offset": 31812092,
+      "crc": 1020758236
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.81.evtx",
+      "size": 3215360,
+      "compressed": 436560,
+      "offset": 32248702,
+      "crc": 3622558962
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.83.evtx",
+      "size": 3215360,
+      "compressed": 436414,
+      "offset": 32685330,
+      "crc": 658757411
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.85.evtx",
+      "size": 3215360,
+      "compressed": 436424,
+      "offset": 33121812,
+      "crc": 3661817976
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.87.evtx",
+      "size": 3215360,
+      "compressed": 436823,
+      "offset": 33558304,
+      "crc": 1386920552
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.92.evtx",
+      "size": 3215360,
+      "compressed": 425030,
+      "offset": 33995195,
+      "crc": 1602564774
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.64.96.evtx",
+      "size": 3215360,
+      "compressed": 448473,
+      "offset": 34420293,
+      "crc": 4022636830
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.107.evtx",
+      "size": 8458240,
+      "compressed": 787681,
+      "offset": 34868834,
+      "crc": 2424933892
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.109.evtx",
+      "size": 9506816,
+      "compressed": 879448,
+      "offset": 35656584,
+      "crc": 3938461214
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.112.evtx",
+      "size": 8458240,
+      "compressed": 793589,
+      "offset": 36536101,
+      "crc": 1909989847
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.118.evtx",
+      "size": 9506816,
+      "compressed": 925408,
+      "offset": 37329759,
+      "crc": 363070891
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.119.evtx",
+      "size": 10555392,
+      "compressed": 974475,
+      "offset": 38255236,
+      "crc": 727551208
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.121.evtx",
+      "size": 7409664,
+      "compressed": 724820,
+      "offset": 39229780,
+      "crc": 4095351161
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.122.evtx",
+      "size": 8458240,
+      "compressed": 811439,
+      "offset": 39954669,
+      "crc": 1969841582
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.18.evtx",
+      "size": 9506816,
+      "compressed": 870766,
+      "offset": 40766177,
+      "crc": 3239202754
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.27.evtx",
+      "size": 8458240,
+      "compressed": 811920,
+      "offset": 41637011,
+      "crc": 2315204018
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.30.evtx",
+      "size": 8458240,
+      "compressed": 794331,
+      "offset": 42448999,
+      "crc": 3661889408
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.32.evtx",
+      "size": 9506816,
+      "compressed": 926097,
+      "offset": 43243398,
+      "crc": 1766615866
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.33.evtx",
+      "size": 7409664,
+      "compressed": 708170,
+      "offset": 44169563,
+      "crc": 2422636959
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.36.evtx",
+      "size": 10555392,
+      "compressed": 1001553,
+      "offset": 44877801,
+      "crc": 3708720046
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.37.evtx",
+      "size": 9506816,
+      "compressed": 878810,
+      "offset": 45879422,
+      "crc": 219089875
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.39.evtx",
+      "size": 11603968,
+      "compressed": 1045370,
+      "offset": 46758300,
+      "crc": 2780833953
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.41.evtx",
+      "size": 8458240,
+      "compressed": 785512,
+      "offset": 47803738,
+      "crc": 4255998088
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.43.evtx",
+      "size": 7409664,
+      "compressed": 713283,
+      "offset": 48589318,
+      "crc": 2199055200
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.44.evtx",
+      "size": 10555392,
+      "compressed": 966057,
+      "offset": 49302669,
+      "crc": 1044258357
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.45.evtx",
+      "size": 10555392,
+      "compressed": 1007522,
+      "offset": 50268794,
+      "crc": 586072832
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.5.evtx",
+      "size": 10555392,
+      "compressed": 942507,
+      "offset": 51276384,
+      "crc": 2801714630
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.59.evtx",
+      "size": 7409664,
+      "compressed": 704783,
+      "offset": 52218958,
+      "crc": 4176195828
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.64.evtx",
+      "size": 9506816,
+      "compressed": 932420,
+      "offset": 52923809,
+      "crc": 2220010035
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.65.evtx",
+      "size": 10555392,
+      "compressed": 967528,
+      "offset": 53856297,
+      "crc": 415443722
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.71.evtx",
+      "size": 10555392,
+      "compressed": 1000794,
+      "offset": 54823893,
+      "crc": 219902751
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.72.evtx",
+      "size": 9506816,
+      "compressed": 864830,
+      "offset": 55824755,
+      "crc": 2799959954
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.75.evtx",
+      "size": 7409664,
+      "compressed": 737989,
+      "offset": 56689653,
+      "crc": 3645754883
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.8.evtx",
+      "size": 7409664,
+      "compressed": 755720,
+      "offset": 57427710,
+      "crc": 3683340429
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.82.evtx",
+      "size": 10555392,
+      "compressed": 963222,
+      "offset": 58183497,
+      "crc": 2621292362
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.84.evtx",
+      "size": 9506816,
+      "compressed": 893359,
+      "offset": 59146787,
+      "crc": 288373996
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.85.evtx",
+      "size": 8458240,
+      "compressed": 798174,
+      "offset": 60040214,
+      "crc": 3733733173
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.91.evtx",
+      "size": 8458240,
+      "compressed": 815533,
+      "offset": 60838456,
+      "crc": 3773385210
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.93.evtx",
+      "size": 9506816,
+      "compressed": 884067,
+      "offset": 61654057,
+      "crc": 4226526021
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.96.evtx",
+      "size": 10555392,
+      "compressed": 1014108,
+      "offset": 62538192,
+      "crc": 1324066137
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.65.98.evtx",
+      "size": 7409664,
+      "compressed": 768927,
+      "offset": 63552368,
+      "crc": 3836421990
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.105.evtx",
+      "size": 6361088,
+      "compressed": 667634,
+      "offset": 64321363,
+      "crc": 3539615706
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.107.evtx",
+      "size": 10555392,
+      "compressed": 1006384,
+      "offset": 64989066,
+      "crc": 3759883399
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.108.evtx",
+      "size": 7409664,
+      "compressed": 728480,
+      "offset": 65995519,
+      "crc": 3494762279
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.109.evtx",
+      "size": 8458240,
+      "compressed": 829560,
+      "offset": 66724068,
+      "crc": 845927694
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.11.evtx",
+      "size": 8458240,
+      "compressed": 791983,
+      "offset": 67553697,
+      "crc": 3758458465
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.113.evtx",
+      "size": 6361088,
+      "compressed": 672387,
+      "offset": 68345748,
+      "crc": 4039986856
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.116.evtx",
+      "size": 10555392,
+      "compressed": 964819,
+      "offset": 69018204,
+      "crc": 332549049
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.119.evtx",
+      "size": 9506816,
+      "compressed": 887948,
+      "offset": 69983092,
+      "crc": 4082099030
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.12.evtx",
+      "size": 7409664,
+      "compressed": 726272,
+      "offset": 70871109,
+      "crc": 2561683310
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.122.evtx",
+      "size": 8458240,
+      "compressed": 787318,
+      "offset": 71597449,
+      "crc": 2586885321
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.124.evtx",
+      "size": 6361088,
+      "compressed": 648221,
+      "offset": 72384836,
+      "crc": 4223295359
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.13.evtx",
+      "size": 5312512,
+      "compressed": 600408,
+      "offset": 73033126,
+      "crc": 1441301915
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.14.evtx",
+      "size": 6361088,
+      "compressed": 647151,
+      "offset": 73633602,
+      "crc": 1114875659
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.16.evtx",
+      "size": 7409664,
+      "compressed": 772496,
+      "offset": 74280821,
+      "crc": 2612694955
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.17.evtx",
+      "size": 7409664,
+      "compressed": 759688,
+      "offset": 75053385,
+      "crc": 3666592781
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.20.evtx",
+      "size": 7409664,
+      "compressed": 767443,
+      "offset": 75813141,
+      "crc": 15115066
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.25.evtx",
+      "size": 7409664,
+      "compressed": 735346,
+      "offset": 76580652,
+      "crc": 441337956
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.26.evtx",
+      "size": 8458240,
+      "compressed": 854239,
+      "offset": 77316066,
+      "crc": 3795239924
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.28.evtx",
+      "size": 7409664,
+      "compressed": 733856,
+      "offset": 78170373,
+      "crc": 3102288203
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.29.evtx",
+      "size": 8458240,
+      "compressed": 823850,
+      "offset": 78904297,
+      "crc": 1844098905
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.34.evtx",
+      "size": 9506816,
+      "compressed": 932427,
+      "offset": 79728215,
+      "crc": 367945221
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.35.evtx",
+      "size": 6361088,
+      "compressed": 664138,
+      "offset": 80660710,
+      "crc": 3946536922
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.37.evtx",
+      "size": 7409664,
+      "compressed": 700261,
+      "offset": 81324916,
+      "crc": 4142755902
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.38.evtx",
+      "size": 8458240,
+      "compressed": 805926,
+      "offset": 82025245,
+      "crc": 833694134
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.40.evtx",
+      "size": 7409664,
+      "compressed": 739945,
+      "offset": 82831239,
+      "crc": 1005817625
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.44.evtx",
+      "size": 7409664,
+      "compressed": 750931,
+      "offset": 83571252,
+      "crc": 429577817
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.48.evtx",
+      "size": 7409664,
+      "compressed": 720209,
+      "offset": 84322251,
+      "crc": 959983436
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.5.evtx",
+      "size": 6361088,
+      "compressed": 650906,
+      "offset": 85042528,
+      "crc": 3873147417
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.50.evtx",
+      "size": 9506816,
+      "compressed": 886252,
+      "offset": 85693501,
+      "crc": 90802260
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.51.evtx",
+      "size": 10555392,
+      "compressed": 1014351,
+      "offset": 86579821,
+      "crc": 1922178586
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.53.evtx",
+      "size": 9506816,
+      "compressed": 880479,
+      "offset": 87594240,
+      "crc": 2325515186
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.55.evtx",
+      "size": 6361088,
+      "compressed": 674894,
+      "offset": 88474787,
+      "crc": 1041255192
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.56.evtx",
+      "size": 8458240,
+      "compressed": 800138,
+      "offset": 89149749,
+      "crc": 509808016
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.57.evtx",
+      "size": 7409664,
+      "compressed": 711224,
+      "offset": 89949955,
+      "crc": 1525935615
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.60.evtx",
+      "size": 8458240,
+      "compressed": 810698,
+      "offset": 90661247,
+      "crc": 2014281988
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.61.evtx",
+      "size": 10555392,
+      "compressed": 964607,
+      "offset": 91472013,
+      "crc": 1748376433
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.64.evtx",
+      "size": 8458240,
+      "compressed": 797448,
+      "offset": 92436688,
+      "crc": 1797300564
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.65.evtx",
+      "size": 9506816,
+      "compressed": 880638,
+      "offset": 93234204,
+      "crc": 2692961079
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.66.evtx",
+      "size": 7409664,
+      "compressed": 740304,
+      "offset": 94114910,
+      "crc": 4234863622
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.68.evtx",
+      "size": 9506816,
+      "compressed": 857026,
+      "offset": 94855282,
+      "crc": 1573388001
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.7.evtx",
+      "size": 6361088,
+      "compressed": 662702,
+      "offset": 95712376,
+      "crc": 1352389554
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.70.evtx",
+      "size": 6361088,
+      "compressed": 676634,
+      "offset": 96375145,
+      "crc": 832774105
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.71.evtx",
+      "size": 8458240,
+      "compressed": 833225,
+      "offset": 97051847,
+      "crc": 1698202531
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.73.evtx",
+      "size": 6361088,
+      "compressed": 636948,
+      "offset": 97885140,
+      "crc": 2598142447
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.74.evtx",
+      "size": 7409664,
+      "compressed": 765899,
+      "offset": 98522156,
+      "crc": 3932284921
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.75.evtx",
+      "size": 8458240,
+      "compressed": 810919,
+      "offset": 99288123,
+      "crc": 1543795631
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.77.evtx",
+      "size": 9506816,
+      "compressed": 934555,
+      "offset": 100099110,
+      "crc": 220209772
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.78.evtx",
+      "size": 6361088,
+      "compressed": 702092,
+      "offset": 101033733,
+      "crc": 1357803235
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.8.evtx",
+      "size": 9506816,
+      "compressed": 865779,
+      "offset": 101735893,
+      "crc": 1269994080
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.80.evtx",
+      "size": 7409664,
+      "compressed": 776970,
+      "offset": 102601739,
+      "crc": 2446064476
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.81.evtx",
+      "size": 7409664,
+      "compressed": 706137,
+      "offset": 103378777,
+      "crc": 4160529683
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.84.evtx",
+      "size": 7409664,
+      "compressed": 772181,
+      "offset": 104084982,
+      "crc": 1683279279
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.86.evtx",
+      "size": 10555392,
+      "compressed": 934539,
+      "offset": 104857231,
+      "crc": 3475049546
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.87.evtx",
+      "size": 8458240,
+      "compressed": 806059,
+      "offset": 105791838,
+      "crc": 2136467193
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.91.evtx",
+      "size": 8458240,
+      "compressed": 844151,
+      "offset": 106597965,
+      "crc": 3591298257
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.94.evtx",
+      "size": 7409664,
+      "compressed": 713229,
+      "offset": 107442184,
+      "crc": 4096208745
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.95.evtx",
+      "size": 6361088,
+      "compressed": 692926,
+      "offset": 108155481,
+      "crc": 3794581177
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.97.evtx",
+      "size": 8458240,
+      "compressed": 810664,
+      "offset": 108848475,
+      "crc": 3009415166
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.66.98.evtx",
+      "size": 6361088,
+      "compressed": 689648,
+      "offset": 109659207,
+      "crc": 1676180812
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.100.evtx",
+      "size": 8458240,
+      "compressed": 790284,
+      "offset": 110348923,
+      "crc": 733208544
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.112.evtx",
+      "size": 8458240,
+      "compressed": 783042,
+      "offset": 111139276,
+      "crc": 278301577
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.113.evtx",
+      "size": 7409664,
+      "compressed": 740806,
+      "offset": 111922387,
+      "crc": 2257088794
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.115.evtx",
+      "size": 8458240,
+      "compressed": 802924,
+      "offset": 112663262,
+      "crc": 608984571
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.117.evtx",
+      "size": 7409664,
+      "compressed": 746199,
+      "offset": 113466255,
+      "crc": 2907151855
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.12.evtx",
+      "size": 6361088,
+      "compressed": 656490,
+      "offset": 114212523,
+      "crc": 1942550647
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.120.evtx",
+      "size": 6361088,
+      "compressed": 638957,
+      "offset": 114869081,
+      "crc": 4122264801
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.122.evtx",
+      "size": 7409664,
+      "compressed": 748554,
+      "offset": 115508107,
+      "crc": 1470158296
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.126.evtx",
+      "size": 7409664,
+      "compressed": 774903,
+      "offset": 116256730,
+      "crc": 1515974622
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.16.evtx",
+      "size": 7409664,
+      "compressed": 741178,
+      "offset": 117031702,
+      "crc": 412664227
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.17.evtx",
+      "size": 10555392,
+      "compressed": 961727,
+      "offset": 117772948,
+      "crc": 1085562810
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.18.evtx",
+      "size": 7409664,
+      "compressed": 721276,
+      "offset": 118734743,
+      "crc": 2377869274
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.20.evtx",
+      "size": 7409664,
+      "compressed": 710124,
+      "offset": 119456087,
+      "crc": 4158115064
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.24.evtx",
+      "size": 8458240,
+      "compressed": 795358,
+      "offset": 120166279,
+      "crc": 2136457547
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.29.evtx",
+      "size": 9506816,
+      "compressed": 937219,
+      "offset": 120961705,
+      "crc": 1928410208
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.31.evtx",
+      "size": 8458240,
+      "compressed": 828008,
+      "offset": 121898992,
+      "crc": 943504465
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.37.evtx",
+      "size": 8458240,
+      "compressed": 787754,
+      "offset": 122727068,
+      "crc": 3834771455
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.38.evtx",
+      "size": 6361088,
+      "compressed": 668909,
+      "offset": 123514890,
+      "crc": 3740543937
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.42.evtx",
+      "size": 8458240,
+      "compressed": 810660,
+      "offset": 124183867,
+      "crc": 3347997003
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.45.evtx",
+      "size": 6361088,
+      "compressed": 696958,
+      "offset": 124994595,
+      "crc": 3146991967
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.47.evtx",
+      "size": 7409664,
+      "compressed": 761465,
+      "offset": 125691621,
+      "crc": 2097130451
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.48.evtx",
+      "size": 7409664,
+      "compressed": 764784,
+      "offset": 126453154,
+      "crc": 2014144079
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.52.evtx",
+      "size": 8458240,
+      "compressed": 816152,
+      "offset": 127218006,
+      "crc": 1064790395
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.53.evtx",
+      "size": 8458240,
+      "compressed": 805243,
+      "offset": 128034226,
+      "crc": 823137189
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.57.evtx",
+      "size": 6361088,
+      "compressed": 634419,
+      "offset": 128839537,
+      "crc": 551702401
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.58.evtx",
+      "size": 8458240,
+      "compressed": 828116,
+      "offset": 129474024,
+      "crc": 820808162
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.6.evtx",
+      "size": 10555392,
+      "compressed": 976817,
+      "offset": 130302208,
+      "crc": 776371559
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.60.evtx",
+      "size": 7409664,
+      "compressed": 728746,
+      "offset": 131279092,
+      "crc": 3884972536
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.61.evtx",
+      "size": 5312512,
+      "compressed": 623391,
+      "offset": 132007906,
+      "crc": 2288959560
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.64.evtx",
+      "size": 9506816,
+      "compressed": 866105,
+      "offset": 132631365,
+      "crc": 229534826
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.66.evtx",
+      "size": 8458240,
+      "compressed": 797608,
+      "offset": 133497538,
+      "crc": 2673515333
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.67.evtx",
+      "size": 6361088,
+      "compressed": 649173,
+      "offset": 134295214,
+      "crc": 2954147519
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.7.evtx",
+      "size": 9506816,
+      "compressed": 878810,
+      "offset": 134944455,
+      "crc": 1204763256
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.73.evtx",
+      "size": 8458240,
+      "compressed": 781658,
+      "offset": 135823332,
+      "crc": 817669109
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.75.evtx",
+      "size": 9506816,
+      "compressed": 902727,
+      "offset": 136605058,
+      "crc": 1126491027
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.77.evtx",
+      "size": 10555392,
+      "compressed": 944238,
+      "offset": 137507853,
+      "crc": 299120486
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.91.evtx",
+      "size": 8458240,
+      "compressed": 826882,
+      "offset": 138452159,
+      "crc": 2903419232
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.92.evtx",
+      "size": 9506816,
+      "compressed": 869972,
+      "offset": 139279109,
+      "crc": 1037970471
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.96.evtx",
+      "size": 10555392,
+      "compressed": 979444,
+      "offset": 140149149,
+      "crc": 1082306716
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.67.99.evtx",
+      "size": 7409664,
+      "compressed": 754942,
+      "offset": 141128661,
+      "crc": 1235739417
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.10.evtx",
+      "size": 8458240,
+      "compressed": 804329,
+      "offset": 141883671,
+      "crc": 3381918505
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.11.evtx",
+      "size": 9506816,
+      "compressed": 889028,
+      "offset": 142688068,
+      "crc": 1904800805
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.12.evtx",
+      "size": 8458240,
+      "compressed": 811751,
+      "offset": 143577164,
+      "crc": 2708716612
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.13.evtx",
+      "size": 8458240,
+      "compressed": 850423,
+      "offset": 144388983,
+      "crc": 2870656189
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.14.evtx",
+      "size": 10555392,
+      "compressed": 946496,
+      "offset": 145239474,
+      "crc": 1208977168
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.15.evtx",
+      "size": 6361088,
+      "compressed": 645876,
+      "offset": 146186038,
+      "crc": 981968558
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.18.evtx",
+      "size": 9506816,
+      "compressed": 933848,
+      "offset": 146831982,
+      "crc": 2669717813
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.19.evtx",
+      "size": 10555392,
+      "compressed": 962392,
+      "offset": 147765898,
+      "crc": 1876031336
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.20.evtx",
+      "size": 7409664,
+      "compressed": 762835,
+      "offset": 148728358,
+      "crc": 4117742655
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.21.evtx",
+      "size": 10555392,
+      "compressed": 982118,
+      "offset": 149491261,
+      "crc": 2667041947
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.23.evtx",
+      "size": 7409664,
+      "compressed": 718172,
+      "offset": 150473447,
+      "crc": 1539002332
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.25.evtx",
+      "size": 7409664,
+      "compressed": 756420,
+      "offset": 151191687,
+      "crc": 1961708061
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.26.evtx",
+      "size": 7409664,
+      "compressed": 709072,
+      "offset": 151948175,
+      "crc": 2879701981
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.28.evtx",
+      "size": 10555392,
+      "compressed": 986490,
+      "offset": 152657315,
+      "crc": 3268361384
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.30.evtx",
+      "size": 8458240,
+      "compressed": 810305,
+      "offset": 153643873,
+      "crc": 4282359385
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.4.evtx",
+      "size": 7409664,
+      "compressed": 773166,
+      "offset": 154454246,
+      "crc": 4112540031
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.5.evtx",
+      "size": 9506816,
+      "compressed": 870479,
+      "offset": 155227479,
+      "crc": 3204795039
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.6.evtx",
+      "size": 6361088,
+      "compressed": 641870,
+      "offset": 156098025,
+      "crc": 3537620165
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.8.evtx",
+      "size": 8458240,
+      "compressed": 794531,
+      "offset": 156739962,
+      "crc": 3922687188
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.68.9.evtx",
+      "size": 8458240,
+      "compressed": 796439,
+      "offset": 157534560,
+      "crc": 2213525309
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.10.evtx",
+      "size": 8458240,
+      "compressed": 796666,
+      "offset": 158331066,
+      "crc": 2100316127
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.11.evtx",
+      "size": 6361088,
+      "compressed": 687107,
+      "offset": 159127800,
+      "crc": 4073236834
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.12.evtx",
+      "size": 7409664,
+      "compressed": 739542,
+      "offset": 159814975,
+      "crc": 3102986886
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.13.evtx",
+      "size": 3215360,
+      "compressed": 357072,
+      "offset": 160554585,
+      "crc": 3685684982
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.14.evtx",
+      "size": 8458240,
+      "compressed": 805516,
+      "offset": 160911725,
+      "crc": 657371987
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.16.evtx",
+      "size": 10555392,
+      "compressed": 967732,
+      "offset": 161717309,
+      "crc": 2437221551
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.17.evtx",
+      "size": 6361088,
+      "compressed": 681572,
+      "offset": 162685109,
+      "crc": 1471216187
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.19.evtx",
+      "size": 8458240,
+      "compressed": 796431,
+      "offset": 163366749,
+      "crc": 3886226381
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.20.evtx",
+      "size": 7409664,
+      "compressed": 770670,
+      "offset": 164163248,
+      "crc": 1035048156
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.23.evtx",
+      "size": 7409664,
+      "compressed": 746989,
+      "offset": 164933986,
+      "crc": 3471939226
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.24.evtx",
+      "size": 10555392,
+      "compressed": 982528,
+      "offset": 165681043,
+      "crc": 540709044
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.26.evtx",
+      "size": 8458240,
+      "compressed": 826412,
+      "offset": 166663639,
+      "crc": 1690081509
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.29.evtx",
+      "size": 10555392,
+      "compressed": 1009729,
+      "offset": 167490119,
+      "crc": 1062547197
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.30.evtx",
+      "size": 9506816,
+      "compressed": 919212,
+      "offset": 168499916,
+      "crc": 2242735473
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.4.evtx",
+      "size": 8458240,
+      "compressed": 795913,
+      "offset": 169419196,
+      "crc": 4031535310
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.5.evtx",
+      "size": 7409664,
+      "compressed": 757168,
+      "offset": 170215176,
+      "crc": 3436289509
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.6.evtx",
+      "size": 7409664,
+      "compressed": 753647,
+      "offset": 170972411,
+      "crc": 2688521295
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.8.evtx",
+      "size": 10555392,
+      "compressed": 953989,
+      "offset": 171726125,
+      "crc": 2692311394
+    },
+    {
+      "name": "logs/EC2AMAZ-O4EL3NG-172.31.69.9.evtx",
+      "size": 7409664,
+      "compressed": 774326,
+      "offset": 172680181,
+      "crc": 2714532586
+    },
+    {
+      "name": "logs/PC1-172.31.64.106.evtx",
+      "size": 4263936,
+      "compressed": 223554,
+      "offset": 173454574,
+      "crc": 380130047
+    },
+    {
+      "name": "logs/PC1-172.31.64.113.evtx",
+      "size": 4263936,
+      "compressed": 224125,
+      "offset": 173678185,
+      "crc": 2886637372
+    },
+    {
+      "name": "logs/PC1-172.31.64.114.evtx",
+      "size": 4263936,
+      "compressed": 224257,
+      "offset": 173902367,
+      "crc": 590715020
+    },
+    {
+      "name": "logs/PC1-172.31.64.116.evtx",
+      "size": 4263936,
+      "compressed": 224243,
+      "offset": 174126681,
+      "crc": 2413045767
+    },
+    {
+      "name": "logs/PC1-172.31.64.121.evtx",
+      "size": 4263936,
+      "compressed": 223822,
+      "offset": 174350981,
+      "crc": 2798747691
+    },
+    {
+      "name": "logs/PC1-172.31.64.15.evtx",
+      "size": 4263936,
+      "compressed": 223944,
+      "offset": 174574860,
+      "crc": 2546534539
+    },
+    {
+      "name": "logs/PC1-172.31.64.18.evtx",
+      "size": 4263936,
+      "compressed": 222990,
+      "offset": 174798860,
+      "crc": 1452935100
+    },
+    {
+      "name": "logs/PC1-172.31.64.21.evtx",
+      "size": 4263936,
+      "compressed": 223724,
+      "offset": 175021906,
+      "crc": 3382746251
+    },
+    {
+      "name": "logs/PC1-172.31.64.23.evtx",
+      "size": 4263936,
+      "compressed": 223594,
+      "offset": 175245686,
+      "crc": 441643570
+    },
+    {
+      "name": "logs/PC1-172.31.64.31.evtx",
+      "size": 4263936,
+      "compressed": 223720,
+      "offset": 175469336,
+      "crc": 2699065213
+    },
+    {
+      "name": "logs/PC1-172.31.64.32.evtx",
+      "size": 4263936,
+      "compressed": 224803,
+      "offset": 175693112,
+      "crc": 2234105069
+    },
+    {
+      "name": "logs/PC1-172.31.64.33.evtx",
+      "size": 4263936,
+      "compressed": 223554,
+      "offset": 175917971,
+      "crc": 2062079720
+    },
+    {
+      "name": "logs/PC1-172.31.64.34.evtx",
+      "size": 4263936,
+      "compressed": 222638,
+      "offset": 176141581,
+      "crc": 3653990042
+    },
+    {
+      "name": "logs/PC1-172.31.64.37.evtx",
+      "size": 4263936,
+      "compressed": 224427,
+      "offset": 176364275,
+      "crc": 903355274
+    },
+    {
+      "name": "logs/PC1-172.31.64.40.evtx",
+      "size": 4263936,
+      "compressed": 223682,
+      "offset": 176588758,
+      "crc": 1889006014
+    },
+    {
+      "name": "logs/PC1-172.31.64.41.evtx",
+      "size": 4263936,
+      "compressed": 223697,
+      "offset": 176812496,
+      "crc": 2031147130
+    },
+    {
+      "name": "logs/PC1-172.31.64.48.evtx",
+      "size": 4263936,
+      "compressed": 223367,
+      "offset": 177036249,
+      "crc": 2074336458
+    },
+    {
+      "name": "logs/PC1-172.31.64.52.evtx",
+      "size": 4263936,
+      "compressed": 223841,
+      "offset": 177259672,
+      "crc": 2755027362
+    },
+    {
+      "name": "logs/PC1-172.31.64.64.evtx",
+      "size": 4263936,
+      "compressed": 224345,
+      "offset": 177483569,
+      "crc": 2729033441
+    },
+    {
+      "name": "logs/PC1-172.31.64.94.evtx",
+      "size": 4263936,
+      "compressed": 223943,
+      "offset": 177707970,
+      "crc": 149445675
+    },
+    {
+      "name": "logs/PC1-172.31.64.97.evtx",
+      "size": 4263936,
+      "compressed": 223461,
+      "offset": 177931969,
+      "crc": 1507514774
+    },
+    {
+      "name": "logs/PC1-172.31.65.100.evtx",
+      "size": 4263936,
+      "compressed": 223908,
+      "offset": 178155486,
+      "crc": 1455707405
+    },
+    {
+      "name": "logs/PC1-172.31.65.117.evtx",
+      "size": 4263936,
+      "compressed": 223776,
+      "offset": 178379451,
+      "crc": 2724151650
+    },
+    {
+      "name": "logs/PC1-172.31.65.13.evtx",
+      "size": 4263936,
+      "compressed": 224241,
+      "offset": 178603284,
+      "crc": 2674697192
+    },
+    {
+      "name": "logs/PC1-172.31.65.16.evtx",
+      "size": 4263936,
+      "compressed": 224048,
+      "offset": 178827581,
+      "crc": 2647207007
+    },
+    {
+      "name": "logs/PC1-172.31.65.20.evtx",
+      "size": 4263936,
+      "compressed": 223840,
+      "offset": 179051685,
+      "crc": 3441457893
+    },
+    {
+      "name": "logs/PC1-172.31.65.25.evtx",
+      "size": 4263936,
+      "compressed": 223815,
+      "offset": 179275581,
+      "crc": 3976498361
+    },
+    {
+      "name": "logs/PC1-172.31.65.49.evtx",
+      "size": 4263936,
+      "compressed": 223557,
+      "offset": 179499452,
+      "crc": 3017349214
+    },
+    {
+      "name": "logs/PC1-172.31.65.6.evtx",
+      "size": 4263936,
+      "compressed": 223851,
+      "offset": 179723065,
+      "crc": 4129407051
+    },
+    {
+      "name": "logs/PC1-172.31.65.61.evtx",
+      "size": 4263936,
+      "compressed": 223915,
+      "offset": 179946971,
+      "crc": 3966452197
+    },
+    {
+      "name": "logs/PC1-172.31.65.67.evtx",
+      "size": 4263936,
+      "compressed": 224077,
+      "offset": 180170942,
+      "crc": 3995373330
+    },
+    {
+      "name": "logs/PC1-172.31.65.68.evtx",
+      "size": 4263936,
+      "compressed": 223442,
+      "offset": 180395075,
+      "crc": 1409249017
+    },
+    {
+      "name": "logs/PC1-172.31.65.77.evtx",
+      "size": 4263936,
+      "compressed": 223824,
+      "offset": 180618573,
+      "crc": 4255561573
+    },
+    {
+      "name": "logs/PC1-172.31.65.79.evtx",
+      "size": 4263936,
+      "compressed": 224295,
+      "offset": 180842453,
+      "crc": 242577211
+    },
+    {
+      "name": "logs/PC1-172.31.65.80.evtx",
+      "size": 4263936,
+      "compressed": 224169,
+      "offset": 181066804,
+      "crc": 3358983603
+    },
+    {
+      "name": "logs/PC1-172.31.65.83.evtx",
+      "size": 4263936,
+      "compressed": 224164,
+      "offset": 181291029,
+      "crc": 4041215183
+    },
+    {
+      "name": "logs/PC1-172.31.66.10.evtx",
+      "size": 4263936,
+      "compressed": 224082,
+      "offset": 181515249,
+      "crc": 2927398096
+    },
+    {
+      "name": "logs/PC1-172.31.66.102.evtx",
+      "size": 4263936,
+      "compressed": 223999,
+      "offset": 181739387,
+      "crc": 3514044842
+    },
+    {
+      "name": "logs/PC1-172.31.66.103.evtx",
+      "size": 4263936,
+      "compressed": 223992,
+      "offset": 181963443,
+      "crc": 171709347
+    },
+    {
+      "name": "logs/PC1-172.31.66.110.evtx",
+      "size": 4263936,
+      "compressed": 224449,
+      "offset": 182187492,
+      "crc": 3578955092
+    },
+    {
+      "name": "logs/PC1-172.31.66.111.evtx",
+      "size": 4263936,
+      "compressed": 223869,
+      "offset": 182411998,
+      "crc": 856466893
+    },
+    {
+      "name": "logs/PC1-172.31.66.118.evtx",
+      "size": 4263936,
+      "compressed": 223956,
+      "offset": 182635924,
+      "crc": 2196844190
+    },
+    {
+      "name": "logs/PC1-172.31.66.121.evtx",
+      "size": 4263936,
+      "compressed": 224092,
+      "offset": 182859937,
+      "crc": 707433706
+    },
+    {
+      "name": "logs/PC1-172.31.66.15.evtx",
+      "size": 4263936,
+      "compressed": 224067,
+      "offset": 183084086,
+      "crc": 733273589
+    },
+    {
+      "name": "logs/PC1-172.31.66.19.evtx",
+      "size": 4263936,
+      "compressed": 223729,
+      "offset": 183308209,
+      "crc": 4239410776
+    },
+    {
+      "name": "logs/PC1-172.31.66.24.evtx",
+      "size": 4263936,
+      "compressed": 223972,
+      "offset": 183531994,
+      "crc": 157592199
+    },
+    {
+      "name": "logs/PC1-172.31.66.46.evtx",
+      "size": 4263936,
+      "compressed": 223801,
+      "offset": 183756022,
+      "crc": 3363900338
+    },
+    {
+      "name": "logs/PC1-172.31.66.58.evtx",
+      "size": 4263936,
+      "compressed": 223951,
+      "offset": 183979879,
+      "crc": 2911666852
+    },
+    {
+      "name": "logs/PC1-172.31.66.69.evtx",
+      "size": 4263936,
+      "compressed": 223742,
+      "offset": 184203886,
+      "crc": 2532654230
+    },
+    {
+      "name": "logs/PC1-172.31.66.79.evtx",
+      "size": 4263936,
+      "compressed": 223587,
+      "offset": 184427684,
+      "crc": 3228583618
+    },
+    {
+      "name": "logs/PC1-172.31.66.83.evtx",
+      "size": 4263936,
+      "compressed": 223774,
+      "offset": 184651327,
+      "crc": 2713196885
+    },
+    {
+      "name": "logs/PC1-172.31.66.9.evtx",
+      "size": 4263936,
+      "compressed": 223739,
+      "offset": 184875157,
+      "crc": 518639956
+    },
+    {
+      "name": "logs/PC1-172.31.66.90.evtx",
+      "size": 4263936,
+      "compressed": 223920,
+      "offset": 185098951,
+      "crc": 3894549695
+    },
+    {
+      "name": "logs/PC1-172.31.66.92.evtx",
+      "size": 4263936,
+      "compressed": 223733,
+      "offset": 185322927,
+      "crc": 1833285062
+    },
+    {
+      "name": "logs/PC1-172.31.66.96.evtx",
+      "size": 4263936,
+      "compressed": 223807,
+      "offset": 185546716,
+      "crc": 3918940973
+    },
+    {
+      "name": "logs/PC1-172.31.66.99.evtx",
+      "size": 4263936,
+      "compressed": 223565,
+      "offset": 185770579,
+      "crc": 4204361495
+    },
+    {
+      "name": "logs/PC1-172.31.67.102.evtx",
+      "size": 4263936,
+      "compressed": 223996,
+      "offset": 185994200,
+      "crc": 502356748
+    },
+    {
+      "name": "logs/PC1-172.31.67.104.evtx",
+      "size": 4263936,
+      "compressed": 223366,
+      "offset": 186218253,
+      "crc": 3915906707
+    },
+    {
+      "name": "logs/PC1-172.31.67.107.evtx",
+      "size": 4263936,
+      "compressed": 223864,
+      "offset": 186441676,
+      "crc": 689441033
+    },
+    {
+      "name": "logs/PC1-172.31.67.108.evtx",
+      "size": 4263936,
+      "compressed": 223817,
+      "offset": 186665597,
+      "crc": 2614653411
+    },
+    {
+      "name": "logs/PC1-172.31.67.111.evtx",
+      "size": 4263936,
+      "compressed": 223518,
+      "offset": 186889471,
+      "crc": 1463051940
+    },
+    {
+      "name": "logs/PC1-172.31.67.118.evtx",
+      "size": 4263936,
+      "compressed": 224166,
+      "offset": 187113046,
+      "crc": 1659652693
+    },
+    {
+      "name": "logs/PC1-172.31.67.121.evtx",
+      "size": 4263936,
+      "compressed": 223505,
+      "offset": 187337269,
+      "crc": 1068828583
+    },
+    {
+      "name": "logs/PC1-172.31.67.123.evtx",
+      "size": 4263936,
+      "compressed": 223602,
+      "offset": 187560831,
+      "crc": 535608911
+    },
+    {
+      "name": "logs/PC1-172.31.67.124.evtx",
+      "size": 4263936,
+      "compressed": 224212,
+      "offset": 187784490,
+      "crc": 810119638
+    },
+    {
+      "name": "logs/PC1-172.31.67.14.evtx",
+      "size": 4263936,
+      "compressed": 223923,
+      "offset": 188008759,
+      "crc": 2037916325
+    },
+    {
+      "name": "logs/PC1-172.31.67.23.evtx",
+      "size": 4263936,
+      "compressed": 224183,
+      "offset": 188232738,
+      "crc": 502779195
+    },
+    {
+      "name": "logs/PC1-172.31.67.27.evtx",
+      "size": 4263936,
+      "compressed": 223785,
+      "offset": 188456977,
+      "crc": 2903249257
+    },
+    {
+      "name": "logs/PC1-172.31.67.33.evtx",
+      "size": 4263936,
+      "compressed": 223791,
+      "offset": 188680818,
+      "crc": 3004039654
+    },
+    {
+      "name": "logs/PC1-172.31.67.35.evtx",
+      "size": 4263936,
+      "compressed": 223439,
+      "offset": 188904665,
+      "crc": 4095674725
+    },
+    {
+      "name": "logs/PC1-172.31.67.56.evtx",
+      "size": 4263936,
+      "compressed": 223843,
+      "offset": 189128160,
+      "crc": 3319450329
+    },
+    {
+      "name": "logs/PC1-172.31.67.59.evtx",
+      "size": 4263936,
+      "compressed": 223931,
+      "offset": 189352059,
+      "crc": 3644437778
+    },
+    {
+      "name": "logs/PC1-172.31.67.76.evtx",
+      "size": 4263936,
+      "compressed": 223554,
+      "offset": 189576046,
+      "crc": 1409653568
+    },
+    {
+      "name": "logs/PC1-172.31.67.78.evtx",
+      "size": 4263936,
+      "compressed": 223970,
+      "offset": 189799656,
+      "crc": 4208954075
+    },
+    {
+      "name": "logs/PC1-172.31.67.9.evtx",
+      "size": 4263936,
+      "compressed": 223652,
+      "offset": 190023682,
+      "crc": 2924889519
+    },
+    {
+      "name": "logs/PC1-172.31.67.97.evtx",
+      "size": 4263936,
+      "compressed": 224007,
+      "offset": 190247389,
+      "crc": 1808531885
+    },
+    {
+      "name": "logs/U172.31.69.15",
+      "size": 86405,
+      "compressed": 16106,
+      "offset": 190471452,
+      "crc": 1043722137
+    },
+    {
+      "name": "logs/U172.31.69.18",
+      "size": 85494,
+      "compressed": 15647,
+      "offset": 190487606,
+      "crc": 577094563
+    },
+    {
+      "name": "logs/U172.31.69.21",
+      "size": 85489,
+      "compressed": 15829,
+      "offset": 190503301,
+      "crc": 2084851895
+    },
+    {
+      "name": "logs/U172.31.69.22",
+      "size": 86112,
+      "compressed": 15954,
+      "offset": 190519178,
+      "crc": 92918206
+    },
+    {
+      "name": "logs/U172.31.69.25",
+      "size": 90583,
+      "compressed": 16231,
+      "offset": 190535180,
+      "crc": 627158130
+    },
+    {
+      "name": "logs/U172.31.69.28",
+      "size": 87842,
+      "compressed": 15697,
+      "offset": 190551459,
+      "crc": 4147839812
+    },
+    {
+      "name": "logs/U172.31.69.7",
+      "size": 86104,
+      "compressed": 15983,
+      "offset": 190567204,
+      "crc": 57213171
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.112.evtx",
+      "size": 2166784,
+      "compressed": 190267,
+      "offset": 190583234,
+      "crc": 1033045697
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.117.evtx",
+      "size": 2166784,
+      "compressed": 180137,
+      "offset": 190773570,
+      "crc": 3136262729
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.12.evtx",
+      "size": 2166784,
+      "compressed": 180334,
+      "offset": 190953776,
+      "crc": 2704904246
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.120.evtx",
+      "size": 2166784,
+      "compressed": 195409,
+      "offset": 191134178,
+      "crc": 3442303083
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.14.evtx",
+      "size": 2166784,
+      "compressed": 191236,
+      "offset": 191329656,
+      "crc": 4071874301
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.20.evtx",
+      "size": 2166784,
+      "compressed": 189470,
+      "offset": 191520960,
+      "crc": 3261840650
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.24.evtx",
+      "size": 2166784,
+      "compressed": 190609,
+      "offset": 191710498,
+      "crc": 2954296598
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.36.evtx",
+      "size": 2166784,
+      "compressed": 201341,
+      "offset": 191901175,
+      "crc": 2824697346
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.39.evtx",
+      "size": 2166784,
+      "compressed": 190734,
+      "offset": 192102584,
+      "crc": 2170432324
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.47.evtx",
+      "size": 2166784,
+      "compressed": 180351,
+      "offset": 192293386,
+      "crc": 1788907072
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.57.evtx",
+      "size": 2166784,
+      "compressed": 189334,
+      "offset": 192473805,
+      "crc": 2405919152
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.61.evtx",
+      "size": 2166784,
+      "compressed": 191972,
+      "offset": 192663207,
+      "crc": 3969408733
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.74.evtx",
+      "size": 2166784,
+      "compressed": 190057,
+      "offset": 192855247,
+      "crc": 238896961
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.78.evtx",
+      "size": 2166784,
+      "compressed": 180055,
+      "offset": 193045372,
+      "crc": 2281010173
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.80.evtx",
+      "size": 2166784,
+      "compressed": 216277,
+      "offset": 193225495,
+      "crc": 2469078789
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.86.evtx",
+      "size": 2166784,
+      "compressed": 191033,
+      "offset": 193441840,
+      "crc": 4158295415
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.88.evtx",
+      "size": 2166784,
+      "compressed": 189188,
+      "offset": 193632941,
+      "crc": 2002378778
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.89.evtx",
+      "size": 2166784,
+      "compressed": 190583,
+      "offset": 193822197,
+      "crc": 3000451677
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.91.evtx",
+      "size": 2166784,
+      "compressed": 197722,
+      "offset": 194012848,
+      "crc": 3089716070
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.93.evtx",
+      "size": 2166784,
+      "compressed": 180169,
+      "offset": 194210638,
+      "crc": 3950836695
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.64.98.evtx",
+      "size": 2166784,
+      "compressed": 191661,
+      "offset": 194390875,
+      "crc": 3476245555
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.103.evtx",
+      "size": 2166784,
+      "compressed": 189609,
+      "offset": 194582604,
+      "crc": 1813148229
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.104.evtx",
+      "size": 2166784,
+      "compressed": 187175,
+      "offset": 194772282,
+      "crc": 2336792502
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.105.evtx",
+      "size": 2166784,
+      "compressed": 180397,
+      "offset": 194959526,
+      "crc": 3199396011
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.108.evtx",
+      "size": 2166784,
+      "compressed": 179248,
+      "offset": 195139992,
+      "crc": 1608675623
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.11.evtx",
+      "size": 2166784,
+      "compressed": 179758,
+      "offset": 195319309,
+      "crc": 1407928480
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.114.evtx",
+      "size": 2166784,
+      "compressed": 181195,
+      "offset": 195499135,
+      "crc": 1623448874
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.115.evtx",
+      "size": 2166784,
+      "compressed": 194933,
+      "offset": 195680399,
+      "crc": 3977104729
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.116.evtx",
+      "size": 2166784,
+      "compressed": 191759,
+      "offset": 195875401,
+      "crc": 3667522078
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.125.evtx",
+      "size": 2166784,
+      "compressed": 179640,
+      "offset": 196067229,
+      "crc": 257380671
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.17.evtx",
+      "size": 2166784,
+      "compressed": 188763,
+      "offset": 196246938,
+      "crc": 3453416044
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.19.evtx",
+      "size": 2166784,
+      "compressed": 180411,
+      "offset": 196435769,
+      "crc": 2266519532
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.21.evtx",
+      "size": 2166784,
+      "compressed": 190731,
+      "offset": 196616248,
+      "crc": 1515105874
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.23.evtx",
+      "size": 2166784,
+      "compressed": 191638,
+      "offset": 196807047,
+      "crc": 396999120
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.24.evtx",
+      "size": 2166784,
+      "compressed": 189149,
+      "offset": 196998753,
+      "crc": 3617927296
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.35.evtx",
+      "size": 2166784,
+      "compressed": 180027,
+      "offset": 197187970,
+      "crc": 3925552618
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.38.evtx",
+      "size": 2166784,
+      "compressed": 181357,
+      "offset": 197368065,
+      "crc": 2352433236
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.42.evtx",
+      "size": 2166784,
+      "compressed": 180229,
+      "offset": 197549490,
+      "crc": 261979102
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.46.evtx",
+      "size": 2166784,
+      "compressed": 189069,
+      "offset": 197729787,
+      "crc": 3040636511
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.47.evtx",
+      "size": 2166784,
+      "compressed": 195709,
+      "offset": 197918924,
+      "crc": 1628124024
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.48.evtx",
+      "size": 2166784,
+      "compressed": 190653,
+      "offset": 198114701,
+      "crc": 734664458
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.51.evtx",
+      "size": 2166784,
+      "compressed": 199220,
+      "offset": 198305422,
+      "crc": 4041897802
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.52.evtx",
+      "size": 2166784,
+      "compressed": 191292,
+      "offset": 198504710,
+      "crc": 3299478845
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.55.evtx",
+      "size": 2166784,
+      "compressed": 189504,
+      "offset": 198696070,
+      "crc": 1279691863
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.57.evtx",
+      "size": 2166784,
+      "compressed": 179605,
+      "offset": 198885642,
+      "crc": 2054041359
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.58.evtx",
+      "size": 2166784,
+      "compressed": 180289,
+      "offset": 199065315,
+      "crc": 3691623429
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.69.evtx",
+      "size": 2166784,
+      "compressed": 200555,
+      "offset": 199245672,
+      "crc": 1011931796
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.70.evtx",
+      "size": 2166784,
+      "compressed": 188825,
+      "offset": 199446295,
+      "crc": 1617945628
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.73.evtx",
+      "size": 2166784,
+      "compressed": 199023,
+      "offset": 199635188,
+      "crc": 4105319211
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.78.evtx",
+      "size": 2166784,
+      "compressed": 187641,
+      "offset": 199834279,
+      "crc": 4181136188
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.87.evtx",
+      "size": 2166784,
+      "compressed": 193064,
+      "offset": 200021988,
+      "crc": 1049181240
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.89.evtx",
+      "size": 2166784,
+      "compressed": 190744,
+      "offset": 200215120,
+      "crc": 1653520430
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.9.evtx",
+      "size": 2166784,
+      "compressed": 190612,
+      "offset": 200405932,
+      "crc": 2447269255
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.90.evtx",
+      "size": 2166784,
+      "compressed": 204010,
+      "offset": 200596611,
+      "crc": 41938147
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.65.99.evtx",
+      "size": 2166784,
+      "compressed": 180769,
+      "offset": 200800689,
+      "crc": 518296311
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.105.evtx",
+      "size": 2166784,
+      "compressed": 179967,
+      "offset": 200981526,
+      "crc": 4107808058
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.109.evtx",
+      "size": 2166784,
+      "compressed": 180165,
+      "offset": 201161562,
+      "crc": 1932628270
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.114.evtx",
+      "size": 2166784,
+      "compressed": 180762,
+      "offset": 201341796,
+      "crc": 2503241449
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.19.evtx",
+      "size": 2166784,
+      "compressed": 197153,
+      "offset": 201522627,
+      "crc": 267385162
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.22.evtx",
+      "size": 2166784,
+      "compressed": 180279,
+      "offset": 201719848,
+      "crc": 3802848633
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.26.evtx",
+      "size": 2166784,
+      "compressed": 180340,
+      "offset": 201900195,
+      "crc": 1219464264
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.30.evtx",
+      "size": 2166784,
+      "compressed": 195269,
+      "offset": 202080603,
+      "crc": 3940317554
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.34.evtx",
+      "size": 2166784,
+      "compressed": 180215,
+      "offset": 202275940,
+      "crc": 311263866
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.4.evtx",
+      "size": 2166784,
+      "compressed": 180825,
+      "offset": 202456223,
+      "crc": 55742076
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.40.evtx",
+      "size": 2166784,
+      "compressed": 190848,
+      "offset": 202637115,
+      "crc": 3098233108
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.62.evtx",
+      "size": 2166784,
+      "compressed": 200894,
+      "offset": 202828031,
+      "crc": 1778915767
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.70.evtx",
+      "size": 2166784,
+      "compressed": 190604,
+      "offset": 203028993,
+      "crc": 1593808530
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.71.evtx",
+      "size": 2166784,
+      "compressed": 180948,
+      "offset": 203219665,
+      "crc": 2447757595
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.72.evtx",
+      "size": 2166784,
+      "compressed": 179045,
+      "offset": 203400681,
+      "crc": 2540651678
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.8.evtx",
+      "size": 2166784,
+      "compressed": 180442,
+      "offset": 203579794,
+      "crc": 3986828071
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.83.evtx",
+      "size": 2166784,
+      "compressed": 217076,
+      "offset": 203760303,
+      "crc": 1376963461
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.89.evtx",
+      "size": 2166784,
+      "compressed": 180967,
+      "offset": 203977447,
+      "crc": 378053240
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.93.evtx",
+      "size": 2166784,
+      "compressed": 190268,
+      "offset": 204158482,
+      "crc": 3998197752
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.95.evtx",
+      "size": 2166784,
+      "compressed": 200048,
+      "offset": 204348818,
+      "crc": 778775043
+    },
+    {
+      "name": "logs/WIN-J6GMIG1DQE5-172.31.67.98.evtx",
+      "size": 2166784,
+      "compressed": 180660,
+      "offset": 204548934,
+      "crc": 2761517255
+    }
+  ]
+}

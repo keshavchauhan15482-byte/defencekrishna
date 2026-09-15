@@ -1,0 +1,12 @@
+{
+  "train": [
+    "Thursday-22-02-2018"
+  ],
+  "validation": [
+    "Friday-23-02-2018"
+  ],
+  "test": [
+    "Thursday-01-03-2018",
+    "Friday-02-03-2018"
+  ]
+}

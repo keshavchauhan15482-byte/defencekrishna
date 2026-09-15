@@ -1,0 +1,4 @@
+# Tested CPU reference runtime: Python 3.12.14
+numpy==2.3.5
+# Training and evaluation only; serving needs NumPy + Python standard library.
+scikit-learn==1.8.0

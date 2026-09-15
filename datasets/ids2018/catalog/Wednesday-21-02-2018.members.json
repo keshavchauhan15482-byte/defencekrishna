@@ -1,0 +1,3142 @@
+{
+  "url": "https://cse-cic-ids2018.s3.amazonaws.com/Original%20Network%20Traffic%20and%20Log%20data/Wednesday-21-02-2018/pcap.zip",
+  "size": 53462820707,
+  "members": [
+    {
+      "name": "pcap/",
+      "size": 0,
+      "compressed": 0,
+      "offset": 0,
+      "crc": 0
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.111",
+      "size": 170541739,
+      "compressed": 146528080,
+      "offset": 35,
+      "crc": 1618631232
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.115",
+      "size": 207137094,
+      "compressed": 188827090,
+      "offset": 146528182,
+      "crc": 1184934594
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.118",
+      "size": 573378575,
+      "compressed": 535761214,
+      "offset": 335355339,
+      "crc": 439199899
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.122",
+      "size": 350065870,
+      "compressed": 313375739,
+      "offset": 871116620,
+      "crc": 1505865494
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.125",
+      "size": 165866998,
+      "compressed": 147283372,
+      "offset": 1184492426,
+      "crc": 389182988
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.126",
+      "size": 299524568,
+      "compressed": 273988316,
+      "offset": 1331775865,
+      "crc": 3672469975
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.17",
+      "size": 200039666,
+      "compressed": 175460494,
+      "offset": 1605764248,
+      "crc": 2348399150
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.26",
+      "size": 227991601,
+      "compressed": 202812260,
+      "offset": 1781224808,
+      "crc": 1932675530
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.35",
+      "size": 286195889,
+      "compressed": 256488737,
+      "offset": 1984037134,
+      "crc": 838554432
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.38",
+      "size": 105687302,
+      "compressed": 88468593,
+      "offset": 2240525937,
+      "crc": 3836470321
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.46",
+      "size": 329393756,
+      "compressed": 300584885,
+      "offset": 2328994596,
+      "crc": 4198975395
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.54",
+      "size": 290474416,
+      "compressed": 266768176,
+      "offset": 2629579547,
+      "crc": 3428416564
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.63",
+      "size": 98350061,
+      "compressed": 79207884,
+      "offset": 2896347789,
+      "crc": 1056975662
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.65",
+      "size": 256729299,
+      "compressed": 234954210,
+      "offset": 2975555739,
+      "crc": 2283776582
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.67",
+      "size": 204543491,
+      "compressed": 177547492,
+      "offset": 3210510015,
+      "crc": 2565482492
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.71",
+      "size": 98656501,
+      "compressed": 82212480,
+      "offset": 3388057573,
+      "crc": 1477725452
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.75",
+      "size": 498029143,
+      "compressed": 462245179,
+      "offset": 3470270119,
+      "crc": 1341699647
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.76",
+      "size": 208924093,
+      "compressed": 185358851,
+      "offset": 3932515364,
+      "crc": 1108134344
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.84",
+      "size": 93304753,
+      "compressed": 77892632,
+      "offset": 4117874281,
+      "crc": 322493183
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.64.99",
+      "size": 252342579,
+      "compressed": 228045655,
+      "offset": 4195766979,
+      "crc": 4202820354
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.10",
+      "size": 93670600,
+      "compressed": 76835047,
+      "offset": 4423812700,
+      "crc": 1156350934
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.113",
+      "size": 125666299,
+      "compressed": 106395938,
+      "offset": 4500647813,
+      "crc": 284712154
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.123",
+      "size": 184662828,
+      "compressed": 160092148,
+      "offset": 4607043818,
+      "crc": 87106536
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.124",
+      "size": 324100881,
+      "compressed": 291801335,
+      "offset": 4767136033,
+      "crc": 2131020632
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.126",
+      "size": 400233581,
+      "compressed": 366007531,
+      "offset": 5058937435,
+      "crc": 3179610979
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.14",
+      "size": 150205146,
+      "compressed": 128767838,
+      "offset": 5424945033,
+      "crc": 3962483769
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.28",
+      "size": 217301598,
+      "compressed": 196168883,
+      "offset": 5553712937,
+      "crc": 1986068855
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.29",
+      "size": 221896517,
+      "compressed": 199284901,
+      "offset": 5749881886,
+      "crc": 3782348879
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.34",
+      "size": 144792742,
+      "compressed": 126703076,
+      "offset": 5949166853,
+      "crc": 1106151268
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.40",
+      "size": 113481158,
+      "compressed": 96301704,
+      "offset": 6075869995,
+      "crc": 335218129
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.50",
+      "size": 267327444,
+      "compressed": 241329314,
+      "offset": 6172171765,
+      "crc": 948372236
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.56",
+      "size": 279904251,
+      "compressed": 255754668,
+      "offset": 6413501145,
+      "crc": 1231994551
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.66",
+      "size": 138419952,
+      "compressed": 117758293,
+      "offset": 6669255879,
+      "crc": 3818907852
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.76",
+      "size": 463273436,
+      "compressed": 424687439,
+      "offset": 6787014238,
+      "crc": 1108968284
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.81",
+      "size": 162042874,
+      "compressed": 138850614,
+      "offset": 7211701743,
+      "crc": 1301413370
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.86",
+      "size": 183216751,
+      "compressed": 157138691,
+      "offset": 7350552423,
+      "crc": 2002438906
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.65.88",
+      "size": 237129418,
+      "compressed": 207415957,
+      "offset": 7507691180,
+      "crc": 1059231943
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.100",
+      "size": 161035265,
+      "compressed": 141034828,
+      "offset": 7715107203,
+      "crc": 2528581527
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.101",
+      "size": 350487272,
+      "compressed": 319122146,
+      "offset": 7856142098,
+      "crc": 174628935
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.112",
+      "size": 197042704,
+      "compressed": 175243243,
+      "offset": 8175264311,
+      "crc": 1252923045
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.114",
+      "size": 87363518,
+      "compressed": 73210077,
+      "offset": 8350507621,
+      "crc": 2582472561
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.115",
+      "size": 169035773,
+      "compressed": 145189588,
+      "offset": 8423717765,
+      "crc": 2198951426
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.120",
+      "size": 94748608,
+      "compressed": 78178827,
+      "offset": 8568907420,
+      "crc": 3733291415
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.123",
+      "size": 258465503,
+      "compressed": 232221468,
+      "offset": 8647086314,
+      "crc": 3376968763
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.22",
+      "size": 133983901,
+      "compressed": 114256194,
+      "offset": 8879307849,
+      "crc": 3952661660
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.41",
+      "size": 213233276,
+      "compressed": 186115149,
+      "offset": 8993564109,
+      "crc": 1195231326
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.42",
+      "size": 278834789,
+      "compressed": 248762355,
+      "offset": 9179679324,
+      "crc": 3121294254
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.43",
+      "size": 186380206,
+      "compressed": 168341389,
+      "offset": 9428441745,
+      "crc": 1593853651
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.49",
+      "size": 320767444,
+      "compressed": 293113597,
+      "offset": 9596783200,
+      "crc": 436691631
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.54",
+      "size": 169813799,
+      "compressed": 147005102,
+      "offset": 9889896863,
+      "crc": 447938066
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.62",
+      "size": 118212527,
+      "compressed": 101039272,
+      "offset": 10036902031,
+      "crc": 3874568161
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.63",
+      "size": 161970796,
+      "compressed": 138311432,
+      "offset": 10137941369,
+      "crc": 1977619623
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.72",
+      "size": 197375069,
+      "compressed": 176687387,
+      "offset": 10276252867,
+      "crc": 1331141524
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.76",
+      "size": 378315016,
+      "compressed": 343775496,
+      "offset": 10452940320,
+      "crc": 2253690766
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.82",
+      "size": 170504714,
+      "compressed": 149248900,
+      "offset": 10796715882,
+      "crc": 2266967690
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.85",
+      "size": 125932836,
+      "compressed": 104666075,
+      "offset": 10945964848,
+      "crc": 2867331431
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.66.89",
+      "size": 223102261,
+      "compressed": 199605188,
+      "offset": 11050630989,
+      "crc": 1372302454
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.10",
+      "size": 387709719,
+      "compressed": 356310956,
+      "offset": 11250236243,
+      "crc": 3989160632
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.101",
+      "size": 349492350,
+      "compressed": 320087768,
+      "offset": 11606547265,
+      "crc": 2539439070
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.116",
+      "size": 341561909,
+      "compressed": 307837081,
+      "offset": 11926635100,
+      "crc": 3241784938
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.119",
+      "size": 128882010,
+      "compressed": 107486036,
+      "offset": 12234472248,
+      "crc": 713227406
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.125",
+      "size": 119498114,
+      "compressed": 101093062,
+      "offset": 12341958351,
+      "crc": 3773420049
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.13",
+      "size": 107712108,
+      "compressed": 87025728,
+      "offset": 12443051480,
+      "crc": 786989259
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.15",
+      "size": 247098861,
+      "compressed": 219065694,
+      "offset": 12530077274,
+      "crc": 1000192688
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.21",
+      "size": 304143113,
+      "compressed": 281205610,
+      "offset": 12749143034,
+      "crc": 2121575705
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.28",
+      "size": 434434037,
+      "compressed": 407598324,
+      "offset": 13030348710,
+      "crc": 1461922259
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.32",
+      "size": 264657809,
+      "compressed": 239229580,
+      "offset": 13437947100,
+      "crc": 2030470481
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.41",
+      "size": 191053570,
+      "compressed": 171459766,
+      "offset": 13677176746,
+      "crc": 796881810
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.50",
+      "size": 403920464,
+      "compressed": 373519001,
+      "offset": 13848636578,
+      "crc": 262469114
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.54",
+      "size": 235547977,
+      "compressed": 206614831,
+      "offset": 14222155645,
+      "crc": 1401651514
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.63",
+      "size": 392807212,
+      "compressed": 361227658,
+      "offset": 14428770542,
+      "crc": 2780509083
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.80",
+      "size": 118191425,
+      "compressed": 98054490,
+      "offset": 14789998266,
+      "crc": 2676718029
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.81",
+      "size": 311894985,
+      "compressed": 284044319,
+      "offset": 14888052822,
+      "crc": 4131622157
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.82",
+      "size": 349340794,
+      "compressed": 319968940,
+      "offset": 15172097207,
+      "crc": 2777224032
+    },
+    {
+      "name": "pcap/capDESKTOP-AN3U28N-172.31.67.86",
+      "size": 261767766,
+      "compressed": 237429415,
+      "offset": 15492066213,
+      "crc": 2709198376
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.100",
+      "size": 104540893,
+      "compressed": 83272961,
+      "offset": 15729495694,
+      "crc": 2501030261
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.101",
+      "size": 93587229,
+      "compressed": 73755311,
+      "offset": 15812768722,
+      "crc": 3124018794
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.103",
+      "size": 92598686,
+      "compressed": 71238538,
+      "offset": 15886524100,
+      "crc": 1918705439
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.104",
+      "size": 102127970,
+      "compressed": 80079189,
+      "offset": 15957762705,
+      "crc": 3883529805
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.107",
+      "size": 91038554,
+      "compressed": 71342410,
+      "offset": 16037841961,
+      "crc": 548084179
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.108",
+      "size": 93591764,
+      "compressed": 72543965,
+      "offset": 16109184438,
+      "crc": 4048998002
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.109",
+      "size": 102886860,
+      "compressed": 83186476,
+      "offset": 16181728470,
+      "crc": 892817595
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.11",
+      "size": 106977853,
+      "compressed": 83317608,
+      "offset": 16264915013,
+      "crc": 3464864256
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.110",
+      "size": 113224961,
+      "compressed": 82213299,
+      "offset": 16348232687,
+      "crc": 4121767256
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.119",
+      "size": 90905237,
+      "compressed": 71503548,
+      "offset": 16430446053,
+      "crc": 3652850082
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.123",
+      "size": 98352960,
+      "compressed": 78710501,
+      "offset": 16501949668,
+      "crc": 1104433222
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.124",
+      "size": 92928082,
+      "compressed": 71841270,
+      "offset": 16580660236,
+      "crc": 1027434865
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.13",
+      "size": 95370499,
+      "compressed": 72839422,
+      "offset": 16652501573,
+      "crc": 2631863583
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.16",
+      "size": 103800807,
+      "compressed": 83936050,
+      "offset": 16725341061,
+      "crc": 1082101440
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.19",
+      "size": 96067598,
+      "compressed": 78241983,
+      "offset": 16809277177,
+      "crc": 1604227689
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.27",
+      "size": 88111919,
+      "compressed": 69377374,
+      "offset": 16887519226,
+      "crc": 1546257212
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.28",
+      "size": 103553845,
+      "compressed": 80796264,
+      "offset": 16956896666,
+      "crc": 1988628080
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.29",
+      "size": 81091198,
+      "compressed": 62266623,
+      "offset": 17037692996,
+      "crc": 395368083
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.4",
+      "size": 60997360,
+      "compressed": 43496439,
+      "offset": 17099959685,
+      "crc": 786961204
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.42",
+      "size": 110929279,
+      "compressed": 90384611,
+      "offset": 17143456189,
+      "crc": 857440954
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.44",
+      "size": 87702368,
+      "compressed": 69071226,
+      "offset": 17233840866,
+      "crc": 1524497994
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.45",
+      "size": 88337827,
+      "compressed": 69041439,
+      "offset": 17302912158,
+      "crc": 648586278
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.49",
+      "size": 93957610,
+      "compressed": 74079311,
+      "offset": 17371953663,
+      "crc": 267773531
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.51",
+      "size": 80029590,
+      "compressed": 62661699,
+      "offset": 17446033040,
+      "crc": 1138598842
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.58",
+      "size": 80225493,
+      "compressed": 61374572,
+      "offset": 17508694805,
+      "crc": 3512485785
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.60",
+      "size": 87132816,
+      "compressed": 68960562,
+      "offset": 17570069443,
+      "crc": 3551572600
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.68",
+      "size": 91907999,
+      "compressed": 72113224,
+      "offset": 17639030071,
+      "crc": 3170208826
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.69",
+      "size": 82024760,
+      "compressed": 64133735,
+      "offset": 17711143361,
+      "crc": 3813099656
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.7",
+      "size": 90188712,
+      "compressed": 71960697,
+      "offset": 17775277162,
+      "crc": 70437524
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.70",
+      "size": 102011307,
+      "compressed": 77787273,
+      "offset": 17847237924,
+      "crc": 3861331709
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.72",
+      "size": 99450014,
+      "compressed": 79437752,
+      "offset": 17925025263,
+      "crc": 3279518856
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.73",
+      "size": 96289159,
+      "compressed": 74654011,
+      "offset": 18004463081,
+      "crc": 645392959
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.77",
+      "size": 85547955,
+      "compressed": 67164556,
+      "offset": 18079117158,
+      "crc": 1266319313
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.79",
+      "size": 66268090,
+      "compressed": 44641149,
+      "offset": 18146281780,
+      "crc": 2274033900
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.8",
+      "size": 95937321,
+      "compressed": 74155913,
+      "offset": 18190922995,
+      "crc": 120154489
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.81",
+      "size": 83534630,
+      "compressed": 66248839,
+      "offset": 18265078973,
+      "crc": 317968990
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.83",
+      "size": 61313351,
+      "compressed": 42900594,
+      "offset": 18331327878,
+      "crc": 6680082
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.85",
+      "size": 93858634,
+      "compressed": 76234483,
+      "offset": 18374228538,
+      "crc": 3079187381
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.87",
+      "size": 60717224,
+      "compressed": 42152864,
+      "offset": 18450463087,
+      "crc": 3048176562
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.92",
+      "size": 99914725,
+      "compressed": 80872558,
+      "offset": 18492616017,
+      "crc": 2893039424
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.64.96",
+      "size": 101479997,
+      "compressed": 80106492,
+      "offset": 18573488641,
+      "crc": 2601822042
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.107",
+      "size": 67899525,
+      "compressed": 49107439,
+      "offset": 18653595199,
+      "crc": 135351435
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.109",
+      "size": 98161925,
+      "compressed": 77748490,
+      "offset": 18702702705,
+      "crc": 642054224
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.112",
+      "size": 91644100,
+      "compressed": 72629607,
+      "offset": 18780451262,
+      "crc": 951825815
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.118",
+      "size": 96127072,
+      "compressed": 76024086,
+      "offset": 18853080936,
+      "crc": 2634903644
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.119",
+      "size": 63749594,
+      "compressed": 46002001,
+      "offset": 18929105089,
+      "crc": 637544332
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.121",
+      "size": 69390358,
+      "compressed": 47993567,
+      "offset": 18975107157,
+      "crc": 2840933915
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.122",
+      "size": 113336274,
+      "compressed": 93610141,
+      "offset": 19023100791,
+      "crc": 2095025437
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.18",
+      "size": 94129904,
+      "compressed": 75152631,
+      "offset": 19116710999,
+      "crc": 1102934372
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.27",
+      "size": 66472851,
+      "compressed": 48648026,
+      "offset": 19191863696,
+      "crc": 809529853
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.30",
+      "size": 97435154,
+      "compressed": 76906048,
+      "offset": 19240511788,
+      "crc": 108698757
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.32",
+      "size": 59105593,
+      "compressed": 42714245,
+      "offset": 19317417902,
+      "crc": 3320270319
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.33",
+      "size": 57724149,
+      "compressed": 42122972,
+      "offset": 19360132213,
+      "crc": 1989641182
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.36",
+      "size": 92699264,
+      "compressed": 74389237,
+      "offset": 19402255251,
+      "crc": 1471192472
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.37",
+      "size": 99217142,
+      "compressed": 79722685,
+      "offset": 19476644554,
+      "crc": 1450293303
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.39",
+      "size": 104014223,
+      "compressed": 83118933,
+      "offset": 19556367305,
+      "crc": 1849780890
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.41",
+      "size": 102411495,
+      "compressed": 82569746,
+      "offset": 19639486304,
+      "crc": 153989198
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.43",
+      "size": 103790767,
+      "compressed": 83645830,
+      "offset": 19722056116,
+      "crc": 3065025313
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.44",
+      "size": 100463689,
+      "compressed": 81612078,
+      "offset": 19805702012,
+      "crc": 3088189984
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.45",
+      "size": 109485765,
+      "compressed": 88326084,
+      "offset": 19887314156,
+      "crc": 4111957652
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.5",
+      "size": 106601559,
+      "compressed": 87966993,
+      "offset": 19975640306,
+      "crc": 4243620352
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.59",
+      "size": 92382476,
+      "compressed": 74551906,
+      "offset": 20063607364,
+      "crc": 262120562
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.64",
+      "size": 99004364,
+      "compressed": 79394886,
+      "offset": 20138159336,
+      "crc": 3547510359
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.65",
+      "size": 113463509,
+      "compressed": 91462575,
+      "offset": 20217554288,
+      "crc": 4271626735
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.71",
+      "size": 101607752,
+      "compressed": 80793065,
+      "offset": 20309016929,
+      "crc": 3689689205
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.72",
+      "size": 98868985,
+      "compressed": 78828789,
+      "offset": 20389810060,
+      "crc": 2436221703
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.75",
+      "size": 101016398,
+      "compressed": 78505979,
+      "offset": 20468638915,
+      "crc": 3411850120
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.8",
+      "size": 80124939,
+      "compressed": 64280089,
+      "offset": 20547144960,
+      "crc": 2125339153
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.82",
+      "size": 116902631,
+      "compressed": 96178011,
+      "offset": 20611425114,
+      "crc": 3231219317
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.84",
+      "size": 64133267,
+      "compressed": 47009757,
+      "offset": 20707603191,
+      "crc": 1593864247
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.85",
+      "size": 101720799,
+      "compressed": 81190933,
+      "offset": 20754613014,
+      "crc": 56642635
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.91",
+      "size": 89267711,
+      "compressed": 70722701,
+      "offset": 20835804013,
+      "crc": 1501287498
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.93",
+      "size": 118219135,
+      "compressed": 99241655,
+      "offset": 20906526780,
+      "crc": 2778313703
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.96",
+      "size": 87111964,
+      "compressed": 70397969,
+      "offset": 21005768501,
+      "crc": 3050723846
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.65.98",
+      "size": 100234554,
+      "compressed": 77367650,
+      "offset": 21076166536,
+      "crc": 1507558079
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.105",
+      "size": 90909756,
+      "compressed": 71550845,
+      "offset": 21153534252,
+      "crc": 2714381389
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.107",
+      "size": 103306730,
+      "compressed": 83079047,
+      "offset": 21225085164,
+      "crc": 496100676
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.108",
+      "size": 103492124,
+      "compressed": 84402725,
+      "offset": 21308164278,
+      "crc": 2870580529
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.109",
+      "size": 99601282,
+      "compressed": 77681555,
+      "offset": 21392567070,
+      "crc": 2787330168
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.11",
+      "size": 86115936,
+      "compressed": 68644440,
+      "offset": 21470248692,
+      "crc": 1336307947
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.113",
+      "size": 62878376,
+      "compressed": 46595901,
+      "offset": 21538893198,
+      "crc": 2665883235
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.116",
+      "size": 101580545,
+      "compressed": 81746606,
+      "offset": 21585489166,
+      "crc": 3769384308
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.119",
+      "size": 102634142,
+      "compressed": 80173860,
+      "offset": 21667235839,
+      "crc": 188858446
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.12",
+      "size": 88133008,
+      "compressed": 70826971,
+      "offset": 21747409766,
+      "crc": 77103548
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.122",
+      "size": 104203494,
+      "compressed": 85679113,
+      "offset": 21818236803,
+      "crc": 2003493904
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.124",
+      "size": 90610670,
+      "compressed": 75073241,
+      "offset": 21903915983,
+      "crc": 3658518261
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.13",
+      "size": 92571538,
+      "compressed": 75510460,
+      "offset": 21978989291,
+      "crc": 3666814240
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.14",
+      "size": 103488995,
+      "compressed": 84075090,
+      "offset": 22054499817,
+      "crc": 4256685055
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.16",
+      "size": 101157911,
+      "compressed": 80764665,
+      "offset": 22138574973,
+      "crc": 3063187867
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.17",
+      "size": 96106643,
+      "compressed": 77529160,
+      "offset": 22219339704,
+      "crc": 3571750512
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.20",
+      "size": 102908961,
+      "compressed": 82472574,
+      "offset": 22296868930,
+      "crc": 986349770
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.21",
+      "size": 58319166,
+      "compressed": 49846486,
+      "offset": 22379341570,
+      "crc": 3094712384
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.25",
+      "size": 88940102,
+      "compressed": 70655346,
+      "offset": 22429188122,
+      "crc": 2922920050
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.26",
+      "size": 87113029,
+      "compressed": 69140317,
+      "offset": 22499843534,
+      "crc": 18573611
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.28",
+      "size": 104606883,
+      "compressed": 79634288,
+      "offset": 22568983917,
+      "crc": 3870743080
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.29",
+      "size": 103415948,
+      "compressed": 78704110,
+      "offset": 22648618271,
+      "crc": 4202481999
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.34",
+      "size": 98117439,
+      "compressed": 79063119,
+      "offset": 22727322447,
+      "crc": 927683538
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.35",
+      "size": 95377410,
+      "compressed": 75009773,
+      "offset": 22806385632,
+      "crc": 2356904288
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.37",
+      "size": 86364552,
+      "compressed": 68525815,
+      "offset": 22881395471,
+      "crc": 206466487
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.38",
+      "size": 82976515,
+      "compressed": 65279335,
+      "offset": 22949921352,
+      "crc": 3708885782
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.40",
+      "size": 101602469,
+      "compressed": 79946679,
+      "offset": 23015200753,
+      "crc": 490167956
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.44",
+      "size": 118279405,
+      "compressed": 94378862,
+      "offset": 23095147498,
+      "crc": 1064008877
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.48",
+      "size": 89335304,
+      "compressed": 70500772,
+      "offset": 23189526426,
+      "crc": 1711332365
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.5",
+      "size": 96206495,
+      "compressed": 75022389,
+      "offset": 23260027264,
+      "crc": 2066700829
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.50",
+      "size": 56110258,
+      "compressed": 47761576,
+      "offset": 23335049718,
+      "crc": 1849586495
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.51",
+      "size": 96190355,
+      "compressed": 76146745,
+      "offset": 23382811360,
+      "crc": 2449257870
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.53",
+      "size": 66383902,
+      "compressed": 48488989,
+      "offset": 23458958171,
+      "crc": 513579078
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.55",
+      "size": 93148880,
+      "compressed": 74707428,
+      "offset": 23507447226,
+      "crc": 1409434187
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.56",
+      "size": 104918918,
+      "compressed": 81993057,
+      "offset": 23582154720,
+      "crc": 430191097
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.57",
+      "size": 96443983,
+      "compressed": 75813543,
+      "offset": 23664147843,
+      "crc": 4042366467
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.60",
+      "size": 102616118,
+      "compressed": 81488977,
+      "offset": 23739961452,
+      "crc": 3699439176
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.61",
+      "size": 105931040,
+      "compressed": 82318649,
+      "offset": 23821450495,
+      "crc": 2656382989
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.64",
+      "size": 115509315,
+      "compressed": 93932844,
+      "offset": 23903769210,
+      "crc": 2824111939
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.65",
+      "size": 64697353,
+      "compressed": 46449364,
+      "offset": 23997702120,
+      "crc": 1014121497
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.66",
+      "size": 94676816,
+      "compressed": 75904553,
+      "offset": 24044151550,
+      "crc": 4234245076
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.68",
+      "size": 92026204,
+      "compressed": 74269418,
+      "offset": 24120056169,
+      "crc": 1900580827
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.7",
+      "size": 98585882,
+      "compressed": 78044938,
+      "offset": 24194325653,
+      "crc": 2121950569
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.70",
+      "size": 104188631,
+      "compressed": 82223715,
+      "offset": 24272370656,
+      "crc": 1785169902
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.71",
+      "size": 53441990,
+      "compressed": 45229733,
+      "offset": 24354594437,
+      "crc": 4224452876
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.73",
+      "size": 59819764,
+      "compressed": 44164876,
+      "offset": 24399824236,
+      "crc": 2338496745
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.74",
+      "size": 107765173,
+      "compressed": 86953622,
+      "offset": 24443989178,
+      "crc": 609890566
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.75",
+      "size": 87215844,
+      "compressed": 69459046,
+      "offset": 24530942866,
+      "crc": 3224966384
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.77",
+      "size": 97272927,
+      "compressed": 77249783,
+      "offset": 24600401978,
+      "crc": 3471333655
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.78",
+      "size": 125814492,
+      "compressed": 103534145,
+      "offset": 24677651827,
+      "crc": 3447179990
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.8",
+      "size": 94240699,
+      "compressed": 77538573,
+      "offset": 24781186038,
+      "crc": 3166550323
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.80",
+      "size": 103024814,
+      "compressed": 83034256,
+      "offset": 24858724676,
+      "crc": 3328577061
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.81",
+      "size": 147713142,
+      "compressed": 124498018,
+      "offset": 24941758998,
+      "crc": 4213050426
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.84",
+      "size": 92534465,
+      "compressed": 72271173,
+      "offset": 25066257082,
+      "crc": 1630014679
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.86",
+      "size": 97152797,
+      "compressed": 78905731,
+      "offset": 25138528321,
+      "crc": 3359936783
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.87",
+      "size": 65989934,
+      "compressed": 48263742,
+      "offset": 25217434118,
+      "crc": 1723559309
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.91",
+      "size": 91801614,
+      "compressed": 72828675,
+      "offset": 25265697926,
+      "crc": 3409656726
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.94",
+      "size": 62321131,
+      "compressed": 43025776,
+      "offset": 25338526667,
+      "crc": 2276480463
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.95",
+      "size": 92946681,
+      "compressed": 75299500,
+      "offset": 25381552509,
+      "crc": 4096936070
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.97",
+      "size": 87661991,
+      "compressed": 70909979,
+      "offset": 25456852075,
+      "crc": 112415478
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.66.98",
+      "size": 98612025,
+      "compressed": 78396122,
+      "offset": 25527762120,
+      "crc": 841543403
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.100",
+      "size": 91477927,
+      "compressed": 72970273,
+      "offset": 25606158308,
+      "crc": 71204424
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.112",
+      "size": 92139910,
+      "compressed": 73010502,
+      "offset": 25679128648,
+      "crc": 1597257112
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.113",
+      "size": 90148216,
+      "compressed": 73240200,
+      "offset": 25752139217,
+      "crc": 3513856323
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.117",
+      "size": 121491212,
+      "compressed": 100212857,
+      "offset": 25825379484,
+      "crc": 3808439302
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.12",
+      "size": 95592235,
+      "compressed": 76565317,
+      "offset": 25925592408,
+      "crc": 801316687
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.120",
+      "size": 83030525,
+      "compressed": 66904755,
+      "offset": 26002157791,
+      "crc": 1373495413
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.122",
+      "size": 61865308,
+      "compressed": 43770257,
+      "offset": 26069062613,
+      "crc": 970022826
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.126",
+      "size": 96676472,
+      "compressed": 77679365,
+      "offset": 26112832937,
+      "crc": 3668773182
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.16",
+      "size": 107651261,
+      "compressed": 86860903,
+      "offset": 26190512369,
+      "crc": 3407926985
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.17",
+      "size": 96089517,
+      "compressed": 77068190,
+      "offset": 26277373338,
+      "crc": 159811254
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.18",
+      "size": 106156953,
+      "compressed": 83751391,
+      "offset": 26354441594,
+      "crc": 3984981865
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.20",
+      "size": 92701695,
+      "compressed": 74388612,
+      "offset": 26438193051,
+      "crc": 2647263385
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.24",
+      "size": 99332999,
+      "compressed": 79880767,
+      "offset": 26512581729,
+      "crc": 3252167605
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.29",
+      "size": 98272051,
+      "compressed": 79564464,
+      "offset": 26592462562,
+      "crc": 334159798
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.31",
+      "size": 91592237,
+      "compressed": 73960400,
+      "offset": 26672027092,
+      "crc": 2315440526
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.37",
+      "size": 98031276,
+      "compressed": 78421231,
+      "offset": 26745987558,
+      "crc": 742448572
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.38",
+      "size": 97347752,
+      "compressed": 78486967,
+      "offset": 26824408855,
+      "crc": 3188195440
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.42",
+      "size": 92456531,
+      "compressed": 72885156,
+      "offset": 26902895888,
+      "crc": 1783435392
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.45",
+      "size": 87672850,
+      "compressed": 69279917,
+      "offset": 26975781110,
+      "crc": 444858780
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.47",
+      "size": 95866683,
+      "compressed": 76250176,
+      "offset": 27045061093,
+      "crc": 3742504056
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.48",
+      "size": 97068315,
+      "compressed": 79095133,
+      "offset": 27121311335,
+      "crc": 541394010
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.52",
+      "size": 97983151,
+      "compressed": 77112738,
+      "offset": 27200406534,
+      "crc": 2812732716
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.53",
+      "size": 93887693,
+      "compressed": 76144109,
+      "offset": 27277519338,
+      "crc": 4289407074
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.57",
+      "size": 105363413,
+      "compressed": 83376382,
+      "offset": 27353663513,
+      "crc": 1732343077
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.58",
+      "size": 99558944,
+      "compressed": 80000455,
+      "offset": 27437039961,
+      "crc": 500156337
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.6",
+      "size": 101067785,
+      "compressed": 79772633,
+      "offset": 27517040482,
+      "crc": 2021400240
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.60",
+      "size": 94264970,
+      "compressed": 75717041,
+      "offset": 27596813180,
+      "crc": 488011487
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.61",
+      "size": 39169298,
+      "compressed": 36532945,
+      "offset": 27672530287,
+      "crc": 4168957898
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.64",
+      "size": 112782600,
+      "compressed": 91567915,
+      "offset": 27709063298,
+      "crc": 3549988431
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.66",
+      "size": 96971869,
+      "compressed": 77238721,
+      "offset": 27800631279,
+      "crc": 350677568
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.67",
+      "size": 87401054,
+      "compressed": 69314001,
+      "offset": 27877870066,
+      "crc": 2007230091
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.7",
+      "size": 109323924,
+      "compressed": 89444808,
+      "offset": 27947184133,
+      "crc": 4140129838
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.73",
+      "size": 108266297,
+      "compressed": 88056614,
+      "offset": 28036629006,
+      "crc": 3913496642
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.75",
+      "size": 96880303,
+      "compressed": 76932683,
+      "offset": 28124685686,
+      "crc": 28131226
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.77",
+      "size": 97281638,
+      "compressed": 77331830,
+      "offset": 28201618435,
+      "crc": 1742296684
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.91",
+      "size": 113870075,
+      "compressed": 92556356,
+      "offset": 28278950331,
+      "crc": 543355169
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.92",
+      "size": 101981352,
+      "compressed": 79161551,
+      "offset": 28371506753,
+      "crc": 2610746965
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.96",
+      "size": 87774153,
+      "compressed": 69282205,
+      "offset": 28450668370,
+      "crc": 469533129
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.67.99",
+      "size": 71208385,
+      "compressed": 54912377,
+      "offset": 28519950641,
+      "crc": 1650710642
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.10",
+      "size": 106055767,
+      "compressed": 89647270,
+      "offset": 28574863084,
+      "crc": 3448035816
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.11",
+      "size": 37728059,
+      "compressed": 34426023,
+      "offset": 28664510420,
+      "crc": 1458477964
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.12",
+      "size": 144406147,
+      "compressed": 124773105,
+      "offset": 28698936509,
+      "crc": 37092033
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.13",
+      "size": 94958166,
+      "compressed": 74884983,
+      "offset": 28823709680,
+      "crc": 2894675610
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.14",
+      "size": 101812414,
+      "compressed": 80039345,
+      "offset": 28898594729,
+      "crc": 330147630
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.15",
+      "size": 101170894,
+      "compressed": 81462019,
+      "offset": 28978634140,
+      "crc": 2996168768
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.18",
+      "size": 95098747,
+      "compressed": 75233197,
+      "offset": 29060096225,
+      "crc": 164355591
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.19",
+      "size": 96737137,
+      "compressed": 76738434,
+      "offset": 29135329488,
+      "crc": 387325168
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.20",
+      "size": 66616423,
+      "compressed": 47837270,
+      "offset": 29212067988,
+      "crc": 1096717106
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.21",
+      "size": 93964173,
+      "compressed": 74616513,
+      "offset": 29259905324,
+      "crc": 3949235045
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.23",
+      "size": 90257102,
+      "compressed": 74057987,
+      "offset": 29334521903,
+      "crc": 4283224367
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.25",
+      "size": 104911665,
+      "compressed": 82313596,
+      "offset": 29408579956,
+      "crc": 3740660056
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.26",
+      "size": 67573938,
+      "compressed": 50895924,
+      "offset": 29490893618,
+      "crc": 790145123
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.28",
+      "size": 94956080,
+      "compressed": 76982042,
+      "offset": 29541789608,
+      "crc": 1859289028
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.30",
+      "size": 99764178,
+      "compressed": 77741886,
+      "offset": 29618771716,
+      "crc": 2381782877
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.4",
+      "size": 80243352,
+      "compressed": 62909850,
+      "offset": 29696513668,
+      "crc": 458577095
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.5",
+      "size": 70903734,
+      "compressed": 53407373,
+      "offset": 29759423583,
+      "crc": 2569965528
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.6",
+      "size": 95760487,
+      "compressed": 76146530,
+      "offset": 29812831021,
+      "crc": 124417692
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.8",
+      "size": 88695376,
+      "compressed": 70901655,
+      "offset": 29888977616,
+      "crc": 1058779760
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.68.9",
+      "size": 111072104,
+      "compressed": 88897456,
+      "offset": 29959879336,
+      "crc": 3684815537
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.10",
+      "size": 63392864,
+      "compressed": 45740004,
+      "offset": 30048776857,
+      "crc": 3410408721
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.11",
+      "size": 55874090,
+      "compressed": 47172732,
+      "offset": 30094516927,
+      "crc": 2495504357
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.12",
+      "size": 60857004,
+      "compressed": 44573392,
+      "offset": 30141689725,
+      "crc": 304836638
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.13",
+      "size": 79502152,
+      "compressed": 63566949,
+      "offset": 30186263183,
+      "crc": 3538755397
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.14",
+      "size": 110139426,
+      "compressed": 89849058,
+      "offset": 30249830198,
+      "crc": 545464271
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.16",
+      "size": 97295720,
+      "compressed": 77816710,
+      "offset": 30339679322,
+      "crc": 3867052612
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.17",
+      "size": 93597059,
+      "compressed": 74170788,
+      "offset": 30417496098,
+      "crc": 2857116555
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.19",
+      "size": 44653168,
+      "compressed": 39891681,
+      "offset": 30491666952,
+      "crc": 2936874417
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.20",
+      "size": 98337779,
+      "compressed": 77568145,
+      "offset": 30531558699,
+      "crc": 3993246742
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.23",
+      "size": 136279842,
+      "compressed": 116191689,
+      "offset": 30609126910,
+      "crc": 4214507970
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.24",
+      "size": 92416363,
+      "compressed": 73640435,
+      "offset": 30725318665,
+      "crc": 1420875872
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.26",
+      "size": 95511257,
+      "compressed": 76115825,
+      "offset": 30798959166,
+      "crc": 2604956025
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.29",
+      "size": 107889518,
+      "compressed": 86371833,
+      "offset": 30875075057,
+      "crc": 2304817008
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.30",
+      "size": 107175635,
+      "compressed": 83371648,
+      "offset": 30961446956,
+      "crc": 288473466
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.4",
+      "size": 128425641,
+      "compressed": 100437938,
+      "offset": 31044818670,
+      "crc": 286488608
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.5",
+      "size": 104925778,
+      "compressed": 85469825,
+      "offset": 31145256673,
+      "crc": 1328389922
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.6",
+      "size": 110294227,
+      "compressed": 93013353,
+      "offset": 31230726563,
+      "crc": 2432440841
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.8",
+      "size": 118234823,
+      "compressed": 94133775,
+      "offset": 31323739981,
+      "crc": 3392623289
+    },
+    {
+      "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.9",
+      "size": 107179472,
+      "compressed": 88312174,
+      "offset": 31417873821,
+      "crc": 719592881
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.106",
+      "size": 227980962,
+      "compressed": 197315456,
+      "offset": 31506186060,
+      "crc": 1939574244
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.113",
+      "size": 165089014,
+      "compressed": 141085620,
+      "offset": 31703501571,
+      "crc": 1231538134
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.114",
+      "size": 228966432,
+      "compressed": 198292693,
+      "offset": 31844587246,
+      "crc": 3754123065
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.116",
+      "size": 363913703,
+      "compressed": 329237991,
+      "offset": 32042879994,
+      "crc": 3037698949
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.121",
+      "size": 171988144,
+      "compressed": 143163164,
+      "offset": 32372118040,
+      "crc": 1347575563
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.15",
+      "size": 187324772,
+      "compressed": 164472864,
+      "offset": 32515281259,
+      "crc": 936958393
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.18",
+      "size": 268358629,
+      "compressed": 237982254,
+      "offset": 32679754177,
+      "crc": 1477595210
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.21",
+      "size": 75449927,
+      "compressed": 64141812,
+      "offset": 32917736485,
+      "crc": 1190739644
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.23",
+      "size": 297201292,
+      "compressed": 258982149,
+      "offset": 32981878351,
+      "crc": 3338243197
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.31",
+      "size": 135625209,
+      "compressed": 117853395,
+      "offset": 33240860554,
+      "crc": 2421388426
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.32",
+      "size": 208241079,
+      "compressed": 181003368,
+      "offset": 33358714003,
+      "crc": 999280399
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.33",
+      "size": 172346662,
+      "compressed": 145494028,
+      "offset": 33539717425,
+      "crc": 1394083178
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.34",
+      "size": 196426764,
+      "compressed": 167497404,
+      "offset": 33685211507,
+      "crc": 3674681184
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.37",
+      "size": 140655192,
+      "compressed": 120930931,
+      "offset": 33852708965,
+      "crc": 3824800696
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.40",
+      "size": 184379190,
+      "compressed": 155072930,
+      "offset": 33973639950,
+      "crc": 3270102069
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.41",
+      "size": 285955605,
+      "compressed": 257737214,
+      "offset": 34128712934,
+      "crc": 4264899143
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.48",
+      "size": 310063951,
+      "compressed": 283987671,
+      "offset": 34386450202,
+      "crc": 1433190994
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.52",
+      "size": 156662330,
+      "compressed": 135431729,
+      "offset": 34670437927,
+      "crc": 1802214016
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.64",
+      "size": 133432384,
+      "compressed": 111334021,
+      "offset": 34805869710,
+      "crc": 7800623
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.94",
+      "size": 365251816,
+      "compressed": 335343215,
+      "offset": 34917203785,
+      "crc": 1122240691
+    },
+    {
+      "name": "pcap/capPC1-172.31.64.97",
+      "size": 204318166,
+      "compressed": 181059031,
+      "offset": 35252547054,
+      "crc": 2573302918
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.100",
+      "size": 165801551,
+      "compressed": 144209308,
+      "offset": 35433606139,
+      "crc": 2901067745
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.117",
+      "size": 483039794,
+      "compressed": 453583050,
+      "offset": 35577815502,
+      "crc": 2619562534
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.13",
+      "size": 163060259,
+      "compressed": 141410981,
+      "offset": 36031398607,
+      "crc": 2577553041
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.16",
+      "size": 165116090,
+      "compressed": 144533100,
+      "offset": 36172809642,
+      "crc": 3442435668
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.20",
+      "size": 174201818,
+      "compressed": 146032666,
+      "offset": 36317342796,
+      "crc": 3223252474
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.25",
+      "size": 159793194,
+      "compressed": 131843173,
+      "offset": 36463375516,
+      "crc": 503272180
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.49",
+      "size": 559638998,
+      "compressed": 525561699,
+      "offset": 36595218743,
+      "crc": 1862648864
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.6",
+      "size": 240510877,
+      "compressed": 215718537,
+      "offset": 37120780496,
+      "crc": 1994734953
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.61",
+      "size": 374765403,
+      "compressed": 334985729,
+      "offset": 37336499086,
+      "crc": 2488467485
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.67",
+      "size": 111842022,
+      "compressed": 94388374,
+      "offset": 37671484869,
+      "crc": 214683829
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.68",
+      "size": 188058878,
+      "compressed": 169948053,
+      "offset": 37765873297,
+      "crc": 2935022484
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.77",
+      "size": 424467716,
+      "compressed": 389311357,
+      "offset": 37935821404,
+      "crc": 2439649801
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.79",
+      "size": 249608226,
+      "compressed": 222163221,
+      "offset": 38325132815,
+      "crc": 2535042652
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.80",
+      "size": 92667517,
+      "compressed": 78143352,
+      "offset": 38547296090,
+      "crc": 2747107942
+    },
+    {
+      "name": "pcap/capPC1-172.31.65.83",
+      "size": 276422024,
+      "compressed": 247165775,
+      "offset": 38625439496,
+      "crc": 3281482364
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.10",
+      "size": 266151811,
+      "compressed": 242167213,
+      "offset": 38872605325,
+      "crc": 1065349635
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.102",
+      "size": 276121061,
+      "compressed": 244061813,
+      "offset": 39114772592,
+      "crc": 946653198
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.103",
+      "size": 228792556,
+      "compressed": 203227746,
+      "offset": 39358834460,
+      "crc": 1552330027
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.110",
+      "size": 134512043,
+      "compressed": 111373760,
+      "offset": 39562062261,
+      "crc": 3796945826
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.111",
+      "size": 381563018,
+      "compressed": 337131033,
+      "offset": 39673436076,
+      "crc": 3081040291
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.118",
+      "size": 257474338,
+      "compressed": 231357040,
+      "offset": 40010567164,
+      "crc": 3774790785
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.121",
+      "size": 462787362,
+      "compressed": 430412409,
+      "offset": 40241924259,
+      "crc": 1787630580
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.15",
+      "size": 182920487,
+      "compressed": 163597537,
+      "offset": 40672336723,
+      "crc": 3237953563
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.19",
+      "size": 233372795,
+      "compressed": 210863782,
+      "offset": 40835934314,
+      "crc": 2291431547
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.24",
+      "size": 117889794,
+      "compressed": 98316847,
+      "offset": 41046798150,
+      "crc": 3579132975
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.46",
+      "size": 291446851,
+      "compressed": 259127325,
+      "offset": 41145115051,
+      "crc": 1474658155
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.58",
+      "size": 193087412,
+      "compressed": 165561470,
+      "offset": 41404242430,
+      "crc": 170004311
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.69",
+      "size": 174273437,
+      "compressed": 152459011,
+      "offset": 41569803954,
+      "crc": 3498176021
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.79",
+      "size": 255483368,
+      "compressed": 232286383,
+      "offset": 41722263019,
+      "crc": 3378415441
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.83",
+      "size": 211881773,
+      "compressed": 183005231,
+      "offset": 41954549456,
+      "crc": 710060261
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.9",
+      "size": 100146235,
+      "compressed": 84859173,
+      "offset": 42137554741,
+      "crc": 407493807
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.90",
+      "size": 219777406,
+      "compressed": 193009266,
+      "offset": 42222413967,
+      "crc": 2326796667
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.92",
+      "size": 449829738,
+      "compressed": 399445561,
+      "offset": 42415423287,
+      "crc": 1110124717
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.96",
+      "size": 84459402,
+      "compressed": 70999552,
+      "offset": 42814868902,
+      "crc": 313411028
+    },
+    {
+      "name": "pcap/capPC1-172.31.66.99",
+      "size": 221428781,
+      "compressed": 191830704,
+      "offset": 42885868508,
+      "crc": 2995678318
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.102",
+      "size": 520677587,
+      "compressed": 455787920,
+      "offset": 43077699266,
+      "crc": 750921775
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.104",
+      "size": 114555068,
+      "compressed": 95345728,
+      "offset": 43533487241,
+      "crc": 4063940869
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.107",
+      "size": 318549507,
+      "compressed": 289788858,
+      "offset": 43628833024,
+      "crc": 2849987974
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.108",
+      "size": 174342175,
+      "compressed": 140658134,
+      "offset": 43918621937,
+      "crc": 3938830994
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.111",
+      "size": 134394100,
+      "compressed": 109814431,
+      "offset": 44059280126,
+      "crc": 3144626834
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.118",
+      "size": 84494741,
+      "compressed": 71539964,
+      "offset": 44169094612,
+      "crc": 3218338182
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.121",
+      "size": 179096710,
+      "compressed": 152098355,
+      "offset": 44240634631,
+      "crc": 3863524618
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.123",
+      "size": 137203123,
+      "compressed": 115599857,
+      "offset": 44392733041,
+      "crc": 684043602
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.124",
+      "size": 274337104,
+      "compressed": 250105056,
+      "offset": 44508332953,
+      "crc": 2973644234
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.14",
+      "size": 368954443,
+      "compressed": 331434686,
+      "offset": 44758438064,
+      "crc": 119111764
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.23",
+      "size": 411187041,
+      "compressed": 372207010,
+      "offset": 45089872804,
+      "crc": 1220180186
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.27",
+      "size": 352638390,
+      "compressed": 310821191,
+      "offset": 45462079868,
+      "crc": 1128785489
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.33",
+      "size": 203141037,
+      "compressed": 172409041,
+      "offset": 45772901113,
+      "crc": 2200260939
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.35",
+      "size": 608518033,
+      "compressed": 552451811,
+      "offset": 45945310208,
+      "crc": 1309603076
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.56",
+      "size": 268171254,
+      "compressed": 231169660,
+      "offset": 46497762073,
+      "crc": 3631168590
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.59",
+      "size": 252481263,
+      "compressed": 231884412,
+      "offset": 46728931787,
+      "crc": 397539925
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.76",
+      "size": 120813393,
+      "compressed": 104484261,
+      "offset": 46960816253,
+      "crc": 1504183846
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.78",
+      "size": 305810607,
+      "compressed": 281888038,
+      "offset": 47065300568,
+      "crc": 2161259549
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.9",
+      "size": 369315196,
+      "compressed": 308058988,
+      "offset": 47347188660,
+      "crc": 2262513907
+    },
+    {
+      "name": "pcap/capPC1-172.31.67.97",
+      "size": 168615499,
+      "compressed": 144480432,
+      "offset": 47655247701,
+      "crc": 2103670959
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.112",
+      "size": 24627275,
+      "compressed": 16121994,
+      "offset": 47799728187,
+      "crc": 2287502710
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.117",
+      "size": 27740460,
+      "compressed": 18447637,
+      "offset": 47815850248,
+      "crc": 652651165
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.12",
+      "size": 25357677,
+      "compressed": 17954565,
+      "offset": 47834297952,
+      "crc": 2094057703
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.120",
+      "size": 37796386,
+      "compressed": 26440693,
+      "offset": 47852252583,
+      "crc": 385914296
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.14",
+      "size": 34875344,
+      "compressed": 22259295,
+      "offset": 47878693343,
+      "crc": 2662268057
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.20",
+      "size": 46681279,
+      "compressed": 33221688,
+      "offset": 47900952704,
+      "crc": 2439123011
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.24",
+      "size": 22124219,
+      "compressed": 13797265,
+      "offset": 47934174458,
+      "crc": 4054232934
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.36",
+      "size": 33080235,
+      "compressed": 25405585,
+      "offset": 47947971789,
+      "crc": 2864123886
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.39",
+      "size": 436024546,
+      "compressed": 378856485,
+      "offset": 47973377440,
+      "crc": 2662827066
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.47",
+      "size": 17466784,
+      "compressed": 10054856,
+      "offset": 48352233991,
+      "crc": 2009910648
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.57",
+      "size": 31605680,
+      "compressed": 20412561,
+      "offset": 48362288913,
+      "crc": 2168929545
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.61",
+      "size": 22185838,
+      "compressed": 14288023,
+      "offset": 48382701540,
+      "crc": 648836860
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.74",
+      "size": 427363877,
+      "compressed": 371375819,
+      "offset": 48396989629,
+      "crc": 1395023474
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.78",
+      "size": 40771541,
+      "compressed": 22991928,
+      "offset": 48768365514,
+      "crc": 4293275239
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.80",
+      "size": 32784177,
+      "compressed": 24138123,
+      "offset": 48791357508,
+      "crc": 1611314564
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.86",
+      "size": 34891533,
+      "compressed": 25157050,
+      "offset": 48815495697,
+      "crc": 4145578437
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.88",
+      "size": 47819450,
+      "compressed": 31960401,
+      "offset": 48840652813,
+      "crc": 1471961557
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.89",
+      "size": 22388282,
+      "compressed": 13285289,
+      "offset": 48872613280,
+      "crc": 1237173780
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.91",
+      "size": 21607394,
+      "compressed": 13108649,
+      "offset": 48885898635,
+      "crc": 3815997166
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.93",
+      "size": 18892936,
+      "compressed": 10596399,
+      "offset": 48899007350,
+      "crc": 2580357725
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.64.98",
+      "size": 36531821,
+      "compressed": 24959927,
+      "offset": 48909603815,
+      "crc": 2707813908
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.103",
+      "size": 21065239,
+      "compressed": 11508770,
+      "offset": 48934563808,
+      "crc": 3988688423
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.104",
+      "size": 614219294,
+      "compressed": 556261503,
+      "offset": 48946072645,
+      "crc": 2692605557
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.105",
+      "size": 185635234,
+      "compressed": 154862946,
+      "offset": 49502334215,
+      "crc": 4282945315
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.108",
+      "size": 22903370,
+      "compressed": 15161057,
+      "offset": 49657197228,
+      "crc": 3261494178
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.11",
+      "size": 432499268,
+      "compressed": 370699276,
+      "offset": 49672358352,
+      "crc": 1102217538
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.114",
+      "size": 25651176,
+      "compressed": 17430234,
+      "offset": 50043057694,
+      "crc": 3854432564
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.115",
+      "size": 23838640,
+      "compressed": 12967396,
+      "offset": 50060487995,
+      "crc": 3552275307
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.116",
+      "size": 24027879,
+      "compressed": 13329240,
+      "offset": 50073455458,
+      "crc": 2877921499
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.125",
+      "size": 25156007,
+      "compressed": 14115995,
+      "offset": 50086784765,
+      "crc": 901147017
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.17",
+      "size": 21519553,
+      "compressed": 13177416,
+      "offset": 50100900827,
+      "crc": 361766360
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.19",
+      "size": 28191754,
+      "compressed": 20512388,
+      "offset": 50114078309,
+      "crc": 1547399533
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.21",
+      "size": 18098808,
+      "compressed": 9910626,
+      "offset": 50134590763,
+      "crc": 3040347084
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.23",
+      "size": 31817808,
+      "compressed": 19713504,
+      "offset": 50144501455,
+      "crc": 3093298411
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.24",
+      "size": 34986666,
+      "compressed": 24501903,
+      "offset": 50164215025,
+      "crc": 1709525787
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.35",
+      "size": 16750642,
+      "compressed": 9273649,
+      "offset": 50188716994,
+      "crc": 358425375
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.38",
+      "size": 29679601,
+      "compressed": 21151721,
+      "offset": 50197990709,
+      "crc": 258154748
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.42",
+      "size": 17768114,
+      "compressed": 9965510,
+      "offset": 50219142496,
+      "crc": 2275523510
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.46",
+      "size": 44500615,
+      "compressed": 25110835,
+      "offset": 50229108072,
+      "crc": 4076436989
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.47",
+      "size": 40357286,
+      "compressed": 25908218,
+      "offset": 50254218973,
+      "crc": 2328335125
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.48",
+      "size": 20050229,
+      "compressed": 11175787,
+      "offset": 50280127257,
+      "crc": 3804972487
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.51",
+      "size": 25639670,
+      "compressed": 15007460,
+      "offset": 50291303110,
+      "crc": 1910053796
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.52",
+      "size": 28349839,
+      "compressed": 16201379,
+      "offset": 50306310636,
+      "crc": 713060734
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.55",
+      "size": 14974611,
+      "compressed": 8358470,
+      "offset": 50322512081,
+      "crc": 3996546304
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.57",
+      "size": 25210318,
+      "compressed": 16435080,
+      "offset": 50330870617,
+      "crc": 3142325632
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.58",
+      "size": 14165544,
+      "compressed": 7976958,
+      "offset": 50347305763,
+      "crc": 3501578799
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.69",
+      "size": 16859412,
+      "compressed": 9188319,
+      "offset": 50355282787,
+      "crc": 3280905034
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.70",
+      "size": 40387766,
+      "compressed": 30722812,
+      "offset": 50364471172,
+      "crc": 1843391724
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.73",
+      "size": 27060536,
+      "compressed": 19266509,
+      "offset": 50395194050,
+      "crc": 867848076
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.78",
+      "size": 13401869,
+      "compressed": 7404961,
+      "offset": 50414460625,
+      "crc": 3789119082
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.87",
+      "size": 33552789,
+      "compressed": 25985250,
+      "offset": 50421865652,
+      "crc": 3038439058
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.89",
+      "size": 30847563,
+      "compressed": 20777963,
+      "offset": 50447850968,
+      "crc": 2657115779
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.9",
+      "size": 249534198,
+      "compressed": 215783787,
+      "offset": 50468628997,
+      "crc": 3050445470
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.90",
+      "size": 55602053,
+      "compressed": 39830302,
+      "offset": 50684412849,
+      "crc": 4204553959
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.65.99",
+      "size": 26699249,
+      "compressed": 19260637,
+      "offset": 50724243217,
+      "crc": 2457217670
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.105",
+      "size": 35356516,
+      "compressed": 25671977,
+      "offset": 50743503920,
+      "crc": 2143516355
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.109",
+      "size": 34962693,
+      "compressed": 22834263,
+      "offset": 50769175964,
+      "crc": 1296875063
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.114",
+      "size": 43787467,
+      "compressed": 27623532,
+      "offset": 50792010294,
+      "crc": 4174086998
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.19",
+      "size": 48462819,
+      "compressed": 33837537,
+      "offset": 50819633893,
+      "crc": 3351888433
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.22",
+      "size": 22860667,
+      "compressed": 13007414,
+      "offset": 50853471496,
+      "crc": 844223261
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.26",
+      "size": 18616097,
+      "compressed": 10442183,
+      "offset": 50866478976,
+      "crc": 3987907927
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.30",
+      "size": 26635636,
+      "compressed": 15101535,
+      "offset": 50876921225,
+      "crc": 3907377767
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.34",
+      "size": 34355437,
+      "compressed": 24714922,
+      "offset": 50892022826,
+      "crc": 3314238577
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.4",
+      "size": 27400480,
+      "compressed": 16538907,
+      "offset": 50916737814,
+      "crc": 3729193977
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.40",
+      "size": 22953605,
+      "compressed": 15711102,
+      "offset": 50933276786,
+      "crc": 2840303716
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.62",
+      "size": 3937407,
+      "compressed": 1883796,
+      "offset": 50948987954,
+      "crc": 2861937331
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.70",
+      "size": 45418068,
+      "compressed": 27899287,
+      "offset": 50950871816,
+      "crc": 3391233450
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.71",
+      "size": 20557876,
+      "compressed": 13710657,
+      "offset": 50978771169,
+      "crc": 105564080
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.72",
+      "size": 26756049,
+      "compressed": 18570024,
+      "offset": 50992481892,
+      "crc": 3056333841
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.8",
+      "size": 21774924,
+      "compressed": 14034836,
+      "offset": 51011051982,
+      "crc": 1957814148
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.83",
+      "size": 26515379,
+      "compressed": 16158159,
+      "offset": 51025086883,
+      "crc": 1670242602
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.89",
+      "size": 33493143,
+      "compressed": 18728837,
+      "offset": 51041245108,
+      "crc": 2508120357
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.93",
+      "size": 42067328,
+      "compressed": 26369957,
+      "offset": 51059974011,
+      "crc": 2680051534
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.95",
+      "size": 15589104,
+      "compressed": 8870003,
+      "offset": 51086344034,
+      "crc": 2697822184
+    },
+    {
+      "name": "pcap/capWIN-J6GMIG1DQE5-172.31.67.98",
+      "size": 41187993,
+      "compressed": 32559781,
+      "offset": 51095214103,
+      "crc": 397772688
+    },
+    {
+      "name": "pcap/UCAP172.31.69.15",
+      "size": 839680,
+      "compressed": 340394,
+      "offset": 51127773950,
+      "crc": 2074246965
+    },
+    {
+      "name": "pcap/UCAP172.31.69.18",
+      "size": 1822720,
+      "compressed": 608966,
+      "offset": 51128114395,
+      "crc": 835058961
+    },
+    {
+      "name": "pcap/UCAP172.31.69.21",
+      "size": 13058048,
+      "compressed": 12354308,
+      "offset": 51128723412,
+      "crc": 174689002
+    },
+    {
+      "name": "pcap/UCAP172.31.69.22",
+      "size": 1798144,
+      "compressed": 597994,
+      "offset": 51141077771,
+      "crc": 113722207
+    },
+    {
+      "name": "pcap/UCAP172.31.69.25",
+      "size": 5345280,
+      "compressed": 4494019,
+      "offset": 51141675816,
+      "crc": 3971675098
+    },
+    {
+      "name": "pcap/UCAP172.31.69.28 part 1",
+      "size": 18275068082,
+      "compressed": 2051148639,
+      "offset": 51146169886,
+      "crc": 2754085659
+    },
+    {
+      "name": "pcap/UCAP172.31.69.28 part 2",
+      "size": 2123980800,
+      "compressed": 265136925,
+      "offset": 53197318603,
+      "crc": 2095342175
+    },
+    {
+      "name": "pcap/UCAP172.31.69.7",
+      "size": 921600,
+      "compressed": 307962,
+      "offset": 53462455586,
+      "crc": 338972249
+    }
+  ]
+}

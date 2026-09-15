@@ -1,0 +1,82 @@
+{
+  "sources": [
+    {
+      "path": "datasets/ids2018/labelled/Thursday-22-02-2018.npz",
+      "sha256": "7f160165b335f27a749cbe74c4e9add728b4bc45dd6057c4690d4a24a742b644",
+      "campaign": "Thursday-22-02-2018"
+    },
+    {
+      "path": "datasets/ids2018/labelled/Friday-23-02-2018.npz",
+      "sha256": "b9a8b524c422099c6182d70fba8f598ae7afe1c47ccb58b9ae98e2e6ea534440",
+      "campaign": "Friday-23-02-2018"
+    },
+    {
+      "path": "datasets/ids2018/labelled/Friday-02-03-2018.npz",
+      "sha256": "9d22a88f987859ebb2c79e5a585bc5a8cd2e7953686f2892fb73cd766de58334",
+      "campaign": "Friday-02-03-2018"
+    },
+    {
+      "path": "datasets/ids2018/fresh_holdout/labelled_graph.npz",
+      "sha256": "e014495a36764d766b5812b126c9c3f7f18795343dbc79ee07d0073585d64e53",
+      "campaign": "Thursday-15-02-2018"
+    },
+    {
+      "path": "datasets/ids2018/labelled/Thursday-01-03-2018.npz",
+      "sha256": "48a0ba4955296db31b3241541aaf2f6fc5b3cb2902b9482813834ae62546ebb5",
+      "campaign": "Thursday-01-03-2018"
+    }
+  ],
+  "boundaries": [
+    {
+      "campaign": "Thursday-22-02-2018",
+      "windows": 545,
+      "train_stop": 381,
+      "calibration_start": 393,
+      "calibration_stop": 463,
+      "policy_start": 475,
+      "test_only": false
+    },
+    {
+      "campaign": "Friday-23-02-2018",
+      "windows": 552,
+      "train_stop": 386,
+      "calibration_start": 398,
+      "calibration_stop": 469,
+      "policy_start": 481,
+      "test_only": false
+    },
+    {
+      "campaign": "Friday-02-03-2018",
+      "windows": 420,
+      "train_stop": 294,
+      "calibration_start": 306,
+      "calibration_stop": 357,
+      "policy_start": 369,
+      "test_only": false
+    },
+    {
+      "campaign": "Thursday-15-02-2018",
+      "windows": 479,
+      "train_stop": 335,
+      "calibration_start": 347,
+      "calibration_stop": 407,
+      "policy_start": 419,
+      "test_only": true
+    },
+    {
+      "campaign": "Thursday-01-03-2018",
+      "windows": 32,
+      "train_stop": 22,
+      "calibration_start": 34,
+      "calibration_stop": 27,
+      "policy_start": 39,
+      "test_only": true
+    }
+  ],
+  "examples": [
+    472,
+    73,
+    78,
+    79
+  ]
+}

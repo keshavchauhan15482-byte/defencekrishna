@@ -1,0 +1,335 @@
+{
+  "name": "combined_lstm_legacy_joint_43",
+  "source": "combined",
+  "architecture": "lstm",
+  "objective": "legacy_joint",
+  "seed": 43,
+  "selection": {
+    "best_epoch": 2,
+    "epochs_run": 12,
+    "selection_value": 0.5809805989265442,
+    "curve": [
+      {
+        "epoch": 1,
+        "train_objective": 0.7730768620967865,
+        "validation_objective": 0.5818672180175781
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.8176596224308014,
+        "validation_objective": 0.5809805989265442
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.7212961554527283,
+        "validation_objective": 0.5983368158340454
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.7233708560466766,
+        "validation_objective": 0.5863134860992432
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.6527610182762146,
+        "validation_objective": 0.6808170080184937
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.6568695902824402,
+        "validation_objective": 0.6381125450134277
+      },
+      {
+        "epoch": 7,
+        "train_objective": 0.608724045753479,
+        "validation_objective": 0.7134453058242798
+      },
+      {
+        "epoch": 8,
+        "train_objective": 0.5884847432374954,
+        "validation_objective": 0.7619198560714722
+      },
+      {
+        "epoch": 9,
+        "train_objective": 0.4941519469022751,
+        "validation_objective": 0.8303756713867188
+      },
+      {
+        "epoch": 10,
+        "train_objective": 0.5271400183439254,
+        "validation_objective": 0.8218168616294861
+      },
+      {
+        "epoch": 11,
+        "train_objective": 0.5527624145150185,
+        "validation_objective": 0.8784287571907043
+      },
+      {
+        "epoch": 12,
+        "train_objective": 0.4379442557692528,
+        "validation_objective": 0.8268144726753235
+      }
+    ]
+  },
+  "validation_mse": 0.015699753537774086,
+  "validation_persistence_mse": 0.016346368938684464,
+  "test": {
+    "cicapt_phase2": {
+      "examples": 270,
+      "mse": 0.012111782096326351,
+      "persistence_mse": 0.009823641739785671,
+      "evidence": {
+        "per_feature": {
+          "flow_count_log": {
+            "model_mse": 0.0008635566919110715,
+            "persistence_mse": 0.000859178660903126
+          },
+          "bytes_log": {
+            "model_mse": 0.0004587617004290223,
+            "persistence_mse": 0.00045315170427784324
+          },
+          "packets_log": {
+            "model_mse": 0.0007626056903973222,
+            "persistence_mse": 0.0007441462366841733
+          },
+          "duration_ms_log": {
+            "model_mse": 0.0031837953720241785,
+            "persistence_mse": 0.0031787585467100143
+          },
+          "syn_fraction": {
+            "model_mse": 0.01953674666583538,
+            "persistence_mse": 0.016092726960778236
+          },
+          "ack_fraction": {
+            "model_mse": 0.04392366111278534,
+            "persistence_mse": 0.034702811390161514
+          },
+          "rst_fraction": {
+            "model_mse": 0.0025829083751887083,
+            "persistence_mse": 0.003079233691096306
+          },
+          "fin_fraction": {
+            "model_mse": 0.009082961827516556,
+            "persistence_mse": 0.007449515629559755
+          },
+          "backward_packet_fraction": {
+            "model_mse": 0.008355043828487396,
+            "persistence_mse": 0.0064864265732467175
+          },
+          "tcp_fraction": {
+            "model_mse": 0.04262514412403107,
+            "persistence_mse": 0.03190293535590172
+          },
+          "udp_fraction": {
+            "model_mse": 0.02746010571718216,
+            "persistence_mse": 0.03018665686249733
+          },
+          "active": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_ms_log": {
+            "model_mse": 0.002939145313575864,
+            "persistence_mse": 0.0029162319842725992
+          },
+          "tcp_window_log": {
+            "model_mse": 0.03190668299794197,
+            "persistence_mse": 0.02242068573832512
+          },
+          "ttl_mean_scaled": {
+            "model_mse": 0.0042945086024701595,
+            "persistence_mse": 0.004027425777167082
+          },
+          "ttl_variance_scaled": {
+            "model_mse": 0.009846851229667664,
+            "persistence_mse": 0.007278014440089464
+          },
+          "fragment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "duplicate_payload_segment_fraction": {
+            "model_mse": 0.003184151602908969,
+            "persistence_mse": 0.0025399764999747276
+          },
+          "packet_features_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_present": {
+            "model_mse": 7.566333079012111e-05,
+            "persistence_mse": 7.566333079012111e-05
+          },
+          "tcp_window_present": {
+            "model_mse": 0.04326513037085533,
+            "persistence_mse": 0.03190293535590172
+          }
+        },
+        "per_horizon": [
+          {
+            "model_mse": 0.01700512319803238,
+            "persistence_mse": 0.015592442825436592
+          },
+          {
+            "model_mse": 0.005740574561059475,
+            "persistence_mse": 0.005085075739771128
+          },
+          {
+            "model_mse": 0.017493177205324173,
+            "persistence_mse": 0.012547588907182217
+          },
+          {
+            "model_mse": 0.008208254352211952,
+            "persistence_mse": 0.006069457624107599
+          }
+        ],
+        "changed_entries": 16945,
+        "changed_entry_model_mse": 0.01614861562848091,
+        "changed_entry_persistence_mse": 0.013148432597517967,
+        "paired_mse_difference": 0.00228814035654068,
+        "paired_block_bootstrap_95pct": [
+          0.0021257777290884404,
+          0.002459209627704695
+        ],
+        "bootstrap_status": "descriptive_correlated_blocks",
+        "bootstrap_block_examples": 20,
+        "interpretation": "Negative difference favors model. Correlated internal samples; not independent campaign evidence."
+      },
+      "validation_error_band_coverage": 0.9646825396825397
+    },
+    "Thursday-15-02-2018": {
+      "examples": 8,
+      "mse": 0.053454943001270294,
+      "persistence_mse": 0.053717829287052155,
+      "evidence": {
+        "per_feature": {
+          "flow_count_log": {
+            "model_mse": 0.01301739364862442,
+            "persistence_mse": 0.01303484383970499
+          },
+          "bytes_log": {
+            "model_mse": 0.005291816778481007,
+            "persistence_mse": 0.005150327924638987
+          },
+          "packets_log": {
+            "model_mse": 0.006018523592501879,
+            "persistence_mse": 0.005893758498132229
+          },
+          "duration_ms_log": {
+            "model_mse": 0.03193143010139465,
+            "persistence_mse": 0.032203853130340576
+          },
+          "syn_fraction": {
+            "model_mse": 0.11230143904685974,
+            "persistence_mse": 0.11490565538406372
+          },
+          "ack_fraction": {
+            "model_mse": 0.11045332252979279,
+            "persistence_mse": 0.11033275723457336
+          },
+          "rst_fraction": {
+            "model_mse": 0.11660496890544891,
+            "persistence_mse": 0.11568189412355423
+          },
+          "fin_fraction": {
+            "model_mse": 0.004951975308358669,
+            "persistence_mse": 0.004748980514705181
+          },
+          "backward_packet_fraction": {
+            "model_mse": 0.012541473843157291,
+            "persistence_mse": 0.012776976451277733
+          },
+          "tcp_fraction": {
+            "model_mse": 0.11214877665042877,
+            "persistence_mse": 0.11088095605373383
+          },
+          "udp_fraction": {
+            "model_mse": 0.07492135465145111,
+            "persistence_mse": 0.07857313752174377
+          },
+          "active": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_ms_log": {
+            "model_mse": 0.02973777987062931,
+            "persistence_mse": 0.030770037323236465
+          },
+          "tcp_window_log": {
+            "model_mse": 0.05051260441541672,
+            "persistence_mse": 0.05119618773460388
+          },
+          "ttl_mean_scaled": {
+            "model_mse": 0.05731618404388428,
+            "persistence_mse": 0.05710984766483307
+          },
+          "ttl_variance_scaled": {
+            "model_mse": 0.21913951635360718,
+            "persistence_mse": 0.21807333827018738
+          },
+          "fragment_fraction": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "duplicate_payload_segment_fraction": {
+            "model_mse": 0.0010847413213923573,
+            "persistence_mse": 0.0007851093541830778
+          },
+          "packet_features_present": {
+            "model_mse": 0.0,
+            "persistence_mse": 0.0
+          },
+          "iat_present": {
+            "model_mse": 0.052297357469797134,
+            "persistence_mse": 0.05507577955722809
+          },
+          "tcp_window_present": {
+            "model_mse": 0.11228325963020325,
+            "persistence_mse": 0.11088095605373383
+          }
+        },
+        "per_horizon": [
+          {
+            "model_mse": 0.029247740283608437,
+            "persistence_mse": 0.02907642349600792
+          },
+          {
+            "model_mse": 0.08451016992330551,
+            "persistence_mse": 0.08583022654056549
+          },
+          {
+            "model_mse": 0.06323526799678802,
+            "persistence_mse": 0.06510051339864731
+          },
+          {
+            "model_mse": 0.03682660311460495,
+            "persistence_mse": 0.0348641499876976
+          }
+        ],
+        "changed_entries": 453,
+        "changed_entry_model_mse": 0.07917753607034683,
+        "changed_entry_persistence_mse": 0.07968737185001373,
+        "paired_mse_difference": -0.00026288075605407357,
+        "paired_block_bootstrap_95pct": [
+          null,
+          null
+        ],
+        "bootstrap_status": "insufficient_examples_for_two_blocks",
+        "bootstrap_block_examples": 20,
+        "interpretation": "Negative difference favors model. Correlated internal samples; not independent campaign evidence."
+      },
+      "validation_error_band_coverage": 0.7827380952380952
+    }
+  },
+  "risk_fpr": null,
+  "risk_recall": null,
+  "warning_lead_time": null,
+  "target": "future pooled traffic state; not infiltration probability",
+  "evidence_scope": "Previously evaluated CICAPT phase2 and IDS2018 DoS15; diagnostic reused holdouts",
+  "automatic_containment_approved": false,
+  "checkpoint_sha256": {
+    "state_predictions.npz": "d6aa7f9e3639f3424e761046968ee00f9324b0b2e9c889d41b7bb8ddcb289f03",
+    "lstm.npz": "55398da67b9462c8cfdc6d7c15e8c50736b9a21fc504dd6731d9ab93a86a3bfd"
+  },
+  "evidence_revision": "V10: require >=40 examples for 20-example block bootstrap; small-sample intervals withheld"
+}

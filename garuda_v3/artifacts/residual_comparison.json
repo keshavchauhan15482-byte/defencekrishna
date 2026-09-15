@@ -1,0 +1,48 @@
+{
+  "scope": "development comparison on already inspected internal holdout; not a new blind test",
+  "primary": "residual_run, seed 42 fixed; no best-test-seed promotion",
+  "runs": [
+    {
+      "run": "residual_run",
+      "seed": 42,
+      "f1": 0.9487179487179487,
+      "state_mse": 0.01270640455186367,
+      "persistence_mse": 0.012735428288578987,
+      "validation_state_mse": 0.015245103277266026,
+      "validation_persistence_mse": 0.015490640886127949,
+      "paired_difference_ci": [
+        -0.00018443781627865973,
+        0.00017542366622365084
+      ]
+    },
+    {
+      "run": "residual_seed7",
+      "seed": 7,
+      "f1": 0.9531914893617022,
+      "state_mse": 0.012181633152067661,
+      "persistence_mse": 0.012735428288578987,
+      "validation_state_mse": 0.014937639236450195,
+      "validation_persistence_mse": 0.015490640886127949,
+      "paired_difference_ci": [
+        -0.000866909658361692,
+        -0.0002631076946272514
+      ]
+    },
+    {
+      "run": "residual_seed19",
+      "seed": 19,
+      "f1": 0.979253112033195,
+      "state_mse": 0.012028026394546032,
+      "persistence_mse": 0.012735428288578987,
+      "validation_state_mse": 0.014754107221961021,
+      "validation_persistence_mse": 0.015490640886127949,
+      "paired_difference_ci": [
+        -0.0010123483749339356,
+        -0.00044517571586766275
+      ]
+    }
+  ],
+  "mean_f1": 0.9603875167042819,
+  "mean_state_mse": 0.012305354699492455,
+  "all_three_state_errors_below_persistence": true
+}

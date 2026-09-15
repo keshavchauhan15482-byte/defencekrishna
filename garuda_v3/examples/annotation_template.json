@@ -1,0 +1,27 @@
+{
+  "source_sha256": "REPLACE_WITH_SHA256_OF_ORIGINAL_CAPTURE",
+  "campaign_id": "REPLACE_WITH_INDEPENDENT_CAMPAIGN_ID",
+  "intervals": [
+    {
+      "start": 0,
+      "end": 10,
+      "label": 0,
+      "stages": {},
+      "evidence": "REPLACE: reviewed benign coverage log reference; times above are placeholders"
+    },
+    {
+      "start": 10,
+      "end": 20,
+      "label": 1,
+      "stages": {"initial_access": 1},
+      "evidence": "REPLACE: reviewed attack timeline reference; stage above is an example only"
+    }
+  ],
+  "incidents": [
+    {
+      "incident_id": "REPLACE_WITH_INCIDENT_ID",
+      "compromise_time": 15,
+      "evidence": "REPLACE: independently observed successful compromise event log reference"
+    }
+  ]
+}

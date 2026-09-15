@@ -1,0 +1,8 @@
+{
+  "recorded_at": "2026-09-13T10:38:18.023118+00:00",
+  "predeclared_64_node_evaluation": "blocked: actual graph exceeds trained 64-node schema",
+  "diagnostic_node_limit": 256,
+  "scope": "Exploratory graph-scale stress evaluation after preprocessing failure. Not a passed predeclared holdout and not approved runtime inference.",
+  "weights_and_thresholds": "unchanged",
+  "automatic_enforcement": false
+}

@@ -1,0 +1,57 @@
+{
+  "manifest": {
+    "development": [
+      "cicapt_phase1"
+    ],
+    "test": [
+      "cicapt_phase2",
+      "Thursday-15-02-2018"
+    ],
+    "development_fraction": 0.7,
+    "embargo_windows": 12
+  },
+  "boundaries": {
+    "method": "blocked development validation with embargo and entire held-out test campaigns",
+    "boundaries": [
+      {
+        "campaign": "cicapt_phase1",
+        "cut": 4026,
+        "embargo_windows": 12,
+        "test_only": false
+      },
+      {
+        "campaign": "cicapt_phase2",
+        "cut": 3026,
+        "embargo_windows": 12,
+        "test_only": true
+      },
+      {
+        "campaign": "Thursday-15-02-2018",
+        "cut": 335,
+        "embargo_windows": 12,
+        "test_only": true
+      }
+    ],
+    "manifest": {
+      "development": [
+        "cicapt_phase1"
+      ],
+      "test": [
+        "cicapt_phase2",
+        "Thursday-15-02-2018"
+      ],
+      "development_fraction": 0.7,
+      "embargo_windows": 12
+    }
+  },
+  "source_hashes": [
+    "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+    "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+    "e014495a36764d766b5812b126c9c3f7f18795343dbc79ee07d0073585d64e53"
+  ],
+  "split_examples": [
+    251,
+    106,
+    278
+  ]
+}

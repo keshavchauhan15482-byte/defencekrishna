@@ -1,0 +1,116 @@
+{
+  "source_sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+  "history_windows": 8,
+  "window_seconds": 60,
+  "annotation_sha256": "1dde9ae986c7ec755ff8b217321be0cd4bf838c65b21dc12f6c82e84c3f402f0",
+  "first_complete_window_start": 1701469020,
+  "stages": {
+    "initialAccess": {
+      "candidate_rows": 2,
+      "unique_event_times": 1,
+      "candidates_with_history": 0,
+      "first_event": {
+        "epoch": 1701469216.029,
+        "source_id": "a7adf29d7a6adbe7f3b86b13e27eaaae",
+        "observed_history_windows": 3,
+        "has_contiguous_history": false
+      }
+    },
+    "collection": {
+      "candidate_rows": 76,
+      "unique_event_times": 38,
+      "candidates_with_history": 76,
+      "first_event": {
+        "epoch": 1701469537.665,
+        "source_id": "6859c2e56aa19c0d822a000cbf2bae5b",
+        "observed_history_windows": 8,
+        "has_contiguous_history": true
+      }
+    },
+    "exfiltration": {
+      "candidate_rows": 22,
+      "unique_event_times": 10,
+      "candidates_with_history": 22,
+      "first_event": {
+        "epoch": 1701549357.18,
+        "source_id": "9a24b82e531145a46476d4450ea96dba",
+        "observed_history_windows": 1338,
+        "has_contiguous_history": true
+      }
+    },
+    "CandC": {
+      "candidate_rows": 16,
+      "unique_event_times": 8,
+      "candidates_with_history": 16,
+      "first_event": {
+        "epoch": 1701560845.695,
+        "source_id": "30d5a9642fb10ae48d46d91539ae71b4",
+        "observed_history_windows": 1530,
+        "has_contiguous_history": true
+      }
+    },
+    "discovery": {
+      "candidate_rows": 28,
+      "unique_event_times": 14,
+      "candidates_with_history": 28,
+      "first_event": {
+        "epoch": 1701567393.892,
+        "source_id": "d673ae9d2afc2d9ca187ca67c1ec08eb",
+        "observed_history_windows": 1639,
+        "has_contiguous_history": true
+      }
+    },
+    "persistence": {
+      "candidate_rows": 9,
+      "unique_event_times": 3,
+      "candidates_with_history": 9,
+      "first_event": {
+        "epoch": 1701594909.443,
+        "source_id": "987b96ca09c8a65dfeaf50dc717d844c",
+        "observed_history_windows": 2098,
+        "has_contiguous_history": true
+      }
+    },
+    "credentialAccess": {
+      "candidate_rows": 50,
+      "unique_event_times": 43,
+      "candidates_with_history": 50,
+      "first_event": {
+        "epoch": 1701599346.569,
+        "source_id": "96bf930101c0c9c6a2e60f2bb2d0e024",
+        "observed_history_windows": 2172,
+        "has_contiguous_history": true
+      }
+    },
+    "lateralMovement": {
+      "candidate_rows": 10,
+      "unique_event_times": 5,
+      "candidates_with_history": 10,
+      "first_event": {
+        "epoch": 1701626485.151,
+        "source_id": "86fe64bef7cfc5d236b26b3c6adcf04f",
+        "observed_history_windows": 2624,
+        "has_contiguous_history": true
+      }
+    },
+    "defenceEvasion": {
+      "candidate_rows": 38,
+      "unique_event_times": 23,
+      "candidates_with_history": 38,
+      "first_event": {
+        "epoch": 1701659000.037,
+        "source_id": "5683ec57ab9ed20fa1a90168e06146f0",
+        "observed_history_windows": 3166,
+        "has_contiguous_history": true
+      }
+    }
+  },
+  "labels_promoted": false,
+  "supervised_training_allowed": false,
+  "reasons": [
+    "Original Caldera Attack_info.csv unavailable; cannot verify host/PID/clock alignment",
+    "Candidate process first-seen time is not verified compromise time",
+    "No reviewed complete negative-stage coverage",
+    "Phase 2 was previously evaluated; cannot be called fresh holdout"
+  ]
+}

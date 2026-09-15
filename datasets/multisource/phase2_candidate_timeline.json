@@ -1,0 +1,1826 @@
+{
+  "source_filename": "Phase2_Provenance.csv",
+  "source_sha256": "7f858f479e90ccbe27c3d4f487ddf2f15a26ad0bfa7f472abff3aa68e332976d",
+  "label_counts": [
+    {
+      "label": "0",
+      "stage": "0",
+      "rows": 196333
+    },
+    {
+      "label": "1",
+      "stage": "CandC",
+      "rows": 16
+    },
+    {
+      "label": "1",
+      "stage": "collection",
+      "rows": 100
+    },
+    {
+      "label": "1",
+      "stage": "credentialAccess",
+      "rows": 151
+    },
+    {
+      "label": "1",
+      "stage": "defenceEvasion",
+      "rows": 46
+    },
+    {
+      "label": "1",
+      "stage": "discovery",
+      "rows": 36
+    },
+    {
+      "label": "1",
+      "stage": "exfiltration",
+      "rows": 22
+    },
+    {
+      "label": "1",
+      "stage": "initialAccess",
+      "rows": 2
+    },
+    {
+      "label": "1",
+      "stage": "lateralMovement",
+      "rows": 10
+    },
+    {
+      "label": "1",
+      "stage": "persistence",
+      "rows": 19
+    }
+  ],
+  "labelled_rows_without_numeric_timestamp": 119,
+  "events": [
+    {
+      "epoch": 1701469216.029,
+      "source_id": "a7adf29d7a6adbe7f3b86b13e27eaaae",
+      "entity_type": "Process",
+      "publisher_stage": "initialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701469216.029,
+      "source_id": "694bcdefa9d96fa54bd8bce6472bd11d",
+      "entity_type": "Process",
+      "publisher_stage": "initialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701469537.665,
+      "source_id": "6859c2e56aa19c0d822a000cbf2bae5b",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701469537.665,
+      "source_id": "9e88ae06c140329e35c2ee9a3a8c5179",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701473051.823,
+      "source_id": "88725476265014610a6b31c0e7d6ef80",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701473051.823,
+      "source_id": "0e103d87f7f9e037d441420b62eec8d6",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701477059.953,
+      "source_id": "742e40703c5659d816f0eae7f190717e",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701477059.953,
+      "source_id": "1bfd3233e46398d0491599e302792d22",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701480789.733,
+      "source_id": "5dc4b8bc718d69a416ff51081a2f5661",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701480789.733,
+      "source_id": "c72a32fec783bc23fd873451373cade8",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701485103.853,
+      "source_id": "043ad5c5768cf58d11713dff8cd522ac",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701485103.853,
+      "source_id": "1fc49972f167b7b4c696e4f5046f262a",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701489071.023,
+      "source_id": "3e12cdbfd41fc769e4c5c99f71d0a0d4",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701489071.023,
+      "source_id": "87cf026cc2fea32bff89b41eb065256f",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701493273.382,
+      "source_id": "5b393c494a6ec01b9a6a32b78bf17569",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701493273.382,
+      "source_id": "96c0b081c450ceb3b6d03bd966318ba6",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701497025.532,
+      "source_id": "2745009da0703a037a1a1a6231652642",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701497025.532,
+      "source_id": "8564451234afde875b77656140b6f68b",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701500583.659,
+      "source_id": "51e02ac7ff5f3e49c2ad1b7aa67f4918",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701500583.659,
+      "source_id": "f8de5ed6021890ccf06604ebc8c6f478",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701504830.732,
+      "source_id": "32d4ab2aac03c5f4905bbe30ef6bc5f0",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701504830.732,
+      "source_id": "09d58ccd40fb311c3a4f776f6d58ce02",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701508449.564,
+      "source_id": "8531b69bc835720c51081796f2c789ab",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701508449.564,
+      "source_id": "fa9e9730a7ea01e3e5bfde83fc43573c",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701511828.663,
+      "source_id": "325bc102dd44b4f24cede3a03c2ec4cb",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701511828.663,
+      "source_id": "7aa87a1e1ed2d662bb08b1be1391018e",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701514996.07,
+      "source_id": "604470af6005369cc209a258da29af8a",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701514996.07,
+      "source_id": "ffe272153d92f627d2e064bc9a928a4c",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701518091.583,
+      "source_id": "8ab7e85496f915bd4a00b2a6c51f920f",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701518091.583,
+      "source_id": "53cbb38cc4c6f1cbdda63ac1a1a125d8",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701521494.696,
+      "source_id": "146137eec028cb61b6ce2c5b30700995",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701521494.696,
+      "source_id": "dc04f2d67229bdaa13f445949fa03815",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701521494.896,
+      "source_id": "3aaeba9c150f1ed2fc8bf75cee329097",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701521494.896,
+      "source_id": "29f39b92bb67078e614cd58d5cfd6c67",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701524591.768,
+      "source_id": "c417b9c183ce0ead5ff992b8601201d2",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701524591.768,
+      "source_id": "4c90fa7da9aee458e2ace237331343aa",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701524591.776,
+      "source_id": "558eb5e28431a6408f708b7c83a99318",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701524591.776,
+      "source_id": "09c3cadca1cb4452f6b07b044f899f1a",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701528207.391,
+      "source_id": "2d85e6dee5478e41586b6e03d1f3797f",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701528207.391,
+      "source_id": "fc09129bafe58c60a89ed6f6cd3d5612",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701528207.399,
+      "source_id": "a1022fb3fb0c9f13115d8c9116e2d3cf",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701528207.399,
+      "source_id": "020ae8c338ec175f2e609a23ef2fb2f4",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532192.311,
+      "source_id": "2fb34949adf63aa91c187bc69599046c",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532192.311,
+      "source_id": "7becfc9902ec46e6f68cfccba367e406",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532192.323,
+      "source_id": "e5f1f76c4a73d8aba37f66ef25abc0be",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532192.323,
+      "source_id": "367d62ed64175f4310184e35f19901dc",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532192.383,
+      "source_id": "5c8bb369728c0590679efe5a864674b7",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532192.383,
+      "source_id": "ffc43f482fa295b0b6629327746b06d9",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532193.451,
+      "source_id": "8b2178d554f68bd78298450273b934ca",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532193.451,
+      "source_id": "7a9e8ae62bb4a373055268af948b4824",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532193.459,
+      "source_id": "32cc2b561336197ce9c9e8dd7ca00f77",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701532193.459,
+      "source_id": "29e90f63fa1007fd71460f9dfdfc8caa",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534989.821,
+      "source_id": "f7bee35d4f2356033fb7ef59e0df9e84",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534989.821,
+      "source_id": "9c66899a2991d6b71cf0cf35752d80b0",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534989.829,
+      "source_id": "0b71d44068729b283c936f940b7c94da",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534989.829,
+      "source_id": "f7aa8f17b88ee93cafd4b1ded9f0dbf0",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534989.869,
+      "source_id": "5ff16e3c9d20cda60bdb30d295eb7b01",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534989.869,
+      "source_id": "6cee0ac20b807bed067be343e2dcfd9c",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534990.413,
+      "source_id": "7d0e15bdf5911f64649b5d95f21683e0",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534990.413,
+      "source_id": "b17080ddde497b99e38e0dda3d9be738",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534990.417,
+      "source_id": "78c11ebba5102945a124533049a2a445",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701534990.417,
+      "source_id": "ef934823fb5cf1dd9811ed2c0f842b57",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701538047.853,
+      "source_id": "e004ef54f8c240abeaed5e6692b2e1e8",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701538047.853,
+      "source_id": "d3495826d2927479c81237ffd11145e9",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701538047.873,
+      "source_id": "e2326ca5b63767f4ae3c5372cf4cdfe0",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701538047.873,
+      "source_id": "5f3c516f8e227275bc5dc9d0e961119d",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701542214.993,
+      "source_id": "e65b7bed68de073f0bfabcd6d6bc22ef",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701542214.993,
+      "source_id": "df76bdb2c17e6e9b592ad1df975471e6",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701542215.001,
+      "source_id": "2d4bf2a6a439d2129ac074ed026a77c9",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701542215.001,
+      "source_id": "a849cabbf3770035e19c96441d024081",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701545133.084,
+      "source_id": "0d03637304892d912f52541422d2e1bd",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701545133.084,
+      "source_id": "c70e3bed8fa80511753b2f64703bb3d6",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701545133.092,
+      "source_id": "200986141c401a76bd41a66ad040c2c0",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701545133.092,
+      "source_id": "b64d47589ffd09618ba17a56b1d898bd",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701549357.18,
+      "source_id": "9a24b82e531145a46476d4450ea96dba",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701549357.18,
+      "source_id": "057defea406e15c7ff7cf46b361ccda9",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701549357.188,
+      "source_id": "1c87e327b90401bf195f4bf09e4e3c09",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701549357.188,
+      "source_id": "5c9ebe45a202c1304bdfc2a8794ba81e",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701549357.216,
+      "source_id": "0de7ba29822d97d5e8fc1eae01d0c243",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701549357.216,
+      "source_id": "7640802b6aeadea7900aaf6b7ab04b16",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701549357.22,
+      "source_id": "f35176171fc2e9f68cca32e8f920ea0f",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701549357.22,
+      "source_id": "721ed049b02b26591f0310a3a70ab2a2",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701553502.224,
+      "source_id": "35445385c7a41e8c96b10e38935852a8",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701553502.224,
+      "source_id": "64f192c3e244b9ca8b65cb6df1507f7f",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701553502.232,
+      "source_id": "41570fb3eec27c354a134ca7a2a0673c",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701553502.232,
+      "source_id": "a833e44bc5bf6e95a34b8f7f207dde6d",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701553502.24,
+      "source_id": "9bffa5f2541b4596d9af571e3f6ff0e1",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701553502.24,
+      "source_id": "267c1cf3e4b401460aadbac7ddde02a2",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701553502.24,
+      "source_id": "b3e44e4d704e5b9474dd816f564bfb95",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701553502.24,
+      "source_id": "b0eca6c2295eeac8ee941dc4919e8b75",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701557913.647,
+      "source_id": "b003efb53c906d1f02c97bda30050d4e",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701557913.647,
+      "source_id": "c33dbdc04a3c5b147555c014dc699c25",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701557913.655,
+      "source_id": "d389c5f9ccf9ff88b0b1bd2dfd4867e5",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701557913.655,
+      "source_id": "5513845ff902178fae20ad3aff7a5c1c",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701557913.679,
+      "source_id": "b8c34f52aa89030c663be53b370cfebb",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701557913.679,
+      "source_id": "b5b21b4446244b1c62ffbee35dfef6a7",
+      "entity_type": "Process",
+      "publisher_stage": "exfiltration",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701560845.695,
+      "source_id": "30d5a9642fb10ae48d46d91539ae71b4",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701560845.695,
+      "source_id": "642c1833761abb40f0d49fddb9bd6cd2",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701560845.703,
+      "source_id": "d0a84b59d15413e4d1a32ab3f4071f47",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701560845.703,
+      "source_id": "1d612dcfc45ee5e762b69935ef3a30cf",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701563741.834,
+      "source_id": "9617ddfd032aa854244d4c9fdc813ce2",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701563741.834,
+      "source_id": "118b58c8ab372ad89f964aa7533381eb",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701567393.892,
+      "source_id": "d673ae9d2afc2d9ca187ca67c1ec08eb",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701567393.892,
+      "source_id": "e2fe987d9bc778049349cdf79d7fa2be",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701567393.9,
+      "source_id": "88082b436a5072338b6adae779e5a603",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701567393.9,
+      "source_id": "74e3fede0fc90b5d089b4e4c1a6c49c3",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701567393.9,
+      "source_id": "13b8dae2a6330a48c029a4daeabe00c6",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701567393.9,
+      "source_id": "8d39073a0b0b8f51514c6e677116ce15",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701570989.942,
+      "source_id": "9eeff03ee29b0c6fdf4f242435824b2b",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701570989.942,
+      "source_id": "12a0688cea225d1dfc9cd157f116ccea",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701570989.95,
+      "source_id": "5024698694e91a72c4034bbac4818817",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701570989.95,
+      "source_id": "e5b89efbcd13d743efbc6e06233219bf",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701575208.631,
+      "source_id": "4fc92c52e8ff272fb95d1a70b814976c",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701575208.631,
+      "source_id": "6ba33703fa04fea85772a623bd647aa4",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701578671.687,
+      "source_id": "fb541f3982cc0b046f30a1d20cccd7ed",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701578671.687,
+      "source_id": "436db26a476d5bf76a0dd0830e112e47",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701581758.746,
+      "source_id": "0c0ee0cdbaf6ff815c7c47397cbb0d34",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701581758.746,
+      "source_id": "d59d492c02128c522433d3035ec73f6a",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701584779.859,
+      "source_id": "f68023a08fafc1a4fde3232507bfe042",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701584779.859,
+      "source_id": "027fe5a95b9175029bc026d1a5f4c626",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701588284.904,
+      "source_id": "8c71c9c9673eaf6a0e4fa839a030f12b",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701588284.904,
+      "source_id": "018c6f35dcd57b4e16bcfa7d4980ecf5",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701588284.916,
+      "source_id": "362506939a8fef3cc899a9f0e6872998",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701588284.916,
+      "source_id": "356a81045b123654581a1973f27073f2",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701588284.984,
+      "source_id": "4f6cfeb7374fec23eb9facf8e514b302",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701591523.348,
+      "source_id": "3b04dc1d7912e3a9546ab43ca8ff9b1d",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701591523.348,
+      "source_id": "c493fd20d1d3755fb68e60ce00588ca5",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594909.443,
+      "source_id": "987b96ca09c8a65dfeaf50dc717d844c",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594909.443,
+      "source_id": "02bf4eb057cd1d9ed4d0dfae28372ce2",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594909.447,
+      "source_id": "7796ed9e5cb2172dbc494e5c5a480a0a",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594909.447,
+      "source_id": "4021564c1ce321d7e3113c67f2d4ecad",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594910.356,
+      "source_id": "85d4647b914c21b3898fbc796ae6b954",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594910.356,
+      "source_id": "94a90d8c2b599130eb9505677b90ed1f",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594910.356,
+      "source_id": "29213179310316ae951eccb3db93f83f",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594910.356,
+      "source_id": "2ce0ed4d08564ebcd8ef9d37ae6494c4",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701594910.356,
+      "source_id": "3e014019bddd9fff900feb6ec12b185d",
+      "entity_type": "Process",
+      "publisher_stage": "persistence",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701599346.569,
+      "source_id": "96bf930101c0c9c6a2e60f2bb2d0e024",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701599346.569,
+      "source_id": "20049ea84690d61eea540134a7832edd",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701599346.577,
+      "source_id": "21c6b34371242e9c23d965670d317d8a",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701599346.577,
+      "source_id": "762a1d085b16cea9ff5b0ca3c771250c",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603442.228,
+      "source_id": "5a3e6a0bccfbc74b7969a6dadc795b48",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603442.228,
+      "source_id": "6a61b7dd7503c187f6a0937405759987",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603442.232,
+      "source_id": "abb10f91b82cd2db95fa5a165ef5f6f0",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603442.232,
+      "source_id": "f35251061094460185b68f9fed15ad9f",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603445.356,
+      "source_id": "f809897449ae0badd7ab714224ea2360",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603445.356,
+      "source_id": "4a1337870ae8672dd516a972b77b9fb4",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603450.864,
+      "source_id": "5d502df7cf57cbe45c3c37b34d0ccd1b",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603450.864,
+      "source_id": "659caf72a8d24cad1ed73d4679ebc5d5",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603450.868,
+      "source_id": "5190881924a527920e89850931ab862b",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701603450.868,
+      "source_id": "09a92528db1c8403cb5e1578b364792b",
+      "entity_type": "Process",
+      "publisher_stage": "CandC",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.786,
+      "source_id": "5d180a6b07ebbbb2c79fbf1dd7c8d2ff",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.786,
+      "source_id": "9771d87a666c61d765c53a1418f772d2",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.878,
+      "source_id": "d6fb105f6cb390c06736382cac4b254c",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.878,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.89,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.906,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.91,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.914,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.918,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.922,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.93,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.938,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.946,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.966,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607258.97,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.018,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.022,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.614,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.63,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.634,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.678,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.682,
+      "source_id": "703dccebd00efe352b1bfef739a86d50",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.682,
+      "source_id": "4a60b3d97122aa04b6bbad1fd6843617",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.694,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.702,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.762,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.794,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.91,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.914,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.918,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.922,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.942,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.946,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.95,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.954,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.958,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.962,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.966,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.978,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.986,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.99,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701607259.994,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701610388.889,
+      "source_id": "b10859c2fd0ec578d7133c672b964d01",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701610388.889,
+      "source_id": "bf0c3fd3b06ff0827d96f31304fa11fb",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701614551.933,
+      "source_id": "59389cd53fd5a568428174a3d24c2064",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701614551.933,
+      "source_id": "15163d055a884bee901eca3862ba9386",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701617433.331,
+      "source_id": "193cdf7ac7e64fc4aed3f02c56ed64b5",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701617433.331,
+      "source_id": "1dbdf22411bb3666087f5b26a90f5cd9",
+      "entity_type": "Process",
+      "publisher_stage": "collection",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701620700.002,
+      "source_id": "bbff389cc52aeaeddc999dc3247b4e25",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701620700.002,
+      "source_id": "1700802d19f0b6a111546e3e9bcf32cc",
+      "entity_type": "Process",
+      "publisher_stage": "credentialAccess",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701623582.127,
+      "source_id": "ac3504f9920bb98c268fa7d77a7d08aa",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701623582.127,
+      "source_id": "be2f80974ba0f6fa98a2d881c88eea17",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701623582.155,
+      "source_id": "7b3cdfcc80a105af3ca96d78ddcfda9c",
+      "entity_type": "Process",
+      "publisher_stage": "discovery",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626485.151,
+      "source_id": "86fe64bef7cfc5d236b26b3c6adcf04f",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626485.151,
+      "source_id": "82fd22d6b1a5094a8d89584a450cd646",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626485.159,
+      "source_id": "09f2c865255e0dd3da2f3e33c955e94f",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626485.159,
+      "source_id": "edada763eb8341869cc2482b34fc7705",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626485.167,
+      "source_id": "e5f46056ef074525f6e1febcd05bd6bd",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626485.167,
+      "source_id": "59fd9481258102acb3b649cdc7cd7a11",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626511.882,
+      "source_id": "86e9c9bf7f6b786bf03eb30b58c10b5c",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626511.882,
+      "source_id": "a26390a44a4e9717c930e77d300e2cd5",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626525.453,
+      "source_id": "2766fab1d748b6da6e8f33ca40a3c29f",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701626525.453,
+      "source_id": "a08d65887c2473ce28c243387d8ab3b7",
+      "entity_type": "Process",
+      "publisher_stage": "lateralMovement",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659000.037,
+      "source_id": "5683ec57ab9ed20fa1a90168e06146f0",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659000.037,
+      "source_id": "31965e9a69b60d04aaadfebb7b9fa912",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659000.065,
+      "source_id": "ba823af143abed1e3794f0bb512c17b6",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659002.009,
+      "source_id": "8a3af14053e39d0cf11c12e30cb7356c",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659002.009,
+      "source_id": "fd17d38fc72930b6165601e5be3c696f",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659002.013,
+      "source_id": "cbe75d8e038e7214732a5e84ee929c3c",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659004.009,
+      "source_id": "e6e5d2ff7531255e3cc50872e20c39bc",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659004.009,
+      "source_id": "6b86558cfa929d28647c7d1721e5ec44",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659004.013,
+      "source_id": "66d1e5a82888c4957c0ad835ca08a3f3",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659006.009,
+      "source_id": "dbb79d7e2cc96820f2c7f178261624d2",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659006.009,
+      "source_id": "c63ca199a191a66b64d65b52aa2f43ae",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659008.013,
+      "source_id": "7ee6c0fc09585a70752ec10d49d3b0d4",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659008.013,
+      "source_id": "2c98c26c8f98b25d32a0c22ed2eae33e",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659008.045,
+      "source_id": "70de0b89a36aa9bf4dd91ef603f480a8",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659008.045,
+      "source_id": "a933fd598e7c7b7bae15aa83bf8c1768",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659010.025,
+      "source_id": "716aaaa2bba53f19201b37bf1ea5200d",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659010.025,
+      "source_id": "661e399e0324129ff9feb083f316a668",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659010.029,
+      "source_id": "67fba59ab4aff0f8696e3736e9ca5a4c",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659012.017,
+      "source_id": "52f7d41308e369e0ddf429a18326c5d7",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659012.017,
+      "source_id": "ff3fd1c3a812ac3231f713bd1733fbbb",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659012.025,
+      "source_id": "f1058b75680977bddae4b78a85e3e900",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659012.025,
+      "source_id": "0a4398fef8fb0613b41c85281ecdb8bd",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659012.029,
+      "source_id": "",
+      "entity_type": "WasDerivedFrom",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659014.017,
+      "source_id": "7c8d52036b3e9f3168b2bba7b69e525d",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659014.017,
+      "source_id": "8cd86cc0959ba0bd25bf357a5e0de4e8",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659016.017,
+      "source_id": "5311a469a09c780ce4b438372d26751d",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659016.017,
+      "source_id": "570ff332ce2b08ed246e7f8c8920d091",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659016.021,
+      "source_id": "b0cbb13e849e2d8263d4239d06e22908",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659018.017,
+      "source_id": "00ef049871dec5b28adcceedb20cb23b",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659018.017,
+      "source_id": "041845e1fc9473df863fb41eda7a3a39",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659018.021,
+      "source_id": "051b4a876577ca54efc1e1c3944457e3",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659020.021,
+      "source_id": "02b36c9b6ff12ceda83c1a7f9bc1801d",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659020.021,
+      "source_id": "9a1e377e5263f37bfa41b35b04947a11",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659021.881,
+      "source_id": "3cafe58e5fea8315fb45fdf909d4f7a0",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659022.021,
+      "source_id": "8af2f23a2a62133800d93b1ade60976e",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659022.021,
+      "source_id": "090e60260464dec5bffda2cc1f421cef",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659024.033,
+      "source_id": "335d2b8eb3081c81410726ed4d6cd7ea",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    },
+    {
+      "epoch": 1701659024.033,
+      "source_id": "02f2b3e10606e0e7329cc4361b0c4e5a",
+      "entity_type": "Process",
+      "publisher_stage": "defenceEvasion",
+      "network_stage_validated": false
+    }
+  ],
+  "status": "candidate_provenance_events_only",
+  "risk_labels_applied": false,
+  "stage_labels_applied": false,
+  "limitations": [
+    "Mirror labels not verified against Caldera Attack_info.csv",
+    "Process/Artifact labels are not packet labels",
+    "Zero labels do not prove complete negative coverage",
+    "First seen timestamps do not establish compromise time",
+    "Discovery is not automatically pre-compromise Reconnaissance"
+  ]
+}

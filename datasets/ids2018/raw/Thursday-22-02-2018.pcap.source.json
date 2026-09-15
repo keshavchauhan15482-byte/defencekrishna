@@ -1,0 +1,10 @@
+{
+  "name": "pcap/UCAP172.31.69.28",
+  "size": 25669632,
+  "compressed": 9490759,
+  "offset": 50197505614,
+  "crc": 1981358611,
+  "source_url": "https://cse-cic-ids2018.s3.amazonaws.com/Original%20Network%20Traffic%20and%20Log%20data/Thursday-22-02-2018/pcap.zip",
+  "sha256": "1488978ba2ae7cfc17c0dcb378bd821a6394caf6ae7b5aa097243f9966303f4b",
+  "original_member_crc_verified": true
+}

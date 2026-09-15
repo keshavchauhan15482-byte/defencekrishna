@@ -1,0 +1,57 @@
+{
+  "created_at": "2026-09-13T10:34:51.552591+00:00",
+  "development": [
+    "Thursday-22-02-2018",
+    "Friday-23-02-2018",
+    "Friday-02-03-2018",
+    "Thursday-15-02-2018"
+  ],
+  "test": [
+    "Wednesday-28-02-2018"
+  ],
+  "development_fraction": 0.7,
+  "embargo_windows": 12,
+  "member": {
+    "name": "pcap/capEC2AMAZ-O4EL3NG-172.31.69.24-part2",
+    "size": 347870553,
+    "compressed": 298278501,
+    "offset": 31695839155,
+    "crc": 3547627704
+  },
+  "source_url": "https://cse-cic-ids2018.s3.amazonaws.com/Original%20Network%20Traffic%20and%20Log%20data/Wednesday-28-02-2018/pcap.zip",
+  "training": {
+    "epochs": 20,
+    "seed": 42,
+    "history": 8,
+    "horizon": 4,
+    "stride": 2,
+    "calibrate": true,
+    "balance_risk": true,
+    "allow_unknown_labels": true
+  },
+  "scope": "New capture-day and held-out infiltration family; previously evaluated DoS/botnet data explicitly reused as development. Partial victim capture; weak schedule labels, not zero-day or verified-compromise evidence.",
+  "schedule": [
+    [
+      "10:50",
+      "12:05"
+    ],
+    [
+      "13:42",
+      "14:40"
+    ]
+  ],
+  "attacker": "13.58.225.34",
+  "timezone_assumption": "UTC-04:00 unverified",
+  "source": "https://www.unb.ca/cic/datasets/ids-2018.html",
+  "reason": "Part 1 has no labelled positives. Predeclare remaining victim capture as an extension, with frozen v8 weights and thresholds and no retraining.",
+  "checkpoint_sha256": {
+    "gnn_lstm_validation_predictions.npz": "f5c553fd1013304d836aa5b0cc74c9fc7e2ff92b52faacad099089032ce923a2",
+    "lstm_test_predictions.npz": "e80d280292cf8c63997ba1a8c151a9e6ea0b4b01e307ef29773dedd301c4c657",
+    "gnn_lstm_test_predictions.npz": "5c349d0f36730f0170622fd125e5fbb0f022ad1f4a4b51f2d11da6890df52730",
+    "logistic_regression.npz": "309af249d1d627817daa2fb220f872f68565cd05dc82f1b122bd8b8d02bb3496",
+    "gnn_lstm.npz": "e953e50ab867feebdbded207f568e5fae3edf8c241250e3002089fc60c92cce8",
+    "lstm_validation_predictions.npz": "ce2aec763d53703a2550cf03dbc3560a762ff0dbddcea4661cce541da99543e5",
+    "lstm.npz": "a3bdab385f9f4ce7257ee0f774fb080950d899bb8fd7b97a52058e4bdfcea5f3"
+  },
+  "model_dir": "garuda_v3/artifacts/diverse_host_v8"
+}

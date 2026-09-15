@@ -1,0 +1,734 @@
+{
+  "config": {
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "architectures": [
+      "lstm",
+      "gnn_lstm"
+    ],
+    "epochs": 40,
+    "patience": 10,
+    "learning_rate": 0.003,
+    "history": 8,
+    "horizon": 4,
+    "stride": 16,
+    "development_fraction": 0.7,
+    "embargo_windows": 12,
+    "objectives": [
+      "legacy_joint",
+      "state_only"
+    ],
+    "selection": {
+      "legacy_joint": "mixed validation loss; epochs 1 onward",
+      "state_only": "validation state MSE; includes epoch 0 persistence"
+    },
+    "risk_head_trained": {
+      "legacy_joint": "only when training labels exist",
+      "state_only": false
+    },
+    "test_scope": "Previously evaluated CICAPT phase2 and IDS2018 DoS15; diagnostic reused holdouts",
+    "default_model_changed": false,
+    "automatic_containment_approved": false
+  },
+  "rows": [
+    {
+      "source": "ids_only",
+      "architecture": "lstm",
+      "objective": "legacy_joint",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.010965405963361263,
+      "seed_sd": 6.882731319681012e-05,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": -11.622616681464027,
+      "best_epochs": [
+        6,
+        4,
+        6
+      ],
+      "per_seed_intervals": [
+        [
+          0.0010963902168441564,
+          0.001329387875739485
+        ],
+        [
+          0.0009668767961557023,
+          0.0011826078029116617
+        ],
+        [
+          0.001041096419794485,
+          0.001249292807187885
+        ]
+      ]
+    },
+    {
+      "source": "ids_only",
+      "architecture": "lstm",
+      "objective": "legacy_joint",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.053287835170825325,
+      "seed_sd": 0.00014543113672122683,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 0.800468153560463,
+      "best_epochs": [
+        6,
+        4,
+        6
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "ids_only",
+      "architecture": "lstm",
+      "objective": "state_only",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.010279333218932152,
+      "seed_sd": 0.0012800171011747277,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": -4.638722494336633,
+      "best_epochs": [
+        40,
+        40,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          0.0014706193935126067,
+          0.0022769198229070755
+        ],
+        [
+          -0.000794621645763982,
+          -0.00019814815241261377
+        ],
+        [
+          -0.00027548115685931406,
+          0.00016991196971503087
+        ]
+      ]
+    },
+    {
+      "source": "ids_only",
+      "architecture": "lstm",
+      "objective": "state_only",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.05203636487325033,
+      "seed_sd": 0.0009832346810890655,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 3.130179376416309,
+      "best_epochs": [
+        40,
+        40,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "ids_only",
+      "architecture": "gnn_lstm",
+      "objective": "legacy_joint",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.01107066497206688,
+      "seed_sd": 0.00031218295824365835,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": -12.694103320469985,
+      "best_epochs": [
+        5,
+        7,
+        10
+      ],
+      "per_seed_intervals": [
+        [
+          0.0008612098754383624,
+          0.0010499954805709422
+        ],
+        [
+          0.0014380296459421515,
+          0.001711555980728008
+        ],
+        [
+          0.0011031011206796392,
+          0.001338865389698185
+        ]
+      ]
+    },
+    {
+      "source": "ids_only",
+      "architecture": "gnn_lstm",
+      "objective": "legacy_joint",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.05325043573975563,
+      "seed_sd": 2.153759116135692e-06,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 0.8700901609387635,
+      "best_epochs": [
+        5,
+        7,
+        10
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "ids_only",
+      "architecture": "gnn_lstm",
+      "objective": "state_only",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.01317718904465437,
+      "seed_sd": 0.0017356784559781043,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": -34.13751634780062,
+      "best_epochs": [
+        38,
+        39,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          0.004610853944905102,
+          0.005639312160201371
+        ],
+        [
+          0.0013190522062359379,
+          0.0020569656684529037
+        ],
+        [
+          0.0026930818043183536,
+          0.003671669255709276
+        ]
+      ]
+    },
+    {
+      "source": "ids_only",
+      "architecture": "gnn_lstm",
+      "objective": "state_only",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.052426995088656746,
+      "seed_sd": 0.0017782621883318396,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 2.402990246492598,
+      "best_epochs": [
+        38,
+        39,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "cicapt_only",
+      "architecture": "lstm",
+      "objective": "legacy_joint",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.008868867220977942,
+      "seed_sd": 0.00021861760808129143,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": 9.719150434211176,
+      "best_epochs": [
+        40,
+        40,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          -0.0017221231217263266,
+          -0.0007642422875505871
+        ],
+        [
+          -0.0012176187243312596,
+          -0.0005347005775547586
+        ],
+        [
+          -0.0011540717969182879,
+          -0.00041704642280819803
+        ]
+      ]
+    },
+    {
+      "source": "cicapt_only",
+      "architecture": "lstm",
+      "objective": "legacy_joint",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.052398825685183205,
+      "seed_sd": 0.00436990421081687,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 2.455429825394817,
+      "best_epochs": [
+        40,
+        40,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "cicapt_only",
+      "architecture": "lstm",
+      "objective": "state_only",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.008663670470317205,
+      "seed_sd": 0.0002368307793543165,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": 11.807955747923826,
+      "best_epochs": [
+        39,
+        40,
+        39
+      ],
+      "per_seed_intervals": [
+        [
+          -0.0017457278794609011,
+          -0.0007632338369148783
+        ],
+        [
+          -0.0017213343642652034,
+          -0.0010073450655909255
+        ],
+        [
+          -0.0012726642860798165,
+          -0.00048519078482058806
+        ]
+      ]
+    },
+    {
+      "source": "cicapt_only",
+      "architecture": "lstm",
+      "objective": "state_only",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.048576708883047104,
+      "seed_sd": 0.0010617363906732145,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 9.570603414617572,
+      "best_epochs": [
+        39,
+        40,
+        39
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "cicapt_only",
+      "architecture": "gnn_lstm",
+      "objective": "legacy_joint",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.009389480575919151,
+      "seed_sd": 0.0003517202917888994,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": 4.41955412632945,
+      "best_epochs": [
+        40,
+        40,
+        37
+      ],
+      "per_seed_intervals": [
+        [
+          -0.0005763433247921057,
+          0.00021212703686614991
+        ],
+        [
+          -0.000706289334630128,
+          -1.169350494478741e-05
+        ],
+        [
+          -0.0011282987252343446,
+          -0.00043700126916519335
+        ]
+      ]
+    },
+    {
+      "source": "cicapt_only",
+      "architecture": "gnn_lstm",
+      "objective": "legacy_joint",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.05098577216267586,
+      "seed_sd": 0.0015598041269311593,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 5.085941037894504,
+      "best_epochs": [
+        40,
+        40,
+        37
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "cicapt_only",
+      "architecture": "gnn_lstm",
+      "objective": "state_only",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.009284996427595615,
+      "seed_sd": 0.00026947937100377646,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": 5.483153055231504,
+      "best_epochs": [
+        40,
+        40,
+        39
+      ],
+      "per_seed_intervals": [
+        [
+          -0.0007801080748322419,
+          -1.0211165965756637e-05
+        ],
+        [
+          -0.0008170455243089236,
+          1.8451624919180185e-05
+        ],
+        [
+          -0.0013901590515160932,
+          -0.00032153932261280683
+        ]
+      ]
+    },
+    {
+      "source": "cicapt_only",
+      "architecture": "gnn_lstm",
+      "objective": "state_only",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.052378942569096885,
+      "seed_sd": 0.003505627121871619,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 2.4924438230753077,
+      "best_epochs": [
+        40,
+        40,
+        39
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "combined",
+      "architecture": "lstm",
+      "objective": "legacy_joint",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.011727306060492992,
+      "seed_sd": 0.0003364668021835898,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": -19.378397249540313,
+      "best_epochs": [
+        5,
+        2,
+        3
+      ],
+      "per_seed_intervals": [
+        [
+          0.0015443527867319063,
+          0.0017985206679441035
+        ],
+        [
+          0.0021257777290884404,
+          0.002459209627704695
+        ],
+        [
+          0.001641016165376641,
+          0.001887987315421924
+        ]
+      ]
+    },
+    {
+      "source": "combined",
+      "architecture": "lstm",
+      "objective": "legacy_joint",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.05335302402575811,
+      "seed_sd": 0.0001012179871719285,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 0.6791139294639703,
+      "best_epochs": [
+        5,
+        2,
+        3
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "combined",
+      "architecture": "lstm",
+      "objective": "state_only",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.008425578474998474,
+      "seed_sd": 0.00010634902498923131,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": 14.23161900464114,
+      "best_epochs": [
+        40,
+        40,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          -0.0018937292392365633,
+          -0.0008302644477225839
+        ],
+        [
+          -0.0019085168692981823,
+          -0.0011695331893861293
+        ],
+        [
+          -0.0017701286997180432,
+          -0.0009153485487331636
+        ]
+      ]
+    },
+    {
+      "source": "combined",
+      "architecture": "lstm",
+      "objective": "state_only",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.04836087301373482,
+      "seed_sd": 0.0025801783343909605,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 9.972399004977195,
+      "best_epochs": [
+        40,
+        40,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "combined",
+      "architecture": "gnn_lstm",
+      "objective": "legacy_joint",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.011730419471859932,
+      "seed_sd": 0.0003454917821038203,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": -19.410090296267903,
+      "best_epochs": [
+        5,
+        4,
+        3
+      ],
+      "per_seed_intervals": [
+        [
+          0.0015796027175383643,
+          0.0018498269986594097
+        ],
+        [
+          0.0015940641053020955,
+          0.0018409520154818893
+        ],
+        [
+          0.002165393024915829,
+          0.002458438579924405
+        ]
+      ]
+    },
+    {
+      "source": "combined",
+      "architecture": "gnn_lstm",
+      "objective": "legacy_joint",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.05341383442282677,
+      "seed_sd": 7.93621344502755e-05,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 0.5659105519713603,
+      "best_epochs": [
+        5,
+        4,
+        3
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "source": "combined",
+      "architecture": "gnn_lstm",
+      "objective": "state_only",
+      "test": "cicapt_phase2",
+      "mean_mse": 0.00879880009839932,
+      "seed_sd": 8.549330833287593e-05,
+      "persistence_mse": 0.009823641739785671,
+      "improvement_vs_persistence_pct": 10.43240041252471,
+      "best_epochs": [
+        40,
+        40,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          -0.0015703453391324729,
+          -0.0006891699697007424
+        ],
+        [
+          -0.0013989455270348116,
+          -0.0005053833563579245
+        ],
+        [
+          -0.0014350365876452998,
+          -0.0005303779726091303
+        ]
+      ]
+    },
+    {
+      "source": "combined",
+      "architecture": "gnn_lstm",
+      "objective": "state_only",
+      "test": "Thursday-15-02-2018",
+      "mean_mse": 0.05143367499113083,
+      "seed_sd": 0.0016667208861975294,
+      "persistence_mse": 0.053717829287052155,
+      "improvement_vs_persistence_pct": 4.252134396040996,
+      "best_epochs": [
+        40,
+        40,
+        40
+      ],
+      "per_seed_intervals": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          null
+        ]
+      ]
+    }
+  ]
+}
