@@ -1,0 +1,33 @@
+name: Package Latest Krishna Defence ZIP
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/package-latest-zip.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+      - name: Build clean complete ZIP
+        run: |
+          set -euo pipefail
+          git archive --format=zip --prefix=KrishnaDefence_Integrated_V15_Latest/ -o KrishnaDefence_Integrated_V15_Latest.zip HEAD
+          sha256sum KrishnaDefence_Integrated_V15_Latest.zip > KrishnaDefence_Integrated_V15_Latest.zip.sha256
+          unzip -t KrishnaDefence_Integrated_V15_Latest.zip
+      - name: Upload complete package
+        uses: actions/upload-artifact@v4
+        with:
+          name: KrishnaDefence_Integrated_V15_Latest
+          path: |
+            KrishnaDefence_Integrated_V15_Latest.zip
+            KrishnaDefence_Integrated_V15_Latest.zip.sha256
+          if-no-files-found: error
+          compression-level: 0
