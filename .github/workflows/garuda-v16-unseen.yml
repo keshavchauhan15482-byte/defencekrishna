@@ -29,16 +29,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
-          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Run unseen protocol tests
         run: python -m unittest garuda_v3.tests.test_v16_unseen -v
-      - name: Run V18 multi-branch development experiment
+      - name: Run V19 10-second development experiment
         working-directory: garuda_v3/experiments/v16
-        run: python v18_dev_multibranch.py
-      - name: Upload V18 development evidence
+        run: python v19_dev_highres_tree.py
+      - name: Upload V19 development evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: garuda-v18-dev-evidence
-          path: garuda_v3/experiments/v16/artifacts/v18_dev/
+          name: garuda-v19-dev-evidence
+          path: garuda_v3/experiments/v16/artifacts/v19_dev/
           if-no-files-found: warn
