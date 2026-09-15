@@ -6,6 +6,7 @@ on:
     paths:
       - 'garuda_v3/experiments/v16/**'
       - 'garuda_v3/tests/test_v16_unseen.py'
+      - 'garuda_v3/requirements.txt'
       - '.github/workflows/garuda-v16-unseen.yml'
   workflow_dispatch:
 
@@ -31,23 +32,23 @@ jobs:
           python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
       - name: Run unseen protocol tests
         run: python -m unittest garuda_v3.tests.test_v16_unseen -v
-      - name: Run V21A generic microstructure OOD experiment
-        working-directory: garuda_v3/experiments/v16
-        run: python v21_dev_microstructure_ood.py
-      - name: Run V21B retry-burst + destination-port experiment
+      - name: Run V21B retry-burst future-forecast experiment
         working-directory: garuda_v3/experiments/v16
         run: python v21_dev_retry_burst_tree.py
-      - name: Upload V21A development evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: garuda-v21a-dev-evidence
-          path: garuda_v3/experiments/v16/artifacts/v21_dev/
-          if-no-files-found: warn
-      - name: Upload V21B development evidence
+      - name: Run V22 strict network-only unknown-onset fallback
+        working-directory: garuda_v3/experiments/v16
+        run: python v22_dev_dual_lane.py
+      - name: Upload V21B future-forecast evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: garuda-v21b-retry-dev-evidence
           path: garuda_v3/experiments/v16/artifacts/v21_retry_dev/
+          if-no-files-found: warn
+      - name: Upload V22 onset-fallback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v22-dev-evidence
+          path: garuda_v3/experiments/v16/artifacts/v22_dev/
           if-no-files-found: warn
