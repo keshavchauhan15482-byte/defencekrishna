@@ -32,13 +32,13 @@ jobs:
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Run unseen protocol tests
         run: python -m unittest garuda_v3.tests.test_v16_unseen -v
-      - name: Run V17 development unknown ensemble
+      - name: Run V18 multi-branch development experiment
         working-directory: garuda_v3/experiments/v16
-        run: python v17_dev_unknown_ensemble.py
-      - name: Upload V17 development evidence
+        run: python v18_dev_multibranch.py
+      - name: Upload V18 development evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: garuda-v17-dev-evidence
-          path: garuda_v3/experiments/v16/artifacts/v17_dev/
+          name: garuda-v18-dev-evidence
+          path: garuda_v3/experiments/v16/artifacts/v18_dev/
           if-no-files-found: warn
