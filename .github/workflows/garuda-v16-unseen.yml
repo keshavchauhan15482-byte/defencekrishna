@@ -31,13 +31,13 @@ jobs:
           python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
       - name: Run unseen protocol tests
         run: python -m unittest garuda_v3.tests.test_v16_unseen -v
-      - name: Run V20 30-second development experiment
+      - name: Run V21 generic microstructure OOD development experiment
         working-directory: garuda_v3/experiments/v16
-        run: python v20_dev_30s_tree.py
-      - name: Upload V20 development evidence
+        run: python v21_dev_microstructure_ood.py
+      - name: Upload V21 development evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: garuda-v20-dev-evidence
-          path: garuda_v3/experiments/v16/artifacts/v20_dev/
+          name: garuda-v21-dev-evidence
+          path: garuda_v3/experiments/v16/artifacts/v21_dev/
           if-no-files-found: warn
