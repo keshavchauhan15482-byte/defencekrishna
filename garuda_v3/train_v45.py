@@ -91,6 +91,37 @@ def build_train_command(args: argparse.Namespace) -> list[str]:
     return command
 
 
+def _align_verified_incidents(args: argparse.Namespace, out: Path) -> dict[str, str]:
+    if not args.verified_manifests:
+        return {}
+    aligned = {}
+    for architecture, cli_name in (("lstm", "lstm"), ("gnn_lstm", "gnn")):
+        prediction_path = out / f"{architecture}_test_predictions.npz"
+        if not prediction_path.exists():
+            continue
+        destination = out / f"{architecture}_verified_incidents.json"
+        command = [
+            sys.executable,
+            "-m",
+            "garuda_v3.v45_incident_alignment",
+            "--graphs",
+            *args.graphs,
+            "--predictions",
+            str(prediction_path),
+            "--metrics",
+            str(out / "metrics.json"),
+            "--verified-manifests",
+            *args.verified_manifests,
+            "--architecture",
+            architecture,
+            "--output",
+            str(destination),
+        ]
+        subprocess.run(command, check=True)
+        aligned[cli_name] = str(destination)
+    return aligned
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--graphs", nargs="+", required=True)
@@ -104,7 +135,7 @@ def main() -> None:
     parser.add_argument("--stride", type=int, default=2)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--stage-supervision", action="store_true")
-    parser.add_argument("--verified-incidents", help="Optional independently verified incident JSON for post-training audit")
+    parser.add_argument("--verified-manifests", nargs="+", help="Independent verified campaign manifests used only after inference")
     args = parser.parse_args()
     for name in ("state_epochs", "risk_epochs", "stage_epochs", "patience"):
         if not 1 <= getattr(args, name) <= 300:
@@ -121,6 +152,7 @@ def main() -> None:
 
     protocol_path = out / "v45_protocol.json"
     protocol_path.write_text(json.dumps(protocol, indent=2, sort_keys=True) + "\n")
+    aligned = _align_verified_incidents(args, out)
 
     audit_command = [
         sys.executable,
@@ -135,8 +167,10 @@ def main() -> None:
         "--recall-floor",
         "0.80",
     ]
-    if args.verified_incidents:
-        audit_command.extend(["--verified-incidents", args.verified_incidents])
+    if "lstm" in aligned:
+        audit_command.extend(["--lstm-incidents", aligned["lstm"]])
+    if "gnn" in aligned:
+        audit_command.extend(["--gnn-incidents", aligned["gnn"]])
     subprocess.run(audit_command, check=True)
 
 
