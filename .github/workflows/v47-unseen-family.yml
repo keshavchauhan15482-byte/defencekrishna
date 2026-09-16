@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'garuda_v3/v47_unseen_family.py'
+      - 'garuda_v3/v47_leave_one_family.py'
       - 'garuda_v3/tests/test_v47_unseen_family.py'
       - '.github/workflows/v47-unseen-family.yml'
       - 'V47_UNSEEN_FAMILY.md'
@@ -32,13 +33,13 @@ jobs:
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Compile and run leakage/unit tests
         run: |
-          python -m compileall -q garuda_v3/v47_unseen_family.py
+          python -m compileall -q garuda_v3/v47_unseen_family.py garuda_v3/v47_leave_one_family.py
           python -m unittest garuda_v3.tests.test_v47_unseen_family -v
       - name: Download public X-IIoTID source
         run: |
           mkdir -p datasets/v47
           python - <<'PY'
-          import json, os, shutil
+          import json, shutil
           from pathlib import Path
           import pandas as pd
           import kagglehub
@@ -59,29 +60,45 @@ jobs:
           shutil.copyfile(src, dst)
           print(json.dumps({'source': str(src), 'destination': str(dst), 'bytes': dst.stat().st_size}))
           PY
-      - name: Run three-seed unseen-family world-model diagnostic
+      - name: Run strict chronological pre-onset support audit
         run: |
           python -m garuda_v3.v47_unseen_family \
             --csv datasets/v47/XIIoTID.csv \
-            --output garuda_v3/artifacts/v47_unseen_family \
+            --output garuda_v3/artifacts/v47_pre_onset \
             --seeds 42 43 44 \
             --epochs 12 \
             --max-families 5 \
             --min-test-positives 10 \
+            --min-test-negatives 50
+      - name: Run three-seed leave-one-family-out generalisation benchmark
+        run: |
+          python -m garuda_v3.v47_leave_one_family \
+            --csv datasets/v47/XIIoTID.csv \
+            --output garuda_v3/artifacts/v47_leave_one_family \
+            --seeds 42 43 44 \
+            --epochs 12 \
+            --max-families 5 \
+            --min-test-positives 20 \
             --min-test-negatives 50
       - name: Print compact result summary
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p = Path('garuda_v3/artifacts/v47_unseen_family/summary.json')
-          d = json.loads(p.read_text())
+          pre = json.loads(Path('garuda_v3/artifacts/v47_pre_onset/summary.json').read_text())
+          loo = json.loads(Path('garuda_v3/artifacts/v47_leave_one_family/summary.json').read_text())
           print(json.dumps({
-            'claim_boundary': d['claim_boundary'],
-            'network_features': d['network_only_feature_audit']['raw_selected'],
-            'selected_families': d['family_selection']['selected'],
-            'summaries': {k: v['summary'] for k, v in d['families'].items()},
-            'all_selected_release_gates_passed': d['all_selected_release_gates_passed'],
+            'strict_pre_onset': {
+              'selected_families': pre['family_selection']['selected'],
+              'claim_boundary': pre['claim_boundary'],
+            },
+            'leave_one_family_out': {
+              'network_features': loo['network_only_feature_audit']['raw_selected'],
+              'selected_families': loo['family_selection']['selected'],
+              'summaries': {k: v['summary'] for k, v in loo['families'].items()},
+              'pre_onset_claim_supported': loo['pre_onset_claim_supported'],
+              'all_selected_unseen_family_gates_passed': loo['all_selected_unseen_family_gates_passed'],
+            },
           }, indent=2))
           PY
       - name: Upload V47 evidence
@@ -91,4 +108,5 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           path: |
-            garuda_v3/artifacts/v47_unseen_family/*.json
+            garuda_v3/artifacts/v47_pre_onset/*.json
+            garuda_v3/artifacts/v47_leave_one_family/*.json
