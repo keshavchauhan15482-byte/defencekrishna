@@ -1,0 +1,104 @@
+name: Garuda V44 Runtime Regression
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v44-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: garuda_v3/requirements.txt
+
+      - name: Install Garuda dependencies
+        run: python -m pip install -r garuda_v3/requirements.txt
+
+      - name: Verify archived V15 provenance
+        run: python -m garuda_v3.experiments.v44.verify_v15_provenance
+
+      - name: Run V44 contract tests
+        run: python -m unittest garuda_v3.tests.test_v44_runtime_contract -v
+
+      - name: Build exact 10-second packet graphs
+        run: python -m garuda_v3.experiments.v44.prepare_ids2018_10s --mode service
+
+      - name: Apply conservative 10-second weak labels
+        run: python -m garuda_v3.experiments.v44.label_ids2018_10s
+
+      - name: Fail-closed runtime preflight
+        run: python -m garuda_v3.experiments.v44.preflight
+
+      - name: Train live-schema V44 regression checkpoint
+        run: |
+          python -m garuda_v3.train \
+            --graphs \
+            datasets/v44_runtime/labelled/Thursday-22-02-2018.npz \
+            datasets/v44_runtime/labelled/Friday-23-02-2018.npz \
+            datasets/v44_runtime/labelled/Thursday-01-03-2018.npz \
+            datasets/v44_runtime/labelled/Friday-02-03-2018.npz \
+            --split-manifest datasets/v44_runtime/split.json \
+            --allow-unknown-labels \
+            --decoder residual \
+            --epochs 20 \
+            --history 8 \
+            --horizon 4 \
+            --stride 8 \
+            --calibrate \
+            --balance-risk \
+            --fpr-budget .01 \
+            --evaluation-scope development_reused_holdout \
+            --output garuda_v3/artifacts/v44_runtime_regression
+
+      - name: Verify checkpoint contract metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from garuda_v3.model import GraphWorldModel
+          from garuda_v3.experiments.v44.runtime_contract import (
+              HISTORY, HORIZON, MAX_NODES, WINDOW_SECONDS, validate_metadata
+          )
+          root = Path("garuda_v3/artifacts/v44_runtime_regression")
+          for name in ("lstm.npz", "gnn_lstm.npz"):
+              model, meta = GraphWorldModel.load(root / name)
+              errors = validate_metadata({
+                  "schema": meta["schema"],
+                  "features": meta["features"],
+                  "window_seconds": meta["window_seconds"],
+                  "max_nodes": meta["max_nodes"],
+                  "synthetic": False,
+                  "packet_features": meta["packet_features_trained"],
+              })
+              if meta["history"] != HISTORY or meta["horizon"] != HORIZON:
+                  errors.append("history_or_horizon_mismatch")
+              if meta.get("automatic_containment_approved") is not False:
+                  errors.append("automatic_containment_must_remain_disabled")
+              if errors:
+                  raise SystemExit(f"{name}: {errors}")
+              print(name, "contract=PASS", "window_seconds=", WINDOW_SECONDS, "max_nodes=", MAX_NODES)
+          PY
+
+      - name: Upload V44 regression evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v44-runtime-regression
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            garuda_v3/artifacts/v44_preflight.json
+            garuda_v3/artifacts/v44_runtime_regression/
+            datasets/v44_runtime/prepare_manifest.json
+            datasets/v44_runtime/label_manifest.json
+            datasets/v44_runtime/split.json
