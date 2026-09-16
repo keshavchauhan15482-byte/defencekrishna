@@ -1,0 +1,98 @@
+name: V50 WUSTL unseen-family support audit
+
+on:
+  pull_request:
+    paths:
+      - 'garuda_v3/v50_wustl_support.py'
+      - 'garuda_v3/tests/test_v50_wustl_support.py'
+      - '.github/workflows/v50-wustl-support.yml'
+      - 'V50_WUSTL_SUPPORT.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  support-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install audit dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'kagglehub<0.4'
+      - name: Compile and test support audit
+        run: |
+          python -m compileall -q garuda_v3/v50_wustl_support.py
+          python -m unittest garuda_v3.tests.test_v50_wustl_support -v
+      - name: Download timestamped WUSTL-IIoT-2021 source
+        run: |
+          mkdir -p datasets/v50
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          import pandas as pd
+          import kagglehub
+
+          dataset = 'annaamalaiu/wustl-iiot-2021-dataset'
+          root = Path(kagglehub.dataset_download(dataset))
+          matches = []
+          attempts = []
+          def norm(x): return ''.join(ch.lower() for ch in str(x) if ch.isalnum())
+          for p in root.rglob('*.csv'):
+              try:
+                  cols = list(pd.read_csv(p, nrows=0).columns)
+              except Exception as exc:
+                  attempts.append({'file': str(p), 'error': str(exc)})
+                  continue
+              names = {norm(c) for c in cols}
+              ok = 'starttime' in names and 'traffic' in names
+              attempts.append({'file': p.name, 'rows_not_read': True, 'columns': cols[:12], 'eligible': ok})
+              if ok:
+                  matches.append(p)
+          if len(matches) != 1:
+              raise RuntimeError('Expected exactly one timestamped WUSTL CSV. Matches=' + repr(matches) + ' attempts=' + json.dumps(attempts))
+          src = matches[0]
+          dst = Path('datasets/v50/WUSTL-IIoT-2021.csv')
+          shutil.copyfile(src, dst)
+          if dst.stat().st_size < 1_000_000:
+              raise RuntimeError(f'Unexpectedly small WUSTL source: {dst.stat().st_size}')
+          print(json.dumps({'dataset': dataset, 'source': str(src), 'destination': str(dst), 'bytes': dst.stat().st_size}, indent=2))
+          PY
+      - name: Run fixed chronological support audit
+        run: |
+          python -m garuda_v3.v50_wustl_support \
+            --csv datasets/v50/WUSTL-IIoT-2021.csv \
+            --output garuda_v3/artifacts/v50_wustl_support \
+            --min-positive 20 \
+            --min-negative 100
+      - name: Print compact support result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path('garuda_v3/artifacts/v50_wustl_support/support.json').read_text())
+          print(json.dumps({
+            'source': d['source'],
+            'timestamp_method': d['timestamp_method'],
+            'timeline_minutes': d['timeline_minutes'],
+            'sequence_rows': d['sequence_rows'],
+            'test_sequences': d['test_sequences'],
+            'family_support': d['family_support'],
+            'eligible_families_for_fresh_v50_model_test': d['eligible_families_for_fresh_v50_model_test'],
+            'model_training_permitted': d['model_training_permitted'],
+          }, indent=2))
+          PY
+      - name: Upload support evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v50-wustl-support-evidence
+          if-no-files-found: error
+          retention-days: 14
+          path: garuda_v3/artifacts/v50_wustl_support/support.json
