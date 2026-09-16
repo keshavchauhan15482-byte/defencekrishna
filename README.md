@@ -1,48 +1,33 @@
-## V15 integrated Krishna Defence System
+# Krishna Defence System — Garuda AI
 
-See [V15_SYSTEM_INTEGRATION_RESULTS.md](V15_SYSTEM_INTEGRATION_RESULTS.md) for the measured system integration. Garuda V15 is now part of the real Krishna Defence forecast/response path as the latest X-IIoTID evidence and a fail-closed response-policy gate. Start the integrated local demo with `npm run demo:v15`.
+**SIH26153 · AI-based Network Attack Forecasting from Network Traffic Data**
 
-Important boundary: the live compatible runtime remains the hash-checked Garuda v3 10-second graph forecaster. V15 was evaluated on 60-second X-IIoTID host-minute telemetry and still needs a strict network-only audit plus a schema-compatible checkpoint export before it can honestly replace that runtime model. Current V15 unknown-forecast containment therefore remains shadow-only. Arjuna reviewed/known enforcement and operator-scoped Sudarshana lab controls retain their separately tested behavior.
+Krishna Defence is a research prototype for learning evolving network state, forecasting malicious progression, and routing evidence into three defensive lanes: **Arjuna** for reviewed known threats, **Krishna** for novel/unsupported cases and evidence collection, and **Sudarshana** for scoped operator-approved lockdown controls.
 
-Fresh V15 X-IIoTID evidence: LSTM three-seed mean recall **86.09%** with **0 false positives observed among 1,366 benign test sequences per seed** on this finite chronological holdout; GraphSAGE-style+LSTM mean observed FPR **0.7565%** and recall **80.00%**. The untouched test has zero clean-history future-positive examples, so verified pre-compromise warning is not claimed.
+## Start here
 
-## Historical V12 measured risk-readout experiment
+- **Current evidence:** [`RELEASE_EVIDENCE.md`](RELEASE_EVIDENCE.md)
+- **Authoritative unseen-family result:** [`docs/release/V48_RESULTS.md`](docs/release/V48_RESULTS.md)
+- **CICAPT temporal/timeline evidence:** [`docs/release/V52_CICAPT_TIMELINE.md`](docs/release/V52_CICAPT_TIMELINE.md)
+- **SIH submission material:** [`sih_submission/`](sih_submission/)
+- **Historical/failed experiments:** [`docs/archive/`](docs/archive/)
 
-See [V12_RESULTS.md](V12_RESULTS.md). 27 diagnostic fits tested whether frozen state forecasts help future malicious-flow prediction. Attack-risk gates failed; no model was promoted. Calibration/policy data readiness is now checked explicitly.
+## Current headline evidence
 
-## V11 protection and evidence audit
+The strongest current controlled result is the frozen V48 X-IIoTID reserve-family benchmark. `exploitation` and `c&c` were excluded from V48 fitting/calibration/fusion selection. Across seeds 42/43/44:
 
-See [V11_RESULTS.md](V11_RESULTS.md) for escalation/unlock/policy fixes, actual HTTP enforcement receipts, and the remaining verified-timeline gate. This is not a 9/10 or production certification.
+| Reserve family | Recall | FPR | F1 | Release gate |
+|---|---:|---:|---:|---|
+| Exploitation | **91.88% ± 0.60 pp** | **0.390% ± 0.042 pp** | 94.41% | **PASS 3/3** |
+| Command & Control | **87.63% ± 2.69 pp** | **0.366%** | 92.08% | **PASS 3/3** |
 
-## V10 targeted forecasting upgrade
+This supports **controlled public-dataset unseen-family generalisation**. It does not prove detection of a truly undisclosed real-world zero-day, verified compromise prevention, or production enterprise readiness.
 
-See [V10_RESULTS.md](V10_RESULTS.md): dataset-separated and controlled three-seed runs, state-loss/selection fixes, 14.23% LSTM and 10.43% GNN state-MSE reductions versus persistence on a reused CICAPT holdout. These are not attack-detection scores. Existing defence defaults and data are preserved.
+V52 provides strict timestamp/provenance and warning-before-event evaluation machinery. A commit-pinned third-party CICAPT `attack_info.csv` copy passes the development audit and an independent Sandcat-row cross-check, but `publisher_verified = false`; successful-compromise lead time is therefore not claimed.
 
-## V9 additive dataset expansion
+## Run the offline Garuda demo
 
-See [V9_DATASET_RESULTS.md](V9_DATASET_RESULTS.md) for the added CICAPT/CTU data, reproducible comparison and limitations. Existing IDS2018 data and default models are preserved. The new candidate did not beat persistence and is not promoted.
-
-> Historical V8 experiment and autoplay update: [V8_RESULTS.md](V8_RESULTS.md). Experimental results do not pass the enterprise release gates.
-
-> Historical core-pipeline work: read [CORE_UPGRADE_RESULTS.md](CORE_UPGRADE_RESULTS.md) for calibrated/masked training, the fresh DoS holdout, shadow collector and failed release gates. New experimental models are not production-approved.
-
-> **Console 5:** stage hints, matched three-seed comparisons, a 51-host replay and hosted HTTP protection rehearsal. See [CONSOLE_V5.md](CONSOLE_V5.md).
-
-> **New: Command Console 4** — interactive 3D telemetry, forecast timeline, defence signal routing and reviewed snapshot memory. See [CONSOLE_V4.md](CONSOLE_V4.md) for setup, lab automation and test scope.
-
-# Krishna Defence - Garuda v3
-
-SIH26153 / Team The Predators
-
-**New real-PCAP experiment:** Four original IDS2018 capture members, one log, 1,549 host/packet graph windows and a trained research checkpoint are now included. The cross-family benchmark failed (40/40 negative examples falsely alerted), so it is **not** the default model. Read [IDS2018 results](garuda_v3/IDS2018_RESULTS.md) and [data provenance](datasets/ids2018/README.md). This is not zero-day or market-readiness proof.
-
-**September 11 residual-decoder update:** Read [the three-fix status](garuda_v3/FIX_STATUS.md) before presenting results. The default demo uses the retrained seed-42 residual GNN. Verified early-warning and real host/packet-stage evidence still require additional telemetry.
-
-**Current entrypoint: the authenticated Garuda v3 offline demo.** This revision includes trained directed GraphSAGE + LSTM models, actual graph datasets, future-only evaluation, explanations and expiring operator-approved proxy rules. It is an internally evaluated research prototype, not a certified enterprise product.
-
-## Start
-
-Use Python 3.12. Install dependencies once on a connected machine:
+Use Python 3.12. On a connected machine, install dependencies once:
 
 ```bash
 python3 -m venv .venv
@@ -51,50 +36,34 @@ python -m pip install -r garuda_v3/requirements.txt
 python -m garuda_v3.integrated_server
 ```
 
-Open **http://127.0.0.1:8090**. Copy a viewer token from `garuda_v3/runtime/access.json` into the access field, connect, then choose **Explore recorded traffic** or **Run alert replay**. The token file is created locally with restricted permissions; it is never packaged. Inference uses NumPy and local model artifacts, without cloud APIs. Training additionally uses scikit-learn.
+Open `http://127.0.0.1:8090`. The demo uses local artifacts and does not require cloud inference. See [`garuda_v3/V3_README.md`](garuda_v3/V3_README.md) for architecture, model/runtime boundaries and detailed commands.
 
-On Windows, activate with `.venv\Scripts\activate` before the Python commands. `npm run demo:v15` launches the integrated local demo.
+## Repository map
 
-## What is included
-
-- `garuda_v3/artifacts/Thursday.npz` and `Friday.npz`: 6,453 observed protocol/service graph windows from the supplied CSVs.
-- `garuda_v3/artifacts/residual_run`: current primary runtime checkpoints, test predictions, hashes and metrics. `artifacts/run` retains the previous model.
-- `garuda_v3/experiments/v15`: pinned validated V15 LSTM/logistic and GraphSAGE-style+LSTM experiment sources and source hashes.
-- `datasets/v15`: persisted fresh X-IIoTID V15 evidence and provenance.
-- `garuda_v3/v15_bridge.py` and `garuda_v3/integrated_server.py`: measured V15 evidence/policy integration into the real Krishna Defence path.
-- `garuda_v3/V3_README.md`: architecture, commands, model card, deployment boundary and limitations.
-- `sih_submission`: previous-revision PPTX/PDF and recording script. Read `READ_BEFORE_PRESENTING.md`; their numerical results predate this update.
-- `garuda_v3/tests`: model/data/security/PCAP, V13/V14 integrity, V15 system integration and live local proxy enforcement tests.
-
-## Measured result, with scope
-
-The current live compatible runtime checkpoint still uses the existing 10-second Garuda v3 graph schema. Its historical primary seed-42 internal result remains:
-
-| Model | F1 | Precision | Recall | FPR |
-|---|---:|---:|---:|---:|
-| Logistic regression | 91.6% | 98.1% | 86.0% | 5.1% |
-| Residual LSTM | 95.8% | 98.3% | 93.4% | 5.1% |
-| Residual GNN + LSTM | 94.9% | 98.2% | 91.7% | 5.1% |
-
-The newer V15 X-IIoTID experiment is the stronger fresh temporal-risk evidence, but it is not yet a schema-compatible runtime checkpoint. Its LSTM three-seed mean observed FPR is 0 on the finite test population with 86.09% recall; the topology-aware GNN+LSTM mean observed FPR is 0.7565% with 80.00% recall. See the V15 integration report for exact scope and limitations.
-
-These are future-malicious-traffic results, not verified compromise prediction. No model is approved for production automatic containment. Current V15 unknown forecasts are shadow-only; reviewed Arjuna memory and explicit operator-scoped Sudarshana lab enforcement remain separately tested.
-
-The supplied Friday file is labelled Bot/Benign, despite its Infiltration filename. Source/destination IPs are absent, so the older trained graphs describe protocol/service relationships. Host graphs and packet parsing are implemented, but a strict network-only, schema-compatible V15 checkpoint and supervised MITRE stages require additional annotated telemetry.
+- `garuda_v3/` — forecasting, evaluation, V48/V52 pipelines, artifacts and tests.
+- `datasets/` — dataset manifests, provenance and prepared/recovered evidence.
+- `sih_submission/` — SIH-facing architecture/demo/submission material; verify dates and metrics against `RELEASE_EVIDENCE.md` before presenting.
+- `security_validation/` — defensive validation material.
+- `docs/release/` — current release evidence only.
+- `docs/archive/` — superseded, exploratory and failed research retained for auditability.
+- `proxy.js` + root JS modules — legacy WAF/control runtime retained for compatibility; they are not the source of the V48 benchmark claim.
 
 ## Tests
+
+Primary Garuda tests:
 
 ```bash
 OPENBLAS_NUM_THREADS=1 python -m unittest discover -s garuda_v3/tests -v
 python ntro-world-model/tests/test_data_integrity.py
 python tests/test_proxy_exposure.py
-npm run test:v11
 ```
 
-The final integrated branch passed 91 Garuda Python tests, 7 NTRO integrity tests, 5 proxy exposure checks, 15 strict V11 controls, 12 real loopback HTTP checks, 2 V11 evidence tests, and a separately executed 10-test V15 system-integration contract. See `V15_SYSTEM_INTEGRATION_RESULTS.md` for run IDs and evidence scope.
+Additional legacy/control checks remain available through `package.json`. Test counts change as coverage grows, so this README intentionally does not freeze a stale global count.
 
-## Legacy modules
+## Evidence discipline
 
-The original WAF/detection engines remain available via `node proxy.js`; the listener defaults to loopback. Legacy management routes now require `GARUDA_OPERATOR_TOKEN` with at least 32 characters. Forwarded client IPs are trusted only for explicitly configured `TRUSTED_PROXY_IPS`. The old prediction-to-lockdown route is retired.
+Krishna Defence keeps failed experiments instead of deleting them. Earlier host/service-graph runs, V46/V47 failures and superseded console/benchmark reports are archived because they are useful research history, but they are **not current release evidence**. GNN superiority over LSTM is not claimed where it was not demonstrated.
 
-`ntro-world-model`, `LEGACY_README.md`, old HTML reports and old benchmark scripts are historical reference. Their prior production, zero-day, accuracy or lead-time claims are superseded by the v3/V15 model cards and measured artifacts. Do not use legacy metrics in the SIH presentation.
+The project uses an autoregressive state-dynamics **world-model approximation**; it does not claim a fully causal world model. Forecast horizon is not automatically warning lead time, and a timestamped attack step is not automatically a successful-compromise timestamp.
+
+For the exact current claim boundary and evidence matrix, use [`RELEASE_EVIDENCE.md`](RELEASE_EVIDENCE.md).
