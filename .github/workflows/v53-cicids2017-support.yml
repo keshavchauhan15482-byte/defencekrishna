@@ -1,0 +1,97 @@
+name: V53 CICIDS2017 timestamped campaign support audit
+
+on:
+  push:
+    branches: [v53-cicids2017-timestamped-support]
+  pull_request:
+    paths:
+      - 'garuda_v3/v53_cicids2017_support.py'
+      - 'garuda_v3/tests/test_v53_cicids2017_support.py'
+      - '.github/workflows/v53-cicids2017-support.yml'
+      - 'V53_CICIDS2017_SUPPORT.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  support-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install V53 research dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'pyarrow<19' 'huggingface_hub<1.0'
+      - name: Compile and test V53
+        run: |
+          python -m compileall -q garuda_v3/v53_cicids2017_support.py
+          python -m unittest garuda_v3.tests.test_v53_cicids2017_support -v
+      - name: Download timestamp-preserving CICIDS2017 traffic-label campaigns
+        run: |
+          python - <<'PY'
+          import hashlib, json, shutil
+          from pathlib import Path
+          from huggingface_hub import hf_hub_download
+
+          repo = 'bvsam/cic-ids-2017'
+          revision = 'b7e532345512edcd530cb1770dc76636aeb52802'
+          names = [
+              'Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv.parquet',
+              'Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv.parquet',
+              'Friday-WorkingHours-Morning.pcap_ISCX.csv.parquet',
+              'Monday-WorkingHours.pcap_ISCX.csv.parquet',
+              'Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv.parquet',
+              'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv.parquet',
+              'Tuesday-WorkingHours.pcap_ISCX.csv.parquet',
+              'Wednesday-workingHours.pcap_ISCX.csv.parquet',
+          ]
+          out = Path('datasets/v53/traffic_labels')
+          out.mkdir(parents=True, exist_ok=True)
+          manifest = {'repo': repo, 'revision': revision, 'source_tier': 'timestamp-preserving mirror of CIC GeneratedLabelledFlows', 'files': []}
+          for name in names:
+              src = Path(hf_hub_download(repo_id=repo, repo_type='dataset', revision=revision, filename='traffic_labels/' + name))
+              dst = out / name
+              shutil.copyfile(src, dst)
+              h = hashlib.sha256(dst.read_bytes()).hexdigest()
+              manifest['files'].append({'name': name, 'bytes': dst.stat().st_size, 'sha256': h})
+          Path('datasets/v53/source_manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          print(json.dumps(manifest, indent=2))
+          PY
+      - name: Run whole-campaign clean-onset support audit
+        run: |
+          python -m garuda_v3.v53_cicids2017_support \
+            --input datasets/v53/traffic_labels/*.parquet \
+            --output garuda_v3/artifacts/v53 \
+            --min-positive 20 \
+            --min-negative 100 \
+            --min-clean-onset 1 \
+            --min-dev 1000
+      - name: Print compact support result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path('garuda_v3/artifacts/v53/support.json').read_text())
+          print(json.dumps({
+              'model_training_permitted': d['model_training_permitted'],
+              'eligible_family_campaign_pairs': d['eligible_family_campaign_pairs'][:20],
+              'campaigns': len(d['campaign_provenance']),
+              'support_pairs': len(d['support']),
+          }, indent=2))
+          PY
+      - name: Upload V53 support evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v53-cicids2017-timestamped-support
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            garuda_v3/artifacts/v53/support.json
+            datasets/v53/source_manifest.json
