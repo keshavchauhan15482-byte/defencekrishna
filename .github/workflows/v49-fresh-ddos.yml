@@ -29,7 +29,7 @@ jobs:
           cache: 'pip'
       - name: Install V49 research dependencies
         run: |
-          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub>=1.0.0,<1.1'
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub>=1.0.0,<1.1' 'huggingface_hub>=0.34,<1.0'
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Compile and test V49
         run: |
@@ -39,9 +39,10 @@ jobs:
         run: |
           mkdir -p datasets/v49
           python - <<'PY'
-          import json, shutil, urllib.request, zipfile
+          import json, shutil, zipfile
           from pathlib import Path
           import kagglehub
+          from huggingface_hub import HfApi, hf_hub_download
 
           handle='masjohncook/cse-cic-ids2018-cicflowmeter'
           files=[
@@ -64,11 +65,14 @@ jobs:
               rows.append({'file':name,'bytes':dst.stat().st_size,'role':'CICIDS2018'})
 
           # Independent benign-only final negative control from the original
-          # CICIDS2017 GeneratedLabelledFlows distribution, not the ML derivative.
-          # This export preserves Timestamp and flow identifiers.
-          archive=Path('datasets/v49/GeneratedLabelledFlows.zip')
-          url='https://huggingface.co/datasets/bencorn/CICIDS2017/resolve/main/GeneratedLabelledFlows.zip?download=true'
-          urllib.request.urlretrieve(url,archive)
+          # CICIDS2017 GeneratedLabelledFlows distribution. Locate the archive
+          # dynamically because mirrors may preserve the publisher directory tree.
+          repo='bencorn/CICIDS2017'
+          repo_files=HfApi().list_repo_files(repo_id=repo,repo_type='dataset')
+          archives=[name for name in repo_files if name.endswith('GeneratedLabelledFlows.zip')]
+          if len(archives)!=1:
+              raise RuntimeError(f'Cannot uniquely resolve GeneratedLabelledFlows.zip in {repo}: {archives}')
+          archive=Path(hf_hub_download(repo_id=repo,repo_type='dataset',filename=archives[0]))
           if archive.stat().st_size<100000000:
               raise RuntimeError(f'Unexpectedly small GeneratedLabelledFlows archive: {archive.stat().st_size}')
           benign_name='Monday-WorkingHours.pcap_ISCX.csv'
@@ -79,9 +83,8 @@ jobs:
                   raise RuntimeError(f'Cannot uniquely resolve timestamped Monday flow file: {matches}')
               with zf.open(matches[0]) as src, benign_dst.open('wb') as dst:
                   shutil.copyfileobj(src,dst)
-          archive.unlink()
           if benign_dst.stat().st_size<1000000: raise RuntimeError(f'Unexpectedly small {benign_name}')
-          rows.append({'file':benign_name,'bytes':benign_dst.stat().st_size,'role':'CICIDS2017_GeneratedLabelledFlows_benign_only_final_negative'})
+          rows.append({'file':benign_name,'bytes':benign_dst.stat().st_size,'role':'CICIDS2017_GeneratedLabelledFlows_benign_only_final_negative','archive_member':matches[0]})
           print(json.dumps(rows,indent=2))
           PY
       - name: Run frozen three-seed V49 benchmark
