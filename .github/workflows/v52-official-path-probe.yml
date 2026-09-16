@@ -1,0 +1,157 @@
+name: V52 CICAPT official path and archive probe
+
+on:
+  push:
+    branches: [v52-cicapt-timeline-leadtime]
+    paths:
+      - '.github/workflows/v52-official-path-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  official-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Probe direct CIC static paths and Wayback index
+        run: |
+          mkdir -p garuda_v3/artifacts/v52_official
+          python - <<'PY'
+          import hashlib, json, subprocess, urllib.parse, urllib.request
+          from pathlib import Path
+
+          root = Path('garuda_v3/artifacts/v52_official')
+          bases = [
+              'https://cicresearch.ca/IOTDataset/CICAPT-IIoT%20Dataset',
+              'https://cicresearch.ca/IOTDataset/CICAPT-IIoT-Dataset',
+          ]
+          folders = [
+              'Supplementary%20material',
+              'Supplementary%20Material',
+              'Supplementary_material',
+              'Supplementary',
+              'supplementary',
+          ]
+          names = ['Attack_info.csv', 'attack_info.csv']
+          urls = [f'{b}/{f}/{n}' for b in bases for f in folders for n in names]
+
+          def sha(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as fh:
+                  for block in iter(lambda: fh.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+
+          attempts, candidates = [], []
+          for i, url in enumerate(urls):
+              out = root / f'direct_{i}.bin'
+              hdr = root / f'direct_{i}.headers.txt'
+              proc = subprocess.run([
+                  'curl','-L','--fail','--silent','--show-error','--max-time','20',
+                  '-D', str(hdr), '-o', str(out),
+                  '-w', '%{http_code}|%{content_type}|%{url_effective}', url
+              ], text=True, capture_output=True)
+              row = {'url': url, 'curl_returncode': proc.returncode, 'curl_meta': proc.stdout.strip(), 'stderr': proc.stderr[-500:]}
+              if proc.returncode == 0 and out.exists():
+                  data = out.read_bytes()
+                  head = data[:300].decode('utf-8', errors='replace')
+                  row.update(bytes=len(data), sha256=sha(out), head=head)
+                  htmlish = '<html' in head.lower() or '<!doctype' in head.lower() or 'dataset download form' in head.lower()
+                  csvish = (b',' in data[:500] or b';' in data[:500]) and not htmlish
+                  row['htmlish'] = htmlish
+                  row['csvish'] = csvish
+                  if csvish:
+                      candidates.append({'url': url, 'path': str(out), 'sha256': row['sha256'], 'bytes': len(data)})
+              attempts.append(row)
+
+          wayback = []
+          cdx_queries = [
+              'https://web.archive.org/cdx/search/cdx?url=cicresearch.ca/IOTDataset/CICAPT-IIoT*Attack_info.csv&output=json&filter=statuscode:200&filter=mimetype:text/csv&collapse=digest',
+              'https://web.archive.org/cdx/search/cdx?url=cicresearch.ca/IOTDataset/CICAPT-IIoT*/*&output=json&filter=statuscode:200&filter=urlkey:Attack_info&collapse=digest',
+          ]
+          for url in cdx_queries:
+              try:
+                  req = urllib.request.Request(url, headers={'User-Agent':'Mozilla/5.0 research audit'})
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      body = r.read(2_000_000).decode('utf-8', errors='replace')
+                  wayback.append({'url': url, 'ok': True, 'body': body[:200000]})
+              except Exception as exc:
+                  wayback.append({'url': url, 'ok': False, 'error': f'{type(exc).__name__}: {exc}'})
+
+          report = {
+              'protocol': 'V52 official CIC direct-path and Wayback probe',
+              'attempts': attempts,
+              'direct_candidate_count': len(candidates),
+              'direct_candidates': candidates,
+              'wayback_queries': wayback,
+              'publisher_verified': False,
+          }
+          unique = sorted({c['sha256'] for c in candidates})
+          report['unique_direct_candidate_hashes'] = unique
+          if len(unique) == 1:
+              chosen = candidates[0]
+              dst = root / 'Attack_info.csv'
+              dst.write_bytes(Path(chosen['path']).read_bytes())
+              report['candidate_ready'] = True
+              report['candidate'] = {**chosen, 'path': str(dst)}
+              report['blocker'] = 'Direct CIC path returned CSV-like content; strict V52 schema audit and provenance verification are still required.'
+          elif len(unique) > 1:
+              report['candidate_ready'] = False
+              report['blocker'] = 'Conflicting CSV-like direct responses returned; identity ambiguous.'
+          else:
+              report['candidate_ready'] = False
+              report['blocker'] = 'No direct CIC static path returned CSV-like Attack_info content.'
+          (root / 'official_probe.json').write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
+      - name: Strict V52 audit if direct publisher candidate is recovered
+        run: |
+          python -m pip install 'pandas<2.3'
+          python - <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+          root = Path('garuda_v3/artifacts/v52_official')
+          probe = json.loads((root / 'official_probe.json').read_text())
+          status = {
+              'candidate_ready': bool(probe.get('candidate_ready')),
+              'timeline_audit_completed': False,
+              'verified_compromise_lead_time_supported': False,
+          }
+          if probe.get('candidate_ready'):
+              proc = subprocess.run([
+                  sys.executable, '-m', 'garuda_v3.v52_cicapt_timeline', 'audit',
+                  '--attack-info', probe['candidate']['path'],
+                  '--candidate-timeline', 'datasets/multisource/phase2_candidate_timeline.json',
+                  '--output', str(root / 'audit'),
+              ], text=True, capture_output=True)
+              status['audit_returncode'] = proc.returncode
+              status['stdout_tail'] = proc.stdout[-6000:]
+              status['stderr_tail'] = proc.stderr[-6000:]
+              if proc.returncode == 0:
+                  status['timeline_audit_completed'] = True
+                  audit = json.loads((root / 'audit' / 'timeline_audit.json').read_text())
+                  status['lead_time_claim_level'] = audit.get('lead_time_claim_level')
+                  status['candidate_comparison'] = audit.get('candidate_comparison')
+                  status['blocker'] = 'Attack-step timeline may be usable, but successful-compromise lead time still requires an independently verified success/outcome field.'
+              else:
+                  status['blocker'] = 'Recovered direct response failed strict V52 timestamp/schema audit.'
+          else:
+              status['blocker'] = probe.get('blocker')
+          (root / 'status.json').write_text(json.dumps(status, indent=2) + '\n')
+          print(json.dumps(status, indent=2))
+          PY
+      - name: Upload official probe evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v52-cicapt-official-path-probe
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            garuda_v3/artifacts/v52_official/**/*.json
+            garuda_v3/artifacts/v52_official/**/Attack_info.csv
