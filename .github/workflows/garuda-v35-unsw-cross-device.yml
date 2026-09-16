@@ -1,11 +1,6 @@
 name: Garuda V35 UNSW Cross-Device Clean-Onset Forecast
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v35/**'
-      - '.github/workflows/garuda-v35-unsw-cross-device.yml'
   workflow_dispatch:
 
 permissions:
