@@ -1,11 +1,6 @@
 name: Garuda V29 Topology Precursor Development
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v29/**'
-      - '.github/workflows/garuda-v29-topology.yml'
   workflow_dispatch:
 
 permissions:
