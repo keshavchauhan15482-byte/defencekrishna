@@ -54,22 +54,66 @@ def resolve_columns(path):
     return ts, label, len(cols)
 
 
+def _epoch_unit(values):
+    """Infer a standard Unix epoch unit from magnitude only.
+
+    This does not infer ordering or dates from row position. CIC conversion tools
+    commonly serialize timestamps as seconds, milliseconds, microseconds or
+    nanoseconds since Unix epoch; their magnitudes are disjoint for modern captures.
+    """
+    finite = np.asarray(values, dtype=np.float64)
+    finite = finite[np.isfinite(finite)]
+    if not len(finite):
+        return None
+    magnitude = float(np.median(np.abs(finite)))
+    if 1e17 <= magnitude < 1e20:
+        return "ns"
+    if 1e14 <= magnitude < 1e17:
+        return "us"
+    if 1e11 <= magnitude < 1e14:
+        return "ms"
+    if 1e8 <= magnitude < 1e11:
+        return "s"
+    return None
+
+
 def parse_time(series):
     """Parse preserved source timestamps without inventing chronology.
 
-    CICIDS2017 traffic-label mirrors can contain multiple valid datetime string
-    representations in one column. Pandas 2.x otherwise infers one format from the
-    first rows and may coerce later valid representations. ``format='mixed'`` parses
-    each value independently while still requiring an explicit date/time in the
-    source. There is deliberately no row-order or synthetic-date fallback.
+    Supports typed datetimes, standard Unix epoch encodings, and mixed valid datetime
+    strings. There is deliberately no row-order, synthetic-date or forward-fill
+    fallback. Parsed dates must also land in a plausible modern capture range.
     """
     if pd.api.types.is_datetime64_any_dtype(series):
         dt = pd.to_datetime(series, errors="coerce", utc=True)
+        method = "typed_datetime"
     else:
-        text = series.astype(str).str.strip()
-        dt = pd.to_datetime(text, format="mixed", errors="coerce", utc=True)
-    if float(dt.notna().mean()) < 0.95:
-        raise ValueError("Timestamp parse coverage below 95%; row-order fallback refused")
+        numeric = pd.to_numeric(series, errors="coerce")
+        numeric_coverage = float(numeric.notna().mean())
+        unit = _epoch_unit(numeric.to_numpy()) if numeric_coverage >= 0.95 else None
+        if unit:
+            dt = pd.to_datetime(numeric, unit=unit, errors="coerce", utc=True)
+            method = f"epoch_{unit}"
+        else:
+            text = series.astype(str).str.strip()
+            dt = pd.to_datetime(text, format="mixed", errors="coerce", utc=True)
+            method = "mixed_datetime_text"
+
+    coverage = float(dt.notna().mean())
+    if coverage < 0.95:
+        sample = [str(v) for v in series.dropna().head(5).tolist()]
+        raise ValueError(
+            f"Timestamp parse coverage {coverage:.4f} below 95%; "
+            f"dtype={series.dtype} method={method} sample={sample}; row-order fallback refused"
+        )
+
+    valid = dt[dt.notna()]
+    modern = (valid.dt.year >= 2000) & (valid.dt.year <= 2100)
+    if float(modern.mean()) < 0.95:
+        raise ValueError(
+            f"Parsed timestamp range implausible for CICIDS2017 using {method}; "
+            "epoch-unit guessing beyond standard magnitude bands refused"
+        )
     return dt
 
 
