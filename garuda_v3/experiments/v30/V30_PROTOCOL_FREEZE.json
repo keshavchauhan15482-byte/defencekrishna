@@ -1,0 +1,39 @@
+{
+  "schema": "krishna-v30-iot23-evaluable-calibration-freeze-v1",
+  "frozen_before_v30_results": true,
+  "purpose": "Correct an impossible development gate exposed by V29 and improve policy-only FPR transfer without touching final validation.",
+  "source": "Official CTU IoT-23 timestamped Zeek conn.log.labeled scenarios",
+  "development_families": ["c&c-heartbeat", "c&c", "partofahorizontalportscan"],
+  "final_validation": "locked; no final-validation family may be scored while V30 development is tuned",
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_minutes": 8,
+    "future_minutes": 4,
+    "training_history_rule": "history must be fully benign",
+    "heldout_family_rule": "all blocks with heldout-family history or future exposure are excluded from train/calibration/policy",
+    "event_denominator": "evaluable clean-onset events only: event must have at least one eligible fully-benign 8-minute history candidate 30-240 seconds before onset",
+    "unsupported_event_reporting": "events with zero eligible clean-history candidates are reported separately as coverage gaps and are not counted as model false negatives",
+    "why": "V29 revealed some captured onsets have zero eligible 8-minute clean-history candidate, making the old per-family event-recall gate mathematically impossible for at least one development family"
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_ip_identity_model_feature": false,
+    "reuse": "V29 causal topology, churn, fanout, overlap and periodicity representation"
+  },
+  "model": {
+    "reuse": "V29 balanced HistGradientBoosting future-risk plus benign IsolationForest novelty",
+    "fusion_selection": "policy split only",
+    "scenario_calibration": "after policy-only fusion selection, derive a global benign threshold and same-scenario benign threshold when policy benign support >=50; otherwise use global threshold",
+    "test_information_used": false,
+    "evaluation_never_selects_model_or_threshold": true
+  },
+  "seeds": [42, 43, 44],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.02,
+    "macro_evaluable_event_recall_min": 0.80,
+    "per_family_evaluable_event_recall_min": 0.70,
+    "positive_lead_time_seconds_min": 30,
+    "unsupported_events_must_be_reported": true
+  },
+  "claim_boundary": "A pass supports forecasting of evaluable clean-onset development events only. Unsupported events remain explicit coverage gaps. It does not prove prediction of every zero-day attack."
+}
