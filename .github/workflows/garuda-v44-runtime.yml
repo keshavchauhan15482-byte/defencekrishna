@@ -7,7 +7,7 @@ on:
       - v44-strict-network-only-runtime
     paths:
       - "garuda_v3/experiments/v44/**"
-      - "garuda_v3/tests/test_v44_runtime_contract.py"
+      - "garuda_v3/tests/test_v44_*.py"
       - ".github/workflows/garuda-v44-runtime.yml"
 
 permissions:
@@ -36,8 +36,8 @@ jobs:
       - name: Verify archived V15 provenance
         run: python -m garuda_v3.experiments.v44.verify_v15_provenance
 
-      - name: Run V44 contract tests
-        run: python -m unittest garuda_v3.tests.test_v44_runtime_contract -v
+      - name: Run V44 tests
+        run: python -m unittest garuda_v3.tests.test_v44_runtime_contract garuda_v3.tests.test_v44_unknown_head -v
 
       - name: Build exact 10-second packet graphs
         run: python -m garuda_v3.experiments.v44.prepare_ids2018_10s --mode service
@@ -97,6 +97,9 @@ jobs:
               print(name, "contract=PASS", "window_seconds=", WINDOW_SECONDS, "max_nodes=", MAX_NODES)
           PY
 
+      - name: Evaluate Krishna held-out-family unknown head
+        run: python -m garuda_v3.experiments.v44.unknown_head --fpr-budget .01
+
       - name: Upload V44 regression evidence
         uses: actions/upload-artifact@v4
         with:
@@ -105,6 +108,7 @@ jobs:
           retention-days: 30
           path: |
             garuda_v3/artifacts/v44_preflight.json
+            garuda_v3/artifacts/v44_unknown_head.json
             garuda_v3/artifacts/v44_runtime_regression/
             datasets/v44_runtime/prepare_manifest.json
             datasets/v44_runtime/label_manifest.json
