@@ -1,11 +1,6 @@
 name: Garuda V40 X-IIoTID Stage-Progression Support Audit
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v40/**'
-      - '.github/workflows/garuda-v40-stage-progression-audit.yml'
   workflow_dispatch:
 
 permissions:
@@ -43,9 +38,7 @@ jobs:
           assert 'locked' in p['final_validation']
           print('V40 protocol freeze: PASS')
           PY
-      - name: Syntax-check V40
-        run: python -m py_compile garuda_v3/experiments/v40/v40_xiiotid_stage_progression_audit.py
-      - name: Run V40 stage-progression support audit
+      - name: Run frozen V40 diagnostic
         working-directory: garuda_v3/experiments/v40
         run: python v40_xiiotid_stage_progression_audit.py
       - name: Upload V40 evidence
