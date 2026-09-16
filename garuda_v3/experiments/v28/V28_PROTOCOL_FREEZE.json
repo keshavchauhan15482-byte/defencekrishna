@@ -1,0 +1,54 @@
+{
+  "schema": "krishna-v28-iot23-multihorizon-freeze-v1",
+  "frozen_before_v28_results": true,
+  "purpose": "Forecast held-out malicious network behaviour from fully benign histories using multiple future horizons instead of a single heterogeneous 4-minute binary target.",
+  "source": "Official CTU IoT-23 timestamped Zeek conn.log.labeled scenarios",
+  "development_families": ["c&c-heartbeat", "c&c", "partofahorizontalportscan"],
+  "final_validation": "locked; no final-validation family may be scored while V28 development is tuned",
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_minutes": 8,
+    "history_windows": 16,
+    "forecast_horizons_seconds": [30, 60, 120, 240],
+    "forecast_horizon_windows": [1, 2, 4, 8],
+    "training_population": "fully benign 8-minute histories only",
+    "horizon_target": "for each horizon, whether any malicious-labelled network window begins inside that future horizon",
+    "heldout_family_rule": "all blocks with held-out-family history or future exposure are excluded from train/calibration/policy",
+    "split": "deterministic one-hour block split inherited from V23",
+    "test_positive": "fully benign history followed by the held-out family within 30-240 seconds",
+    "test_negative": "fully benign history with a fully benign next four minutes"
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_ip_identity": false,
+    "raw_uid": false,
+    "process_or_host_telemetry": false,
+    "causal_adaptive_summary": "V24 per-history median/IQR normalized network dynamics only"
+  },
+  "model": {
+    "per_horizon_models": "balanced HistGradientBoostingClassifier",
+    "calibration": "per-horizon logistic calibration using calibration split only",
+    "horizon_fusion": "maximum calibrated probability across available 30/60/120/240 second heads",
+    "attack_in_history_training_allowed": false,
+    "heldout_family_as_model_input": false,
+    "minimum_support_per_head": {
+      "train_positive": 10,
+      "calibration_positive": 2
+    },
+    "policy_threshold": {
+      "budget": 0.01,
+      "global": "99th percentile of clean policy-benign fused scores",
+      "scenario_specific": "99th percentile of clean policy-benign fused scores from the same scenario only when support >= 50; otherwise global threshold",
+      "test_information_used": false
+    },
+    "evaluation_never_selects_model_or_threshold": true
+  },
+  "seeds": [42, 43, 44],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.02,
+    "macro_event_recall_min": 0.80,
+    "per_family_event_recall_min": 0.70,
+    "positive_lead_time_seconds_min": 30
+  },
+  "claim_boundary": "A pass supports multi-horizon forecasting of these held-out development behaviours from clean histories. It does not prove prediction of every zero-day attack."
+}
