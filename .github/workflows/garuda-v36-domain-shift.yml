@@ -1,11 +1,6 @@
 name: Garuda V36 UNSW Device-Invariance Diagnostic
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v36/**'
-      - '.github/workflows/garuda-v36-domain-shift.yml'
   workflow_dispatch:
 
 permissions:
