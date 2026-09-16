@@ -2,6 +2,13 @@ name: Garuda V44 Runtime Regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - v44-strict-network-only-runtime
+    paths:
+      - "garuda_v3/experiments/v44/**"
+      - "garuda_v3/tests/test_v44_runtime_contract.py"
+      - ".github/workflows/garuda-v44-runtime.yml"
 
 permissions:
   contents: read
