@@ -1,0 +1,51 @@
+name: Garuda V28 Multi-Horizon Clean-History Forecast
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'garuda_v3/experiments/v28/**'
+      - '.github/workflows/garuda-v28-multihorizon.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v28-multihorizon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install experiment dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7'
+      - name: Verify V28 protocol was frozen before results
+        working-directory: garuda_v3/experiments/v28
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('V28_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v28_results'] is True
+          assert p['final_validation'].startswith('locked')
+          assert p['feature_policy']['strict_network_only'] is True
+          print('V28 protocol freeze verified')
+          PY
+      - name: Run V28 multi-horizon clean-history unseen forecast
+        working-directory: garuda_v3/experiments/v28
+        run: python v28_iot23_multihorizon.py
+      - name: Upload V28 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v28-multihorizon-evidence
+          path: garuda_v3/experiments/v28/artifacts/iot23_multihorizon/
+          if-no-files-found: error
