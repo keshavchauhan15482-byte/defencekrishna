@@ -1,8 +1,8 @@
 """Fail-closed V45 forecasting evidence audit.
 
-Consumes an existing Garuda training metrics.json and optionally an independently
-verified incident file. It never refits a threshold and never reads test labels
-for model selection. A failed audit leaves the checkpoint research-only.
+Consumes an existing Garuda training metrics.json and independently aligned
+incident files. It never refits a threshold and never reads test labels for model
+selection. A failed audit leaves the checkpoint research-only.
 
 Verified incident timelines are evaluation truth only. They are never runtime
 features or model inputs; runtime evidence remains network-only.
@@ -12,7 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from .forecast_hardening import (
     CONTRACT_SCHEMA,
@@ -153,6 +153,7 @@ def audit(
     report: dict[str, Any],
     *,
     incident_file: str | None = None,
+    incident_files: Mapping[str, str | None] | None = None,
     fpr_limit: float = 0.01,
     recall_floor: float = 0.80,
     min_family_positives: int = 20,
@@ -161,7 +162,16 @@ def audit(
 ) -> dict[str, Any]:
     if not 0 <= fpr_limit < 1 or not 0 < recall_floor <= 1:
         raise ValueError("Invalid FPR/recall release thresholds")
-    lead_gate = _verified_lead_time(incident_file, min_incidents=min_verified_incidents)
+    if incident_file and incident_files:
+        raise ValueError("Use either incident_file or model-specific incident_files")
+    paths = dict(incident_files or {})
+    if incident_file:
+        # Backward-compatible convenience for tests/manual diagnostics only.
+        paths = {"lstm": incident_file, "gnn_lstm": incident_file}
+    lead_gates = {
+        name: _verified_lead_time(paths.get(name), min_incidents=min_verified_incidents)
+        for name in ("lstm", "gnn_lstm")
+    }
     models = {
         name: audit_model(
             report,
@@ -170,7 +180,7 @@ def audit(
             recall_floor=recall_floor,
             min_family_positives=min_family_positives,
             min_family_negatives=min_family_negatives,
-            lead_gate=lead_gate,
+            lead_gate=lead_gates[name],
         )
         for name in ("lstm", "gnn_lstm")
     }
@@ -191,6 +201,7 @@ def audit(
             "test/final holdout is evaluation-only and never tunes thresholds",
             "seed repeats do not replace independent campaign evidence",
             "verified timelines are evaluation truth only; runtime remains network-only",
+            "model-specific warning timestamps are required for model-specific lead-time claims",
             "a passed forecasting audit still does not authorize automatic enterprise blocking",
         ],
     }
@@ -200,17 +211,25 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--metrics", required=True, help="Garuda metrics.json")
     parser.add_argument("--output", required=True)
-    parser.add_argument("--verified-incidents", help="Independent incident/evidence JSON")
+    parser.add_argument("--verified-incidents", help="Shared incident/evidence JSON (diagnostic compatibility)")
+    parser.add_argument("--lstm-incidents", help="LSTM-aligned verified incident JSON")
+    parser.add_argument("--gnn-incidents", help="GNN+LSTM-aligned verified incident JSON")
     parser.add_argument("--fpr-limit", type=float, default=0.01)
     parser.add_argument("--recall-floor", type=float, default=0.80)
     parser.add_argument("--min-family-positives", type=int, default=20)
     parser.add_argument("--min-family-negatives", type=int, default=20)
     parser.add_argument("--min-verified-incidents", type=int, default=5)
     args = parser.parse_args()
+    if args.verified_incidents and (args.lstm_incidents or args.gnn_incidents):
+        parser.error("Do not combine shared and model-specific incident files")
     report = json.loads(Path(args.metrics).read_text())
+    specific = None
+    if args.lstm_incidents or args.gnn_incidents:
+        specific = {"lstm": args.lstm_incidents, "gnn_lstm": args.gnn_incidents}
     result = audit(
         report,
         incident_file=args.verified_incidents,
+        incident_files=specific,
         fpr_limit=args.fpr_limit,
         recall_floor=args.recall_floor,
         min_family_positives=args.min_family_positives,
