@@ -66,22 +66,22 @@ def apply_cal(model, p):
     return model.predict_proba(np.log(q / (1 - q)).reshape(-1, 1))[:, 1]
 
 
-def quantile_threshold(scores):
+def quantile_threshold(scores, min_support=100):
     scores = np.asarray(scores, float)
-    if len(scores) < 100:
-        raise RuntimeError(f"policy benign support too small: {len(scores)}")
+    if len(scores) < min_support:
+        raise RuntimeError(f"policy benign support too small: {len(scores)} < {min_support}")
     return float(np.quantile(scores, 1.0 - POLICY_FPR_BUDGET, method="higher"))
 
 
 def threshold_plan(policy_idx, scenario, y240, fused):
     benign = policy_idx[y240[policy_idx] == 0]
-    global_th = quantile_threshold(fused[benign])
+    global_th = quantile_threshold(fused[benign], 100)
     per_scenario = {}
     for sc in sorted(set(str(x) for x in scenario[benign])):
         idx = benign[scenario[benign] == sc]
         if len(idx) >= MIN_SCENARIO_POLICY_BENIGN:
             per_scenario[sc] = {
-                "threshold": quantile_threshold(fused[idx]),
+                "threshold": quantile_threshold(fused[idx], MIN_SCENARIO_POLICY_BENIGN),
                 "policy_benign_n": int(len(idx)),
             }
     return {
