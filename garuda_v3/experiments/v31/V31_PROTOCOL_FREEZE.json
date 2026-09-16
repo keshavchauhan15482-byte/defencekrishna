@@ -1,0 +1,27 @@
+{
+  "schema": "krishna-v31-iot23-row-cap-support-audit-v1",
+  "frozen_before_v31_results": true,
+  "purpose": "Measure whether the 100,000-row per-scenario development cap is truncating temporal support required for 8-minute clean-history / 4-minute future forecasting before changing the model again.",
+  "source": "Official CTU IoT-23 timestamped Zeek conn.log.labeled scenarios",
+  "row_checkpoints": [100000, 300000],
+  "development_families": ["c&c-heartbeat", "c&c", "partofahorizontalportscan"],
+  "final_validation": "locked; V31 is support-only and does not score final-validation families or model performance",
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_windows": 16,
+    "history_minutes": 8,
+    "future_windows": 8,
+    "future_minutes": 4,
+    "block_seconds": 3600,
+    "eligible_rule": "same one-hour-block boundary rule used by V23-V30",
+    "clean_history": "no malicious-labelled bins in the 16-window history",
+    "clean_onset_event": "development-family onset with the immediately preceding 16 bins attack-free",
+    "evaluable_event": "clean-onset event with at least one eligible clean-history cutoff 30-240 seconds before onset"
+  },
+  "audit_only": true,
+  "model_training": false,
+  "threshold_selection": false,
+  "test_information_used_for_model_selection": false,
+  "decision_rule": "Recommend expanding the next development model beyond 100k rows only if 300k materially expands temporal support: longer usable scenario spans, clean-history future-positive sequences, or evaluable/candidate clean-onset support.",
+  "claim_boundary": "V31 is a data-coverage audit only. It cannot establish forecasting accuracy, zero-day prediction, recall, FPR, or lead-time performance."
+}
