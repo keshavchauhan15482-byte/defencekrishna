@@ -1,0 +1,54 @@
+name: Garuda V29 Topology Precursor Development
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'garuda_v3/experiments/v29/**'
+      - '.github/workflows/garuda-v29-topology.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  topology-precursor-dev:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install V29 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Verify V29 frozen protocol
+        working-directory: garuda_v3/experiments/v29
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('V29_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v29_results'] is True
+          assert p['feature_policy']['strict_network_only'] is True
+          assert p['feature_policy']['raw_ip_identity_model_feature'] is False
+          assert 'locked' in p['final_validation']
+          assert p['model']['evaluation_never_selects_model_or_threshold'] is True
+          assert p['temporal_protocol']['training_history_rule'] == 'history must be fully benign'
+          print('V29 protocol freeze: PASS')
+          PY
+      - name: Run V29 topology and periodicity precursor forecaster
+        working-directory: garuda_v3/experiments/v29
+        run: python v29_iot23_topology_precursor.py
+      - name: Upload V29 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v29-topology-evidence
+          path: garuda_v3/experiments/v29/artifacts/iot23_topology_precursor/
+          if-no-files-found: warn
