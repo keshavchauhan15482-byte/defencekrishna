@@ -1,11 +1,18 @@
 import unittest
 
-from garuda_v3 import v47_unseen_family as v47
+try:
+    import numpy as np
+    from garuda_v3 import v47_unseen_family as v47
+    V47_RESEARCH_DEPS = True
+except ModuleNotFoundError:
+    np = None
+    v47 = None
+    V47_RESEARCH_DEPS = False
 
 
+@unittest.skipUnless(V47_RESEARCH_DEPS, 'V47 research deps are intentionally separate from the production-facing runtime')
 class V47ClaimBoundaryTests(unittest.TestCase):
     def test_family_split_removes_heldout_family_from_development(self):
-        import numpy as np
         seq = {
             'history_families': np.asarray([
                 frozenset(), frozenset({'held'}), frozenset(), frozenset()
@@ -33,8 +40,6 @@ class V47ClaimBoundaryTests(unittest.TestCase):
         self.assertTrue(split['test_negative'][3])
 
     def test_threshold_budget_is_benign_only(self):
-        # V47 thresholding must not need attack positives; policy benign scores alone
-        # define the maximum accepted empirical-FPR operating point.
         self.assertEqual(v47.FPR_BUDGET, 0.01)
 
 
