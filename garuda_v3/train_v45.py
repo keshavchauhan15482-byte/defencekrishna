@@ -91,6 +91,31 @@ def build_train_command(args: argparse.Namespace) -> list[str]:
     return command
 
 
+def _post_training_statistics(args: argparse.Namespace, out: Path) -> None:
+    for architecture in ("lstm", "gnn_lstm"):
+        prediction_path = out / f"{architecture}_test_predictions.npz"
+        if not prediction_path.exists():
+            continue
+        command = [
+            sys.executable,
+            "-m",
+            "garuda_v3.v45_statistics",
+            "--graphs",
+            *args.graphs,
+            "--split-manifest",
+            args.split_manifest,
+            "--predictions",
+            str(prediction_path),
+            "--metrics",
+            str(out / "metrics.json"),
+            "--architecture",
+            architecture,
+            "--output",
+            str(out / f"{architecture}_statistics.json"),
+        ]
+        subprocess.run(command, check=True)
+
+
 def _align_verified_incidents(args: argparse.Namespace, out: Path) -> dict[str, str]:
     if not args.verified_manifests:
         return {}
@@ -152,6 +177,7 @@ def main() -> None:
 
     protocol_path = out / "v45_protocol.json"
     protocol_path.write_text(json.dumps(protocol, indent=2, sort_keys=True) + "\n")
+    _post_training_statistics(args, out)
     aligned = _align_verified_incidents(args, out)
 
     audit_command = [
