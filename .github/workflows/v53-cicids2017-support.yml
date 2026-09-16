@@ -33,10 +33,10 @@ jobs:
         run: |
           python -m compileall -q garuda_v3/v53_cicids2017_support.py
           python -m unittest garuda_v3.tests.test_v53_cicids2017_support -v
-      - name: Download and hash original-distribution GeneratedLabelledFlows archive
+      - name: Download, hash, and strictly decode original GeneratedLabelledFlows archive
         run: |
           python - <<'PY'
-          import hashlib, json, shutil, zipfile
+          import codecs, hashlib, json, shutil, zipfile
           from pathlib import Path
           from huggingface_hub import HfApi, hf_hub_download
 
@@ -44,10 +44,7 @@ jobs:
           api = HfApi()
           resolved_revision = api.repo_info(repo_id=repo, repo_type='dataset', revision='main').sha
           repo_files = api.list_repo_files(repo_id=repo, repo_type='dataset', revision=resolved_revision)
-          archive_candidates = [
-              p for p in repo_files
-              if Path(p).name.casefold() == 'generatedlabelledflows.zip'
-          ]
+          archive_candidates = [p for p in repo_files if Path(p).name.casefold() == 'generatedlabelledflows.zip']
           if len(archive_candidates) != 1:
               raise RuntimeError(
                   f'Expected exactly one GeneratedLabelledFlows.zip in resolved mirror revision '
@@ -61,8 +58,10 @@ jobs:
               filename=archive_repo_path,
           ))
           root = Path('datasets/v53')
-          out = root / 'generated_labelled_flows'
-          out.mkdir(parents=True, exist_ok=True)
+          raw_out = root / 'generated_labelled_flows_raw'
+          decoded_out = root / 'generated_labelled_flows_utf8'
+          raw_out.mkdir(parents=True, exist_ok=True)
+          decoded_out.mkdir(parents=True, exist_ok=True)
           archive = root / 'GeneratedLabelledFlows.zip'
           shutil.copyfile(src, archive)
 
@@ -72,6 +71,27 @@ jobs:
                   for block in iter(lambda: f.read(1024 * 1024), b''):
                       h.update(block)
               return h.hexdigest()
+
+          def strict_decodable(path, encoding):
+              decoder = codecs.getincrementaldecoder(encoding)(errors='strict')
+              with open(path, 'rb') as f:
+                  for block in iter(lambda: f.read(1024 * 1024), b''):
+                      decoder.decode(block, final=False)
+                  decoder.decode(b'', final=True)
+              return True
+
+          def choose_encoding(path):
+              try:
+                  strict_decodable(path, 'utf-8-sig')
+                  return 'utf-8-sig'
+              except UnicodeDecodeError:
+                  strict_decodable(path, 'cp1252')
+                  return 'cp1252'
+
+          def transcode_strict(source, target, encoding):
+              with open(source, 'r', encoding=encoding, errors='strict', newline='') as src_text, \
+                   open(target, 'w', encoding='utf-8', errors='strict', newline='') as dst_text:
+                  shutil.copyfileobj(src_text, dst_text, length=1024 * 1024)
 
           expected = {
               'Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv',
@@ -98,10 +118,22 @@ jobs:
               files = []
               for name in sorted(expected):
                   info = by_name[name]
-                  target = out / name
-                  with zf.open(info, 'r') as source, target.open('wb') as dest:
+                  raw_target = raw_out / name
+                  with zf.open(info, 'r') as source, raw_target.open('wb') as dest:
                       shutil.copyfileobj(source, dest, length=1024 * 1024)
-                  files.append({'name': name, 'bytes': target.stat().st_size, 'sha256': digest(target)})
+                  encoding = choose_encoding(raw_target)
+                  decoded_target = decoded_out / name
+                  transcode_strict(raw_target, decoded_target, encoding)
+                  files.append({
+                      'name': name,
+                      'archive_member': info.filename,
+                      'raw_bytes': raw_target.stat().st_size,
+                      'raw_sha256': digest(raw_target),
+                      'source_encoding': encoding,
+                      'utf8_bytes': decoded_target.stat().st_size,
+                      'utf8_sha256': digest(decoded_target),
+                      'decode_errors_ignored_or_replaced': False,
+                  })
 
           manifest = {
               'repo': repo,
@@ -115,6 +147,7 @@ jobs:
                   'bytes': archive.stat().st_size,
                   'sha256': digest(archive),
               },
+              'text_decoding_contract': 'strict UTF-8-SIG first, strict Windows-1252 fallback; no ignore/replace',
               'rejected_converted_parquet_source': {
                   'repo': 'bvsam/cic-ids-2017',
                   'reason': 'both tested converted-Parquet revisions left only 37.12% non-null typed timestamps in at least one campaign',
@@ -127,7 +160,7 @@ jobs:
       - name: Run whole-campaign clean-onset support audit
         run: |
           python -m garuda_v3.v53_cicids2017_support \
-            --input datasets/v53/generated_labelled_flows/*.csv \
+            --input datasets/v53/generated_labelled_flows_utf8/*.csv \
             --output garuda_v3/artifacts/v53 \
             --min-positive 20 \
             --min-negative 100 \
