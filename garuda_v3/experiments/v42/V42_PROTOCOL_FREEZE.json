@@ -12,8 +12,11 @@
   "representation": {
     "base": "V37 3x12 scale-free fraction derivatives (36D)",
     "environment_normalization": "per-device robust median/IQR fitted on benign TRAIN blocks only; device identity is not a model feature",
-    "supervised_lane": "HGB trained on non-heldout known progression positives plus benign samples",
-    "unknown_lane": "composite benign novelty: IsolationForest percentile plus robust onset-shock percentile; no attack labels used to fit the anomaly reference"
+    "supervised_lane": "HGB trained on nonheldout known progression positives plus benign samples",
+    "unknown_lane": "composite benign novelty with no attack labels used to fit the anomaly reference",
+    "unknown_isolation_component": "IsolationForest raw novelty converted to an empirical percentile using benign calibration samples only",
+    "unknown_onset_shock_component": "maximum absolute robust-normalized derivative converted to an empirical percentile using benign calibration samples only",
+    "unknown_composite": "maximum of isolation percentile and onset-shock percentile"
   },
   "decision_policy": {
     "logic": "supervised_lane_alert OR unknown_lane_alert",
