@@ -1,11 +1,6 @@
 name: Garuda V41 Unseen-Family Early Progression Forecast
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v41/**'
-      - '.github/workflows/garuda-v41-unseen-progression.yml'
   workflow_dispatch:
 
 permissions:
