@@ -2,11 +2,11 @@
 
 V53 repairs the blocked CICIDS2017 pre-onset evidence track without weakening the chronology contract.
 
-The common `MachineLearningCSV` mirror used by the earlier V51 attempt removes Timestamp and flow identity fields. V51 correctly refused to reconstruct chronology from row order. V53 instead uses the timestamp-preserving `GeneratedLabelledFlows` / `TrafficLabelling` release variant through a pinned public Parquet mirror.
+The common `MachineLearningCSV` release used by the earlier V51 attempt removes Timestamp and flow-identity fields. V51 correctly refused to reconstruct chronology from row order. V53 now uses the original-distribution `GeneratedLabelledFlows.zip` / TrafficLabelling CSV variant instead of converted Parquets.
 
 ## Frozen support protocol
 
-- one source traffic-label file = one immutable campaign;
+- one source traffic-label CSV = one immutable campaign;
 - 10-second windows;
 - 8-window observed history = 80 seconds;
 - 4-window future horizon = 40 seconds;
@@ -31,13 +31,13 @@ This gate is checked before any model is fit.
 
 ## Source boundary
 
-The CI source is the public `bvsam/cic-ids-2017` traffic-label mirror pinned to the original converted-Parquet commit `036f984d251313e814137585af2a65e216c58fe6`. This predates the mirror's later UTC-normalization rewrite.
+The publisher CICIDS2017 page documents that the dataset includes labeled flows in `GeneratedLabelledFlows.zip`, and that flow labels are based on timestamp, source/destination identity, ports, protocol and attack information.
 
-The later normalized revision `b7e532345512edcd530cb1770dc76636aeb52802` was explicitly rejected for timing evidence after V53 measured a campaign whose `Timestamp` column was already typed `datetime64[us]` but only **37.12%** of rows remained non-null. Dropping the other ~62.88% and calling the remaining timeline complete would create misleading clean-history evidence, so V53 fails closed instead.
+V53 downloads only `GeneratedLabelledFlows.zip` from the public `bencorn/CICIDS2017` Hugging Face repository, which describes itself as an **unofficial mirror of the original CIC distribution**. CI resolves the mirror's `main` revision to an exact repository SHA before downloading, records that resolved SHA in the evidence manifest, SHA-256 hashes the archive, safely extracts exactly the eight expected CIC campaign CSVs by basename, and SHA-256 hashes every extracted CSV. Once a successful support run resolves the mirror revision, that exact SHA is pinned for the authoritative rerun.
 
-The pre-normalization commit is used because it is the commit that originally added the converted CIC TrafficLabelling / GeneratedLabelledFlows Parquets. Every downloaded file is SHA-256 hashed again in the evidence manifest. V53 supports typed datetimes, standard Unix epoch units and mixed valid datetime text, but never reconstructs chronology from row order or invents missing dates.
+Two converted-Parquet routes were explicitly rejected for timing evidence. Both the later normalized revision and the earlier converted-Parquet commit of `bvsam/cic-ids-2017` left only **37.12%** non-null typed timestamps in at least one campaign. Dropping the other ~62.88% and treating the remaining rows as a complete timeline would create misleading clean-history evidence, so those conversions are not used for V53 timing claims.
 
-The publisher CICIDS2017 page independently documents that labeled flows are based on timestamps, endpoint/port/protocol information and attack labels, and gives the attack schedule by day.
+V53 also validates parsed timestamps against the independently known campaign date encoded by the CICIDS2017 weekday filename: Monday 2017-07-03 through Friday 2017-07-07. Ambiguous day/month text is accepted only when one valid interpretation matches the expected campaign date on at least 95% of parsed rows. There is no row-order, synthetic-date, gap-fill or forward-fill fallback.
 
 ## Claim boundary
 
