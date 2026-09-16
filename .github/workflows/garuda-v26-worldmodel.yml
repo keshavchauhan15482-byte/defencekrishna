@@ -1,11 +1,6 @@
 name: Garuda V26 Benign-Only Forecast Diagnostic
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v26/**'
-      - '.github/workflows/garuda-v26-worldmodel.yml'
   workflow_dispatch:
 
 permissions:
