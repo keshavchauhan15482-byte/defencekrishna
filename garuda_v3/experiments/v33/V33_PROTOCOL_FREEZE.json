@@ -1,0 +1,32 @@
+{
+  "schema": "krishna-v33-unsw-attacktrace-support-audit-v1",
+  "frozen_before_v33_results": true,
+  "purpose": "Audit an independently annotated network-attack corpus for clean pre-attack histories and explicit onset timestamps before training another forecasting model.",
+  "source": {
+    "publisher": "UNSW IoT Analytics Research Group",
+    "page": "https://iotanalytics.unsw.edu.au/attack-data.html",
+    "flow_data": "https://iotanalytics.unsw.edu.au/anomaly-data/flowdata.zip",
+    "annotations": "https://iotanalytics.unsw.edu.au/anomaly-data/annotations.zip"
+  },
+  "dataset_properties_expected_from_publisher": {
+    "traffic": "consumer-IoT network attack and benign traces",
+    "flow_resolution": "one-minute flow counters",
+    "annotation": "attack start timestamp, end timestamp, impacted flow features, attack label",
+    "license": "MIT-0"
+  },
+  "audit_only": true,
+  "model_training": false,
+  "threshold_selection": false,
+  "final_validation": "locked; no existing Garuda final-validation family is scored by V33",
+  "audit_outputs": [
+    "download SHA256 and byte size for annotation and flow archives",
+    "archive file inventory",
+    "number of parseable timestamped attack annotations",
+    "attack-duration and attack-label inventory",
+    "flow-file schema/timestamp discovery",
+    "annotation-to-flow-file mapping support",
+    "candidate count with at least 8 minutes of observable flow history before attack onset when timestamps can be resolved"
+  ],
+  "decision_rule": "Use this corpus for the next clean-onset forecasting experiment only if annotations are timestamp-parseable and sufficient flow history can be matched before multiple attack onsets.",
+  "claim_boundary": "V33 is a provenance/schema/support audit only and cannot establish forecasting accuracy, recall, FPR, lead time, or zero-day prediction."
+}
