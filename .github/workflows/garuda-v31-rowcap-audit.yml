@@ -1,11 +1,6 @@
 name: Garuda V31 IoT-23 Row-Cap Support Audit
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v31/**'
-      - '.github/workflows/garuda-v31-rowcap-audit.yml'
   workflow_dispatch:
 
 permissions:
