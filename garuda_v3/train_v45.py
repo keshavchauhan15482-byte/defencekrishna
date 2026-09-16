@@ -3,8 +3,8 @@
 The legacy/reproduction trainer remains available as ``garuda_v3.train``.
 This entrypoint is the SIH forecasting path: common 10-second graph contract,
 predeclared campaign split, untouched final test, validation-only calibration and
-policy selection, four 10-second future horizons, residual decoder, unknown-label
-masking and no aggressive risk balancing.
+policy selection, four 10-second future horizons, residual decoding, state-first
+training, unknown-label masking and no aggressive risk balancing.
 """
 from __future__ import annotations
 
@@ -52,13 +52,19 @@ def build_train_command(args: argparse.Namespace) -> list[str]:
     command = [
         sys.executable,
         "-m",
-        "garuda_v3.train",
+        "garuda_v3.train_v45_core",
         "--graphs",
         *args.graphs,
         "--output",
         args.output,
-        "--epochs",
-        str(args.epochs),
+        "--state-epochs",
+        str(args.state_epochs),
+        "--risk-epochs",
+        str(args.risk_epochs),
+        "--stage-epochs",
+        str(args.stage_epochs),
+        "--patience",
+        str(args.patience),
         "--history",
         "8",
         "--horizon",
@@ -67,16 +73,10 @@ def build_train_command(args: argparse.Namespace) -> list[str]:
         str(args.stride),
         "--seed",
         str(args.seed),
-        "--decoder",
-        "residual",
-        "--allow-unknown-labels",
-        "--calibrate",
         "--fpr-budget",
         "0.01",
         "--split-manifest",
         args.split_manifest,
-        "--evaluation-scope",
-        "new_predeclared_holdout",
     ]
     if args.stage_supervision:
         command.append("--stage-supervision")
@@ -89,14 +89,18 @@ def main() -> None:
     parser.add_argument("--split-manifest", required=True)
     parser.add_argument("--reservation", required=True, help="Immutable final-holdout reservation JSON")
     parser.add_argument("--output", required=True)
-    parser.add_argument("--epochs", type=int, default=40)
+    parser.add_argument("--state-epochs", type=int, default=40)
+    parser.add_argument("--risk-epochs", type=int, default=30)
+    parser.add_argument("--stage-epochs", type=int, default=30)
+    parser.add_argument("--patience", type=int, default=10)
     parser.add_argument("--stride", type=int, default=2)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--stage-supervision", action="store_true")
     parser.add_argument("--verified-incidents", help="Optional independently verified incident JSON for post-training audit")
     args = parser.parse_args()
-    if not 1 <= args.epochs <= 300:
-        parser.error("epochs must be 1..300")
+    for name in ("state_epochs", "risk_epochs", "stage_epochs", "patience"):
+        if not 1 <= getattr(args, name) <= 300:
+            parser.error(f"{name.replace('_', '-')} must be 1..300")
     if args.stride < 1:
         parser.error("stride must be positive")
 
@@ -107,9 +111,6 @@ def main() -> None:
     protocol = preflight(args.graphs, args.split_manifest, args.reservation)
     subprocess.run(build_train_command(args), check=True)
 
-    # Write the immutable preflight protocol only after the underlying trainer has
-    # created its evidence directory; writing it before training would violate the
-    # trainer's intentional empty-output guard.
     protocol_path = out / "v45_protocol.json"
     protocol_path.write_text(json.dumps(protocol, indent=2, sort_keys=True) + "\n")
 
