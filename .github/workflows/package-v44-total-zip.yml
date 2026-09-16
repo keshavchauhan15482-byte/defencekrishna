@@ -1,0 +1,50 @@
+name: Package V44 Total Krishna Defence ZIP
+
+on:
+  push:
+    branches:
+      - v44-strict-network-only-runtime
+    paths:
+      - '.github/workflows/package-v44-total-zip.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Record provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD | tee V44_PACKAGE_COMMIT.txt
+          git status --short
+
+      - name: Build complete source ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIP='KrishnaDefence_V44_Total_Latest.zip'
+          PREFIX='KrishnaDefence_V44_Total_Latest/'
+          git archive --format=zip --prefix="$PREFIX" -o "$ZIP" HEAD
+          sha256sum "$ZIP" | tee "${ZIP}.sha256"
+          unzip -t "$ZIP"
+
+      - name: Upload verified package
+        uses: actions/upload-artifact@v4
+        with:
+          name: KrishnaDefence_V44_Total_Latest
+          path: |
+            KrishnaDefence_V44_Total_Latest.zip
+            KrishnaDefence_V44_Total_Latest.zip.sha256
+            V44_PACKAGE_COMMIT.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 90
