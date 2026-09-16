@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'garuda_v3/v48_unseen_fusion.py'
+      - 'garuda_v3/v48_strict_runner.py'
       - 'garuda_v3/tests/test_v48_unseen_fusion.py'
       - '.github/workflows/v48-unseen-fusion.yml'
       - 'V48_UNSEEN_FUSION.md'
@@ -32,7 +33,7 @@ jobs:
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Compile and run V47/V48 leakage tests
         run: |
-          python -m compileall -q garuda_v3/v47_unseen_family.py garuda_v3/v47_leave_one_family.py garuda_v3/v48_unseen_fusion.py
+          python -m compileall -q garuda_v3/v47_unseen_family.py garuda_v3/v47_leave_one_family.py garuda_v3/v48_unseen_fusion.py garuda_v3/v48_strict_runner.py
           python -m unittest garuda_v3.tests.test_v47_unseen_family garuda_v3.tests.test_v47_claim_boundary garuda_v3.tests.test_v48_unseen_fusion -v
       - name: Download public X-IIoTID source
         run: |
@@ -59,9 +60,9 @@ jobs:
           shutil.copyfile(src, dst)
           print(json.dumps({'destination': str(dst), 'bytes': dst.stat().st_size}))
           PY
-      - name: Fit on exposed V47 families and evaluate frozen reserve families
+      - name: Freeze reserve set, isolate it, fit fusion, then evaluate reserve
         run: |
-          python -m garuda_v3.v48_unseen_fusion \
+          python -m garuda_v3.v48_strict_runner \
             --csv datasets/v48/XIIoTID.csv \
             --output garuda_v3/artifacts/v48 \
             --seeds 42 43 44 \
