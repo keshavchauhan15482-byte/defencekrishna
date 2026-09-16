@@ -49,6 +49,13 @@ class V53SupportTests(unittest.TestCase):
         self.assertEqual(parsed.iloc[0].isoformat(), '2017-07-07T15:00:00+00:00')
         self.assertEqual(parsed.iloc[2].isoformat(), '2017-07-07T15:00:20+00:00')
 
+    def test_epoch_microseconds_are_resolved_by_magnitude(self):
+        source = pd.Series([1499410800000000, 1499410810000000, 1499410820000000], dtype='int64')
+        parsed = parse_time(source)
+        self.assertTrue(parsed.notna().all())
+        self.assertEqual(parsed.iloc[1] - parsed.iloc[0], pd.Timedelta(seconds=10))
+        self.assertEqual(parsed.iloc[0].year, 2017)
+
     def test_clean_history_onset_support_is_counted(self):
         base = pd.Timestamp('2017-07-03T09:00:00Z')
         rows = []
