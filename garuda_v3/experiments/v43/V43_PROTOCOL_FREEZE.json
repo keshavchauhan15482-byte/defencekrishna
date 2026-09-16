@@ -1,0 +1,40 @@
+{
+  "schema": "krishna-v43-continuous-unknown-lane-v1",
+  "frozen_before_results": true,
+  "source": "same verified UNSW IoT Attack Traces and V41/V42 sample protocol",
+  "purpose": "Repair V42 policy-calibration failure without changing its forecasting architecture: replace clipped empirical-percentile anomaly scores with continuous benign-calibrated robust scores and use tie-safe strict threshold semantics.",
+  "claim_scope": "zero-day-like unseen-family early progression forecasting after the first observable malicious network change; not prediction before the first malicious packet and not universal zero-day prediction",
+  "strict_network_only": true,
+  "raw_device_ip_port_timestamp_model_features": false,
+  "development_holdout_families": ["TcpSynReflection", "ArpSpoof", "PingOfDeath", "Ssdp"],
+  "locked_final_validation_families": ["TcpSynDevice", "UdpDevice"],
+  "sample_protocol": "identical to V41/V42: four one-minute rows ending at current minute, 240-second continuation target, non-overlapping 30-minute device-time block split, locked-family exclusion",
+  "representation": {
+    "base": "exact V42 V37 36D scale-free fraction derivatives",
+    "environment_normalization": "exact V42 per-device robust median/IQR fitted on benign TRAIN blocks only",
+    "supervised_lane": "exact V42 HGB known-progression head and calibration",
+    "unknown_isolation_raw": "negative IsolationForest decision_function, model fit on benign train only",
+    "unknown_shock_raw": "exact V42 top-4 mean absolute robust-normalized derivative shock score",
+    "continuous_calibration": "for each raw anomaly component, subtract benign-calibration median and divide by max(benign-calibration IQR, 1e-6)",
+    "unknown_composite": "maximum of the two continuous robust-calibrated anomaly components",
+    "empirical_percentile_clipping": false
+  },
+  "decision_policy": {
+    "logic": "supervised_lane_alert OR unknown_lane_alert",
+    "budget_pairs_in_predeclared_order": [[0.003,0.007],[0.0025,0.005],[0.001,0.003]],
+    "threshold_estimation": "higher quantile of benign policy scores at 1-budget",
+    "threshold_comparison": "strict greater-than; equality is non-alert to prevent quantile tie inflation",
+    "selection": "choose first predeclared pair whose combined OR alert has <=1.05% benign FPR on policy data; attack-positive policy outcomes are not used to select budgets or thresholds",
+    "test_information_used": false
+  },
+  "seeds": [42,43,44],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.01,
+    "macro_unseen_event_recall_min": 0.80,
+    "each_unseen_family_event_recall_min": 0.70,
+    "median_detection_delay_seconds_max": 120,
+    "minimum_evaluable_events_per_family": 5
+  },
+  "comparison": "Only the anomaly calibration/threshold semantics change from V42; sample protocol, held-out families, locked families, model classes, representation and FPR/recall gates remain fixed.",
+  "final_validation": "locked; TcpSynDevice and UdpDevice are not scored by V43 and fresh external validation remains required before any final zero-day-like claim"
+}
