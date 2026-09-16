@@ -100,18 +100,18 @@ def main() -> None:
     if args.stride < 1:
         parser.error("stride must be positive")
 
-    protocol = preflight(args.graphs, args.split_manifest, args.reservation)
     out = Path(args.output)
-    out.mkdir(parents=True, exist_ok=True)
-    protocol_path = out / "v45_protocol.json"
-    if protocol_path.exists():
-        existing = json.loads(protocol_path.read_text())
-        if existing != protocol:
-            parser.error("Existing V45 protocol differs; use a new output directory")
-    else:
-        protocol_path.write_text(json.dumps(protocol, indent=2, sort_keys=True) + "\n")
+    if out.exists() and any(out.iterdir()):
+        parser.error("Output must be empty; V45 never overwrites training evidence")
 
+    protocol = preflight(args.graphs, args.split_manifest, args.reservation)
     subprocess.run(build_train_command(args), check=True)
+
+    # Write the immutable preflight protocol only after the underlying trainer has
+    # created its evidence directory; writing it before training would violate the
+    # trainer's intentional empty-output guard.
+    protocol_path = out / "v45_protocol.json"
+    protocol_path.write_text(json.dumps(protocol, indent=2, sort_keys=True) + "\n")
 
     audit_command = [
         sys.executable,
