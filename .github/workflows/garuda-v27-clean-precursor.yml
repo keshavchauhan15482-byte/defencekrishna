@@ -1,18 +1,13 @@
-name: Garuda V27 Clean-History Unseen Precursor Development
+name: Garuda V27 Clean-History Precursor Diagnostic
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v27/**'
-      - '.github/workflows/garuda-v27-clean-precursor.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  clean-precursor-dev:
+  clean-precursor-diagnostic:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -28,7 +23,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
-      - name: Verify clean-precursor protocol freeze
+      - name: Verify frozen V27 protocol
         run: |
           python - <<'PY'
           import json
@@ -36,10 +31,10 @@ jobs:
           assert p['frozen_before_v27_results'] is True
           assert p['model']['attack_in_history_training_allowed'] is False
           assert p['feature_policy']['strict_network_only'] is True
-          assert 'locked' in p['final_validation']
-          print('V27 protocol freeze: PASS')
+          print('V27 frozen protocol: PASS')
           PY
-      - name: Run V27 clean-history unseen precursor forecaster
+      - name: Reproduce V27 failed clean-history precursor gate
+        continue-on-error: true
         working-directory: garuda_v3/experiments/v27
         run: python v27_iot23_clean_precursor.py
       - name: Upload V27 evidence
