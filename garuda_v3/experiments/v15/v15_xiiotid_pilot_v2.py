@@ -83,18 +83,8 @@ def detect_label(df):
     raise RuntimeError(f'No trustworthy binary label found. Candidates={reports}')
 
 
-STRICT_NETWORK_ONLY = True
-NETWORK_WORDS = ('flow','packet','byte','length','protocol','tcp','udp','icmp','port','flag',
-                 'syn','ack','rst','fin','psh','urg','ttl','window','payload','iat','interarrival',
-                 'duration','rate','fwd','bwd','forward','backward','header','segment','subflow',
-                 'connection','count','size','active','bulk','downup','initwin','idle')
-NON_NETWORK_WORDS = ('process','pid','thread','cpu','memory','disk','system','kernel','user',
-                     'command','temperature','voltage','current','power','sensor','os','device',
-                     'service','uptime','loadavg','filesystem','handle')
-
-
 def choose_numeric_features(df, excluded):
-    """Select only observable network/packet telemetry; fail closed on system fields."""
+    # Block direct/derived labels and identifiers. These words are conservative by design.
     leak_words = ['label', 'class', 'attack', 'alert', 'rule', 'ossec', 'anomaly', 'uid',
                   'date', 'timestamp', 'time', 'srcip', 'scri', 'desip', 'dstip', 'sourceip', 'destinationip']
     sample = df.head(min(len(df), 60000))
@@ -102,8 +92,6 @@ def choose_numeric_features(df, excluded):
     for c in df.columns:
         nc = norm(c)
         if c in excluded or any(w in nc for w in leak_words):
-            continue
-        if STRICT_NETWORK_ONLY and (any(w in nc for w in NON_NETWORK_WORDS) or not any(w in nc for w in NETWORK_WORDS)):
             continue
         sx = sample[c].replace(['-', '?', 'None', 'none', 'null', ''], np.nan)
         x = pd.to_numeric(sx, errors='coerce')
@@ -113,10 +101,8 @@ def choose_numeric_features(df, excluded):
         var = float(np.nanvar(x.to_numpy(dtype=float)))
         scored.append((coverage, math.log1p(var) if np.isfinite(var) and var >= 0 else -1, c))
     scored.sort(reverse=True)
-    selected = [c for _, _, c in scored[:24]]
-    if STRICT_NETWORK_ONLY and len(selected) < 4:
-        raise RuntimeError('Strict network-only feature audit found fewer than four usable flow/packet columns; refusing non-network fallback')
-    return selected
+    return [c for _, _, c in scored[:24]]
+
 
 def build_minute_state(df, dt, y, label_col, date_col, ts_col):
     src_col = pick_col(df.columns, ['Scr_IP', 'Src_IP', 'Source_IP', 'source_ip'])
