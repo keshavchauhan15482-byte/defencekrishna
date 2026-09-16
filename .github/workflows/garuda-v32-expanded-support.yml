@@ -1,11 +1,6 @@
 name: Garuda V32 300k Expanded-Support Isolation Baseline
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v32/**'
-      - '.github/workflows/garuda-v32-expanded-support.yml'
   workflow_dispatch:
 
 permissions:
