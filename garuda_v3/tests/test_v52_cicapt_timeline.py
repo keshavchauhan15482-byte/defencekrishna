@@ -4,17 +4,22 @@ import unittest
 import zipfile
 from pathlib import Path
 
-import pandas as pd
+try:
+    import pandas as pd
+    from garuda_v3.v52_cicapt_timeline import (
+        _parse_time_series,
+        audit_attack_info,
+        discover_attack_info,
+        evaluate_warning_lead_time,
+        resolve_attack_info_schema,
+    )
+    V52_DEPS = True
+except ModuleNotFoundError:
+    pd = None
+    V52_DEPS = False
 
-from garuda_v3.v52_cicapt_timeline import (
-    _parse_time_series,
-    audit_attack_info,
-    discover_attack_info,
-    evaluate_warning_lead_time,
-    resolve_attack_info_schema,
-)
 
-
+@unittest.skipUnless(V52_DEPS, 'V52 research deps are intentionally separate from production runtime')
 class V52TimelineTests(unittest.TestCase):
     def test_attack_info_schema_requires_timestamp_and_attack_identity(self):
         df = pd.DataFrame({
