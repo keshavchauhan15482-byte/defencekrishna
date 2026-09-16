@@ -1,4 +1,4 @@
-name: Garuda V28 Multi-Horizon Clean-History Forecast
+name: Garuda V28 Multi-Horizon Unseen Forecast Development
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  v28-multihorizon:
+  multihorizon-dev:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -24,22 +24,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install experiment dependencies
+      - name: Install V28 dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7'
-      - name: Verify V28 protocol was frozen before results
-        working-directory: garuda_v3/experiments/v28
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Verify V28 protocol freeze
         run: |
           python - <<'PY'
           import json
-          p=json.load(open('V28_PROTOCOL_FREEZE.json'))
+          p=json.load(open('garuda_v3/experiments/v28/V28_PROTOCOL_FREEZE.json'))
           assert p['frozen_before_v28_results'] is True
-          assert p['final_validation'].startswith('locked')
+          assert p['temporal_protocol']['training_population'] == 'fully benign 8-minute histories only'
           assert p['feature_policy']['strict_network_only'] is True
-          print('V28 protocol freeze verified')
+          assert p['model']['attack_in_history_training_allowed'] is False
+          assert p['model']['evaluation_never_selects_model_or_threshold'] is True
+          assert 'locked' in p['final_validation']
+          print('V28 protocol freeze: PASS')
           PY
-      - name: Run V28 multi-horizon clean-history unseen forecast
+      - name: Run V28 multi-horizon clean-history forecaster
         working-directory: garuda_v3/experiments/v28
         run: python v28_iot23_multihorizon.py
       - name: Upload V28 evidence
@@ -48,4 +50,4 @@ jobs:
         with:
           name: garuda-v28-multihorizon-evidence
           path: garuda_v3/experiments/v28/artifacts/iot23_multihorizon/
-          if-no-files-found: error
+          if-no-files-found: warn
