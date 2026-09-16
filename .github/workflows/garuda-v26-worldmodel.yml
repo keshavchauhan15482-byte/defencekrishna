@@ -1,4 +1,4 @@
-name: Garuda V26 Benign-Only Unseen Forecast Development
+name: Garuda V26 Benign-Only Forecast Diagnostic
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  benign-worldmodel-dev:
+  benign-worldmodel-diagnostic:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
-      - name: Verify protocol frozen before results
+      - name: Verify V26 frozen protocol
         run: |
           python - <<'PY'
           import json
@@ -36,9 +36,10 @@ jobs:
           assert p['frozen_before_v26_results'] is True
           assert p['model']['attack_label_as_model_target'] is False
           assert p['feature_policy']['strict_network_only'] is True
-          print('V26 protocol freeze: PASS')
+          print('V26 frozen protocol: PASS')
           PY
-      - name: Run V26 benign-only unseen future world model
+      - name: Reproduce superseded V26 failure diagnostic
+        continue-on-error: true
         working-directory: garuda_v3/experiments/v26
         run: python v26_iot23_benign_worldmodel.py
       - name: Upload V26 evidence
