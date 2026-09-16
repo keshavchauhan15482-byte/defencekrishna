@@ -33,7 +33,7 @@ jobs:
         run: |
           python -m compileall -q garuda_v3/v53_cicids2017_support.py
           python -m unittest garuda_v3.tests.test_v53_cicids2017_support -v
-      - name: Download timestamp-preserving CICIDS2017 traffic-label campaigns
+      - name: Download pre-normalization CICIDS2017 traffic-label campaigns
         run: |
           python - <<'PY'
           import hashlib, json, shutil
@@ -41,7 +41,7 @@ jobs:
           from huggingface_hub import hf_hub_download
 
           repo = 'bvsam/cic-ids-2017'
-          revision = 'b7e532345512edcd530cb1770dc76636aeb52802'
+          revision = '036f984d251313e814137585af2a65e216c58fe6'
           names = [
               'Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv.parquet',
               'Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv.parquet',
@@ -54,7 +54,14 @@ jobs:
           ]
           out = Path('datasets/v53/traffic_labels')
           out.mkdir(parents=True, exist_ok=True)
-          manifest = {'repo': repo, 'revision': revision, 'source_tier': 'timestamp-preserving mirror of CIC GeneratedLabelledFlows', 'files': []}
+          manifest = {
+              'repo': repo,
+              'revision': revision,
+              'source_tier': 'pre-normalization converted mirror of CIC TrafficLabelling / GeneratedLabelledFlows',
+              'rejected_normalized_revision': 'b7e532345512edcd530cb1770dc76636aeb52802',
+              'rejection_reason': 'one campaign exposed only 37.12% non-null typed timestamps after UTC normalization',
+              'files': [],
+          }
           for name in names:
               src = Path(hf_hub_download(repo_id=repo, repo_type='dataset', revision=revision, filename='traffic_labels/' + name))
               dst = out / name
