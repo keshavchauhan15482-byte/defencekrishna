@@ -1,9 +1,9 @@
 """Strict V48 orchestration with reserve-family isolation before score development.
 
-The reserve family set is chosen using support counts only.  Every sequence touching a
-reserve family (plus an overlap embargo) is then excluded from V48 score-development
-training, calibration and policy blocks.  Only after the fusion rule is frozen and
-hashed are reserve-family metrics evaluated.
+The reserve family set is chosen using support counts only. Every sequence touching a
+reserve family (plus an overlap embargo) is excluded from V48 score-development
+training, calibration, policy fitting *and fusion-selection evaluation*. Only after the
+fusion rule is frozen and hashed are reserve-family metrics evaluated.
 """
 from __future__ import annotations
 
@@ -57,9 +57,6 @@ def reserve_exposure_mask(sequences, reserve_families):
         if any(reserve.intersection(step) for step in steps):
             touched[i] = True
 
-    # Neighboring sequence cutoffs overlap the same raw history/horizon windows.  Block
-    # a full history+horizon radius so a reserve episode cannot leak through a nearby
-    # development sample whose own family metadata happens to be empty.
     cutoff = sequences["cutoff"]
     touched_times = cutoff[touched]
     blocked_times = set()
@@ -70,17 +67,34 @@ def reserve_exposure_mask(sequences, reserve_families):
     return touched | overlap
 
 
-def prepare_isolated_development_fold(sequences, time_masks, family, seed, epochs, reserve_mask):
-    split = leave_one_family_split(sequences, time_masks, family)
-    split = dict(split)
+def apply_reserve_isolation(split, reserve_mask):
+    """Remove reserve evidence from fitting and from fusion-selection scoring."""
+    out = dict(split)
     for name in ("train", "calibration", "policy"):
-        split[name] = split[name] & ~reserve_mask
+        out[name] = out[name] & ~reserve_mask
 
+    # Exposed-family development metrics must not be influenced by a co-occurring
+    # reserve family or by overlapping raw windows. Benign negatives near reserve
+    # episodes are also removed so score selection never sees reserve-adjacent traffic.
+    out["test_positive"] = out["test_positive"] & ~reserve_mask
+    out["test_negative"] = out["test_negative"] & ~reserve_mask
+    out["test_eval"] = out["test_positive"] | out["test_negative"]
+    if "clean_onset_positive" in out:
+        out["clean_onset_positive"] = out["clean_onset_positive"] & ~reserve_mask
+    return out
+
+
+def prepare_isolated_development_fold(sequences, time_masks, family, seed, epochs, reserve_mask):
+    split = apply_reserve_isolation(
+        leave_one_family_split(sequences, time_masks, family), reserve_mask
+    )
     world = train_world_model(
         sequences["X"], sequences["future"], split["train"], split["calibration"], seed, epochs=epochs
     )
     components = raw_components(world, sequences, split, seed)
     if components is None:
+        return None
+    if int(split["test_positive"].sum()) == 0 or int(split["test_negative"].sum()) == 0:
         return None
     return {"family": family, "seed": seed, "split": split, "world": world, "components": components}
 
@@ -118,8 +132,6 @@ def main():
     if len(exposed) < 3:
         raise RuntimeError(f"Expected at least three exposed V47 development families, found {exposed}")
 
-    # Reserve selection is frozen before model/scorer fitting and depends only on
-    # support counts.  No reserve model metric has been computed yet.
     reserve_candidates = [
         r for r in support
         if r["family"] not in set(exposed)
@@ -140,10 +152,7 @@ def main():
         if s["positive"] < args.min_positive or s["negative"] < args.min_negative:
             continue
         for seed in args.seeds:
-            print(
-                f"V48 isolated-development family={fam} seed={seed} reserve={reserve}",
-                flush=True,
-            )
+            print(f"V48 isolated-development family={fam} seed={seed} reserve={reserve}", flush=True)
             fold = prepare_isolated_development_fold(
                 sequences, time_masks, fam, seed, args.epochs, reserve_mask
             )
@@ -158,7 +167,8 @@ def main():
         "development_families": exposed,
         "reserve_families": reserve,
         "reserve_selection_method": "support only before score development",
-        "reserve_sequences_excluded_from_score_development": True,
+        "reserve_sequences_excluded_from_model_fitting": True,
+        "reserve_sequences_excluded_from_fusion_selection_metrics": True,
         "reserve_overlap_embargo_steps_each_side": EMBARGO_STEPS,
         "reserve_blocked_sequence_count": int(reserve_mask.sum()),
         "components": list(COMPONENTS),
@@ -174,7 +184,7 @@ def main():
 
     report = {
         "protocol": "V48 strict frozen unseen-family alert fusion",
-        "claim_boundary": "Reserve public-dataset families have no V48 score-development exposure. This is still not proof of a real undisclosed zero-day or verified compromise lead time.",
+        "claim_boundary": "Reserve public-dataset families have no V48 model, calibration, policy or score-selection exposure. This is still not proof of a real undisclosed zero-day or verified compromise lead time.",
         "source": {
             "filename": csv_path.name,
             "bytes": int(csv_path.stat().st_size),
@@ -186,11 +196,7 @@ def main():
         "horizon_minutes": HORIZON,
         "seeds": list(args.seeds),
         "release_gate": {"fpr_max": FPR_BUDGET, "recall_min": 0.80},
-        "network_only_feature_audit": {
-            "raw_selected": feature_cols,
-            "state_feature_count": len(state_features),
-            "audit": feature_audit,
-        },
+        "network_only_feature_audit": {"raw_selected": feature_cols, "state_feature_count": len(state_features), "audit": feature_audit},
         "label_columns": {"binary": binary_col, "family": family_col, "profiles": label_profiles},
         "time": {"date_column": date_col, "timestamp_column": ts_col, "method": time_method, "boundaries": boundaries},
         "state_rows": int(len(state)),
@@ -214,7 +220,6 @@ def main():
         "automatic_containment_approved": False,
     }
 
-    # This is the first point at which reserve-family model metrics are evaluated.
     for fam in reserve:
         print(f"V48 STRICT RESERVE family={fam} config_sha256={frozen['config_sha256']}", flush=True)
         result = evaluate_reserve_family(
@@ -227,9 +232,7 @@ def main():
         reserve and all(v["summary"]["unseen_gate_passed_all_seeds"] for v in report["reserve_results"].values())
     )
     report["pre_compromise_claim_supported"] = False
-    report["reason_pre_compromise_unavailable"] = (
-        "Dataset family labels do not independently establish successful compromise timestamps/lead time."
-    )
+    report["reason_pre_compromise_unavailable"] = "Dataset family labels do not independently establish successful compromise timestamps/lead time."
     (out / "summary.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
 
     print(json.dumps({
