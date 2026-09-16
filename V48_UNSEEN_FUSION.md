@@ -16,7 +16,9 @@ The five families whose V47 metrics were already published are permanently treat
 
 V48 is allowed to choose fusion weights and a conservative benign policy budget using those exposed outcomes.
 
-Before any V48 scorer/model tuning begins, support-qualified non-V47 families are selected as the **reserve set using support counts only**. Every sequence touching a reserve family, plus a full history+horizon overlap embargo around those episodes, is removed from V48 score-development training, calibration and policy blocks. This prevents a reserve family from leaking into the known-attack transfer model or benign/world-model fitting while its alert rule is being selected.
+Before any family-disjoint split is built, family metadata is canonicalized by case-folding, converting underscores to spaces and collapsing repeated whitespace. This makes dataset spellings such as `Lateral _movement` and `Lateral Movement` the same family identity.
+
+Before any V48 scorer/model tuning begins, support-qualified canonical non-V47 families are selected as the **reserve set using support counts only**. Every sequence touching a reserve family, plus a full history+horizon overlap embargo around those episodes, is removed from V48 score-development training, calibration, policy blocks and fusion-selection metrics. This prevents a reserve family from leaking into the known-attack transfer model, world-model fitting or score-selection evidence.
 
 The score configuration is then serialized with a SHA-256 hash. Only after that frozen configuration exists are reserve-family model metrics evaluated. Reserve metrics cannot alter the feature set, component definitions, weights, budget or thresholding rule.
 
@@ -58,6 +60,10 @@ For a reserve family to pass the V48 unseen-family gate on all three seeds:
 - unseen-family recall must be >=80%.
 
 Seeds 42, 43 and 44 are all reported; there is no best-seed promotion.
+
+## Evidence hygiene note
+
+An earlier exploratory V48 run exposed a label-alias problem: the dataset spelling `Lateral _movement` was treated as distinct from the V47 development label `Lateral Movement`, allowing the same semantic family to enter the reserve list. That exploratory run is **invalid for unseen-family evidence**. Family canonicalization and a regression test were added before the authoritative rerun. Only post-fix results may be cited.
 
 ## Claim boundary
 
