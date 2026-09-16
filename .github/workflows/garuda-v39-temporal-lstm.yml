@@ -1,11 +1,6 @@
 name: Garuda V39 Invariant Temporal LSTM
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v39/**'
-      - '.github/workflows/garuda-v39-temporal-lstm.yml'
   workflow_dispatch:
 
 permissions:
