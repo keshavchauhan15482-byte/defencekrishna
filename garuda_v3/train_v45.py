@@ -5,6 +5,9 @@ This entrypoint is the SIH forecasting path: common 10-second graph contract,
 predeclared campaign split, untouched final test, validation-only calibration and
 policy selection, four 10-second future horizons, residual decoding, state-first
 training, unknown-label masking and no aggressive risk balancing.
+
+CTU-13 is intentionally kept as a separate within-source evaluation path and may
+not be mixed with CIC-IDS/CICAPT fitting in this entrypoint.
 """
 from __future__ import annotations
 
@@ -27,6 +30,9 @@ from .forecast_hardening import (
 def preflight(graphs: list[str], split_manifest: str, reservation: str) -> dict[str, Any]:
     datasets = [load_dataset(path) for path in graphs]
     contract = validate_network_dataset_contract(datasets, expected_window_seconds=10)
+    dataset_ids = [d["metadata"].get("dataset_id") for d in datasets]
+    if "CTU-13" in dataset_ids and any(dataset_id != "CTU-13" for dataset_id in dataset_ids):
+        raise ValueError("CTU-13 must remain a separate evaluation/training pipeline; do not mix it with CIC sources")
     manifest = json.loads(Path(split_manifest).read_text())
     split = validate_campaign_split_manifest(manifest, datasets)
     final_ids = set(manifest["test"])
@@ -43,6 +49,8 @@ def preflight(graphs: list[str], split_manifest: str, reservation: str) -> dict[
     return {
         "contract": contract,
         "split": split,
+        "dataset_ids": dataset_ids,
+        "ctu13_policy": "separate_pipeline_only",
         "final_holdout_reservation": frozen,
         "horizons_seconds": list(DEFAULT_HORIZONS_SECONDS),
     }
