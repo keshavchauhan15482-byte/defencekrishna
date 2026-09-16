@@ -1,0 +1,71 @@
+{
+  "schema": "krishna-v39-unsw-invariant-temporal-lstm-freeze-v1",
+  "frozen_before_v39_results": true,
+  "purpose": "Test whether preserving the ordered eight-minute trajectory solves the weak cross-device precursor ranking seen in V38 while retaining the V37 device-invariant channel policy.",
+  "representation": {
+    "base_channels": "the 12 V35 fraction/concentration network channels only",
+    "history_minutes": 8,
+    "within_history_normalization": "per-channel median / max(IQR, 0.10), computed from the eight-minute history only",
+    "temporal_input": "first differences of the normalized sequence",
+    "shape": [7, 12],
+    "raw_device_id_model_feature": false,
+    "raw_ip_identity_model_feature": false,
+    "raw_port_identity_model_feature": false,
+    "timestamp_as_model_feature": false
+  },
+  "pre_forecast_invariance_gate": {
+    "population": "clean benign histories from the eight development devices only",
+    "folds": "same four fixed two-device heldout folds as V37",
+    "domain_classifier": "fixed logistic classifier on flattened 7x12 sequence",
+    "mean_domain_roc_auc_max": 0.70,
+    "rule": "abort attack forecasting if the exact temporal representation fails this benign-only invariance gate"
+  },
+  "temporal_protocol": {
+    "history_minutes": 8,
+    "future_minutes": 4,
+    "history_must_be_attack_free": true,
+    "target": "annotated attack onset strictly after cutoff and within the next four minutes",
+    "event_denominator": "test-device onsets with at least one eligible clean-history precursor window"
+  },
+  "devices": {
+    "development_only": ["00166cab6b88", "0017882b9a25", "44650d56ccd3", "50c7bf005639", "70ee50183443", "74c63b29d71d", "d073d5018308", "ec1a5979f489"],
+    "excluded_v35_inspected_devices": ["ec1a59832811", "f4f5d88f0a3c"]
+  },
+  "folds": [
+    {"name": "fold0", "test": ["00166cab6b88", "0017882b9a25"], "calibration": ["44650d56ccd3"], "policy": ["50c7bf005639"], "train": ["70ee50183443", "74c63b29d71d", "d073d5018308", "ec1a5979f489"]},
+    {"name": "fold1", "test": ["44650d56ccd3", "50c7bf005639"], "calibration": ["70ee50183443"], "policy": ["74c63b29d71d"], "train": ["00166cab6b88", "0017882b9a25", "d073d5018308", "ec1a5979f489"]},
+    {"name": "fold2", "test": ["70ee50183443", "74c63b29d71d"], "calibration": ["d073d5018308"], "policy": ["ec1a5979f489"], "train": ["00166cab6b88", "0017882b9a25", "44650d56ccd3", "50c7bf005639"]},
+    {"name": "fold3", "test": ["d073d5018308", "ec1a5979f489"], "calibration": ["00166cab6b88"], "policy": ["0017882b9a25"], "train": ["44650d56ccd3", "50c7bf005639", "70ee50183443", "74c63b29d71d"]}
+  ],
+  "models": {
+    "primary": {
+      "type": "PyTorch LSTM",
+      "input_size": 12,
+      "hidden_size": 32,
+      "layers": 1,
+      "dropout": 0.0,
+      "epochs": 8,
+      "batch_size": 512,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "training_sampler": "class-balanced weighted sampler; 30000 draws per epoch or full training size if smaller",
+      "checkpoint_selection": "lowest calibration log loss across epochs; test is never consulted"
+    },
+    "baseline": "HistGradientBoostingClassifier on the same flattened 7x12 temporal input with fixed hyperparameters",
+    "seeds": [42, 43, 44],
+    "calibration": "Platt logistic on calibration device only",
+    "policy_budgets": [0.005, 0.01, 0.02, 0.05],
+    "threshold_rule": "for each budget use max(calibration-benign quantile, policy-benign quantile); among candidates with <=5.05% policy FPR choose highest policy positive-sequence recall, tie break lower policy FPR then lower budget",
+    "test_information_used_for_model_or_threshold_selection": false
+  },
+  "development_gate": {
+    "primary_mean_test_fpr_max": 0.05,
+    "primary_mean_sequence_recall_min": 0.70,
+    "primary_mean_evaluable_event_recall_min": 0.80,
+    "minimum_evaluable_events_per_fold": 5,
+    "mean_detected_event_median_max_lead_seconds_min": 60
+  },
+  "claim_boundary": "V39 is development cross-device evidence only. Even a pass requires a newly reserved external corpus/campaign before any final pre-compromise or zero-day claim.",
+  "final_validation": "locked and external/new"
+}
