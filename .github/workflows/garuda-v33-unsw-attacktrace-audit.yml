@@ -1,11 +1,6 @@
 name: Garuda V33 UNSW Attack-Trace Support Audit
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v33/**'
-      - '.github/workflows/garuda-v33-unsw-attacktrace-audit.yml'
   workflow_dispatch:
 
 permissions:
