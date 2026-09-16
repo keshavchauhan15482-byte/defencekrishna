@@ -12,7 +12,7 @@ import json
 import math
 import sys
 import urllib.request
-from collections import Counter, defaultdict, deque
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import numpy as np
@@ -70,8 +70,8 @@ def zero_meta():
 
 
 def base_feature_count() -> int:
-    # 16 structural + 8 numeric fields x3 + protocol/service/state fractions + 16 port buckets.
-    return 16 + len(v23.NUM_FIELDS) * 3 + len(v23.PROTO_KEYS) + len(v23.SERVICE_KEYS) + len(v23.STATE_KEYS) + v23.PORT_BUCKETS
+    # 17 structural + 8 numeric fields x3 + protocol/service/state fractions + 16 port buckets.
+    return 17 + len(v23.NUM_FIELDS) * 3 + len(v23.PROTO_KEYS) + len(v23.SERVICE_KEYS) + len(v23.STATE_KEYS) + v23.PORT_BUCKETS
 
 
 def topology_feature_count() -> int:
@@ -141,7 +141,7 @@ def stream_scenario(sc: str):
                 max(a["dport_count"].values(), default=0) / n,
                 max(a["pair_count"].values(), default=0) / n,
                 entropy(a["src_count"], n), entropy(a["dst_count"], n), entropy(a["dport_count"], n),
-                float(max(fanout)), float(np.mean(fanout)), float(max(portfan)), float(fail + 0.25*sf),
+                float(max(fanout)), float(np.mean(fanout)), float(max(portfan)), float(fail), float(sf),
             ]
             for name, _ in v23.NUM_FIELDS:
                 mean = a["num_sum"][name] / n
