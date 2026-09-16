@@ -55,9 +55,19 @@ def resolve_columns(path):
 
 
 def parse_time(series):
-    dt = pd.to_datetime(series, errors="coerce", utc=True)
-    if float(dt.notna().mean()) < 0.95:
-        dt = pd.to_datetime(series.astype(str).str.strip(), errors="coerce", utc=True)
+    """Parse preserved source timestamps without inventing chronology.
+
+    CICIDS2017 traffic-label mirrors can contain multiple valid datetime string
+    representations in one column. Pandas 2.x otherwise infers one format from the
+    first rows and may coerce later valid representations. ``format='mixed'`` parses
+    each value independently while still requiring an explicit date/time in the
+    source. There is deliberately no row-order or synthetic-date fallback.
+    """
+    if pd.api.types.is_datetime64_any_dtype(series):
+        dt = pd.to_datetime(series, errors="coerce", utc=True)
+    else:
+        text = series.astype(str).str.strip()
+        dt = pd.to_datetime(text, format="mixed", errors="coerce", utc=True)
     if float(dt.notna().mean()) < 0.95:
         raise ValueError("Timestamp parse coverage below 95%; row-order fallback refused")
     return dt
