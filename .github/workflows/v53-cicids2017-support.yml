@@ -33,48 +33,89 @@ jobs:
         run: |
           python -m compileall -q garuda_v3/v53_cicids2017_support.py
           python -m unittest garuda_v3.tests.test_v53_cicids2017_support -v
-      - name: Download pre-normalization CICIDS2017 traffic-label campaigns
+      - name: Download and hash original-distribution GeneratedLabelledFlows archive
         run: |
           python - <<'PY'
-          import hashlib, json, shutil
+          import hashlib, json, shutil, zipfile
           from pathlib import Path
-          from huggingface_hub import hf_hub_download
+          from huggingface_hub import HfApi, hf_hub_download
 
-          repo = 'bvsam/cic-ids-2017'
-          revision = '036f984d251313e814137585af2a65e216c58fe6'
-          names = [
-              'Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv.parquet',
-              'Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv.parquet',
-              'Friday-WorkingHours-Morning.pcap_ISCX.csv.parquet',
-              'Monday-WorkingHours.pcap_ISCX.csv.parquet',
-              'Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv.parquet',
-              'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv.parquet',
-              'Tuesday-WorkingHours.pcap_ISCX.csv.parquet',
-              'Wednesday-workingHours.pcap_ISCX.csv.parquet',
-          ]
-          out = Path('datasets/v53/traffic_labels')
+          repo = 'bencorn/CICIDS2017'
+          api = HfApi()
+          resolved_revision = api.repo_info(repo_id=repo, repo_type='dataset', revision='main').sha
+          src = Path(hf_hub_download(
+              repo_id=repo,
+              repo_type='dataset',
+              revision=resolved_revision,
+              filename='GeneratedLabelledFlows.zip',
+          ))
+          root = Path('datasets/v53')
+          out = root / 'generated_labelled_flows'
           out.mkdir(parents=True, exist_ok=True)
+          archive = root / 'GeneratedLabelledFlows.zip'
+          shutil.copyfile(src, archive)
+
+          def digest(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as f:
+                  for block in iter(lambda: f.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+
+          expected = {
+              'Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv',
+              'Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv',
+              'Friday-WorkingHours-Morning.pcap_ISCX.csv',
+              'Monday-WorkingHours.pcap_ISCX.csv',
+              'Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv',
+              'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv',
+              'Tuesday-WorkingHours.pcap_ISCX.csv',
+              'Wednesday-workingHours.pcap_ISCX.csv',
+          }
+          with zipfile.ZipFile(archive) as zf:
+              csv_members = [i for i in zf.infolist() if not i.is_dir() and i.filename.lower().endswith('.csv')]
+              by_name = {}
+              for info in csv_members:
+                  base = Path(info.filename).name
+                  if base in by_name:
+                      raise RuntimeError(f'duplicate CSV basename in archive: {base}')
+                  by_name[base] = info
+              missing = sorted(expected - set(by_name))
+              extra = sorted(set(by_name) - expected)
+              if missing or extra:
+                  raise RuntimeError(f'GeneratedLabelledFlows member mismatch missing={missing} extra={extra}')
+              files = []
+              for name in sorted(expected):
+                  info = by_name[name]
+                  target = out / name
+                  with zf.open(info, 'r') as source, target.open('wb') as dest:
+                      shutil.copyfileobj(source, dest, length=1024 * 1024)
+                  files.append({'name': name, 'bytes': target.stat().st_size, 'sha256': digest(target)})
+
           manifest = {
               'repo': repo,
-              'revision': revision,
-              'source_tier': 'pre-normalization converted mirror of CIC TrafficLabelling / GeneratedLabelledFlows',
-              'rejected_normalized_revision': 'b7e532345512edcd530cb1770dc76636aeb52802',
-              'rejection_reason': 'one campaign exposed only 37.12% non-null typed timestamps after UTC normalization',
-              'files': [],
+              'requested_revision': 'main',
+              'resolved_revision': resolved_revision,
+              'source_tier': 'unofficial mirror of publisher original-distribution GeneratedLabelledFlows.zip',
+              'publisher_reference': 'CICIDS2017 GeneratedLabelledFlows.zip',
+              'archive': {
+                  'name': archive.name,
+                  'bytes': archive.stat().st_size,
+                  'sha256': digest(archive),
+              },
+              'rejected_converted_parquet_source': {
+                  'repo': 'bvsam/cic-ids-2017',
+                  'reason': 'both tested converted-Parquet revisions left only 37.12% non-null typed timestamps in at least one campaign',
+              },
+              'files': files,
           }
-          for name in names:
-              src = Path(hf_hub_download(repo_id=repo, repo_type='dataset', revision=revision, filename='traffic_labels/' + name))
-              dst = out / name
-              shutil.copyfile(src, dst)
-              h = hashlib.sha256(dst.read_bytes()).hexdigest()
-              manifest['files'].append({'name': name, 'bytes': dst.stat().st_size, 'sha256': h})
-          Path('datasets/v53/source_manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          (root / 'source_manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
           print(json.dumps(manifest, indent=2))
           PY
       - name: Run whole-campaign clean-onset support audit
         run: |
           python -m garuda_v3.v53_cicids2017_support \
-            --input datasets/v53/traffic_labels/*.parquet \
+            --input datasets/v53/generated_labelled_flows/*.csv \
             --output garuda_v3/artifacts/v53 \
             --min-positive 20 \
             --min-negative 100 \
