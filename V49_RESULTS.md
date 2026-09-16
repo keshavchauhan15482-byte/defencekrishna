@@ -67,4 +67,10 @@ V49 strengthens the unseen-family evidence without post-hoc reserve tuning:
 
 The next independent unseen/zero-day-like evidence must come from a new campaign/family/dataset with adequate positives and clean benign support. The already merged ToN-IoT V48 audit found no future-positive family support in its final chronological tail, so it correctly produces no success metric.
 
-Original X-IIoTID reserve workflow run `35091414159` and full Krishna regression run `35091414128` completed successfully. V49 re-runs the renamed integration on latest main to verify compatibility with the ToN-IoT track.
+## Reproduction
+
+- Latest-main V49 reserved-family workflow: GitHub Actions run `35092549633`, completed successfully.
+- V49 evidence artifact: `v49-reserved-unseen-evidence`, SHA-256 digest `8103d39e6ef5086da276623603c69773ebbc3ca8568d85f4d3fc338ec1d43147`.
+- Full Krishna integration regression on the same PR head: run `35092549647`, completed successfully.
+
+The latest-main rerun reproduced the same frozen candidates and the same reserve metrics reported above.
