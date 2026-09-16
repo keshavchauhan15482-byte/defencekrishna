@@ -1,11 +1,6 @@
 name: Garuda V37 Invariant Representation Ablation
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v37/**'
-      - '.github/workflows/garuda-v37-invariance.yml'
   workflow_dispatch:
 
 permissions:
