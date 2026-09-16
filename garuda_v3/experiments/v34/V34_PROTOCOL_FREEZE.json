@@ -1,0 +1,24 @@
+{
+  "schema": "krishna-v34-unsw-flow-schema-preflight-v1",
+  "frozen_before_v34_results": true,
+  "purpose": "Resolve the exact public UNSW attack-trace flow-file schema and timestamp contract before freezing a forecasting model.",
+  "source": {
+    "flow_data": "https://iotanalytics.unsw.edu.au/anomaly-data/flowdata.zip",
+    "annotations": "https://iotanalytics.unsw.edu.au/anomaly-data/annotations.zip"
+  },
+  "preflight_only": true,
+  "model_training": false,
+  "threshold_selection": false,
+  "final_validation": "locked",
+  "required_outputs": [
+    "flow archive member inventory",
+    "annotation archive member inventory",
+    "detected delimiter and field count per flow file",
+    "representative first non-empty records",
+    "timestamp-field candidates and epoch unit",
+    "numeric-column support and field-count consistency",
+    "machine-readable schema contract suitable for the next pilot"
+  ],
+  "decision_rule": "Only start the next forecasting pilot after a consistent timestamp and numeric flow-counter contract is resolved for files containing supported attack annotations.",
+  "claim_boundary": "V34 is schema/provenance preflight only; it makes no forecasting performance claim."
+}
