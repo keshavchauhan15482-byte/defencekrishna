@@ -1,0 +1,99 @@
+name: V49 fresh unseen-DDoS campaign
+
+on:
+  pull_request:
+    paths:
+      - 'garuda_v3/v49_cic_unseen_campaign.py'
+      - 'garuda_v3/tests/test_v49_cic_unseen_campaign.py'
+      - '.github/workflows/v49-fresh-ddos.yml'
+      - 'V49_FRESH_DDOS.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fresh-ddos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install V49 research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' pyarrow 'kagglehub>=1.0.0,<1.1'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile and test V49
+        run: |
+          python -m compileall -q garuda_v3/v49_cic_unseen_campaign.py
+          python -m unittest garuda_v3.tests.test_v49_cic_unseen_campaign -v
+      - name: Download exact CIC-IDS2018 campaign files
+        run: |
+          mkdir -p datasets/v49
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          import kagglehub
+          handle='dhoogla/csecicids2018'
+          files=[
+            'Bruteforce-Wednesday-14-02-2018_TrafficForML_CICFlowMeter.parquet',
+            'Botnet-Friday-02-03-2018_TrafficForML_CICFlowMeter.parquet',
+            'Infil1-Wednesday-28-02-2018_TrafficForML_CICFlowMeter.parquet',
+            'Web1-Thursday-22-02-2018_TrafficForML_CICFlowMeter.parquet',
+            'DDoS2-Wednesday-21-02-2018_TrafficForML_CICFlowMeter.parquet',
+          ]
+          rows=[]
+          for name in files:
+              got=Path(kagglehub.dataset_download(handle,path=name))
+              if got.is_dir():
+                  matches=list(got.rglob(name))
+                  if len(matches)!=1: raise RuntimeError(f'Cannot resolve {name} under {got}: {matches}')
+                  got=matches[0]
+              dst=Path('datasets/v49')/name
+              shutil.copyfile(got,dst)
+              if dst.stat().st_size<100000: raise RuntimeError(f'Unexpectedly small {name}')
+              rows.append({'file':name,'bytes':dst.stat().st_size})
+          print(json.dumps(rows,indent=2))
+          PY
+      - name: Run frozen three-seed V49 benchmark
+        run: |
+          python -m garuda_v3.v49_cic_unseen_campaign \
+            --train \
+              datasets/v49/Bruteforce-Wednesday-14-02-2018_TrafficForML_CICFlowMeter.parquet \
+              datasets/v49/Botnet-Friday-02-03-2018_TrafficForML_CICFlowMeter.parquet \
+            --calibration datasets/v49/Infil1-Wednesday-28-02-2018_TrafficForML_CICFlowMeter.parquet \
+            --policy datasets/v49/Web1-Thursday-22-02-2018_TrafficForML_CICFlowMeter.parquet \
+            --final datasets/v49/DDoS2-Wednesday-21-02-2018_TrafficForML_CICFlowMeter.parquet \
+            --output garuda_v3/artifacts/v49_ddos \
+            --seeds 42 43 44 \
+            --epochs 15
+      - name: Print V49 evidence summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v49_ddos/summary.json').read_text())
+          print(json.dumps({
+            'support':d['support'],
+            'common_raw_features':d['common_raw_features'],
+            'summary':d['summary'],
+            'release_gate_all_seeds':d['release_gate_all_seeds'],
+            'clean_pre_onset_gate_all_seeds':d['clean_pre_onset_gate_all_seeds'],
+            'state':{s:r['state'] for s,r in d['results'].items()},
+            'first_attack_horizon':{s:r['first_attack_horizon'] for s,r in d['results'].items()},
+          },indent=2))
+          PY
+      - name: Upload V49 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v49-fresh-ddos-evidence
+          if-no-files-found: error
+          retention-days: 14
+          path: garuda_v3/artifacts/v49_ddos/summary.json
