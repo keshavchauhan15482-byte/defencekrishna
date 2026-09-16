@@ -1,0 +1,35 @@
+{
+  "schema": "krishna-v42-independent-unknown-lane-v1",
+  "frozen_before_results": true,
+  "source": "same verified UNSW IoT Attack Traces and V41 sample protocol",
+  "purpose": "Fix V41's architectural failure where policy optimization assigned zero weight to the OOD lane. Evaluate independent known-progression and unknown-anomaly lanes whose OR output is calibrated only against benign policy traffic.",
+  "claim_scope": "unseen-family early progression forecasting after the first observable malicious network change; not prediction before the first malicious packet",
+  "strict_network_only": true,
+  "raw_device_ip_port_timestamp_model_features": false,
+  "development_holdout_families": ["TcpSynReflection", "ArpSpoof", "PingOfDeath", "Ssdp"],
+  "locked_final_validation_families": ["TcpSynDevice", "UdpDevice"],
+  "sample_protocol": "identical to V41: 4 one-minute rows, 240-second continuation target, 30-minute device-time block split, locked-family exclusion",
+  "representation": {
+    "base": "V37 3x12 scale-free fraction derivatives (36D)",
+    "environment_normalization": "per-device robust median/IQR fitted on benign TRAIN blocks only; device identity is not a model feature",
+    "supervised_lane": "HGB trained on non-heldout known progression positives plus benign samples",
+    "unknown_lane": "composite benign novelty: IsolationForest percentile plus robust onset-shock percentile; no attack labels used to fit the anomaly reference"
+  },
+  "decision_policy": {
+    "logic": "supervised_lane_alert OR unknown_lane_alert",
+    "calibration": "supervised logit calibration on calibration split only; anomaly empirical references use benign calibration samples only",
+    "budget_pairs_in_predeclared_order": [[0.003,0.007],[0.0025,0.005],[0.001,0.003]],
+    "budget_pair_meaning": "[supervised benign FPR budget, unknown-lane benign FPR budget]",
+    "selection": "choose the first predeclared pair whose combined OR alert has <=1.05% benign FPR on policy data; attack-positive policy outcomes are not used to choose the pair",
+    "test_information_used": false
+  },
+  "seeds": [42,43,44],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.01,
+    "macro_unseen_event_recall_min": 0.80,
+    "each_unseen_family_event_recall_min": 0.70,
+    "median_detection_delay_seconds_max": 120,
+    "minimum_evaluable_events_per_family": 5
+  },
+  "final_validation": "locked; V42 is development evidence only and newly reserved external validation is required before a final zero-day-like claim"
+}
