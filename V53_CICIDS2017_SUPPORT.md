@@ -2,7 +2,7 @@
 
 V53 repairs the blocked CICIDS2017 pre-onset evidence track without weakening the chronology contract.
 
-The common `MachineLearningCSV` mirror used by the earlier V51 attempt removes Timestamp and flow identity fields. V51 correctly refused to reconstruct chronology from row order. V53 instead uses the timestamp-preserving `GeneratedLabelledFlows` / `TrafficLabelling` release variant through a pinned public Parquet mirror whose timestamps are normalized to UTC.
+The common `MachineLearningCSV` mirror used by the earlier V51 attempt removes Timestamp and flow identity fields. V51 correctly refused to reconstruct chronology from row order. V53 instead uses the timestamp-preserving `GeneratedLabelledFlows` / `TrafficLabelling` release variant through a pinned public Parquet mirror.
 
 ## Frozen support protocol
 
@@ -31,7 +31,11 @@ This gate is checked before any model is fit.
 
 ## Source boundary
 
-The CI source is the public `bvsam/cic-ids-2017` timestamp-preserving traffic-label mirror pinned to revision `b7e532345512edcd530cb1770dc76636aeb52802`. The repository card states that these files are converted from CICIDS2017 TrafficLabelling / GeneratedLabelledFlows and that timestamps were normalized to UTC. Each downloaded Parquet is SHA-256 hashed again in the evidence manifest.
+The CI source is the public `bvsam/cic-ids-2017` traffic-label mirror pinned to the original converted-Parquet commit `036f984d251313e814137585af2a65e216c58fe6`. This predates the mirror's later UTC-normalization rewrite.
+
+The later normalized revision `b7e532345512edcd530cb1770dc76636aeb52802` was explicitly rejected for timing evidence after V53 measured a campaign whose `Timestamp` column was already typed `datetime64[us]` but only **37.12%** of rows remained non-null. Dropping the other ~62.88% and calling the remaining timeline complete would create misleading clean-history evidence, so V53 fails closed instead.
+
+The pre-normalization commit is used because it is the commit that originally added the converted CIC TrafficLabelling / GeneratedLabelledFlows Parquets. Every downloaded file is SHA-256 hashed again in the evidence manifest. V53 supports typed datetimes, standard Unix epoch units and mixed valid datetime text, but never reconstructs chronology from row order or invents missing dates.
 
 The publisher CICIDS2017 page independently documents that labeled flows are based on timestamps, endpoint/port/protocol information and attack labels, and gives the attack schedule by day.
 
