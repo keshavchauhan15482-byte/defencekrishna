@@ -1,11 +1,6 @@
 name: Garuda V30 Evaluable-Event Calibrated Development
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v30/**'
-      - '.github/workflows/garuda-v30-evaluable.yml'
   workflow_dispatch:
 
 permissions:
