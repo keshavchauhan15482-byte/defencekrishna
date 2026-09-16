@@ -26,7 +26,7 @@ If the file is missing, duplicated, structurally ambiguous or lacks absolute tim
 
 ## Executed source audit
 
-GitHub Actions run `35110038265` executed the V52 audit end to end after all six V52 unit tests passed.
+GitHub Actions run `35110038265` executed the V52 audit end to end after all six original V52 unit tests passed.
 
 The hash-pinned provenance archive was confirmed as:
 
@@ -39,13 +39,31 @@ Therefore the pinned archive does **not** contain `Attack_info.csv`. V52 also pe
 
 Evidence artifact: `v52-cicapt-timeline-source-audit`, artifact ID `10451842732`, ZIP digest `sha256:54f09dfc19b3bbd30dd423957a9288d59a524193d06f09f85aa246a251fe5ee8`.
 
-Current fail-closed status:
+Current publisher-source fail-closed status:
 
-- `source_ready = false`;
-- `timeline_audit_completed = false`;
+- official/publisher supplementary `Attack_info.csv` reproducibly available to CI = false;
+- publisher-verified timeline audit completed = false;
 - `verified_compromise_lead_time_supported = false`.
 
-This is a **data provenance blocker, not a model pass/fail**. The publisher documents that the supplementary dataset contains `Attack_info.csv`, but the currently reproducible pinned/public mirrors available to CI do not expose that file. The existing provenance-derived Phase-2 candidate timeline remains development/comparison evidence only.
+This is a **data provenance blocker, not a model pass/fail**. The publisher documents that the supplementary dataset contains `Attack_info.csv`, but the currently reproducible pinned/public publisher mirrors available to CI do not expose that file. The existing provenance-derived Phase-2 candidate timeline remains development/comparison evidence only.
+
+## Recovered third-party development evidence
+
+A byte-preserved copy of `attack_info.csv` was later recovered from the commit-pinned third-party repository `AxeIle/Explainable-AI-for-Threat-Attribution-in-APT-Campaign` at commit `6e5a7fd9e2583fce96f43eae5dfbb87140a01023`. It is stored as `datasets/multisource/recovered/attack_info_axile.csv` together with `attack_info_axile_provenance.json`.
+
+The recovered CSV has the publisher-style headings `Time of Attack`, `Tactic Name`, `Technique Name`, `PID`, and `readable_time`. V52 now accepts those headings in the canonical schema resolver, so the raw source is audited directly; no temporary header rewrite or normalized copy is required. CI also verifies the pinned Git blob identity and reported byte size before the timeline audit runs.
+
+An independent commit-pinned processed record from `dpetrov07/path-shield` corroborates the row at epoch `1701623585.0` as `lateral movement / start sandcat / PID 152566`. The recovered workflow hard-fails if that row no longer matches, if the raw schema changes, or if the source bytes differ from the pinned provenance record.
+
+This source is deliberately classified as:
+
+- `source_tier = third_party_git_pinned_copy`;
+- `publisher_verified = false`;
+- development-grade timeline/schema/alignment evidence only;
+- not sufficient by itself for a publisher-verified or successful-compromise lead-time claim;
+- not approval for automatic containment.
+
+The recovered copy removes a practical development blocker for timestamped attack-step alignment, but it does **not** erase the separate publisher-provenance blocker above.
 
 ## Stage 2: frozen alert lead-time audit
 
@@ -71,4 +89,4 @@ V52 does not by itself establish production zero-day detection, successful compr
 
 A strong final pre-compromise result still requires a frozen model/scorer, clean pre-event traffic, independently verified incident outcome/timestamps and a campaign that was not used to tune the alert. V52 builds the evidence machinery and source audit needed to make that later claim without leakage or timestamp invention.
 
-The fastest way to unblock the CICAPT route is to obtain the publisher-provided supplementary `Attack_info.csv` from the official CIC dataset download and run it through the already-frozen V52 audit. Until that exact source is available, no CICAPT pre-compromise/compromise lead-time claim will be promoted.
+The preferred CICAPT route remains obtaining the publisher-provided supplementary `Attack_info.csv` from the official CIC dataset download and running that exact source through the frozen V52 audit. Until that source (or equivalently strong independently verified outcome/timestamp evidence) is available, no CICAPT successful-compromise lead-time claim will be promoted.

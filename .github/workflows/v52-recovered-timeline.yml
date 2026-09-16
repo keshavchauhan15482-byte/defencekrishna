@@ -1,0 +1,147 @@
+name: V52 recovered CICAPT timeline audit
+
+on:
+  push:
+    branches: [v52-recovered-timeline-integration]
+    paths:
+      - 'datasets/multisource/recovered/**'
+      - 'garuda_v3/v52_cicapt_timeline.py'
+      - 'garuda_v3/tests/test_v52_cicapt_timeline.py'
+      - '.github/workflows/v52-recovered-timeline.yml'
+      - 'datasets/multisource/phase2_candidate_timeline.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'datasets/multisource/recovered/**'
+      - 'garuda_v3/v52_cicapt_timeline.py'
+      - 'garuda_v3/tests/test_v52_cicapt_timeline.py'
+      - '.github/workflows/v52-recovered-timeline.yml'
+      - 'datasets/multisource/phase2_candidate_timeline.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recovered-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install V52 research dependency
+        run: python -m pip install 'pandas<2.3'
+      - name: Run V52 timeline regression tests
+        run: python -m unittest garuda_v3.tests.test_v52_cicapt_timeline -v
+      - name: Verify immutable recovered source provenance
+        run: |
+          mkdir -p garuda_v3/artifacts/v52_recovered
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+          import pandas as pd
+
+          src = Path('datasets/multisource/recovered/attack_info_axile.csv')
+          provenance_path = Path('datasets/multisource/recovered/attack_info_axile_provenance.json')
+          provenance = json.loads(provenance_path.read_text())
+          raw = src.read_bytes()
+          blob = subprocess.check_output(['git', 'hash-object', str(src)], text=True).strip()
+          columns = list(pd.read_csv(src, nrows=1).columns)
+          expected_columns = ['Time of Attack', 'Tactic Name', 'Technique Name', 'PID', 'readable_time']
+
+          checks = {
+              'raw_path': str(src),
+              'raw_bytes': len(raw),
+              'raw_sha256': hashlib.sha256(raw).hexdigest(),
+              'git_blob_sha1': blob,
+              'expected_git_blob_sha1': provenance['source_git_blob_sha1'],
+              'expected_bytes': provenance['source_reported_bytes'],
+              'columns': columns,
+              'source_tier': provenance['source_tier'],
+              'publisher_verified': provenance['publisher_verified'],
+              'automatic_containment_approved': provenance['automatic_containment_approved'],
+              'source_bytes_unchanged': (
+                  blob == provenance['source_git_blob_sha1'] and
+                  len(raw) == provenance['source_reported_bytes']
+              ),
+          }
+          Path('garuda_v3/artifacts/v52_recovered/provenance_check.json').write_text(
+              json.dumps(checks, indent=2) + '\n'
+          )
+          print(json.dumps(checks, indent=2))
+
+          if columns != expected_columns:
+              raise SystemExit(f'unexpected recovered schema: {columns}')
+          if not checks['source_bytes_unchanged']:
+              raise SystemExit('recovered source bytes differ from pinned provenance')
+          if provenance['publisher_verified'] is not False:
+              raise SystemExit('recovered source must remain publisher_verified=false')
+          if provenance['automatic_containment_approved'] is not False:
+              raise SystemExit('recovered evidence cannot approve automatic containment')
+          PY
+      - name: Run canonical V52 audit directly on raw recovered CSV
+        run: |
+          python -m garuda_v3.v52_cicapt_timeline audit \
+            --attack-info datasets/multisource/recovered/attack_info_axile.csv \
+            --candidate-timeline datasets/multisource/phase2_candidate_timeline.json \
+            --output garuda_v3/artifacts/v52_recovered/audit
+          cat garuda_v3/artifacts/v52_recovered/audit/timeline_audit.json
+      - name: Verify independent Sandcat row and claim boundaries
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          audit = json.loads(Path('garuda_v3/artifacts/v52_recovered/audit/timeline_audit.json').read_text())
+          target = [e for e in audit['events'] if abs(float(e['epoch']) - 1701623585.0) < 0.001]
+          sandcat_ok = any(
+              e.get('tactic') == 'lateral movement' and
+              str(e.get('technique')).strip().casefold() == 'start sandcat' and
+              str(e.get('pid')).split('.')[0] == '152566'
+              for e in target
+          )
+          schema_ok = (
+              audit.get('schema', {}).get('time') == 'Time of Attack' and
+              audit.get('schema', {}).get('tactic') == 'Tactic Name' and
+              audit.get('schema', {}).get('technique') == 'Technique Name'
+          )
+          boundary_ok = (
+              audit.get('lead_time_claim_level') == 'attack_step_onset_only' and
+              audit.get('verified_compromise_lead_time_supported') is False and
+              audit.get('automatic_containment_approved') is False
+          )
+          result = {
+              'raw_schema_directly_resolved': schema_ok,
+              'independent_sandcat_row_match': sandcat_ok,
+              'candidate_comparison': audit.get('candidate_comparison'),
+              'event_count': audit.get('event_count'),
+              'first_event_utc': audit.get('first_event_utc'),
+              'last_event_utc': audit.get('last_event_utc'),
+              'time_method': audit.get('time_method'),
+              'lead_time_claim_level': audit.get('lead_time_claim_level'),
+              'verified_compromise_lead_time_supported': audit.get('verified_compromise_lead_time_supported'),
+              'publisher_verified': False,
+              'claim_boundary_preserved': boundary_ok,
+          }
+          Path('garuda_v3/artifacts/v52_recovered/result.json').write_text(
+              json.dumps(result, indent=2) + '\n'
+          )
+          print(json.dumps(result, indent=2))
+          if not schema_ok:
+              raise SystemExit('canonical V52 parser did not resolve raw publisher-style headers')
+          if not sandcat_ok:
+              raise SystemExit('independent Sandcat row did not match')
+          if not boundary_ok:
+              raise SystemExit('V52 evidence claim boundary changed unexpectedly')
+          PY
+      - name: Upload recovered timeline evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v52-recovered-timeline-audit
+          retention-days: 14
+          if-no-files-found: error
+          path: garuda_v3/artifacts/v52_recovered/**/*.json

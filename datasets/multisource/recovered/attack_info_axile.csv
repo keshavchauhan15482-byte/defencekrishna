@@ -1,0 +1,59 @@
+Time of Attack,Tactic Name,Technique Name,PID,readable_time
+1701469507.0,collection,create staging directory,4437,2023-12-01 18:25:07
+1701469537.0,collection,find files,7633,2023-12-01 18:25:37
+1701473102.0,collection,find files,11179,2023-12-01 19:25:02
+1701477068.0,collection,find files,14421,2023-12-01 20:31:08
+1701480800.0,collection,find files,18197,2023-12-01 21:33:20
+1701485116.0,collection,find files,21578,2023-12-01 22:45:16
+1701489086.0,collection,find files,25165,2023-12-01 23:51:26
+1701493286.0,collection,find files,28350,2023-12-02 01:01:26
+1701497029.0,collection,find files,31272,2023-12-02 02:03:49
+1701500589.0,collection,find files,34890,2023-12-02 03:03:09
+1701504837.0,collection,find files,37937,2023-12-02 04:13:57
+1701508469.0,collection,find files,40759,2023-12-02 05:14:29
+1701511837.0,collection,find files,44856,2023-12-02 06:10:37
+1701515017.0,collection,find files,47568,2023-12-02 07:03:37
+1701518094.0,collection,stage sensitive files,50511,2023-12-02 07:54:54
+1701521498.0,collection,stage sensitive files,53148,2023-12-02 08:51:38
+1701524593.0,collection,stage sensitive files,56158,2023-12-02 09:43:13
+1701528209.0,collection,advanced file search and stager,59405,2023-12-02 10:43:29
+1701532496.0,collection,advanced file search and stager,64528,2023-12-02 11:54:56
+1701535041.0,collection,stage sensitive files,71772,2023-12-02 12:37:21
+1701538050.0,collection,stage sensitive files,75625,2023-12-02 13:27:30
+1701542219.0,collection,stage sensitive files,78245,2023-12-02 14:36:59
+1701545137.0,exfiltration,compress staged directory,82035,2023-12-02 15:25:37
+1701549372.0,exfiltration,compress staged directory,85807,2023-12-02 16:36:12
+1701553567.0,exfiltration,exfil staged directory,89730,2023-12-02 17:46:07
+1701558169.0,command and control,linux download file and run,92385,2023-12-02 19:02:49
+1701560850.0,command and control,add command,94961,2023-12-02 19:47:30
+1701563744.0,discovery,find local users,98270,2023-12-02 20:35:44
+1701567399.0,discovery,network interface configuration,101566,2023-12-02 21:36:39
+1701570992.0,discovery,scan wifi networks,105454,2023-12-02 22:36:32
+1701575214.0,discovery,system owner/user discovery,108683,2023-12-02 23:46:54
+1701578675.0,discovery,check python,111519,2023-12-03 00:44:35
+1701581761.0,discovery,permission groups discovery,114311,2023-12-03 01:36:01
+1701584782.0,discovery,list os information,117576,2023-12-03 02:26:22
+1701588288.0,discovery,list directory,120442,2023-12-03 03:24:48
+1701591524.0,persistence,create a new user in linux,123479,2023-12-03 04:18:44
+1701594972.0,credential access,extract password with grep,128298,2023-12-03 05:16:12
+1701599411.0,command and control,download sandcat and lazagne,131906,2023-12-03 06:30:11
+1701603457.0,credential access,dump credentials from firefox browser,135354,2023-12-03 07:37:37
+1701607264.0,credential access,dump credentials from firefox browser,138106,2023-12-03 08:41:04
+1701610391.0,collection,capture linux desktop,141900,2023-12-03 09:33:11
+1701614558.0,collection,add or copy content to clipboard,144446,2023-12-03 10:42:38
+1701617497.0,credential access,dump history,147357,2023-12-03 11:31:37
+1701620703.0,discovery,collect arp details,149940,2023-12-03 12:25:03
+1701623585.0,lateral movement,start sandcat,152566,2023-12-03 13:13:05
+1701658975.0,cleanup,capture linux desktop,181541,2023-12-03 23:02:55
+1701658975.0,cleanup,dump credentials from firefox,181543,2023-12-03 23:02:55
+1701658975.0,cleanup,dump credentials from firefox,181545,2023-12-03 23:02:55
+1701658975.0,cleanup,download sandcat and lazagne,181547,2023-12-03 23:02:55
+1701658975.0,cleanup,create a new user in linux,181552,2023-12-03 23:02:55
+1701658975.0,cleanup,list os information,181557,2023-12-03 23:02:55
+1701658975.0,cleanup,add command,181561,2023-12-03 23:02:55
+1701658975.0,cleanup,linux download file,181564,2023-12-03 23:02:55
+1701658975.0,cleanup,compress staged directory,181566,2023-12-03 23:02:55
+1701658975.0,cleanup,compress staged directory,181569,2023-12-03 23:02:55
+1701658975.0,cleanup,advanced file search and stager,181572,2023-12-03 23:02:55
+1701658975.0,cleanup,advanced file search and stager,181576,2023-12-03 23:02:55
+1701658975.0,cleanup,create staging directory,181578,2023-12-03 23:02:55

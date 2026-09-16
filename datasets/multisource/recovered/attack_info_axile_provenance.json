@@ -1,0 +1,24 @@
+{
+  "protocol": "V52 recovered third-party CICAPT Attack_info evidence",
+  "source_tier": "third_party_git_pinned_copy",
+  "publisher_verified": false,
+  "source_repository": "AxeIle/Explainable-AI-for-Threat-Attribution-in-APT-Campaign",
+  "source_commit": "6e5a7fd9e2583fce96f43eae5dfbb87140a01023",
+  "source_path": "attack_info.csv",
+  "source_git_blob_sha1": "4a08e7e0fbd1ba3fa53f0218a260361aa212af21",
+  "source_reported_bytes": 4310,
+  "retrieved_on": "2026-09-16",
+  "independent_cross_check": {
+    "repository": "dpetrov07/path-shield",
+    "commit": "9439f9a540e79eb2775473d7ef119dd508bff9bd",
+    "path": "data/processed/attack_044_pid_152566.json",
+    "matched_row": {
+      "Time of Attack": "1701623585.0",
+      "Tactic Name": "lateral movement",
+      "Technique Name": "start sandcat",
+      "PID": "152566"
+    }
+  },
+  "claim_boundary": "Usable for development-grade timeline/schema/alignment checks. It is not publisher-verified and must not by itself upgrade a result to final publisher-verified compromise lead-time evidence.",
+  "automatic_containment_approved": false
+}

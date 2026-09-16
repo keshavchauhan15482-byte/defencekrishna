@@ -106,14 +106,14 @@ def discover_attack_info(archive_path, output_dir):
 
 def resolve_attack_info_schema(df):
     time_col = pick_col(df.columns, [
-        "attack_time", "attack time", "timestamp", "event_time", "event time",
+        "time of attack", "attack_time", "attack time", "timestamp", "event_time", "event time",
         "start_time", "start time", "execution_time", "execution time", "time",
     ])
     tactic_col = pick_col(df.columns, [
-        "category", "tactic", "attack_category", "attack category", "stage", "phase",
+        "tactic name", "category", "tactic", "attack_category", "attack category", "stage", "phase",
     ])
     technique_col = pick_col(df.columns, [
-        "technique", "technique_id", "technique id", "ability", "ability_name", "ability name",
+        "technique name", "technique", "technique_id", "technique id", "ability", "ability_name", "ability name",
     ])
     pid_col = pick_col(df.columns, ["pid", "process_id", "process id"])
     status_col = pick_col(df.columns, ["status", "result", "success", "outcome"])
