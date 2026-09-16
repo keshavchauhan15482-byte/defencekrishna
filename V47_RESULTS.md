@@ -5,6 +5,7 @@ This report records the executed X-IIoTID family-disjoint experiment. It is a co
 ## Executed protocol
 
 - Public X-IIoTID source downloaded independently in GitHub Actions.
+- Source: 820,834 rows / 68 columns / SHA-256 `7b9290057ee42e784da3c0d84b781815502c9205c74175c96374e71a5ffd98a0`.
 - Strict network-only numeric feature allow-list: 21 raw traffic fields; process/resource/OSSEC/login/class fields excluded.
 - 8-minute observed history, 4-minute future trajectory.
 - Seeds 42, 43, 44; no best-seed promotion.
@@ -15,23 +16,23 @@ This report records the executed X-IIoTID family-disjoint experiment. It is a co
 
 The strict chronological pre-onset audit found **zero eligible held-out-family future positives in the final chronological test tail for every family**. Therefore X-IIoTID cannot establish the SIH pre-compromise/clean-history warning claim under this split. The leave-one-family-out benchmark below measures family-disjoint generalisation, not advance warning.
 
-## World-state forecasting
+## World-state forecasting and open-set warning
 
-For four of five held-out families, all three world-model seeds beat persistence on family-free validation and the held-out-family evaluation set. Reconnaissance fails the persistence gate.
-
-| Held-out family | Positive support | State gate | Mean world anomaly recall | Mean benign FPR | Unseen-family gate |
+| Held-out family | Positive support | Validation state gate | Mean world recall ± SD | Mean benign FPR ± SD | Unseen-family gate |
 |---|---:|---|---:|---:|---|
-| Tampering | 1,876 | pass all seeds | 0.00% | 3.20% | fail |
-| Lateral Movement | 1,598 | pass all seeds | 32.19% | **0.32%** | fail recall |
-| Weaponization | 557 | pass all seeds | 11.19% | **0.32%** | fail recall |
-| Exfiltration | 471 | pass all seeds | 0.00% | **0.39%** | fail recall |
-| Reconnaissance | 364 | **fail all seeds** | 16.67% | **0.41%** | fail state + recall |
+| Tampering | 1,876 | pass all seeds | 0.00% ± 0.00 | 3.34% ± 1.90 | fail |
+| Lateral Movement | 1,598 | pass all seeds | 32.67% ± 0.49 | **0.317% ± 0.042** | fail recall |
+| Weaponization | 557 | pass all seeds | 12.15% ± 6.21 | **0.317% ± 0.042** | fail recall |
+| Exfiltration | 471 | pass all seeds | 0.00% ± 0.00 | **0.390% ± 0.085** | fail recall |
+| Reconnaissance | 364 | **fails persistence** | 16.85% ± 5.87 | **0.415% ± 0.112** | fail state + recall |
 
-The open-set world-forecast score is conservative on four families but misses too many unseen attacks. No held-out family passes the required FPR <=1% and recall >=80% gate across all seeds.
+The open-set future-trajectory score is conservative on four families but misses too many unseen attacks. **No held-out family passes FPR <=1% and recall >=80% across all seeds.**
 
-## Known-family discriminative baseline on unseen families
+For Lateral Movement, Weaponization and Exfiltration, the learned world-model state forecast itself beats persistence on the held-out evaluation set, so the central failure is not always state prediction; it is the conversion of that trajectory into a useful open-set warning score.
 
-The logistic history baseline was trained without the held-out family and evaluated on the exact same unseen-family positives and benign negatives.
+## Known-attack logistic baseline on the same unseen families
+
+The logistic history baseline was trained without the held-out family and evaluated on exactly the same positives/benign negatives.
 
 | Held-out family | Recall | Benign FPR |
 |---|---:|---:|
@@ -41,11 +42,11 @@ The logistic history baseline was trained without the held-out family and evalua
 | Exfiltration | **99.79%** | 2.05% |
 | Reconnaissance | 40.66% | 1.61% |
 
-This shows useful cross-family transfer for several attack families, but the false-positive rate does not meet the <=1% release target. It must not be presented as a zero-day success.
+This is useful evidence that features learned from other attacks can transfer to unseen families, but the baseline violates the <=1% false-positive release budget on every selected family.
 
 ## Clean-history / pre-onset support
 
-Leave-one-family-out clean-history onset support was:
+Leave-one-family-out clean-history onset positives were:
 
 - Tampering: 0
 - Lateral Movement: 0
@@ -53,17 +54,20 @@ Leave-one-family-out clean-history onset support was:
 - Exfiltration: 0
 - Reconnaissance: 0
 
-The six Weaponization clean-history cases were all missed by the world-anomaly score. The strict chronological pre-onset benchmark selected no family because the final test tail contains zero supported future onsets. Verified compromise lead time remains unavailable.
+The strict chronological pre-onset protocol selected no family at all because the final chronological tail contains no supported held-out-family future onset. Therefore **verified advance warning / compromise lead time remains unproven** on X-IIoTID.
 
 ## Main finding
 
-V47 answers an important question honestly:
+V47 narrows the problem substantially:
 
-- Garuda's learned state dynamics can transfer beyond the held-out family for several families.
-- The current **benign future-trajectory anomaly score is not sufficient** for unseen-family attack warning.
-- A discriminative known-attack model transfers surprisingly well to Weaponization/Exfiltration/Tampering but exceeds the false-positive budget.
-- The next model work should combine discriminative transfer, world-state novelty and benign support/OOD evidence using development-only pseudo-unseen folds; it should not tune against these now-exposed V47 held-out outcomes and call them fresh evidence.
+1. family-disjoint state dynamics can generalise for several held-out families;
+2. the current benign predicted-trajectory manifold score is too conservative and has poor unseen recall;
+3. the discriminative baseline transfers strongly to some held-out families, but exceeds the false-positive budget;
+4. the next score should be selected using development pseudo-unseen families and combine temporal/world-model evidence with transferable attack evidence, then be frozen before evaluating any still-unseen reserve family;
+5. these five V47 families are now exposed diagnostics and must never be relabelled as a fresh final holdout after score tuning.
 
 ## Reproduction
 
-GitHub Actions run `35089609851` completed the strict pre-onset audit, three-seed leave-one-family-out benchmark, compact summary and evidence artifact successfully. A later head also passed the same V47 workflow plus the full Krishna integration regression.
+- V47 workflow latest green head: GitHub Actions run `35089717060`.
+- Full Krishna integration regression on the same head: run `35089717012`, all steps successful.
+- Evidence artifact includes strict pre-onset support report, per-family three-seed reports and leave-one-family-out summary.
