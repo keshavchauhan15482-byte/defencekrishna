@@ -2,8 +2,9 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from garuda_v3.data import FEATURES, MAX_NODES, SCHEMA
+from garuda_v3.data import FEATURES, MAX_NODES, SCHEMA, SERVICE_NODES
 from garuda_v3.experiments.v44.network_feature_gate import choose_numeric_features
+from garuda_v3.experiments.v44.prepare_ids2018_10s import densify_service_windows
 from garuda_v3.experiments.v44.runtime_contract import (
     HISTORY, HORIZON, WINDOW_SECONDS, assert_runtime_dataset,
     unix_seconds, validate_metadata,
@@ -15,10 +16,12 @@ class V44RuntimeContractTests(unittest.TestCase):
         return {
             "schema": SCHEMA,
             "features": list(FEATURES),
+            "mode": "service",
             "window_seconds": WINDOW_SECONDS,
             "max_nodes": MAX_NODES,
             "synthetic": False,
             "packet_features": True,
+            "node_names": [list(SERVICE_NODES)] * 3,
         }
 
     def dataset(self):
@@ -27,6 +30,7 @@ class V44RuntimeContractTests(unittest.TestCase):
             "x": np.zeros((n, MAX_NODES, len(FEATURES)), dtype=np.float32),
             "adj": np.zeros((n, MAX_NODES, MAX_NODES), dtype=np.float32),
             "mask": np.zeros((n, MAX_NODES), dtype=np.float32),
+            "y": np.full(n, -1, dtype=np.int8),
             "times": np.arange(n, dtype=np.int64) * WINDOW_SECONDS,
             "metadata": self.metadata(),
         }
@@ -94,6 +98,28 @@ class V44RuntimeContractTests(unittest.TestCase):
         })
         with self.assertRaises(RuntimeError):
             choose_numeric_features(frame)
+
+    def test_densify_adds_only_real_closed_empty_bucket(self):
+        d = self.dataset()
+        d["times"] = np.asarray([0, 20], dtype=np.int64)
+        for key in ("x", "adj", "mask", "y"):
+            d[key] = d[key][[0, 2]]
+        d["metadata"]["node_names"] = [list(SERVICE_NODES), list(SERVICE_NODES)]
+        dense = densify_service_windows(d)
+        self.assertEqual(dense["times"].tolist(), [0, 10, 20])
+        self.assertEqual(int(dense["metadata"]["explicit_empty_windows"]), 1)
+        self.assertEqual(float(dense["mask"][1].sum()), 0.0)
+        self.assertEqual(int(dense["y"][1]), -1)
+
+    def test_densify_never_fills_audited_corrupt_bucket(self):
+        d = self.dataset()
+        d["times"] = np.asarray([0, 20], dtype=np.int64)
+        for key in ("x", "adj", "mask", "y"):
+            d[key] = d[key][[0, 2]]
+        d["metadata"]["node_names"] = [list(SERVICE_NODES), list(SERVICE_NODES)]
+        dense = densify_service_windows(d, excluded_windows=[10])
+        self.assertEqual(dense["times"].tolist(), [0, 20])
+        self.assertEqual(int(dense["metadata"]["explicit_empty_windows"]), 0)
 
 
 if __name__ == "__main__":
