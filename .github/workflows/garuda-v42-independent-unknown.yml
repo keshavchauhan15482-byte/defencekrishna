@@ -1,11 +1,6 @@
-name: Garuda V42 Independent Unknown Lane
+name: Garuda V42 Independent Unknown Lane (Superseded Diagnostic)
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v42/**'
-      - '.github/workflows/garuda-v42-independent-unknown.yml'
   workflow_dispatch:
 
 permissions:
