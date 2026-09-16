@@ -5,6 +5,7 @@ V45 is a **new strict forecasting path**. It does not rewrite historical V8–V1
 ## What V45 changes
 
 - **One 10-second graph contract** for CIC-IDS-2018 and CICAPT-IIoT2024. Source hashes, campaign IDs, timestamps, packet-feature presence and network-only provenance are retained.
+- **Raw IDS2018 PCAP support.** Packet-derived host/service graphs preserve TTL, TCP-window, fragmentation and retransmission indicators. A packet capture by itself does **not** establish attack truth, so packet-only risk labels remain unknown instead of being fabricated.
 - **CTU-13 remains separate.** V45 refuses a training run that mixes CTU-13 with CIC sources.
 - **Campaign-level train / validation / final-test split.** The final-test campaign and source hashes are frozen in an immutable reservation file. Test is not used for model selection, class weighting, calibration or threshold selection.
 - **Unknown is not benign.** Cumulative targets mean: positive if a known malicious event exists in the next 10/20/30/40 seconds, benign only when the whole horizon is explicitly known benign, otherwise unknown.
@@ -22,12 +23,26 @@ V45 is a **new strict forecasting path**. It does not rewrite historical V8–V1
 
 Historical prepared datasets are not overwritten.
 
+Completed-flow input with labels already present in the source:
+
 ```bash
 python -m garuda_v3.prepare_v45_data ids2018 FLOW.csv \
   --output datasets/v45/ids-day-a.npz \
   --campaign ids-day-a --family DoS --mode host
+```
 
-python -m garuda_v3.prepare_v45_data cicapt CAPTURE.pcap \
+Raw classic IDS2018 PCAP for packet/state evidence. The resulting risk labels remain unknown until independently supported ground truth is attached for evaluation:
+
+```bash
+python -m garuda_v3.prepare_v45_data ids2018-pcap datasets/ids2018/raw/Friday-02-03-2018.pcap \
+  --output datasets/v45/ids-packet-a.npz \
+  --campaign ids-packet-a --family DoS --mode host --max-nodes 64
+```
+
+CICAPT-IIoT2024 PCAPNG:
+
+```bash
+python -m garuda_v3.prepare_v45_data cicapt CAPTURE.pcapng \
   --output datasets/v45/cicapt-a.npz \
   --campaign cicapt-a --family CICAPT --mode host --max-nodes 64
 ```
