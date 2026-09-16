@@ -10,6 +10,7 @@ try:
         fused_score,
         _canonical_hash,
     )
+    from garuda_v3.v48_strict_runner import reserve_exposure_mask
     V48_DEPS = True
 except ModuleNotFoundError:
     V48_DEPS = False
@@ -44,6 +45,30 @@ class V48FusionTests(unittest.TestCase):
         self.assertIn('Exfiltration', EXPOSED_DEVELOPMENT_FAMILIES)
         self.assertIn('Lateral Movement', EXPOSED_DEVELOPMENT_FAMILIES)
         self.assertGreaterEqual(len(EXPOSED_DEVELOPMENT_FAMILIES), 5)
+
+    def test_reserve_exposure_mask_blocks_episode_and_overlapping_neighbors(self):
+        # Minute-spaced cutoffs. Row 3 touches Reserve in its future. The strict runner
+        # must block row 3 plus neighbors whose raw history/horizon overlaps that event.
+        n = 30
+        histories = np.asarray([frozenset() for _ in range(n)], dtype=object)
+        steps = []
+        for i in range(n):
+            if i == 15:
+                steps.append((frozenset({'Reserve'}), frozenset(), frozenset(), frozenset()))
+            else:
+                steps.append((frozenset(), frozenset(), frozenset(), frozenset()))
+        seq = {
+            'X': np.zeros((n, 8, 2), dtype=np.float32),
+            'cutoff': np.arange(n, dtype=np.int64) * 60,
+            'history_families': histories,
+            'step_families': np.asarray(steps, dtype=object),
+        }
+        mask = reserve_exposure_mask(seq, {'Reserve'})
+        self.assertTrue(mask[15])
+        self.assertTrue(mask[14])
+        self.assertTrue(mask[16])
+        self.assertFalse(mask[0])
+        self.assertFalse(mask[-1])
 
     def test_config_hash_is_order_stable(self):
         a = {'weights': {'b': 2, 'a': 1}, 'budget': 0.005}
