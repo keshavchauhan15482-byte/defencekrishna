@@ -43,6 +43,17 @@ from .v48_unseen_fusion import (
 EMBARGO_STEPS = HISTORY + HORIZON
 
 
+def canonical_family_name(value):
+    """Collapse superficial dataset spelling variants to one family identity.
+
+    X-IIoTID contains labels such as ``Lateral _movement`` while earlier reports used
+    ``Lateral Movement``. Family-disjoint evaluation must treat these as identical or a
+    previously exposed family can accidentally re-enter the reserve set.
+    """
+    text = str(value).replace("_", " ").strip().casefold()
+    return " ".join(text.split())
+
+
 def reserve_exposure_mask(sequences, reserve_families):
     """Mask sequences touching reserve-family raw windows plus overlap neighbors."""
     reserve = set(reserve_families)
@@ -121,6 +132,12 @@ def main():
     df = pd.read_csv(csv_path, low_memory=False)
     dt, date_col, ts_col, time_method = parse_time(df)
     binary, family, binary_col, family_col, label_profiles = detect_label_hierarchy(df)
+
+    # Canonicalize family *metadata* before any family-disjoint split is built. This is
+    # not a model feature; it only prevents superficial spelling variants from crossing
+    # the development/reserve boundary.
+    family = family.map(canonical_family_name)
+
     feature_cols, feature_audit = choose_network_numeric_features(df)
     state, state_features, src_col = build_minute_state(df, dt, binary, family, feature_cols)
     sequences = make_sequences(state, state_features)
@@ -128,7 +145,9 @@ def main():
 
     all_families = sorted({item for steps in sequences["step_families"] for fams in steps for item in fams})
     support = [family_support(sequences, time_masks, fam) for fam in all_families]
-    exposed = [fam for fam in EXPOSED_DEVELOPMENT_FAMILIES if fam in all_families]
+
+    exposed_requested = [canonical_family_name(fam) for fam in EXPOSED_DEVELOPMENT_FAMILIES]
+    exposed = [fam for fam in exposed_requested if fam in all_families]
     if len(exposed) < 3:
         raise RuntimeError(f"Expected at least three exposed V47 development families, found {exposed}")
 
@@ -143,6 +162,13 @@ def main():
     ]
     reserve_candidates.sort(key=lambda r: (-r["positive"], r["family"]))
     reserve = [r["family"] for r in reserve_candidates[:args.max_reserve_families]]
+
+    # Defence-in-depth: a canonical development family must never appear in reserve,
+    # even if a dataset contains another whitespace/underscore/case spelling.
+    overlap_names = set(exposed).intersection(reserve)
+    if overlap_names:
+        raise RuntimeError(f"Development/reserve family alias overlap after canonicalization: {sorted(overlap_names)}")
+
     reserve_mask = reserve_exposure_mask(sequences, reserve)
 
     dev_cache = []
@@ -166,6 +192,7 @@ def main():
         "protocol": "V48 strict frozen unseen-family alert fusion",
         "development_families": exposed,
         "reserve_families": reserve,
+        "family_label_canonicalization": "casefold + underscores-to-spaces + whitespace collapse",
         "reserve_selection_method": "support only before score development",
         "reserve_sequences_excluded_from_model_fitting": True,
         "reserve_sequences_excluded_from_fusion_selection_metrics": True,
@@ -197,7 +224,13 @@ def main():
         "seeds": list(args.seeds),
         "release_gate": {"fpr_max": FPR_BUDGET, "recall_min": 0.80},
         "network_only_feature_audit": {"raw_selected": feature_cols, "state_feature_count": len(state_features), "audit": feature_audit},
-        "label_columns": {"binary": binary_col, "family": family_col, "profiles": label_profiles},
+        "label_columns": {
+            "binary": binary_col,
+            "family": family_col,
+            "profiles": label_profiles,
+            "canonicalization": "casefold + underscores-to-spaces + whitespace collapse",
+            "exposed_requested_canonical": exposed_requested,
+        },
         "time": {"date_column": date_col, "timestamp_column": ts_col, "method": time_method, "boundaries": boundaries},
         "state_rows": int(len(state)),
         "sequence_rows": int(len(sequences["X"])),
@@ -212,7 +245,7 @@ def main():
         },
         "frozen_score_config": frozen,
         "reserve_selection": {
-            "method": "largest support-qualified non-V47 families, frozen before score development",
+            "method": "largest support-qualified canonical non-V47 families, frozen before score development",
             "selected": reserve,
             "eligible": reserve_candidates,
         },
