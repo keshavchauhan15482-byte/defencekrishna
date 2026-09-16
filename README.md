@@ -1,3 +1,9 @@
+## V44 strict network-only branch
+
+The `v44-strict-network-only-runtime` branch adds a fail-closed audit to the V15 feature selector. Mixed process/system telemetry is rejected and the experiment stops if fewer than four usable flow/packet features remain. V15's older results must not be presented as V44 results until the experiment is rerun. See [NETWORK_ONLY_GATE.md](garuda_v3/experiments/v15/NETWORK_ONLY_GATE.md).
+
+This is a data-validity and runtime-compatibility step; pre-compromise warning, supervised MITRE stages and production containment remain unproven.
+
 ## V15 integrated Krishna Defence System
 
 See [V15_SYSTEM_INTEGRATION_RESULTS.md](V15_SYSTEM_INTEGRATION_RESULTS.md) for the measured system integration. Garuda V15 is now part of the real Krishna Defence forecast/response path as the latest X-IIoTID evidence and a fail-closed response-policy gate. Start the integrated local demo with `npm run demo:v15`.
