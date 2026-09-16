@@ -1,0 +1,57 @@
+name: Garuda V38 Invariant Cross-Device Forecast
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'garuda_v3/experiments/v38/**'
+      - '.github/workflows/garuda-v38-invariant-forecast.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v38-invariant-cross-device:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install V38 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Verify V38 frozen protocol
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v38/V38_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v38_results'] is True
+          assert p['representation']['view'] == 'fraction_derivatives'
+          assert p['representation']['dimension'] == 36
+          assert len(p['folds']) == 4
+          assert p['model']['seeds'] == [42,43,44]
+          assert p['model']['test_information_used_for_model_or_threshold_selection'] is False
+          assert set(p['devices']['development_only']).isdisjoint(p['devices']['excluded_v35_inspected_devices'])
+          assert p['final_validation'] == 'locked and external/new'
+          print('V38 protocol freeze: PASS')
+          PY
+      - name: Syntax-check V38
+        run: python -m py_compile garuda_v3/experiments/v38/v38_unsw_invariant_cross_device.py
+      - name: Run V38 grouped cross-device forecast
+        working-directory: garuda_v3/experiments/v38
+        run: python v38_unsw_invariant_cross_device.py
+      - name: Upload V38 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v38-invariant-cross-device-evidence
+          path: garuda_v3/experiments/v38/artifacts/unsw_invariant_cross_device/
+          if-no-files-found: warn
