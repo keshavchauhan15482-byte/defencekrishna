@@ -11,6 +11,8 @@ on:
       - 'V52_CICAPT_TIMELINE.md'
       - 'datasets/multisource/catalogue.json'
       - 'datasets/multisource/phase2_candidate_timeline.json'
+      - 'datasets/multisource/recovered/attack_info_axile.csv'
+      - 'datasets/multisource/recovered/attack_info_axile_provenance.json'
   workflow_dispatch:
 
 permissions:
@@ -126,14 +128,26 @@ jobs:
           (root / 'mirror_probe.json').write_text(json.dumps(report, indent=2) + '\n')
           print(json.dumps(report, indent=2))
           PY
-      - name: Audit independently timestamped source or mirror candidate if available
+      - name: Audit independently timestamped source or recovered candidate if available
         run: |
           python - <<'PY'
-          import json, subprocess, sys
+          import hashlib, json, subprocess, sys
           from pathlib import Path
+
+          def sha256(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as fh:
+                  for block in iter(lambda: fh.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+
           root = Path('garuda_v3/artifacts/v52')
           discovery = json.loads((root / 'discovery' / 'discovery.json').read_text())
           mirror = json.loads((root / 'mirror_probe' / 'mirror_probe.json').read_text())
+          recovered = Path('datasets/multisource/recovered/attack_info_axile.csv')
+          recovered_provenance_path = Path('datasets/multisource/recovered/attack_info_axile_provenance.json')
+          recovered_provenance = json.loads(recovered_provenance_path.read_text()) if recovered_provenance_path.exists() else None
+
           source = None
           source_tier = None
           publisher_verified = False
@@ -143,6 +157,9 @@ jobs:
           elif mirror.get('candidate_ready'):
               source = mirror['candidate']['path']
               source_tier = 'third_party_mirror_candidate'
+          elif recovered.is_file():
+              source = str(recovered)
+              source_tier = 'third_party_git_pinned_copy'
 
           status = {
               'source_ready': source is not None,
@@ -151,6 +168,14 @@ jobs:
               'timeline_audit_completed': False,
               'verified_compromise_lead_time_supported': False,
           }
+          if source_tier == 'third_party_git_pinned_copy':
+              status['recovered_source'] = {
+                  'path': str(recovered),
+                  'bytes': recovered.stat().st_size,
+                  'sha256': sha256(recovered),
+                  'provenance': recovered_provenance,
+              }
+
           if source:
               cmd = [
                   sys.executable, '-m', 'garuda_v3.v52_cicapt_timeline', 'audit',
@@ -165,12 +190,13 @@ jobs:
                   audit = json.loads((root / 'audit' / 'timeline_audit.json').read_text())
                   status['lead_time_claim_level'] = audit['lead_time_claim_level']
                   status['candidate_comparison'] = audit.get('candidate_comparison')
+                  status['source_audit'] = audit.get('source')
                   status['final_verified_timeline_ready'] = bool(
                       publisher_verified and
                       audit.get('candidate_comparison', {}).get('all_matched')
                   )
                   if not publisher_verified:
-                      status['blocker'] = 'A third-party mirror candidate can support development checks, but publisher-verified Attack_info is still required for final lead-time evidence'
+                      status['blocker'] = 'Recovered third-party timeline supports development-grade timestamp/alignment evidence, but publisher verification is still required for final publisher-verified lead-time claims'
               else:
                   status['blocker'] = 'Attack_info candidate found but absolute timestamp/schema audit failed closed'
                   status['audit_stderr_tail'] = proc.stderr[-4000:]
