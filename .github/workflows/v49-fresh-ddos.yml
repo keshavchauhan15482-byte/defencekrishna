@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'garuda_v3/v49_cic_unseen_campaign.py'
+      - 'garuda_v3/v49_cic_csv.py'
       - 'garuda_v3/tests/test_v49_cic_unseen_campaign.py'
       - '.github/workflows/v49-fresh-ddos.yml'
       - 'V49_FRESH_DDOS.md'
@@ -28,33 +29,33 @@ jobs:
           cache: 'pip'
       - name: Install V49 research dependencies
         run: |
-          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' pyarrow 'kagglehub>=1.0.0,<1.1'
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub>=1.0.0,<1.1'
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Compile and test V49
         run: |
-          python -m compileall -q garuda_v3/v49_cic_unseen_campaign.py
+          python -m compileall -q garuda_v3/v49_cic_unseen_campaign.py garuda_v3/v49_cic_csv.py
           python -m unittest garuda_v3.tests.test_v49_cic_unseen_campaign -v
-      - name: Download exact CIC-IDS2018 campaign files
+      - name: Download original timestamped CIC-IDS2018 campaign CSVs
         run: |
           mkdir -p datasets/v49
           python - <<'PY'
           import json, shutil
           from pathlib import Path
           import kagglehub
-          handle='dhoogla/csecicids2018'
+          handle='masjohncook/cse-cic-ids2018-cicflowmeter'
           files=[
-            'Bruteforce-Wednesday-14-02-2018_TrafficForML_CICFlowMeter.parquet',
-            'Botnet-Friday-02-03-2018_TrafficForML_CICFlowMeter.parquet',
-            'Infil1-Wednesday-28-02-2018_TrafficForML_CICFlowMeter.parquet',
-            'Web1-Thursday-22-02-2018_TrafficForML_CICFlowMeter.parquet',
-            'DDoS2-Wednesday-21-02-2018_TrafficForML_CICFlowMeter.parquet',
+            'Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv',
+            'Friday-02-03-2018_TrafficForML_CICFlowMeter.csv',
+            'Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv',
+            'Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv',
+            'Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv',
           ]
           rows=[]
           for name in files:
               got=Path(kagglehub.dataset_download(handle,path=name))
               if got.is_dir():
                   matches=list(got.rglob(name))
-                  if len(matches)!=1: raise RuntimeError(f'Cannot resolve {name} under {got}: {matches}')
+                  if len(matches)!=1: raise RuntimeError(f'Cannot resolve {name}: {matches}')
                   got=matches[0]
               dst=Path('datasets/v49')/name
               shutil.copyfile(got,dst)
@@ -64,13 +65,13 @@ jobs:
           PY
       - name: Run frozen three-seed V49 benchmark
         run: |
-          python -m garuda_v3.v49_cic_unseen_campaign \
+          python -m garuda_v3.v49_cic_csv \
             --train \
-              datasets/v49/Bruteforce-Wednesday-14-02-2018_TrafficForML_CICFlowMeter.parquet \
-              datasets/v49/Botnet-Friday-02-03-2018_TrafficForML_CICFlowMeter.parquet \
-            --calibration datasets/v49/Infil1-Wednesday-28-02-2018_TrafficForML_CICFlowMeter.parquet \
-            --policy datasets/v49/Web1-Thursday-22-02-2018_TrafficForML_CICFlowMeter.parquet \
-            --final datasets/v49/DDoS2-Wednesday-21-02-2018_TrafficForML_CICFlowMeter.parquet \
+              datasets/v49/Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv \
+              datasets/v49/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv \
+            --calibration datasets/v49/Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv \
+            --policy datasets/v49/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv \
+            --final datasets/v49/Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv \
             --output garuda_v3/artifacts/v49_ddos \
             --seeds 42 43 44 \
             --epochs 15
