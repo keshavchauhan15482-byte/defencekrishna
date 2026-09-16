@@ -1,0 +1,57 @@
+name: Garuda V37 Invariant Representation Ablation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'garuda_v3/experiments/v37/**'
+      - '.github/workflows/garuda-v37-invariance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v37-invariant-representation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install V37 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Verify V37 frozen protocol
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v37/V37_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v37_results'] is True
+          assert p['audit_only'] is True
+          assert p['attack_labels_used_for_view_selection'] is False
+          assert p['attack_forecaster_trained'] is False
+          assert len(p['candidate_views']) == 6
+          assert len(p['domain_cv']['folds']) == 4
+          assert len(p['source']['v35_test_devices_excluded_from_selection']) == 2
+          assert 'locked' in p['final_validation']
+          print('V37 protocol freeze: PASS')
+          PY
+      - name: Syntax-check V37
+        run: python -m py_compile garuda_v3/experiments/v37/v37_unsw_invariant_representation.py
+      - name: Run V37 benign device-invariance ablation
+        working-directory: garuda_v3/experiments/v37
+        run: python v37_unsw_invariant_representation.py
+      - name: Upload V37 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v37-invariant-representation-evidence
+          path: garuda_v3/experiments/v37/artifacts/unsw_invariant_representation/
+          if-no-files-found: warn
