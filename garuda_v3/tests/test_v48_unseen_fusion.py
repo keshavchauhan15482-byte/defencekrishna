@@ -10,7 +10,7 @@ try:
         fused_score,
         _canonical_hash,
     )
-    from garuda_v3.v48_strict_runner import reserve_exposure_mask
+    from garuda_v3.v48_strict_runner import reserve_exposure_mask, canonical_family_name
     V48_DEPS = True
 except ModuleNotFoundError:
     V48_DEPS = False
@@ -46,15 +46,21 @@ class V48FusionTests(unittest.TestCase):
         self.assertIn('Lateral Movement', EXPOSED_DEVELOPMENT_FAMILIES)
         self.assertGreaterEqual(len(EXPOSED_DEVELOPMENT_FAMILIES), 5)
 
+    def test_family_aliases_canonicalize_to_same_identity(self):
+        self.assertEqual(
+            canonical_family_name('Lateral _movement'),
+            canonical_family_name('Lateral Movement'),
+        )
+        self.assertEqual(canonical_family_name('  C&C  '), 'c&c')
+        self.assertEqual(canonical_family_name('RECONNAISSANCE'), 'reconnaissance')
+
     def test_reserve_exposure_mask_blocks_episode_and_overlapping_neighbors(self):
-        # Minute-spaced cutoffs. Row 3 touches Reserve in its future. The strict runner
-        # must block row 3 plus neighbors whose raw history/horizon overlaps that event.
         n = 30
         histories = np.asarray([frozenset() for _ in range(n)], dtype=object)
         steps = []
         for i in range(n):
             if i == 15:
-                steps.append((frozenset({'Reserve'}), frozenset(), frozenset(), frozenset()))
+                steps.append((frozenset({'reserve'}), frozenset(), frozenset(), frozenset()))
             else:
                 steps.append((frozenset(), frozenset(), frozenset(), frozenset()))
         seq = {
@@ -63,7 +69,7 @@ class V48FusionTests(unittest.TestCase):
             'history_families': histories,
             'step_families': np.asarray(steps, dtype=object),
         }
-        mask = reserve_exposure_mask(seq, {'Reserve'})
+        mask = reserve_exposure_mask(seq, {'reserve'})
         self.assertTrue(mask[15])
         self.assertTrue(mask[14])
         self.assertTrue(mask[16])
