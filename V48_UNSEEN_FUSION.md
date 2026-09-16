@@ -16,7 +16,9 @@ The five families whose V47 metrics were already published are permanently treat
 
 V48 is allowed to choose fusion weights and a conservative benign policy budget using those exposed outcomes.
 
-After the score configuration is chosen, it is serialized with a SHA-256 hash. Only then are support-qualified families that were not used in V47 score development selected as **reserve families**, using positive/negative support counts only. Reserve metrics do not alter the feature set, component definitions, weights, budget or thresholding rule.
+Before any V48 scorer/model tuning begins, support-qualified non-V47 families are selected as the **reserve set using support counts only**. Every sequence touching a reserve family, plus a full history+horizon overlap embargo around those episodes, is removed from V48 score-development training, calibration and policy blocks. This prevents a reserve family from leaking into the known-attack transfer model or benign/world-model fitting while its alert rule is being selected.
+
+The score configuration is then serialized with a SHA-256 hash. Only after that frozen configuration exists are reserve-family model metrics evaluated. Reserve metrics cannot alter the feature set, component definitions, weights, budget or thresholding rule.
 
 This gives a cleaner secondary holdout for alert-score development. It still does not convert a public dataset family into a real undisclosed zero-day.
 
@@ -61,7 +63,7 @@ Seeds 42, 43 and 44 are all reported; there is no best-seed promotion.
 
 A strong reserve result would support:
 
-> A fixed Garuda alert fusion, selected without the reserve family, transfers to a public-dataset attack family excluded from score development.
+> A fixed Garuda alert fusion, selected without reserve-family development exposure, transfers to a public-dataset attack family excluded from score development.
 
 It would not prove:
 
