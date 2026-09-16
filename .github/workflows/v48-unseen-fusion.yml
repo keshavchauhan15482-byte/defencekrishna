@@ -8,6 +8,7 @@ on:
       - 'garuda_v3/tests/test_v48_unseen_fusion.py'
       - '.github/workflows/v48-unseen-fusion.yml'
       - 'V48_UNSEEN_FUSION.md'
+      - 'V48_RESULTS.md'
   workflow_dispatch:
 
 permissions:
