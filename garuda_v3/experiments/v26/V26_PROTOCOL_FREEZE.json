@@ -1,0 +1,51 @@
+{
+  "schema": "krishna-v26-iot23-benign-dynamics-freeze-v1",
+  "frozen_before_v26_results": true,
+  "purpose": "Forecast future unseen malicious transitions using a model trained only on benign network dynamics, not attack-family classification.",
+  "source": "Official CTU IoT-23 timestamped Zeek conn.log.labeled scenarios",
+  "development_families": ["c&c-heartbeat", "c&c", "partofahorizontalportscan"],
+  "development_selection_note": "These are the already-frozen V23 clean-onset development families. V24 results were development evidence; V26 changes the model family but does not unlock or score any final-validation family.",
+  "final_validation": "remains locked; no final family is scored in V26",
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_minutes": 8,
+    "future_minutes": 4,
+    "history_windows": 16,
+    "future_windows": 8,
+    "positive": "complete benign 8-minute history ending 30-240 seconds before held-out-family onset",
+    "negative": "complete benign history followed by a complete benign 4-minute future",
+    "block_split": "deterministic one-hour block split inherited from V23; held-out-family-exposed blocks are excluded from train/calibration/policy",
+    "threshold": "fixed 1% policy-benign quantile; no attack-labelled policy example and no test score selects the threshold"
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_ip_identity": false,
+    "raw_uid": false,
+    "process_or_host_telemetry": false,
+    "state": "V23 global network state: flow/topology/concentration, byte/packet/duration, protocol/service/state occupancy and hashed destination-port occupancy",
+    "causal_normalization": "each cutoff uses only its preceding 8-minute history median and IQR"
+  },
+  "model": {
+    "family": "benign-only second-order multi-output Ridge network dynamics",
+    "ridge_alpha": 10.0,
+    "training_examples": "only train-split sequences whose full history and next four minutes are benign",
+    "attack_label_as_model_target": false,
+    "attack_family_as_model_input": false,
+    "risk_components": {
+      "recent_dynamics_residual_percentile": 0.40,
+      "recent_state_novelty_percentile": 0.25,
+      "recent_trend_percentile": 0.20,
+      "recursive_rollout_drift_percentile": 0.15
+    },
+    "component_reference": "calibration benign only",
+    "alert_threshold": "99th percentile of policy-benign fused risk"
+  },
+  "seeds": [42, 43, 44],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.02,
+    "macro_event_recall_min": 0.80,
+    "per_family_event_recall_min": 0.70,
+    "minimum_detected_lead_seconds": 30
+  },
+  "claim_boundary": "A pass supports future warning on these development attack behaviours while the model itself is fit only to benign dynamics. It does not prove detection of every zero-day attack."
+}
