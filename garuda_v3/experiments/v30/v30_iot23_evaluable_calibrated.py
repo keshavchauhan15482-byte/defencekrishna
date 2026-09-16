@@ -33,28 +33,44 @@ DEV_FAMILIES = ["c&c-heartbeat", "c&c", "partofahorizontalportscan"]
 MIN_SCENARIO_POLICY_BENIGN = 50
 
 
-def threshold_from_scores(scores, budget):
+def threshold_from_scores(scores, budget, min_support=100):
     scores = np.asarray(scores, float)
-    if len(scores) < 100:
-        raise RuntimeError(f"policy benign support too small: {len(scores)}")
+    if len(scores) < int(min_support):
+        raise RuntimeError(f"policy benign support too small: {len(scores)} < {min_support}")
     return float(np.quantile(scores, 1.0 - float(budget), method="higher"))
 
 
 def threshold_plan(policy_idx, scenario, target, fused, budget):
-    benign = policy_idx[target[policy_idx] == 0]
-    global_th = threshold_from_scores(fused[benign], budget)
+    """Build thresholds with policy-local scores and global dataset metadata.
+
+    `fused` is aligned 0..len(policy_idx)-1, so metadata is first projected to
+    policy-local arrays. This prevents accidental use of global dataset indices
+    against the compact policy score vector.
+    """
+    policy_idx = np.asarray(policy_idx, dtype=int)
+    fused = np.asarray(fused, dtype=float)
+    if len(fused) != len(policy_idx):
+        raise RuntimeError(f"policy score alignment mismatch: scores={len(fused)} policy={len(policy_idx)}")
+
+    y_local = np.asarray(target[policy_idx], dtype=int)
+    scenario_local = np.asarray(scenario[policy_idx], dtype=object)
+    benign_local = np.where(y_local == 0)[0]
+    global_th = threshold_from_scores(fused[benign_local], budget, min_support=100)
+
     per_scenario = {}
-    for sc in sorted(set(str(x) for x in scenario[benign])):
-        idx = benign[scenario[benign] == sc]
-        if len(idx) >= MIN_SCENARIO_POLICY_BENIGN:
+    for sc in sorted(set(str(x) for x in scenario_local[benign_local])):
+        idx_local = benign_local[scenario_local[benign_local] == sc]
+        if len(idx_local) >= MIN_SCENARIO_POLICY_BENIGN:
             per_scenario[sc] = {
-                "threshold": threshold_from_scores(fused[idx], budget),
-                "policy_benign_n": int(len(idx)),
+                "threshold": threshold_from_scores(
+                    fused[idx_local], budget, min_support=MIN_SCENARIO_POLICY_BENIGN
+                ),
+                "policy_benign_n": int(len(idx_local)),
             }
     return {
         "budget": float(budget),
         "global_threshold": global_th,
-        "global_policy_benign_n": int(len(benign)),
+        "global_policy_benign_n": int(len(benign_local)),
         "per_scenario": per_scenario,
     }
 
