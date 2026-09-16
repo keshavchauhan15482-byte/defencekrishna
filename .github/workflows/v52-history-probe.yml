@@ -1,0 +1,153 @@
+name: V52 CICAPT historical mirror probe
+
+on:
+  push:
+    branches: [v52-cicapt-timeline-leadtime]
+    paths:
+      - '.github/workflows/v52-history-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  historical-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install probe dependencies
+        run: python -m pip install 'pandas<2.3' 'kagglehub==1.0.2'
+      - name: Probe historical dataset versions and filename variants
+        run: |
+          mkdir -p garuda_v3/artifacts/v52_history
+          python - <<'PY'
+          import hashlib, json, shutil
+          from pathlib import Path
+          import kagglehub
+
+          root = Path('garuda_v3/artifacts/v52_history')
+          handles = [
+              'waqarkha/cicapt-iiot/versions/1',
+              'waqarkha/cicapt-iiot/versions/2',
+              'waqarkha/cicapt-iiot/versions/3',
+              'jvn3jean/cicapt-iiot2024/versions/1',
+              'trungtrch/cicapt-iiot-dataset/versions/1',
+          ]
+          paths = [
+              'Attack_info.csv',
+              'attack_info.csv',
+              'Supplementary material/Attack_info.csv',
+              'Supplementary material/attack_info.csv',
+              'Supplementary Material/Attack_info.csv',
+              'Supplementary Materials/Attack_info.csv',
+              'Supplementary_material/Attack_info.csv',
+              'Supplementary-material/Attack_info.csv',
+              'Supplementary/Attack_info.csv',
+              'supplementary/Attack_info.csv',
+              'supplementary material/Attack_info.csv',
+          ]
+
+          def digest(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as f:
+                  for block in iter(lambda: f.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+
+          attempts, found = [], []
+          for handle in handles:
+              for dataset_path in paths:
+                  row = {'handle': handle, 'path': dataset_path}
+                  try:
+                      resolved = Path(kagglehub.dataset_download(handle, path=dataset_path))
+                      if not resolved.is_file():
+                          raise RuntimeError(f'resolved path is not a file: {resolved}')
+                      row.update(found=True, bytes=int(resolved.stat().st_size), sha256=digest(resolved))
+                      found.append({**row, 'resolved': str(resolved)})
+                  except Exception as exc:
+                      row.update(found=False, error=f'{type(exc).__name__}: {exc}'[:700])
+                  attempts.append(row)
+
+          unique = {}
+          for row in found:
+              unique.setdefault(row['sha256'], []).append(row)
+
+          report = {
+              'protocol': 'V52 historical Kaggle-version Attack_info probe',
+              'handles': handles,
+              'attempts': attempts,
+              'found_count': len(found),
+              'unique_content_hashes': sorted(unique),
+              'candidate_ready': False,
+              'publisher_verified': False,
+          }
+          if len(unique) == 1:
+              sha, rows = next(iter(unique.items()))
+              src = Path(rows[0]['resolved'])
+              dst = root / 'Attack_info.csv'
+              shutil.copyfile(src, dst)
+              report['candidate_ready'] = True
+              report['candidate'] = {
+                  'sha256': sha,
+                  'bytes': int(dst.stat().st_size),
+                  'path': str(dst),
+                  'sources': [{k: r[k] for k in ('handle','path')} for r in rows],
+              }
+          elif len(unique) > 1:
+              report['blocker'] = 'Historical mirrors returned conflicting Attack_info contents; source identity is ambiguous.'
+          else:
+              report['blocker'] = 'No historical mirror/version/path exposed Attack_info.csv.'
+
+          (root / 'historical_probe.json').write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
+      - name: Run V52 schema/timeline audit if a candidate was recovered
+        run: |
+          python - <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+          root = Path('garuda_v3/artifacts/v52_history')
+          probe = json.loads((root / 'historical_probe.json').read_text())
+          status = {
+              'candidate_ready': bool(probe.get('candidate_ready')),
+              'publisher_verified': False,
+              'timeline_audit_completed': False,
+              'verified_compromise_lead_time_supported': False,
+          }
+          if probe.get('candidate_ready'):
+              cmd = [
+                  sys.executable, '-m', 'garuda_v3.v52_cicapt_timeline', 'audit',
+                  '--attack-info', probe['candidate']['path'],
+                  '--candidate-timeline', 'datasets/multisource/phase2_candidate_timeline.json',
+                  '--output', str(root / 'audit'),
+              ]
+              proc = subprocess.run(cmd, text=True, capture_output=True)
+              status['audit_returncode'] = proc.returncode
+              status['stdout_tail'] = proc.stdout[-4000:]
+              status['stderr_tail'] = proc.stderr[-4000:]
+              if proc.returncode == 0:
+                  status['timeline_audit_completed'] = True
+                  audit = json.loads((root / 'audit' / 'timeline_audit.json').read_text())
+                  status['lead_time_claim_level'] = audit.get('lead_time_claim_level')
+                  status['candidate_comparison'] = audit.get('candidate_comparison')
+                  status['blocker'] = 'Recovered source is a third-party historical mirror candidate; publisher verification is still required for final lead-time evidence.'
+              else:
+                  status['blocker'] = 'Historical Attack_info candidate failed the strict V52 schema/timestamp audit.'
+          else:
+              status['blocker'] = probe.get('blocker')
+          (root / 'status.json').write_text(json.dumps(status, indent=2) + '\n')
+          print(json.dumps(status, indent=2))
+          PY
+      - name: Upload historical probe evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v52-cicapt-historical-version-probe
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            garuda_v3/artifacts/v52_history/**/*.json
+            garuda_v3/artifacts/v52_history/**/Attack_info.csv
