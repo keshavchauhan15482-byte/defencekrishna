@@ -6,6 +6,8 @@ Files here are **not current release claims**. They are intentionally retained r
 
 For current judge-facing evidence, start at [`../../RELEASE_EVIDENCE.md`](../../RELEASE_EVIDENCE.md) and [`../release/`](../release/).
 
+The pre-cleanup repository-wide SHA-256 path manifest is preserved under [`provenance/`](provenance/). It describes the old layout and is historical provenance, not a current-tree integrity manifest.
+
 Important interpretation rules:
 
 - archived host/service-graph failures do not invalidate the separately frozen V48 X-IIoTID reserve-family benchmark;
