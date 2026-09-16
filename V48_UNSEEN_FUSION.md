@@ -63,7 +63,7 @@ Seeds 42, 43 and 44 are all reported; there is no best-seed promotion.
 
 ## Evidence hygiene note
 
-An earlier exploratory V48 run exposed a label-alias problem: the dataset spelling `Lateral _movement` was treated as distinct from the V47 development label `Lateral Movement`, allowing the same semantic family to enter the reserve list. That exploratory run is **invalid for unseen-family evidence**. Family canonicalization and a regression test were added before the authoritative rerun. Only post-fix results may be cited.
+An earlier exploratory V48 run exposed a label-alias problem: the dataset spelling `Lateral _movement` was treated as distinct from the V47 development label `Lateral Movement`, allowing the same semantic family to enter the reserve list. That exploratory run and any metrics derived from it are **invalid for unseen-family evidence**. Family canonicalization and a regression test were added before the authoritative rerun. Only post-fix results may be cited.
 
 ## Claim boundary
 
