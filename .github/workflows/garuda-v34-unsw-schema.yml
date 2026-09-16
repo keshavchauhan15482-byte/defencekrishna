@@ -1,11 +1,6 @@
 name: Garuda V34 UNSW Flow-Schema Preflight
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v34/**'
-      - '.github/workflows/garuda-v34-unsw-schema.yml'
   workflow_dispatch:
 
 permissions:
