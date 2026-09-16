@@ -1,0 +1,36 @@
+{
+  "schema": "krishna-v32-iot23-expanded-support-freeze-v1",
+  "frozen_before_v32_results": true,
+  "purpose": "Isolate whether increasing the IoT-23 per-scenario row cap from 100k to 300k improves the V29 clean-history unseen-family forecaster without changing its representation or global policy logic.",
+  "source": "Official CTU IoT-23 timestamped Zeek conn.log.labeled scenarios",
+  "development_families": ["c&c-heartbeat", "c&c", "partofahorizontalportscan"],
+  "final_validation": "locked; no final-validation family may be scored while V32 development is evaluated",
+  "data_change": {
+    "v29_row_cap": 100000,
+    "v32_row_cap": 300000,
+    "all_other_temporal_rules": "unchanged from V29/V30: 30-second windows, 8-minute clean history, 4-minute future, deterministic one-hour block split"
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "representation": "exact V29 causal topology, fanout, churn, concentration and periodicity summary",
+    "raw_ip_identity_model_feature": false,
+    "process_or_host_telemetry": false
+  },
+  "model": {
+    "architecture": "exact V29 balanced HistGradientBoosting supervised future-risk plus benign IsolationForest novelty branch",
+    "fusion_candidates": "exact V29 fixed weight and policy-FPR grid",
+    "threshold": "single global threshold selected from policy split only, exactly as V29; V30 scenario-specific thresholds are not used",
+    "event_denominator": "V30 evaluable clean-onset events only; zero-candidate onsets are reported separately",
+    "test_information_used": false,
+    "evaluation_never_selects_model_or_threshold": true
+  },
+  "seeds": [42, 43, 44],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.02,
+    "macro_evaluable_event_recall_min": 0.80,
+    "per_family_evaluable_event_recall_min": 0.70,
+    "positive_lead_time_seconds_min": 30
+  },
+  "isolation_interpretation": "If V32 remains close to V29/V30 despite the 300k cap, row-cap expansion is not the main fix and subsequent work must target cross-scenario representation/calibration or better clean-onset data rather than more of the same rows.",
+  "claim_boundary": "A pass supports these held-out development behaviours only. It does not establish universal zero-day or compromise prediction."
+}
