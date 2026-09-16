@@ -27,7 +27,7 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
       - name: Install audit dependencies
-        run: python -m pip install 'pandas<2.3'
+        run: python -m pip install 'pandas<2.3' 'kagglehub==1.0.2'
       - name: Compile and test V52
         run: |
           python -m compileall -q garuda_v3/v52_cicapt_timeline.py
@@ -38,29 +38,123 @@ jobs:
             --catalogue datasets/multisource/catalogue.json \
             --root datasets/multisource/raw \
             --ids cicapt_provenance
-      - name: Discover original Attack_info annotation
+      - name: Discover Attack_info in the pinned provenance archive
         run: |
           mkdir -p garuda_v3/artifacts/v52
           python -m garuda_v3.v52_cicapt_timeline discover \
             --archive datasets/multisource/raw/cicapt-provenance-mirror.zip \
             --output garuda_v3/artifacts/v52/discovery
-      - name: Audit timeline if independently timestamped source exists
+      - name: Probe public mirrors for only the missing Attack_info file
+        run: |
+          python - <<'PY'
+          import hashlib, json, shutil
+          from pathlib import Path
+          import kagglehub
+
+          root = Path('garuda_v3/artifacts/v52/mirror_probe')
+          root.mkdir(parents=True, exist_ok=True)
+          handles = [
+              'waqarkha/cicapt-iiot',
+              'jvn3jean/cicapt-iiot2024',
+              'trungtrch/cicapt-iiot-dataset',
+          ]
+          paths = [
+              'Attack_info.csv',
+              'attack_info.csv',
+              'Supplementary material/Attack_info.csv',
+              'Supplementary Material/Attack_info.csv',
+              'Supplementary_material/Attack_info.csv',
+              'Supplementary/Attack_info.csv',
+              'supplementary/Attack_info.csv',
+          ]
+
+          def digest(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as f:
+                  for block in iter(lambda: f.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+
+          attempts = []
+          found = []
+          for handle in handles:
+              for dataset_path in paths:
+                  row = {'handle': handle, 'path': dataset_path}
+                  try:
+                      resolved = Path(kagglehub.dataset_download(handle, path=dataset_path))
+                      if not resolved.is_file():
+                          raise RuntimeError(f'resolved path is not a file: {resolved}')
+                      row.update({
+                          'found': True,
+                          'bytes': int(resolved.stat().st_size),
+                          'sha256': digest(resolved),
+                      })
+                      found.append({**row, 'resolved': str(resolved)})
+                  except Exception as exc:
+                      row.update({'found': False, 'error': f'{type(exc).__name__}: {exc}'[:500]})
+                  attempts.append(row)
+
+          unique = {}
+          for row in found:
+              unique.setdefault(row['sha256'], []).append(row)
+
+          report = {
+              'protocol': 'V52 narrow public-mirror Attack_info probe',
+              'source_tier': 'third_party_mirror_candidate',
+              'attempts': attempts,
+              'found_count': len(found),
+              'unique_content_hashes': sorted(unique),
+              'candidate_ready': False,
+              'publisher_verified': False,
+          }
+          if len(unique) == 1:
+              sha, rows = next(iter(unique.items()))
+              src = Path(rows[0]['resolved'])
+              dst = root / 'Attack_info.csv'
+              shutil.copyfile(src, dst)
+              report['candidate_ready'] = True
+              report['candidate'] = {
+                  'sha256': sha,
+                  'bytes': int(dst.stat().st_size),
+                  'path': str(dst),
+                  'mirrors': [{k: r[k] for k in ('handle', 'path')} for r in rows],
+              }
+          elif len(unique) > 1:
+              report['blocker'] = 'Public mirrors returned conflicting Attack_info contents; source identity is ambiguous'
+          else:
+              report['blocker'] = 'No probed public mirror/path exposed Attack_info.csv'
+          (root / 'mirror_probe.json').write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
+      - name: Audit independently timestamped source or mirror candidate if available
         run: |
           python - <<'PY'
           import json, subprocess, sys
           from pathlib import Path
           root = Path('garuda_v3/artifacts/v52')
           discovery = json.loads((root / 'discovery' / 'discovery.json').read_text())
+          mirror = json.loads((root / 'mirror_probe' / 'mirror_probe.json').read_text())
+          source = None
+          source_tier = None
+          publisher_verified = False
+          if discovery.get('source_ready'):
+              source = discovery['attack_info']['path']
+              source_tier = 'hash_pinned_existing_mirror_archive'
+          elif mirror.get('candidate_ready'):
+              source = mirror['candidate']['path']
+              source_tier = 'third_party_mirror_candidate'
+
           status = {
-              'source_ready': bool(discovery.get('source_ready')),
+              'source_ready': source is not None,
+              'source_tier': source_tier,
+              'publisher_verified': publisher_verified,
               'timeline_audit_completed': False,
               'verified_compromise_lead_time_supported': False,
           }
-          if discovery.get('source_ready'):
-              attack_info = discovery['attack_info']['path']
+          if source:
               cmd = [
                   sys.executable, '-m', 'garuda_v3.v52_cicapt_timeline', 'audit',
-                  '--attack-info', attack_info,
+                  '--attack-info', source,
                   '--candidate-timeline', 'datasets/multisource/phase2_candidate_timeline.json',
                   '--output', str(root / 'audit'),
               ]
@@ -71,12 +165,18 @@ jobs:
                   audit = json.loads((root / 'audit' / 'timeline_audit.json').read_text())
                   status['lead_time_claim_level'] = audit['lead_time_claim_level']
                   status['candidate_comparison'] = audit.get('candidate_comparison')
+                  status['final_verified_timeline_ready'] = bool(
+                      publisher_verified and
+                      audit.get('candidate_comparison', {}).get('all_matched')
+                  )
+                  if not publisher_verified:
+                      status['blocker'] = 'A third-party mirror candidate can support development checks, but publisher-verified Attack_info is still required for final lead-time evidence'
               else:
-                  status['blocker'] = 'Attack_info found but absolute timestamp/schema audit failed closed'
+                  status['blocker'] = 'Attack_info candidate found but absolute timestamp/schema audit failed closed'
                   status['audit_stderr_tail'] = proc.stderr[-4000:]
                   status['audit_stdout_tail'] = proc.stdout[-4000:]
           else:
-              status['blocker'] = discovery.get('blocker', 'Attack_info source unavailable')
+              status['blocker'] = discovery.get('blocker') or mirror.get('blocker') or 'Attack_info source unavailable'
           (root / 'status.json').write_text(json.dumps(status, indent=2) + '\n')
           print(json.dumps(status, indent=2))
           PY
