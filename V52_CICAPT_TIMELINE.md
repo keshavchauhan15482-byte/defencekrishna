@@ -24,6 +24,29 @@ If exactly one `Attack_info.csv` exists, V52:
 
 If the file is missing, duplicated, structurally ambiguous or lacks absolute timestamps, V52 writes the blocker to an immutable evidence artifact. It does not synthesize missing dates or convert provenance labels into stronger truth.
 
+## Executed source audit
+
+GitHub Actions run `35110038265` executed the V52 audit end to end after all six V52 unit tests passed.
+
+The hash-pinned provenance archive was confirmed as:
+
+- filename: `cicapt-provenance-mirror.zip`;
+- size: 6,525,709 bytes;
+- SHA-256: `ffcbbd92541eeb3cdcebe53380d202bb2a453907585f80edb70952f1b40040be`;
+- archive members: `Phase1_Provenance.csv`, `Phase2_Provenance.csv` only.
+
+Therefore the pinned archive does **not** contain `Attack_info.csv`. V52 also performed narrow single-file probes against the known public Kaggle mirrors and plausible supplementary paths; none exposed a recoverable `Attack_info.csv` through the public API in this run. No large raw dataset was downloaded for this probe.
+
+Evidence artifact: `v52-cicapt-timeline-source-audit`, artifact ID `10451842732`, ZIP digest `sha256:54f09dfc19b3bbd30dd423957a9288d59a524193d06f09f85aa246a251fe5ee8`.
+
+Current fail-closed status:
+
+- `source_ready = false`;
+- `timeline_audit_completed = false`;
+- `verified_compromise_lead_time_supported = false`.
+
+This is a **data provenance blocker, not a model pass/fail**. The publisher documents that the supplementary dataset contains `Attack_info.csv`, but the currently reproducible pinned/public mirrors available to CI do not expose that file. The existing provenance-derived Phase-2 candidate timeline remains development/comparison evidence only.
+
 ## Stage 2: frozen alert lead-time audit
 
 `garuda_v3.v52_cicapt_timeline leadtime` accepts only an explicit frozen alert-decision stream with timestamps. For each source event it measures whether an alert happened strictly before the event within a declared lookback window.
@@ -47,3 +70,5 @@ V52 does not by itself establish production zero-day detection, successful compr
 ## Release path
 
 A strong final pre-compromise result still requires a frozen model/scorer, clean pre-event traffic, independently verified incident outcome/timestamps and a campaign that was not used to tune the alert. V52 builds the evidence machinery and source audit needed to make that later claim without leakage or timestamp invention.
+
+The fastest way to unblock the CICAPT route is to obtain the publisher-provided supplementary `Attack_info.csv` from the official CIC dataset download and run it through the already-frozen V52 audit. Until that exact source is available, no CICAPT pre-compromise/compromise lead-time claim will be promoted.
