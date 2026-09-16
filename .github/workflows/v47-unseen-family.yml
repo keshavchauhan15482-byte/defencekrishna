@@ -6,8 +6,10 @@ on:
       - 'garuda_v3/v47_unseen_family.py'
       - 'garuda_v3/v47_leave_one_family.py'
       - 'garuda_v3/tests/test_v47_unseen_family.py'
+      - 'garuda_v3/tests/test_v47_claim_boundary.py'
       - '.github/workflows/v47-unseen-family.yml'
       - 'V47_UNSEEN_FAMILY.md'
+      - 'V47_ZERO_DAY_CLAIM_BOUNDARY.md'
   workflow_dispatch:
 
 permissions:
@@ -34,7 +36,7 @@ jobs:
       - name: Compile and run leakage/unit tests
         run: |
           python -m compileall -q garuda_v3/v47_unseen_family.py garuda_v3/v47_leave_one_family.py
-          python -m unittest garuda_v3.tests.test_v47_unseen_family -v
+          python -m unittest garuda_v3.tests.test_v47_unseen_family garuda_v3.tests.test_v47_claim_boundary -v
       - name: Download public X-IIoTID source
         run: |
           mkdir -p datasets/v47
