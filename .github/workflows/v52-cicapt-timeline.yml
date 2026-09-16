@@ -1,6 +1,8 @@
 name: V52 CICAPT timeline provenance audit
 
 on:
+  push:
+    branches: [v52-cicapt-timeline-leadtime]
   pull_request:
     paths:
       - 'garuda_v3/v52_cicapt_timeline.py'
