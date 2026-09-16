@@ -1,0 +1,47 @@
+{
+  "source_sha256": "REPLACE_WITH_EXACT_PREPARED_CAPTURE_SOURCE_SHA256",
+  "campaign_id": "REPLACE_WITH_FROZEN_CAMPAIGN_ID",
+  "review_status": "independent_review_required_before_release_claim",
+  "time_basis": "UTC epoch seconds; half-open intervals [start,end)",
+  "intervals": [
+    {
+      "start": 0,
+      "end": 10,
+      "label": 0,
+      "evidence": "REPLACE_WITH_REFERENCE_PROVING_THIS_WHOLE_INTERVAL_IS_BENIGN",
+      "stages": {
+        "reconnaissance": 0,
+        "initial_access": 0,
+        "lateral_movement": 0,
+        "command_and_control": 0,
+        "exfiltration": 0
+      }
+    },
+    {
+      "start": 20,
+      "end": 30,
+      "label": 1,
+      "evidence": "REPLACE_WITH_ATTACK_TIMELINE_OR_LAB_RECEIPT_REFERENCE",
+      "stages": {
+        "reconnaissance": 1,
+        "initial_access": 0,
+        "lateral_movement": 0,
+        "command_and_control": 0,
+        "exfiltration": 0
+      }
+    }
+  ],
+  "incidents": [
+    {
+      "incident_id": "REPLACE_WITH_UNIQUE_INCIDENT_ID",
+      "compromise_time": 25,
+      "evidence": "REPLACE_WITH_REFERENCE_PROVING_SUCCESSFUL_COMPROMISE_AT_THIS_TIME"
+    }
+  ],
+  "review_notes": [
+    "Do not infer a negative stage merely because an event is absent from a log.",
+    "Do not use model predictions as annotation evidence.",
+    "Compromise time must distinguish successful compromise from an attempted action or first-seen process.",
+    "Replace all placeholder times/references; this template is not valid evidence as shipped."
+  ]
+}

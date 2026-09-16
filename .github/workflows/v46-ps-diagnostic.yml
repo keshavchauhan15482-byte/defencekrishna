@@ -1,0 +1,111 @@
+name: V46 PS-complete diagnostic
+
+on:
+  pull_request:
+    paths:
+      - 'garuda_v3/ps_complete.py'
+      - 'garuda_v3/pcap_tail_clean.py'
+      - 'garuda_v3/train_v46.py'
+      - 'garuda_v3/tests/test_v46_ps_complete.py'
+      - 'garuda_v3/tests/test_pcap_tail_clean.py'
+      - '.github/workflows/v46-ps-diagnostic.yml'
+      - 'V46_PS_COMPLETE.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install dependencies
+        run: python -m pip install -r garuda_v3/requirements.txt
+      - name: Compile and unit-test V46
+        run: |
+          python -m compileall -q garuda_v3
+          python -m unittest garuda_v3.tests.test_v46_ps_complete garuda_v3.tests.test_pcap_tail_clean -v
+      - name: Prepare audited complete-record PCAP derivatives
+        run: |
+          mkdir -p datasets/v46_diag/clean datasets/v46_diag/audit garuda_v3/artifacts/v46_diag
+          for campaign in Thursday-22-02-2018 Friday-23-02-2018 Thursday-01-03-2018 Friday-02-03-2018; do
+            python -m garuda_v3.pcap_tail_clean datasets/ids2018/raw/${campaign}.pcap \
+              --output datasets/v46_diag/clean/${campaign}.pcap \
+              --audit datasets/v46_diag/audit/${campaign}.json
+          done
+      - name: Prepare 10-second PS-complete IDS2018 diagnostic graphs
+        run: |
+          python -m garuda_v3.ps_complete datasets/v46_diag/clean/Thursday-22-02-2018.pcap --output datasets/v46_diag/Thursday-22-02-2018.npz --campaign Thursday-22-02-2018 --mode service --max-nodes 32 --weak-ids2018-schedule
+          python -m garuda_v3.ps_complete datasets/v46_diag/clean/Friday-23-02-2018.pcap --output datasets/v46_diag/Friday-23-02-2018.npz --campaign Friday-23-02-2018 --mode service --max-nodes 32 --weak-ids2018-schedule
+          python -m garuda_v3.ps_complete datasets/v46_diag/clean/Thursday-01-03-2018.pcap --output datasets/v46_diag/Thursday-01-03-2018.npz --campaign Thursday-01-03-2018 --mode service --max-nodes 32 --weak-ids2018-schedule
+          python -m garuda_v3.ps_complete datasets/v46_diag/clean/Friday-02-03-2018.pcap --output datasets/v46_diag/Friday-02-03-2018.npz --campaign Friday-02-03-2018 --mode service --max-nodes 32 --weak-ids2018-schedule
+          cat > datasets/v46_diag/split.json <<'JSON'
+          {
+            "train": ["Thursday-22-02-2018"],
+            "validation": ["Friday-23-02-2018"],
+            "test": ["Thursday-01-03-2018", "Friday-02-03-2018"]
+          }
+          JSON
+      - name: Run fixed three-seed development diagnostic
+        run: |
+          for seed in 42 43 44; do
+            python -m garuda_v3.train_v46 \
+              --graphs datasets/v46_diag/Thursday-22-02-2018.npz datasets/v46_diag/Friday-23-02-2018.npz datasets/v46_diag/Thursday-01-03-2018.npz datasets/v46_diag/Friday-02-03-2018.npz \
+              --split-manifest datasets/v46_diag/split.json \
+              --output garuda_v3/artifacts/v46_diag/seed_${seed} \
+              --seed ${seed} --stride 4 --state-epochs 15 --risk-epochs 10 --patience 5 \
+              --evaluation-scope development_reused_holdout
+          done
+      - name: Summarize all seeds without cherry-picking
+        run: |
+          python - <<'PY'
+          import json, statistics
+          from pathlib import Path
+          root = Path('garuda_v3/artifacts/v46_diag')
+          seeds = [42, 43, 44]
+          reports = {s: json.loads((root / f'seed_{s}' / 'metrics.json').read_text()) for s in seeds}
+          summary = {
+              'protocol': 'V46 PS-complete development diagnostic',
+              'evaluation_scope': 'development_reused_holdout',
+              'seeds': seeds,
+              'claims_boundary': 'Weak schedule-assisted labels and historically exposed campaigns; not release-grade or verified compromise evidence.',
+              'models': {},
+          }
+          for model in ('logistic_regression', 'lstm', 'gnn_lstm'):
+              rows = [reports[s]['models'].get(model, {}) for s in seeds]
+              item = {'per_seed': {str(s): row for s, row in zip(seeds, rows)}}
+              if model != 'logistic_regression':
+                  state = [r.get('state_mse') for r in rows if r.get('state_mse') is not None]
+                  persistence = [r.get('state_persistence_mse') for r in rows if r.get('state_persistence_mse') is not None]
+                  item['state_mse_mean'] = statistics.mean(state) if state else None
+                  item['state_mse_sd'] = statistics.stdev(state) if len(state) > 1 else None
+                  item['persistence_mse_mean'] = statistics.mean(persistence) if persistence else None
+                  item['state_gate_passed_all_seeds'] = all(bool(r.get('state_gate_passed')) for r in rows)
+              tests = [r.get('test') for r in rows if isinstance(r.get('test'), dict)]
+              for metric in ('f1', 'precision', 'recall', 'fpr'):
+                  values = [t.get(metric) for t in tests if t.get(metric) is not None]
+                  item[f'{metric}_mean'] = statistics.mean(values) if values else None
+                  item[f'{metric}_sd'] = statistics.stdev(values) if len(values) > 1 else None
+              summary['models'][model] = item
+          (root / 'three_seed_summary.json').write_text(json.dumps(summary, indent=2, allow_nan=False) + '\n')
+          print(json.dumps(summary, indent=2, allow_nan=False))
+          PY
+      - name: Upload diagnostic evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v46-ps-diagnostic
+          if-no-files-found: error
+          path: |
+            datasets/v46_diag/audit/*.json
+            garuda_v3/artifacts/v46_diag/*/metrics.json
+            garuda_v3/artifacts/v46_diag/three_seed_summary.json
+          retention-days: 14
