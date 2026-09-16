@@ -1,0 +1,107 @@
+name: V52 recovered CICAPT timeline audit
+
+on:
+  push:
+    branches: [v52-cicapt-timeline-leadtime]
+    paths:
+      - 'datasets/multisource/recovered/**'
+      - 'garuda_v3/v52_cicapt_timeline.py'
+      - '.github/workflows/v52-recovered-timeline.yml'
+      - 'datasets/multisource/phase2_candidate_timeline.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recovered-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install 'pandas<2.3'
+      - name: Normalize only recovered header aliases and preserve raw digest
+        run: |
+          mkdir -p garuda_v3/artifacts/v52_recovered
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          import pandas as pd
+
+          src = Path('datasets/multisource/recovered/attack_info_axile.csv')
+          out = Path('garuda_v3/artifacts/v52_recovered/Attack_info.normalized.csv')
+          raw = src.read_bytes()
+          raw_sha = hashlib.sha256(raw).hexdigest()
+          df = pd.read_csv(src, low_memory=False)
+          expected = ['Time of Attack', 'Tactic Name', 'Technique Name', 'PID', 'readable_time']
+          if list(df.columns) != expected:
+              raise SystemExit(f'unexpected recovered schema: {list(df.columns)}')
+          df = df.rename(columns={
+              'Time of Attack': 'Attack Time',
+              'Tactic Name': 'Category',
+              'Technique Name': 'Technique',
+          })
+          df.to_csv(out, index=False)
+          report = {
+              'raw_path': str(src),
+              'raw_bytes': len(raw),
+              'raw_sha256': raw_sha,
+              'raw_rows': int(len(df)),
+              'normalization': {
+                  'Time of Attack': 'Attack Time',
+                  'Tactic Name': 'Category',
+                  'Technique Name': 'Technique'
+              },
+              'source_content_unchanged': True,
+              'publisher_verified': False,
+              'source_tier': 'third_party_git_pinned_copy'
+          }
+          Path('garuda_v3/artifacts/v52_recovered/normalization.json').write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
+      - name: Run strict V52 audit against candidate timeline
+        run: |
+          python -m garuda_v3.v52_cicapt_timeline audit \
+            --attack-info garuda_v3/artifacts/v52_recovered/Attack_info.normalized.csv \
+            --candidate-timeline datasets/multisource/phase2_candidate_timeline.json \
+            --output garuda_v3/artifacts/v52_recovered/audit
+          cat garuda_v3/artifacts/v52_recovered/audit/timeline_audit.json
+      - name: Verify independently observed Sandcat row
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          audit = json.loads(Path('garuda_v3/artifacts/v52_recovered/audit/timeline_audit.json').read_text())
+          target = [e for e in audit['events'] if abs(float(e['epoch']) - 1701623585.0) < 0.001]
+          ok = any(
+              e.get('tactic') == 'lateral movement' and
+              str(e.get('technique')).strip().casefold() == 'start sandcat' and
+              str(e.get('pid')).split('.')[0] == '152566'
+              for e in target
+          )
+          result = {
+              'independent_sandcat_row_match': bool(ok),
+              'candidate_comparison': audit.get('candidate_comparison'),
+              'event_count': audit.get('event_count'),
+              'first_event_utc': audit.get('first_event_utc'),
+              'last_event_utc': audit.get('last_event_utc'),
+              'lead_time_claim_level': audit.get('lead_time_claim_level'),
+              'verified_compromise_lead_time_supported': audit.get('verified_compromise_lead_time_supported'),
+              'publisher_verified': False
+          }
+          Path('garuda_v3/artifacts/v52_recovered/result.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+          if not ok:
+              raise SystemExit('independent Sandcat row did not match')
+          PY
+      - name: Upload recovered timeline evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v52-recovered-timeline-audit
+          retention-days: 14
+          if-no-files-found: error
+          path: garuda_v3/artifacts/v52_recovered/**/*.json
