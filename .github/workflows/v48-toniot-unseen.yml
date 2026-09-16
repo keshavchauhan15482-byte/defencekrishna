@@ -34,30 +34,55 @@ jobs:
         run: |
           python -m compileall -q garuda_v3/v48_toniot_unseen.py
           python -m unittest garuda_v3.tests.test_v48_toniot_unseen -v
-      - name: Download fresh ToN-IoT network table
+      - name: Download timestamp-preserving ToN-IoT network table
         run: |
           mkdir -p datasets/v48
           python - <<'PY'
-          import json, shutil, urllib.request
+          import json, shutil
           from pathlib import Path
+          import pandas as pd
+          import kagglehub
+
           target = Path('datasets/v48/train_test_network.csv')
-          source = None
-          try:
-              import kagglehub
-              root = Path(kagglehub.dataset_download('arnobbhowmik/ton-iot-network-dataset'))
-              matches = list(root.rglob('train_test_network.csv'))
-              if len(matches) == 1:
-                  shutil.copyfile(matches[0], target)
-                  source = f'kaggle:{matches[0]}'
-          except Exception as exc:
-              print(f'Kaggle transport unavailable: {exc}')
-          if not target.exists():
-              url = 'https://huggingface.co/datasets/codymlewis/TON_IoT_network/resolve/main/train_test_network.csv'
-              urllib.request.urlretrieve(url, target)
-              source = 'huggingface:codymlewis/TON_IoT_network mirror of UNSW ToN-IoT network table'
-          if target.stat().st_size < 10_000_000:
+          candidates = [
+              'fadiabuzwayed/ton-iot-train-test-network',
+              'arnobbhowmik/ton-iot-network-dataset',
+          ]
+          attempts = []
+          chosen = None
+          required = {'ts', 'srcip', 'label', 'type'}
+
+          def normalized(cols):
+              return {''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+
+          for dataset in candidates:
+              try:
+                  root = Path(kagglehub.dataset_download(dataset))
+              except Exception as exc:
+                  attempts.append({'dataset': dataset, 'error': str(exc)})
+                  continue
+              for p in sorted(root.rglob('*.csv')):
+                  try:
+                      cols = pd.read_csv(p, nrows=0).columns.tolist()
+                  except Exception as exc:
+                      attempts.append({'dataset': dataset, 'file': str(p), 'error': str(exc)})
+                      continue
+                  names = normalized(cols)
+                  attempts.append({'dataset': dataset, 'file': p.name, 'columns': cols[:8], 'has_required': required <= names})
+                  if required <= names:
+                      chosen = (dataset, p, cols)
+                      break
+              if chosen:
+                  break
+
+          if chosen is None:
+              raise RuntimeError('No timestamp-preserving ToN-IoT network CSV found. Refusing row-order-as-time. Attempts=' + json.dumps(attempts))
+
+          dataset, src, cols = chosen
+          shutil.copyfile(src, target)
+          if target.stat().st_size < 1_000_000:
               raise RuntimeError(f'Unexpectedly small ToN-IoT file: {target.stat().st_size}')
-          print(json.dumps({'source': source, 'path': str(target), 'bytes': target.stat().st_size}))
+          print(json.dumps({'dataset': dataset, 'source': str(src), 'path': str(target), 'bytes': target.stat().st_size, 'columns': cols}, indent=2))
           PY
       - name: Run frozen three-seed unseen-family benchmark
         run: |
