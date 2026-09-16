@@ -143,11 +143,13 @@ def _metric_block(positive, negative, score, threshold):
 
 
 def clean_onset_events(sequences, sequence_src, family, score, threshold, allowed_mask=None):
-    """Collapse duplicate forecast cutoffs into source+family onset events.
+    """Collapse duplicate forecast cutoffs into strict source+family onset events.
 
-    Only histories with no observed attack at all are eligible. For each source/onset,
-    the earliest firing cutoff wins, which is the maximum valid warning lead within the
-    frozen four-minute forecast horizon.
+    Eligible histories contain no observed attack at all, and the target family must be
+    present in the first attack-bearing future minute. This prevents an alert for an
+    earlier different attack from being credited as lead time for a later target family.
+    For each source/onset, the earliest firing cutoff wins, giving the maximum valid
+    warning lead inside the frozen four-minute forecast horizon.
     """
     groups = defaultdict(list)
     allowed = np.ones(len(score), dtype=bool) if allowed_mask is None else np.asarray(allowed_mask, dtype=bool)
@@ -160,6 +162,10 @@ def clean_onset_events(sequences, sequence_src, family, score, threshold, allowe
                 first_h = h
                 break
         if first_h is None:
+            continue
+        # The target must be the first future attack-bearing step. Otherwise a warning
+        # could be caused by an earlier different attack and would overstate target lead.
+        if any(bool(sequences["step_families"][i][j]) for j in range(first_h)):
             continue
         onset = int(sequences["cutoff"][i] + 60 * (first_h + 1))
         groups[(str(sequence_src[i]), onset)].append({
@@ -185,6 +191,7 @@ def clean_onset_events(sequences, sequence_src, family, score, threshold, allowe
     hits = [e for e in events if e["warning_before_onset"]]
     leads = [float(e["lead_seconds"]) for e in hits]
     summary = {
+        "event_definition": "attack-free observed history; target family occurs in the first attack-bearing future minute",
         "event_support": len(events),
         "warning_hits": len(hits),
         "event_recall": (len(hits) / len(events)) if events else None,
