@@ -1,11 +1,6 @@
 name: Garuda V28 Multi-Horizon Unseen Forecast Development
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v28/**'
-      - '.github/workflows/garuda-v28-multihorizon.yml'
   workflow_dispatch:
 
 permissions:
