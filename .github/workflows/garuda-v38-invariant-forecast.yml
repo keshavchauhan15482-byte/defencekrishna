@@ -1,11 +1,6 @@
 name: Garuda V38 Invariant Cross-Device Forecast
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'garuda_v3/experiments/v38/**'
-      - '.github/workflows/garuda-v38-invariant-forecast.yml'
   workflow_dispatch:
 
 permissions:
