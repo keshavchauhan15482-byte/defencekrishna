@@ -1,11 +1,11 @@
 """V53 CIC-IDS2017 timestamp-preserving whole-campaign support audit.
 
 V51 correctly refused the common MachineLearningCSV mirror because that release drops
-Timestamp/identity columns.  V53 runs the same fail-closed campaign-disjoint support
-protocol on the GeneratedLabelledFlows/TrafficLabelling variant, whose timestamps are
-preserved.  No model is trained here.
+Timestamp/identity columns. V53 runs the same fail-closed campaign-disjoint support
+protocol on the original GeneratedLabelledFlows/TrafficLabelling CSV release. No model
+is trained here.
 
-Each source file is an immutable campaign.  Timestamp and attack labels are used only
+Each source file is an immutable campaign. Timestamp and attack labels are used only
 for chronology and evaluation truth; they are never model features.
 """
 from __future__ import annotations
@@ -22,6 +22,13 @@ WINDOW_SECONDS = 10
 HISTORY = 8
 HORIZON = 4
 BENIGN = {"benign", "normal"}
+CAMPAIGN_DATES = {
+    "monday": "2017-07-03",
+    "tuesday": "2017-07-04",
+    "wednesday": "2017-07-05",
+    "thursday": "2017-07-06",
+    "friday": "2017-07-07",
+}
 
 
 def norm(value):
@@ -54,13 +61,16 @@ def resolve_columns(path):
     return ts, label, len(cols)
 
 
-def _epoch_unit(values):
-    """Infer a standard Unix epoch unit from magnitude only.
+def expected_campaign_date(path):
+    name = Path(path).name.casefold()
+    matches = [(day, date) for day, date in CAMPAIGN_DATES.items() if day in name]
+    if len(matches) != 1:
+        return None
+    return matches[0][1]
 
-    This does not infer ordering or dates from row position. CIC conversion tools
-    commonly serialize timestamps as seconds, milliseconds, microseconds or
-    nanoseconds since Unix epoch; their magnitudes are disjoint for modern captures.
-    """
+
+def _epoch_unit(values):
+    """Infer a standard Unix epoch unit from magnitude only."""
     finite = np.asarray(values, dtype=np.float64)
     finite = finite[np.isfinite(finite)]
     if not len(finite):
@@ -77,28 +87,15 @@ def _epoch_unit(values):
     return None
 
 
-def parse_time(series):
-    """Parse preserved source timestamps without inventing chronology.
+def _date_match_fraction(dt, expected_date):
+    valid = dt[dt.notna()]
+    if not len(valid):
+        return 0.0
+    expected = pd.Timestamp(expected_date).date()
+    return float((valid.dt.date == expected).mean())
 
-    Supports typed datetimes, standard Unix epoch encodings, and mixed valid datetime
-    strings. There is deliberately no row-order, synthetic-date or forward-fill
-    fallback. Parsed dates must also land in a plausible modern capture range.
-    """
-    if pd.api.types.is_datetime64_any_dtype(series):
-        dt = pd.to_datetime(series, errors="coerce", utc=True)
-        method = "typed_datetime"
-    else:
-        numeric = pd.to_numeric(series, errors="coerce")
-        numeric_coverage = float(numeric.notna().mean())
-        unit = _epoch_unit(numeric.to_numpy()) if numeric_coverage >= 0.95 else None
-        if unit:
-            dt = pd.to_datetime(numeric, unit=unit, errors="coerce", utc=True)
-            method = f"epoch_{unit}"
-        else:
-            text = series.astype(str).str.strip()
-            dt = pd.to_datetime(text, format="mixed", errors="coerce", utc=True)
-            method = "mixed_datetime_text"
 
+def _validate_parsed_time(series, dt, method, expected_date=None):
     coverage = float(dt.notna().mean())
     if coverage < 0.95:
         sample = [str(v) for v in series.dropna().head(5).tolist()]
@@ -106,7 +103,6 @@ def parse_time(series):
             f"Timestamp parse coverage {coverage:.4f} below 95%; "
             f"dtype={series.dtype} method={method} sample={sample}; row-order fallback refused"
         )
-
     valid = dt[dt.notna()]
     modern = (valid.dt.year >= 2000) & (valid.dt.year <= 2100)
     if float(modern.mean()) < 0.95:
@@ -114,7 +110,60 @@ def parse_time(series):
             f"Parsed timestamp range implausible for CICIDS2017 using {method}; "
             "epoch-unit guessing beyond standard magnitude bands refused"
         )
-    return dt
+    if expected_date is not None:
+        match = _date_match_fraction(dt, expected_date)
+        if match < 0.95:
+            raise ValueError(
+                f"Timestamp campaign-date match {match:.4f} below 95% for expected {expected_date} "
+                f"using {method}; ambiguous day/month interpretation refused"
+            )
+    return dt, method
+
+
+def parse_time(series, expected_date=None):
+    """Parse source timestamps without inventing chronology.
+
+    Supports typed datetimes, standard Unix epoch encodings, and datetime text. For
+    original CICIDS2017 campaign files, the day encoded in the filename is used as an
+    independent validation constraint. For ambiguous numeric dates, month-first and
+    day-first interpretations are tried, but only an interpretation matching the known
+    campaign date on >=95% of parsed rows is accepted. There is no row-order,
+    synthetic-date, forward-fill or missing-time reconstruction fallback.
+    """
+    if pd.api.types.is_datetime64_any_dtype(series):
+        dt = pd.to_datetime(series, errors="coerce", utc=True)
+        return _validate_parsed_time(series, dt, "typed_datetime", expected_date)[0]
+
+    numeric = pd.to_numeric(series, errors="coerce")
+    numeric_coverage = float(numeric.notna().mean())
+    unit = _epoch_unit(numeric.to_numpy()) if numeric_coverage >= 0.95 else None
+    if unit:
+        dt = pd.to_datetime(numeric, unit=unit, errors="coerce", utc=True)
+        return _validate_parsed_time(series, dt, f"epoch_{unit}", expected_date)[0]
+
+    text = series.astype(str).str.strip()
+    candidates = []
+    for dayfirst, name in ((False, "monthfirst"), (True, "dayfirst")):
+        dt = pd.to_datetime(text, format="mixed", errors="coerce", utc=True, dayfirst=dayfirst)
+        coverage = float(dt.notna().mean())
+        match = _date_match_fraction(dt, expected_date) if expected_date else None
+        candidates.append((dt, f"mixed_datetime_text_{name}", coverage, match))
+
+    if expected_date:
+        passing = [row for row in candidates if row[2] >= 0.95 and row[3] is not None and row[3] >= 0.95]
+        if not passing:
+            details = [{"method": r[1], "coverage": r[2], "date_match": r[3]} for r in candidates]
+            raise ValueError(
+                f"No timestamp interpretation matches campaign date {expected_date} at >=95%: {details}; "
+                "date-format guessing refused"
+            )
+        # If both interpretations pass, they must agree on the known campaign date; use
+        # month-first deterministically. This commonly occurs on dates such as 07/07.
+        dt, method, _, _ = passing[0]
+        return _validate_parsed_time(series, dt, method, expected_date)[0]
+
+    best = max(candidates, key=lambda r: r[2])
+    return _validate_parsed_time(series, best[0], best[1], None)[0]
 
 
 def _iter_timestamp_labels(path, ts_col, label_col, chunksize=250_000):
@@ -128,18 +177,20 @@ def _iter_timestamp_labels(path, ts_col, label_col, chunksize=250_000):
 
 
 def canonical_family(value):
-    text = " ".join(str(value).replace("_", " ").strip().casefold().split())
-    return text
+    return " ".join(str(value).replace("_", " ").strip().casefold().split())
 
 
 def build_campaign(path):
     path = Path(path)
     ts_col, label_col, column_count = resolve_columns(path)
+    expected_date = expected_campaign_date(path)
+    if expected_date is None:
+        raise ValueError(f"Campaign filename does not identify exactly one CICIDS2017 weekday: {path.name}")
     frames = []
     rows = 0
     parsed = 0
     for chunk in _iter_timestamp_labels(path, ts_col, label_col):
-        dt = parse_time(chunk[ts_col])
+        dt = parse_time(chunk[ts_col], expected_date=expected_date)
         lab = chunk[label_col].astype(str).str.strip()
         good = dt.notna() & lab.notna()
         dt = dt[good]
@@ -169,6 +220,7 @@ def build_campaign(path):
         "timestamp_column": ts_col,
         "label_column": label_col,
         "columns": column_count,
+        "expected_campaign_date": expected_date,
         "first_bucket_utc": timeline["time"].iloc[0].isoformat() if len(timeline) else None,
         "last_bucket_utc": timeline["time"].iloc[-1].isoformat() if len(timeline) else None,
     }
