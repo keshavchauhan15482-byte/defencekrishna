@@ -1,0 +1,88 @@
+name: V48 reserved unseen-family diagnostic
+
+on:
+  pull_request:
+    paths:
+      - 'garuda_v3/v48_reserved_unseen.py'
+      - 'garuda_v3/tests/test_v48_reserved_unseen.py'
+      - '.github/workflows/v48-reserved-unseen.yml'
+      - 'V48_RESERVED_UNSEEN.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reserved-unseen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install V48 research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile and run V48 tests
+        run: |
+          python -m compileall -q garuda_v3/v47_unseen_family.py garuda_v3/v47_leave_one_family.py garuda_v3/v48_reserved_unseen.py
+          python -m unittest garuda_v3.tests.test_v47_unseen_family garuda_v3.tests.test_v48_reserved_unseen -v
+      - name: Download public X-IIoTID source
+        run: |
+          mkdir -p datasets/v48
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          import pandas as pd
+          import kagglehub
+          root = Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches = []
+          for p in root.rglob('*.csv'):
+              try:
+                  cols = pd.read_csv(p, nrows=0).columns
+              except Exception:
+                  continue
+              normalized = {''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'} <= normalized:
+                  matches.append(p)
+          if len(matches) != 1:
+              raise RuntimeError(f'Expected one X-IIoTID CSV; found {matches}')
+          dst = Path('datasets/v48/XIIoTID.csv')
+          shutil.copyfile(matches[0], dst)
+          print(json.dumps({'destination': str(dst), 'bytes': dst.stat().st_size}))
+          PY
+      - name: Run frozen-score development and reserve evaluation
+        run: |
+          python -m garuda_v3.v48_reserved_unseen \
+            --csv datasets/v48/XIIoTID.csv \
+            --output garuda_v3/artifacts/v48_reserved_unseen \
+            --seeds 42 43 44 \
+            --epochs 12
+      - name: Print reserve-only summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path('garuda_v3/artifacts/v48_reserved_unseen/summary.json').read_text())
+          print(json.dumps({
+            'selected_world_candidate': d['selected_world_candidate'],
+            'selected_hybrid_candidate': d['selected_hybrid_candidate'],
+            'reserve_summary': d['reserve_summary'],
+            'claim_boundary': d['claim_boundary'],
+          }, indent=2))
+          PY
+      - name: Upload V48 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v48-reserved-unseen-evidence
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            garuda_v3/artifacts/v48_reserved_unseen/*.json
