@@ -38,6 +38,17 @@ class V53SupportTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_time(bad)
 
+    def test_mixed_valid_timestamp_formats_are_preserved(self):
+        source = pd.Series([
+            '2017-07-07 15:00:00+00:00',
+            '2017-07-07T15:00:10Z',
+            '2017-07-07 15:00:20 UTC',
+        ])
+        parsed = parse_time(source)
+        self.assertTrue(parsed.notna().all())
+        self.assertEqual(parsed.iloc[0].isoformat(), '2017-07-07T15:00:00+00:00')
+        self.assertEqual(parsed.iloc[2].isoformat(), '2017-07-07T15:00:20+00:00')
+
     def test_clean_history_onset_support_is_counted(self):
         base = pd.Timestamp('2017-07-03T09:00:00Z')
         rows = []
