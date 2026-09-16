@@ -35,11 +35,11 @@ jobs:
         run: |
           python -m compileall -q garuda_v3/v49_cic_unseen_campaign.py garuda_v3/v49_cic_csv.py
           python -m unittest garuda_v3.tests.test_v49_cic_unseen_campaign -v
-      - name: Download original timestamped CIC-IDS2018 campaign CSVs
+      - name: Download timestamped CIC-IDS2018 development and DDoS-positive CSVs
         run: |
           mkdir -p datasets/v49
           python - <<'PY'
-          import json, shutil
+          import json, shutil, urllib.request
           from pathlib import Path
           import kagglehub
           handle='masjohncook/cse-cic-ids2018-cicflowmeter'
@@ -49,7 +49,6 @@ jobs:
             'Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv',
             'Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv',
             'Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv',
-            'Friday-16-02-2018_TrafficForML_CICFlowMeter.csv',
           ]
           rows=[]
           for name in files:
@@ -61,7 +60,16 @@ jobs:
               dst=Path('datasets/v49')/name
               shutil.copyfile(got,dst)
               if dst.stat().st_size<100000: raise RuntimeError(f'Unexpectedly small {name}')
-              rows.append({'file':name,'bytes':dst.stat().st_size})
+              rows.append({'file':name,'bytes':dst.stat().st_size,'role':'CICIDS2018'})
+
+          # Independent benign-only final negative control. Public CICIDS2017
+          # documentation identifies Monday as benign normal human activity only.
+          benign_name='Monday-WorkingHours.pcap_ISCX.csv'
+          benign_url='https://huggingface.co/datasets/c01dsnap/CIC-IDS2017/resolve/main/Monday-WorkingHours.pcap_ISCX.csv?download=true'
+          benign_dst=Path('datasets/v49')/benign_name
+          urllib.request.urlretrieve(benign_url,benign_dst)
+          if benign_dst.stat().st_size<1000000: raise RuntimeError(f'Unexpectedly small {benign_name}')
+          rows.append({'file':benign_name,'bytes':benign_dst.stat().st_size,'role':'CICIDS2017_benign_only_final_negative'})
           print(json.dumps(rows,indent=2))
           PY
       - name: Run frozen three-seed V49 benchmark
@@ -73,7 +81,7 @@ jobs:
             --calibration datasets/v49/Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv \
             --policy datasets/v49/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv \
             --final-positive datasets/v49/Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv \
-            --final-negative datasets/v49/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv \
+            --final-negative datasets/v49/Monday-WorkingHours.pcap_ISCX.csv \
             --output garuda_v3/artifacts/v49_ddos \
             --seeds 42 43 44 \
             --epochs 15
