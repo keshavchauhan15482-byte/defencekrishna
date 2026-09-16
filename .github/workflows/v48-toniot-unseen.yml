@@ -1,0 +1,95 @@
+name: V48 ToN-IoT unseen-family transfer
+
+on:
+  pull_request:
+    paths:
+      - 'garuda_v3/v48_toniot_unseen.py'
+      - 'garuda_v3/tests/test_v48_toniot_unseen.py'
+      - '.github/workflows/v48-toniot-unseen.yml'
+      - 'V48_TONIOT_UNSEEN.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  toniot-unseen-family:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install V48 research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile and run V48 tests
+        run: |
+          python -m compileall -q garuda_v3/v48_toniot_unseen.py
+          python -m unittest garuda_v3.tests.test_v48_toniot_unseen -v
+      - name: Download fresh ToN-IoT network table
+        run: |
+          mkdir -p datasets/v48
+          python - <<'PY'
+          import json, shutil, urllib.request
+          from pathlib import Path
+          target = Path('datasets/v48/train_test_network.csv')
+          source = None
+          try:
+              import kagglehub
+              root = Path(kagglehub.dataset_download('arnobbhowmik/ton-iot-network-dataset'))
+              matches = list(root.rglob('train_test_network.csv'))
+              if len(matches) == 1:
+                  shutil.copyfile(matches[0], target)
+                  source = f'kaggle:{matches[0]}'
+          except Exception as exc:
+              print(f'Kaggle transport unavailable: {exc}')
+          if not target.exists():
+              url = 'https://huggingface.co/datasets/codymlewis/TON_IoT_network/resolve/main/train_test_network.csv'
+              urllib.request.urlretrieve(url, target)
+              source = 'huggingface:codymlewis/TON_IoT_network mirror of UNSW ToN-IoT network table'
+          if target.stat().st_size < 10_000_000:
+              raise RuntimeError(f'Unexpectedly small ToN-IoT file: {target.stat().st_size}')
+          print(json.dumps({'source': source, 'path': str(target), 'bytes': target.stat().st_size}))
+          PY
+      - name: Run frozen three-seed unseen-family benchmark
+        run: |
+          python -m garuda_v3.v48_toniot_unseen \
+            --csv datasets/v48/train_test_network.csv \
+            --output garuda_v3/artifacts/v48_toniot \
+            --seeds 42 43 44 \
+            --epochs 12 \
+            --max-families 5 \
+            --min-test-positives 20 \
+            --min-test-negatives 100
+      - name: Print compact V48 result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path('garuda_v3/artifacts/v48_toniot/summary.json').read_text())
+          print(json.dumps({
+            'source': d['source'],
+            'schema_features': d['schema']['features'],
+            'state_rows': d['state_rows'],
+            'sequence_rows': d['sequence_rows'],
+            'selected_families': d['family_selection']['selected'],
+            'families': {k: v['summary'] for k, v in d['families'].items()},
+            'any_clean_history_positive_support': d['any_clean_history_positive_support'],
+            'all_selected_hybrid_release_gates_passed': d['all_selected_hybrid_release_gates_passed'],
+          }, indent=2))
+          PY
+      - name: Upload V48 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v48-toniot-unseen-evidence
+          if-no-files-found: error
+          retention-days: 14
+          path: garuda_v3/artifacts/v48_toniot/*.json
