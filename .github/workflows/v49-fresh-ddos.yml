@@ -49,6 +49,7 @@ jobs:
             'Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv',
             'Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv',
             'Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv',
+            'Friday-16-02-2018_TrafficForML_CICFlowMeter.csv',
           ]
           rows=[]
           for name in files:
@@ -71,7 +72,8 @@ jobs:
               datasets/v49/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv \
             --calibration datasets/v49/Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv \
             --policy datasets/v49/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv \
-            --final datasets/v49/Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv \
+            --final-positive datasets/v49/Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv \
+            --final-negative datasets/v49/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv \
             --output garuda_v3/artifacts/v49_ddos \
             --seeds 42 43 44 \
             --epochs 15
