@@ -32,6 +32,28 @@ class V52TimelineTests(unittest.TestCase):
         self.assertEqual(schema['tactic'], 'Category')
         self.assertEqual(schema['pid'], 'PID')
 
+    def test_recovered_publisher_headers_audit_without_rewriting_source(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            src = root / 'Attack_info.csv'
+            src.write_text(
+                'Time of Attack,Tactic Name,Technique Name,PID,readable_time\n'
+                '1701623585.0,lateral movement,start sandcat,152566,2023-12-03 13:13:05\n'
+            )
+            schema = resolve_attack_info_schema(pd.read_csv(src))
+            self.assertEqual(schema['time'], 'Time of Attack')
+            self.assertEqual(schema['tactic'], 'Tactic Name')
+            self.assertEqual(schema['technique'], 'Technique Name')
+            report = audit_attack_info(src, root / 'audit')
+            self.assertEqual(report['schema']['time'], 'Time of Attack')
+            self.assertEqual(report['time_method'], 'epoch_s')
+            self.assertEqual(report['event_count'], 1)
+            self.assertEqual(report['events'][0]['tactic'], 'lateral movement')
+            self.assertEqual(report['events'][0]['technique'], 'start sandcat')
+            self.assertEqual(report['events'][0]['pid'].split('.')[0], '152566')
+            self.assertEqual(report['lead_time_claim_level'], 'attack_step_onset_only')
+            self.assertFalse(report['verified_compromise_lead_time_supported'])
+
     def test_time_only_requires_explicit_date(self):
         s = pd.Series(['12:15:11', '12:22:42'])
         with self.assertRaises(ValueError):
