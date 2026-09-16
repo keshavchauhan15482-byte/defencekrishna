@@ -77,6 +77,21 @@ class V53UnknownAttackStressTests(unittest.TestCase):
         self.assertEqual(summary['event_support'], 0)
         self.assertEqual(events, [])
 
+    def test_target_family_must_be_first_future_attack(self):
+        sequences = {
+            'cutoff': np.asarray([1000], dtype=np.int64),
+            'clean': np.asarray([True]),
+            'history_families': np.asarray([frozenset()], dtype=object),
+            'step_families': np.asarray([
+                (frozenset({'tampering'}), frozenset({'exploitation'}), frozenset(), frozenset()),
+            ], dtype=object),
+        }
+        summary, events = clean_onset_events(
+            sequences, np.asarray(['host-a'], dtype=object), 'exploitation', np.asarray([0.99]), threshold=0.5
+        )
+        self.assertEqual(summary['event_support'], 0)
+        self.assertEqual(events, [])
+
 
 if __name__ == '__main__':
     unittest.main()
