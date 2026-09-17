@@ -161,11 +161,11 @@ if (!globalThis[PATCH_FLAG]) {
   };
 
   CounterEngine.prototype.checkLearned = function validatedKnownFastPath(rawInput) {
-    const direct = originalCheckLearned.call(this, rawInput);
-    if (direct) return { ...direct, matchSource: 'reviewed_root_token' };
-
     const haystack = normalizeToken(rawInput);
     if (!haystack) return null;
+
+    // Prefer a specifically validated mutation match so the audit trail records
+    // why Arjuna trusted this variant. Root-token matching remains the fallback.
     for (const entry of this.learnedPatterns || []) {
       for (const item of entry.validatedSyntheticMutations || []) {
         const token = typeof item === 'string' ? item : item.token;
@@ -180,6 +180,9 @@ if (!globalThis[PATCH_FLAG]) {
         }
       }
     }
+
+    const direct = originalCheckLearned.call(this, rawInput);
+    if (direct) return { ...direct, matchSource: 'reviewed_root_token' };
     return null;
   };
 
