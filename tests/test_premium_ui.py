@@ -15,26 +15,17 @@ class PremiumUiContractTests(unittest.TestCase):
 
     def test_market_console_surfaces_required_live_panels(self):
         for required in (
-            'id="riskGauge"',
-            'id="activitySpark"',
-            'id="benchmarkChart"',
-            'id="graph"',
-            'id="timeline"',
-            'id="events"',
-            'id="metrics"',
-            'id="source"',
-            'id="stage"',
-            'id="arjunaState"',
-            'id="krishnaState"',
-            'id="sudarshanaState"',
+            'id="riskGauge"', 'id="activitySpark"', 'id="benchmarkChart"',
+            'id="graph"', 'id="timeline"', 'id="events"', 'id="metrics"',
+            'id="source"', 'id="stage"', 'id="arjunaState"',
+            'id="krishnaState"', 'id="sudarshanaState"',
         ):
             self.assertIn(required, self.html)
 
     def test_claim_boundaries_are_visible(self):
         self.assertIn('No live customer sensor is connected.', self.html)
-        self.assertIn('Recorded replay is labelled as recorded replay.', self.html)
-        self.assertIn('Forecast risk is not presented as verified compromise probability.', self.html)
-        self.assertIn('Containment remains scoped and authorization-gated by the runtime.', self.html)
+        self.assertIn('Forecast risk is a model score, not a verified compromise probability.', self.html)
+        self.assertIn('Benchmarks, not decorative accuracy numbers.', self.html)
         self.assertIn('RECORDED REPLAY', self.html)
 
     def test_mock_marketing_metrics_are_not_shipped_as_product_claims(self):
@@ -46,9 +37,19 @@ class PremiumUiContractTests(unittest.TestCase):
             self.assertIn(endpoint, self.js)
         self.assertIn('setInterval(()=>{if(connected&&!busy&&!document.hidden)run(refresh);},5000)', self.js)
 
-    def test_selected_enterprise_design_and_responsive_contract(self):
-        for marker in ('.heroConsole', '.garudaOutline', '.statusRail', '.processFlow', '.moduleGrid', '@media (max-width:930px)'):
+    def test_approved_second_design_and_responsive_contract(self):
+        for marker in ('.landingHero', '.heroRiskCard', '.garudaArt', '.dashboardGrid', '.defenceCards', '@media(max-width:930px)'):
             self.assertIn(marker, self.css)
+        self.assertIn('Predicting attacks before compromise.', self.html)
+        self.assertIn('class="garudaArt"', self.html)
+
+    def test_secondary_pages_share_the_same_visual_system(self):
+        for name in ('platform.html', 'technology.html', 'defence.html', 'evidence.html'):
+            page = (UI / name).read_text(encoding='utf-8')
+            self.assertIn('href="/style.css"', page)
+            self.assertIn('class="siteHeader"', page)
+            self.assertIn('class="subHero sectionShell"', page)
+            self.assertIn('Garuda AI', page)
 
     def test_javascript_syntax(self):
         subprocess.run(['node', '--check', str(UI / 'app.js')], check=True, capture_output=True, text=True)
