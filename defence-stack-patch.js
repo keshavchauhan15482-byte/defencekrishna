@@ -3,24 +3,22 @@
 /**
  * Defence-stack hardening shim.
  *
- * This module preserves the existing WAF/model implementation while tightening
- * the runtime semantics around the project design:
+ * Runtime semantics:
  *   Garuda/Detection -> Arjuna known fast path -> Krishna unknown study ->
  *   Sudarshana scoped containment only for unresolved/high-risk unknowns.
  *
- * It also prevents generated mutations from becoming trusted Arjuna memory
- * merely because they were synthesized. Mutations must first be independently
- * re-detected by a fresh DetectionEngine with learned memory disabled.
+ * Generated mutations never become trusted Arjuna memory merely because they
+ * were synthesized. They must be independently re-detected by a fresh detector
+ * and fit a bounded, reusable signature budget first.
  */
 const { CounterEngine } = require('./counter-engine');
 const { DetectionEngine } = require('./detection-engine');
 const { SudarshanaCore } = require('./sudarshana-core');
 
 const PATCH_FLAG = Symbol.for('krishna.defenceStackPatch.v1');
-// General JavaScript bracket-notation prototype-chain access. The base WAF
-// already catches __proto__ and constructor.prototype dot forms; this closes the
-// structural evasion class without matching ordinary prose containing the words.
 const KRISHNA_NOVEL_PROTOTYPE_CHAIN = /\[\s*['"]constructor['"]\s*\]\s*\[\s*['"]prototype['"]\s*\]/i;
+const MAX_MUTATIONS_PER_TOKEN = 96;
+const MAX_MUTATIONS_PER_INCIDENT = 256;
 
 if (!globalThis[PATCH_FLAG]) {
   globalThis[PATCH_FLAG] = true;
@@ -45,11 +43,33 @@ if (!globalThis[PATCH_FLAG]) {
     return s.replace(/\s+/g, ' ').trim().toLowerCase();
   }
 
+  function collectEvidence(value, parts, depth = 0) {
+    if (depth > 4 || value === null || value === undefined) return;
+    if (typeof value === 'string') {
+      parts.push(value);
+      return;
+    }
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      parts.push(String(value));
+      return;
+    }
+    if (Array.isArray(value)) {
+      for (const item of value) collectEvidence(item, parts, depth + 1);
+      return;
+    }
+    if (typeof value === 'object') {
+      for (const [key, item] of Object.entries(value)) {
+        parts.push(String(key));
+        collectEvidence(item, parts, depth + 1);
+      }
+    }
+  }
+
   function requestEvidenceText(req) {
     if (!req) return '';
     const parts = [req.url || req.path || '', req.rawBodyStr || ''];
-    try { parts.push(JSON.stringify(req.query || {})); } catch (_) {}
-    try { parts.push(JSON.stringify(req.body || {})); } catch (_) {}
+    collectEvidence(req.query || {}, parts);
+    collectEvidence(req.body || {}, parts);
     return parts.join('\n');
   }
 
@@ -73,8 +93,6 @@ if (!globalThis[PATCH_FLAG]) {
   }
 
   function independentlyDetect(token) {
-    // No CounterEngine is supplied: validation cannot succeed because a token
-    // was already learned. It must still look dangerous to the base detector.
     const validator = new DetectionEngine(null);
     return validator.inspect(validationRequest(token));
   }
@@ -83,9 +101,9 @@ if (!globalThis[PATCH_FLAG]) {
     let result = originalInspect.call(this, req);
     const evidence = requestEvidenceText(req);
 
-    // This is a Krishna unknown-structure heuristic, not a claim that the
-    // payload is a real zero-day. It catches a structural prototype-pollution
-    // evasion class the static dot-notation rule does not represent.
+    // Unknown-structure heuristic only. This does not claim a real zero-day.
+    // Reading direct nested values prevents JSON escaping from hiding the
+    // bracket-notation constructor/prototype chain from this structural check.
     if (result.tier !== 'danger' && KRISHNA_NOVEL_PROTOTYPE_CHAIN.test(evidence)) {
       const reasons = Array.isArray(result.reasons) ? [...result.reasons] : [];
       reasons.push('Krishna novel-structure heuristic: bracket-notation constructor/prototype chain');
@@ -143,12 +161,27 @@ if (!globalThis[PATCH_FLAG]) {
     const boundedConfidence = Math.min(requestedConfidence, 99);
     const learned = originalLearn.call(this, { ...args, confidenceScore: boundedConfidence });
 
+    let generatedBeforeBudget = 0;
     let candidates = 0;
     let validated = 0;
+    let incidentBudgetUsed = 0;
+
     for (const entry of learned.newlyLearned || []) {
+      const generated = Array.isArray(entry.syntheticMutations) ? entry.syntheticMutations : [];
+      generatedBeforeBudget += generated.length;
+      const remainingIncidentBudget = Math.max(0, MAX_MUTATIONS_PER_INCIDENT - incidentBudgetUsed);
+      const candidateBudget = Math.min(MAX_MUTATIONS_PER_TOKEN, remainingIncidentBudget);
+      const boundedCandidates = generated.slice(0, candidateBudget);
+      incidentBudgetUsed += boundedCandidates.length;
+
+      // Persist only the bounded candidate set. Extra generated variants remain
+      // diagnostics only and never become trusted Arjuna decisions.
+      entry.syntheticMutations = boundedCandidates;
+      entry.syntheticMutationsCount = boundedCandidates.length;
+
       const accepted = [];
       const rejected = [];
-      for (const mutation of entry.syntheticMutations || []) {
+      for (const mutation of boundedCandidates) {
         candidates++;
         const verdict = independentlyDetect(mutation);
         const canonicalMutation = normalizeToken(mutation);
@@ -162,42 +195,48 @@ if (!globalThis[PATCH_FLAG]) {
           reasons: (verdict.reasons || []).slice(0, 3),
           arjunaEligible
         };
-        // A mutation is promoted as "validated" only if it is independently
-        // dangerous AND can be represented by the same minimum-signature
-        // contract used by Arjuna's fast path. Danger-only short fragments are
-        // retained as rejected evidence, not trusted block memory.
         if (verdict.tier === 'danger' && arjunaEligible) {
           accepted.push(record);
           validated++;
-          // The old implementation already inserted every candidate in the
-          // Bloom filter. Exact confirmation below only trusts this accepted
-          // list, so rejected candidates cannot become block decisions.
           this.bloom.add(mutation);
         } else {
           if (verdict.tier === 'danger' && !arjunaEligible) record.rejectionReason = 'dangerous_but_not_arjuna_reusable_signature';
           rejected.push(record);
         }
       }
+
       entry.validatedSyntheticMutations = accepted;
       entry.rejectedSyntheticMutations = rejected.slice(0, 20);
       entry.mutationValidation = {
-        candidateCount: (entry.syntheticMutations || []).length,
+        generatedCount: generated.length,
+        candidateCount: boundedCandidates.length,
+        budgetWithheldCount: Math.max(0, generated.length - boundedCandidates.length),
         validatedCount: accepted.length,
-        coverage: (entry.syntheticMutations || []).length ? accepted.length / entry.syntheticMutations.length : 0,
+        coverage: boundedCandidates.length ? accepted.length / boundedCandidates.length : 0,
+        perTokenBudget: MAX_MUTATIONS_PER_TOKEN,
+        perIncidentBudget: MAX_MUTATIONS_PER_INCIDENT,
         validator: 'fresh DetectionEngine without learned memory + Arjuna reuse eligibility'
       };
     }
+
     if (learned.newlyLearned && learned.newlyLearned.length) this._persist();
 
+    const budgetWithheld = Math.max(0, generatedBeforeBudget - candidates);
     return {
       ...learned,
       confidenceScore: boundedConfidence,
       rootValidation: { tier: rootValidation.tier, score: rootValidation.score, attackType: rootValidation.attackType },
+      mutationCandidatesGeneratedBeforeBudget: generatedBeforeBudget,
       mutationCandidates: candidates,
+      mutationCandidatesBudgetWithheld: budgetWithheld,
       mutationsValidated: validated,
       mutationValidationCoverage: candidates ? validated / candidates : 0,
-      // Existing proxy uses this field for the Krishna study summary. Report
-      // independently validated and Arjuna-reusable mutations, not raw candidates.
+      mutationBudget: {
+        perToken: MAX_MUTATIONS_PER_TOKEN,
+        perIncident: MAX_MUTATIONS_PER_INCIDENT,
+        used: candidates,
+        withheld: budgetWithheld
+      },
       mutationsSynthesized: validated
     };
   };
@@ -214,9 +253,6 @@ if (!globalThis[PATCH_FLAG]) {
       return { ...entry, matchSource: 'validated_mutation', matchedMutation: token, mutationMatchMode: matchMode };
     };
 
-    // First prefer the exact validated representation that actually appeared in
-    // the request. This preserves precise audit provenance when multiple safe
-    // canonical variants (for example upper/lower case) normalize identically.
     for (const entry of this.learnedPatterns || []) {
       for (const item of entry.validatedSyntheticMutations || []) {
         const token = typeof item === 'string' ? item : item.token;
@@ -226,8 +262,6 @@ if (!globalThis[PATCH_FLAG]) {
       }
     }
 
-    // Then allow a canonical-equivalent validated mutation. Generated but
-    // unvalidated variants are never consulted here, even if Bloom says maybe.
     for (const entry of this.learnedPatterns || []) {
       for (const item of entry.validatedSyntheticMutations || []) {
         const token = typeof item === 'string' ? item : item.token;
@@ -250,8 +284,6 @@ if (!globalThis[PATCH_FLAG]) {
     const recent = ip ? recentInspectionByIp.get(ip) : null;
     const fresh = recent && Date.now() - recent.at < 5000 ? recent.result : null;
 
-    // Arjuna/static known detections were already blocked at the boundary.
-    // Do not disrupt the rest of a shared IP with a second containment layer.
     if (fresh && fresh.tier === 'danger' && !fresh.isZeroDayAnomaly && !fresh.multiVectorSuspected) {
       return {
         id: null,
@@ -325,4 +357,10 @@ if (!globalThis[PATCH_FLAG]) {
   };
 }
 
-module.exports = { patched: true };
+module.exports = {
+  patched: true,
+  mutationBudget: {
+    perToken: MAX_MUTATIONS_PER_TOKEN,
+    perIncident: MAX_MUTATIONS_PER_INCIDENT
+  }
+};
