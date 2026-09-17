@@ -117,15 +117,22 @@ if (!globalThis[PATCH_FLAG]) {
       for (const mutation of entry.syntheticMutations || []) {
         candidates++;
         const verdict = independentlyDetect(mutation);
+        const canonicalMutation = normalizeToken(mutation);
+        const arjunaEligible = String(mutation || '').length >= 8 && canonicalMutation.length >= 8;
         const record = {
           token: mutation,
           validatedAt: Date.now(),
           score: verdict.score,
           tier: verdict.tier,
           attackType: verdict.attackType || entry.attackType,
-          reasons: (verdict.reasons || []).slice(0, 3)
+          reasons: (verdict.reasons || []).slice(0, 3),
+          arjunaEligible
         };
-        if (verdict.tier === 'danger') {
+        // A mutation is promoted as "validated" only if it is independently
+        // dangerous AND can be represented by the same minimum-signature
+        // contract used by Arjuna's fast path. Danger-only short fragments are
+        // retained as rejected evidence, not trusted block memory.
+        if (verdict.tier === 'danger' && arjunaEligible) {
           accepted.push(record);
           validated++;
           // The old implementation already inserted every candidate in the
@@ -133,6 +140,7 @@ if (!globalThis[PATCH_FLAG]) {
           // list, so rejected candidates cannot become block decisions.
           this.bloom.add(mutation);
         } else {
+          if (verdict.tier === 'danger' && !arjunaEligible) record.rejectionReason = 'dangerous_but_not_arjuna_reusable_signature';
           rejected.push(record);
         }
       }
@@ -142,7 +150,7 @@ if (!globalThis[PATCH_FLAG]) {
         candidateCount: (entry.syntheticMutations || []).length,
         validatedCount: accepted.length,
         coverage: (entry.syntheticMutations || []).length ? accepted.length / entry.syntheticMutations.length : 0,
-        validator: 'fresh DetectionEngine without learned memory'
+        validator: 'fresh DetectionEngine without learned memory + Arjuna reuse eligibility'
       };
     }
     if (learned.newlyLearned && learned.newlyLearned.length) this._persist();
@@ -155,7 +163,7 @@ if (!globalThis[PATCH_FLAG]) {
       mutationsValidated: validated,
       mutationValidationCoverage: candidates ? validated / candidates : 0,
       // Existing proxy uses this field for the Krishna study summary. Report
-      // independently validated mutations, not raw generated candidates.
+      // independently validated and Arjuna-reusable mutations, not raw candidates.
       mutationsSynthesized: validated
     };
   };
