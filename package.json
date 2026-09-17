@@ -9,12 +9,12 @@
     "test": "python3 -m unittest discover -s garuda_v3/tests -v",
     "test:network": "node network-attack-sim.js",
     "test:gauntlet": "node gauntlet-100-attacks.js",
-    "test:all": "python3 -m unittest discover -s garuda_v3/tests -v && python3 ntro-world-model/tests/test_data_integrity.py && python3 tests/test_proxy_exposure.py && node tests/defence_stack_validation.js && node tests/defence_stack_effectiveness.js",
+    "test:all": "python3 -m unittest discover -s garuda_v3/tests -v && python3 ntro-world-model/tests/test_data_integrity.py && python3 tests/test_proxy_exposure.py && node -r ./defence-evidence-hardening.js tests/defence_stack_validation.js && node -r ./defence-evidence-hardening.js tests/defence_stack_effectiveness.js",
     "test:legacy": "node claude-independent-audit.js",
-    "test:defence": "node tests/defence_stack_validation.js && node tests/defence_stack_effectiveness.js",
+    "test:defence": "node -r ./defence-evidence-hardening.js tests/defence_stack_validation.js && node -r ./defence-evidence-hardening.js tests/defence_stack_effectiveness.js",
     "demo:v3": "python3 -m garuda_v3.server",
     "demo:v15": "python3 -m garuda_v3.integrated_server",
-    "test:v11": "node tests/v11_controls.js && node tests/defence_stack_validation.js && node tests/defence_stack_effectiveness.js && python3 tests/v11_http_lab.py && python3 -m unittest garuda_v3.tests.test_v11 -v",
+    "test:v11": "node tests/v11_controls.js && node -r ./defence-evidence-hardening.js tests/defence_stack_validation.js && node -r ./defence-evidence-hardening.js tests/defence_stack_effectiveness.js && python3 tests/v11_http_lab.py && python3 -m unittest garuda_v3.tests.test_v11 -v",
     "test:v15": "python3 -m unittest garuda_v3.tests.test_v13 garuda_v3.tests.test_v14 garuda_v3.tests.test_v15_system_integration -v"
   },
   "dependencies": {
