@@ -1,0 +1,258 @@
+name: V53 CICIDS2017 timestamped campaign support audit
+
+on:
+  push:
+    branches: [v53-cicids2017-timestamped-support]
+  pull_request:
+    paths:
+      - 'garuda_v3/v53_cicids2017_support.py'
+      - 'garuda_v3/tests/test_v53_cicids2017_support.py'
+      - '.github/workflows/v53-cicids2017-support.yml'
+      - 'V53_CICIDS2017_SUPPORT.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  support-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install V53 research dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'pyarrow<19' 'huggingface_hub<1.0'
+      - name: Compile and test V53
+        run: |
+          python -m compileall -q garuda_v3/v53_cicids2017_support.py
+          python -m unittest garuda_v3.tests.test_v53_cicids2017_support -v
+      - name: Download, hash, and strictly decode original GeneratedLabelledFlows archive
+        run: |
+          python - <<'PY'
+          import codecs, hashlib, json, shutil, zipfile
+          from pathlib import Path
+          from huggingface_hub import HfApi, hf_hub_download
+
+          repo = 'bencorn/CICIDS2017'
+          resolved_revision = '811c007f08d693a8a8b4226c197c138391806ce6'
+          archive_repo_path = 'csvs/GeneratedLabelledFlows.zip'
+          api = HfApi()
+          repo_files = api.list_repo_files(repo_id=repo, repo_type='dataset', revision=resolved_revision)
+          if archive_repo_path not in repo_files:
+              raise RuntimeError(f'Pinned archive path missing at {resolved_revision}: {archive_repo_path}')
+          src = Path(hf_hub_download(
+              repo_id=repo,
+              repo_type='dataset',
+              revision=resolved_revision,
+              filename=archive_repo_path,
+          ))
+          root = Path('datasets/v53')
+          raw_out = root / 'generated_labelled_flows_raw'
+          decoded_out = root / 'generated_labelled_flows_utf8'
+          raw_out.mkdir(parents=True, exist_ok=True)
+          decoded_out.mkdir(parents=True, exist_ok=True)
+          archive = root / 'GeneratedLabelledFlows.zip'
+          shutil.copyfile(src, archive)
+
+          def digest(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as f:
+                  for block in iter(lambda: f.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+
+          def strict_decodable(path, encoding):
+              decoder = codecs.getincrementaldecoder(encoding)(errors='strict')
+              with open(path, 'rb') as f:
+                  for block in iter(lambda: f.read(1024 * 1024), b''):
+                      decoder.decode(block, final=False)
+                  decoder.decode(b'', final=True)
+              return True
+
+          def choose_encoding(path):
+              try:
+                  strict_decodable(path, 'utf-8-sig')
+                  return 'utf-8-sig'
+              except UnicodeDecodeError:
+                  strict_decodable(path, 'cp1252')
+                  return 'cp1252'
+
+          def transcode_strict(source, target, encoding):
+              with open(source, 'r', encoding=encoding, errors='strict', newline='') as src_text, \
+                   open(target, 'w', encoding='utf-8', errors='strict', newline='') as dst_text:
+                  shutil.copyfileobj(src_text, dst_text, length=1024 * 1024)
+
+          expected = {
+              'Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv',
+              'Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv',
+              'Friday-WorkingHours-Morning.pcap_ISCX.csv',
+              'Monday-WorkingHours.pcap_ISCX.csv',
+              'Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv',
+              'Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv',
+              'Tuesday-WorkingHours.pcap_ISCX.csv',
+              'Wednesday-workingHours.pcap_ISCX.csv',
+          }
+          with zipfile.ZipFile(archive) as zf:
+              csv_members = [i for i in zf.infolist() if not i.is_dir() and i.filename.lower().endswith('.csv')]
+              by_name = {}
+              for info in csv_members:
+                  base = Path(info.filename).name
+                  if base in by_name:
+                      raise RuntimeError(f'duplicate CSV basename in archive: {base}')
+                  by_name[base] = info
+              missing = sorted(expected - set(by_name))
+              extra = sorted(set(by_name) - expected)
+              if missing or extra:
+                  raise RuntimeError(f'GeneratedLabelledFlows member mismatch missing={missing} extra={extra}')
+              files = []
+              for name in sorted(expected):
+                  info = by_name[name]
+                  raw_target = raw_out / name
+                  with zf.open(info, 'r') as source, raw_target.open('wb') as dest:
+                      shutil.copyfileobj(source, dest, length=1024 * 1024)
+                  encoding = choose_encoding(raw_target)
+                  decoded_target = decoded_out / name
+                  transcode_strict(raw_target, decoded_target, encoding)
+                  files.append({
+                      'name': name,
+                      'archive_member': info.filename,
+                      'raw_bytes': raw_target.stat().st_size,
+                      'raw_sha256': digest(raw_target),
+                      'source_encoding': encoding,
+                      'utf8_bytes': decoded_target.stat().st_size,
+                      'utf8_sha256': digest(decoded_target),
+                      'decode_errors_ignored_or_replaced': False,
+                  })
+
+          manifest = {
+              'repo': repo,
+              'requested_revision': resolved_revision,
+              'resolved_revision': resolved_revision,
+              'archive_repo_path': archive_repo_path,
+              'source_tier': 'unofficial mirror of publisher original-distribution GeneratedLabelledFlows.zip',
+              'publisher_reference': 'CICIDS2017 GeneratedLabelledFlows.zip',
+              'archive': {
+                  'name': archive.name,
+                  'bytes': archive.stat().st_size,
+                  'sha256': digest(archive),
+              },
+              'text_decoding_contract': 'strict UTF-8-SIG first, strict Windows-1252 fallback; no ignore/replace',
+              'rejected_converted_parquet_source': {
+                  'repo': 'bvsam/cic-ids-2017',
+                  'reason': 'both tested converted-Parquet revisions left only 37.12% non-null typed timestamps in at least one campaign',
+              },
+              'files': files,
+          }
+          (root / 'source_manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          print(json.dumps(manifest, indent=2))
+          PY
+      - name: Profile source timestamp patterns without altering rows
+        run: |
+          mkdir -p garuda_v3/artifacts/v53
+          python - <<'PY'
+          import collections, json, re
+          from pathlib import Path
+          import pandas as pd
+
+          root = Path('datasets/v53/generated_labelled_flows_utf8')
+          out = {}
+
+          def key(name):
+              return ''.join(ch.lower() for ch in str(name) if ch.isalnum())
+
+          def pattern(value):
+              s = str(value).strip()
+              s = re.sub(r'\d+', lambda m: f'<D{len(m.group(0))}>', s)
+              s = re.sub(r'\s+', ' ', s)
+              return s[:120]
+
+          for path in sorted(root.glob('*.csv')):
+              cols = list(pd.read_csv(path, nrows=0).columns)
+              mapping = {key(c): c for c in cols}
+              ts_col = next((mapping[k] for k in ('timestamp', 'flowstarttime', 'starttime') if k in mapping), None)
+              if ts_col is None:
+                  out[path.name] = {'error': 'no timestamp column', 'columns': cols}
+                  continue
+              total = 0
+              empty = 0
+              patterns = collections.Counter()
+              examples = collections.defaultdict(list)
+              dayfirst_bad = []
+              monthfirst_bad = []
+              dayfirst_ok = 0
+              monthfirst_ok = 0
+              for chunk in pd.read_csv(path, usecols=[ts_col], chunksize=100000, low_memory=False):
+                  raw = chunk[ts_col]
+                  text = raw.astype(str).str.strip()
+                  total += len(text)
+                  empty += int((raw.isna() | text.isin(['', 'nan', 'NaN', 'None'])).sum())
+                  for value in text:
+                      p = pattern(value)
+                      patterns[p] += 1
+                      if len(examples[p]) < 3:
+                          examples[p].append(value[:160])
+                  d = pd.to_datetime(text, format='mixed', errors='coerce', utc=True, dayfirst=True)
+                  m = pd.to_datetime(text, format='mixed', errors='coerce', utc=True, dayfirst=False)
+                  dayfirst_ok += int(d.notna().sum())
+                  monthfirst_ok += int(m.notna().sum())
+                  if len(dayfirst_bad) < 25:
+                      dayfirst_bad.extend(text[d.isna()].head(25 - len(dayfirst_bad)).tolist())
+                  if len(monthfirst_bad) < 25:
+                      monthfirst_bad.extend(text[m.isna()].head(25 - len(monthfirst_bad)).tolist())
+              top = patterns.most_common(30)
+              out[path.name] = {
+                  'timestamp_column': ts_col,
+                  'rows': total,
+                  'empty_or_na': empty,
+                  'dayfirst_parse_coverage': dayfirst_ok / total if total else None,
+                  'monthfirst_parse_coverage': monthfirst_ok / total if total else None,
+                  'top_patterns': [
+                      {'pattern': p, 'count': c, 'examples': examples[p]}
+                      for p, c in top
+                  ],
+                  'dayfirst_unparsed_samples': dayfirst_bad,
+                  'monthfirst_unparsed_samples': monthfirst_bad,
+              }
+          target = Path('garuda_v3/artifacts/v53/timestamp_profile.json')
+          target.write_text(json.dumps(out, indent=2, ensure_ascii=False) + '\n')
+          print(json.dumps(out, indent=2, ensure_ascii=False))
+          PY
+      - name: Run whole-campaign clean-onset support audit
+        run: |
+          python -m garuda_v3.v53_cicids2017_support \
+            --input datasets/v53/generated_labelled_flows_utf8/*.csv \
+            --output garuda_v3/artifacts/v53/support \
+            --min-positive 20 \
+            --min-negative 100 \
+            --min-clean-onset 1 \
+            --min-dev 1000
+      - name: Print compact support result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path('garuda_v3/artifacts/v53/support/support.json').read_text())
+          print(json.dumps({
+              'model_training_permitted': d['model_training_permitted'],
+              'eligible_family_campaign_pairs': d['eligible_family_campaign_pairs'][:20],
+              'campaigns': len(d['campaign_provenance']),
+              'support_pairs': len(d['support']),
+          }, indent=2))
+          PY
+      - name: Upload V53 evidence and timestamp diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v53-cicids2017-timestamped-support
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            garuda_v3/artifacts/v53/**/*.json
+            datasets/v53/source_manifest.json
