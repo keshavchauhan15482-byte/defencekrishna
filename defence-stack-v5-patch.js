@@ -27,10 +27,28 @@ function mutationToken(item) {
   return item && typeof item.token === 'string' ? item.token : '';
 }
 
+function canonicalToken(value) {
+  let text = String(value || '').normalize('NFKD');
+  let previous = '';
+  for (let i = 0; i < 4 && text !== previous; i++) {
+    previous = text;
+    try { text = decodeURIComponent(text.replace(/\+/g, ' ')); } catch (_) {}
+    text = text
+      .replace(/\/\*[\s\S]*?\*\//g, ' ')
+      .replace(/%00/gi, '')
+      .replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
+  }
+  return text.replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
 function buildSeparatedStores(patterns) {
   const knownByToken = new Map();
+  const knownCanonical = new Set();
   const mutationByToken = new Map();
 
+  // First establish the complete reviewed-root namespace so a mutation that is
+  // merely an exact/canonical representation of any known root cannot appear in
+  // both stores.
   for (const entry of patterns || []) {
     if (!entry || typeof entry !== 'object') continue;
     if (typeof entry.token === 'string' && entry.token && !knownByToken.has(entry.token)) {
@@ -42,11 +60,20 @@ function buildSeparatedStores(patterns) {
         timesReused: Number(entry.timesReused || 0),
         source: 'reviewed_root'
       });
+      const canonical = canonicalToken(entry.token);
+      if (canonical) knownCanonical.add(canonical);
     }
+  }
 
+  for (const entry of patterns || []) {
+    if (!entry || typeof entry !== 'object') continue;
     for (const item of entry.validatedSyntheticMutations || []) {
       const token = mutationToken(item);
       if (!token || mutationByToken.has(token)) continue;
+      const canonical = canonicalToken(token);
+      // Case/encoding/whitespace-equivalent forms of an already-reviewed root
+      // remain Known Attack Store knowledge, not duplicate mutation knowledge.
+      if (canonical && knownCanonical.has(canonical)) continue;
       mutationByToken.set(token, {
         token,
         parentToken: entry.token || null,
@@ -122,6 +149,34 @@ function exactMutation(engine, token) {
   return Boolean(token && (engine.validatedMutationStore || []).some(item => item.token === token));
 }
 
+function recordKnownMatch(engine, item, matchMode) {
+  const entry = (engine.learnedPatterns || []).find(candidate => candidate && candidate.token === item.token) || item;
+  entry.timesReused = Number(entry.timesReused || 0) + 1;
+  if (typeof engine._persist === 'function') engine._persist();
+  return {
+    ...entry,
+    matchSource: 'reviewed_root_token',
+    arjunaStore: 'known_attack_store',
+    bloomPrefilter: 'knownAttackBloom',
+    rootMatchMode: matchMode
+  };
+}
+
+function findKnownMatch(engine, rawInput, canonical = false) {
+  const raw = String(rawInput || '');
+  const haystack = canonical ? canonicalToken(raw) : raw;
+  if (!haystack) return null;
+
+  for (const item of engine.knownAttackStore || []) {
+    const token = item && item.token;
+    if (!token || !engine.knownAttackBloom.mightContain(token)) continue;
+    const needle = canonical ? canonicalToken(token) : token;
+    if (!needle) continue;
+    if (haystack.includes(needle)) return recordKnownMatch(engine, item, canonical ? 'canonical_equivalent' : 'exact');
+  }
+  return null;
+}
+
 if (!globalThis[V5_FLAG]) {
   globalThis[V5_FLAG] = true;
 
@@ -145,18 +200,32 @@ if (!globalThis[V5_FLAG]) {
 
   CounterEngine.prototype.checkLearned = function v5ArjunaTwoStoreLookup(rawInput) {
     if (!this.knownAttackBloom || !this.validatedMutationBloom) rebuildSeparatedMemory(this);
-    const match = priorCheckLearned.call(this, rawInput);
-    if (!match) return null;
 
-    if (match.matchSource === 'validated_mutation') {
+    // Preserve root provenance when the reviewed root itself is present exactly.
+    // This prevents generator-produced case copies of the root from stealing the
+    // attribution and makes Known vs Mutation datasets genuinely disjoint.
+    const exactRoot = findKnownMatch(this, rawInput, false);
+    if (exactRoot) return exactRoot;
+
+    const match = priorCheckLearned.call(this, rawInput);
+    if (match && match.matchSource === 'validated_mutation') {
       const token = match.matchedMutation || '';
-      if (!token || !this.validatedMutationBloom.mightContain(token) || !exactMutation(this, token)) return null;
-      return { ...match, arjunaStore: 'validated_mutation_store', bloomPrefilter: 'validatedMutationBloom' };
+      if (token && this.validatedMutationBloom.mightContain(token) && exactMutation(this, token)) {
+        return { ...match, arjunaStore: 'validated_mutation_store', bloomPrefilter: 'validatedMutationBloom' };
+      }
+      // Parent-equivalent generated variants are intentionally excluded from the
+      // mutation store; allow them to resolve back to the reviewed root class.
+      return findKnownMatch(this, rawInput, true);
     }
 
-    const token = match.token || '';
-    if (!token || !this.knownAttackBloom.mightContain(token) || !exactKnown(this, token)) return null;
-    return { ...match, arjunaStore: 'known_attack_store', bloomPrefilter: 'knownAttackBloom' };
+    if (match) {
+      const token = match.token || '';
+      if (token && this.knownAttackBloom.mightContain(token) && exactKnown(this, token)) {
+        return { ...match, arjunaStore: 'known_attack_store', bloomPrefilter: 'knownAttackBloom' };
+      }
+    }
+
+    return findKnownMatch(this, rawInput, true);
   };
 
   CounterEngine.prototype.stats = function v5SeparatedStats() {
