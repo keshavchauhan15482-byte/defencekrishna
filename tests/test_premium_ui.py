@@ -10,8 +10,9 @@ class PremiumUiContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.html = (UI / 'index.html').read_text(encoding='utf-8')
-        cls.css = (UI / 'style.css').read_text(encoding='utf-8')
+        cls.css = (UI / 'reference.css').read_text(encoding='utf-8')
         cls.js = (UI / 'app.js').read_text(encoding='utf-8')
+        cls.ref_js = (UI / 'reference-live.js').read_text(encoding='utf-8')
 
     def test_market_console_surfaces_required_live_panels(self):
         for required in (
@@ -22,7 +23,7 @@ class PremiumUiContractTests(unittest.TestCase):
         ):
             self.assertIn(required, self.html)
 
-    def test_claim_boundaries_are_visible(self):
+    def test_claim_boundaries_are_preserved(self):
         self.assertIn('No live customer sensor is connected.', self.html)
         self.assertIn('Forecast risk is a model score, not a verified compromise probability.', self.html)
         self.assertIn('Benchmarks, not decorative accuracy numbers.', self.html)
@@ -37,14 +38,22 @@ class PremiumUiContractTests(unittest.TestCase):
             self.assertIn(endpoint, self.js)
         self.assertIn('setInterval(()=>{if(connected&&!busy&&!document.hidden)run(refresh);},5000)', self.js)
 
-    def test_approved_second_design_and_responsive_contract(self):
-        for marker in ('.landingHero', '.heroRiskCard', '.garudaArt', '.dashboardGrid', '.defenceCards', '@media(max-width:930px)'):
+    def test_exact_reference_canvas_contract(self):
+        for marker in ('.refStage', '.rRiskCard', '.rIntelStack', '.rEaglePanel', '.rKpiStrip', '.rDefenceCards', '.rBottomGrid'):
             self.assertIn(marker, self.css)
+        self.assertIn('const DESIGN_W=1365, DESIGN_H=900;', self.html)
         self.assertIn('Predicting attacks', self.html)
         self.assertIn('before compromise.', self.html)
-        self.assertIn('class="garudaArt"', self.html)
+        self.assertIn('class="rEaglePanel garudaArt"', self.html)
+        self.assertNotIn('@media(max-width:1180px)', self.css)
 
-    def test_secondary_pages_share_the_same_visual_system(self):
+    def test_reference_live_graphs_are_custom_rendered(self):
+        self.assertIn('drawGauge = function()', self.ref_js)
+        self.assertIn('drawTimeline = function(f)', self.ref_js)
+        self.assertIn('drawGraph = function()', self.ref_js)
+        self.assertIn("'#a94dff'", self.ref_js)
+
+    def test_secondary_pages_share_the_existing_visual_system(self):
         for name in ('platform.html', 'technology.html', 'defence.html', 'evidence.html'):
             page = (UI / name).read_text(encoding='utf-8')
             self.assertIn('href="/style.css"', page)
@@ -54,6 +63,7 @@ class PremiumUiContractTests(unittest.TestCase):
 
     def test_javascript_syntax(self):
         subprocess.run(['node', '--check', str(UI / 'app.js')], check=True, capture_output=True, text=True)
+        subprocess.run(['node', '--check', str(UI / 'reference-live.js')], check=True, capture_output=True, text=True)
 
 
 if __name__ == '__main__':
