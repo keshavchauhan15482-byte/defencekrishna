@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+require('../defence-stack-v6-patch');
 const v5 = require('../defence-stack-v5-patch');
 const { DetectionEngine } = require('../detection-engine');
 const { CounterEngine } = require('../counter-engine');
@@ -70,8 +71,8 @@ async function main() {
     status: 'PASS'
   });
 
-  // WAVE 1 — known/static front-line pressure. Arjuna should take the fast path
-  // and Sudarshana must remain out of the way.
+  // WAVE 1 — deterministic known/static pressure. Arjuna owns this route even
+  // if a lower-level structural heuristic also recognizes suspicious syntax.
   const known = [
     "' OR 1=1--",
     '<script>alert(1)</script>',
@@ -86,35 +87,42 @@ async function main() {
   ];
   let knownBlocked = 0;
   let knownUnexpectedUnknown = 0;
+  let knownAuthority = 0;
   for (let i = 0; i < known.length; i++) {
     const result = new DetectionEngine(null).inspect(request(`198.51.100.${10 + i}`, known[i]));
     if (result.tier === 'danger') knownBlocked++;
     if (result.isZeroDayAnomaly) knownUnexpectedUnknown++;
+    if (result.routingAuthority === 'arjuna_known') knownAuthority++;
   }
   assert.equal(knownBlocked, known.length, 'known attack wave was not fully blocked');
   assert.equal(knownUnexpectedUnknown, 0, 'known attack wave leaked into Krishna unknown routing');
+  assert.equal(knownAuthority, known.length, 'known attack wave did not receive Arjuna route authority');
   receipts.push({
     wave: 'W1_ARJUNA_KNOWN_PRESSURE',
     total: known.length,
     blocked: knownBlocked,
     blockRate: ratio(knownBlocked, known.length),
     routedUnknown: knownUnexpectedUnknown,
+    arjunaAuthority: knownAuthority,
     status: 'PASS'
   });
 
-  // WAVE 2 — unseen-to-system structural pressure. These fixtures are not a
-  // claim of real-world zero-days; they exercise Krishna's unknown path.
+  // WAVE 2 — genuinely otherwise-unclassified structures. These strings are
+  // caught by the anomaly sentry without first matching a deterministic known
+  // attack family. They are unseen-to-system fixtures, not real zero-day proof.
   const unknowns = [
-    'probe ${process.mainModule.require("child_process")}',
-    'x; eval(user_supplied_expression)',
-    "' and 7=7 union 'x'",
-    '<custom-tag onpointerdown=doSomething()>',
-    '["constructor"]["prototype"]["isAdmin"]'
+    '["constructor"]["prototype"]["isAdmin"]',
+    'grep /tmp/runtime-state',
+    'ps -aux',
+    'bash ./local-stage',
+    'ls /var/tmp/krishna'
   ];
   const unknownResults = unknowns.map((payload, i) =>
     new DetectionEngine(null).inspect(request(`203.0.113.${20 + i}`, payload))
   );
-  const routedKrishna = unknownResults.filter(r => r.tier === 'danger' && r.isZeroDayAnomaly).length;
+  const routedKrishna = unknownResults.filter(
+    r => r.tier === 'danger' && r.isZeroDayAnomaly && r.routingAuthority === 'krishna_unknown'
+  ).length;
   assert.equal(routedKrishna, unknowns.length, 'one or more curated unknown structures bypassed Krishna routing');
   receipts.push({
     wave: 'W2_KRISHNA_UNKNOWN_PRESSURE',
@@ -133,6 +141,7 @@ async function main() {
   const firstSight = new DetectionEngine(counter).inspect(request('203.0.113.50', learningPayload));
   assert.equal(firstSight.tier, 'danger');
   assert.equal(firstSight.isZeroDayAnomaly, true);
+  assert.equal(firstSight.routingAuthority, 'krishna_unknown');
 
   const learned = counter.learnFromIncident({
     rawInput: JSON.stringify({ payload: learningPayload }),
@@ -165,6 +174,8 @@ async function main() {
   const replayMutation = new DetectionEngine(counter).inspect(request('203.0.113.52', distinctMutation.token));
   assert.equal(replayOriginal.isLearnedMatch, true, 'original unknown did not become Arjuna-known after study');
   assert.equal(replayMutation.isLearnedMatch, true, 'validated related mutation did not become Arjuna-known');
+  assert.equal(replayOriginal.routingAuthority, 'arjuna_known');
+  assert.equal(replayMutation.routingAuthority, 'arjuna_known');
 
   receipts.push({
     wave: 'W3_KRISHNA_EVOLVE_TO_ARJUNA',
@@ -188,10 +199,11 @@ async function main() {
   const offenderIp = '192.0.2.220';
   const neighborIp = '192.0.2.221';
   const escapeResult = new DetectionEngine(null).inspect(
-    request(offenderIp, 'probe ${process.mainModule.require("child_process")}')
+    request(offenderIp, 'grep /tmp/runtime-state')
   );
   assert.equal(escapeResult.tier, 'danger');
   assert.equal(escapeResult.isZeroDayAnomaly, true);
+  assert.equal(escapeResult.routingAuthority, 'krishna_unknown');
 
   const sudarshana = new SudarshanaCore({ timeBudgetMs: 1000 });
   const lock = sudarshana.engageScopedLockdown({
