@@ -13,7 +13,7 @@ class PremiumUiContractTests(unittest.TestCase):
         cls.css = (UI / 'style.css').read_text(encoding='utf-8')
         cls.js = (UI / 'app.js').read_text(encoding='utf-8')
 
-    def test_market_console_surfaces_required_panels(self):
+    def test_market_console_surfaces_required_live_panels(self):
         for required in (
             'id="riskGauge"',
             'id="activitySpark"',
@@ -22,24 +22,32 @@ class PremiumUiContractTests(unittest.TestCase):
             'id="timeline"',
             'id="events"',
             'id="metrics"',
-            'id="knownBloomSize"',
-            'id="mutationBloomSize"',
+            'id="source"',
+            'id="stage"',
+            'id="arjunaState"',
+            'id="krishnaState"',
+            'id="sudarshanaState"',
         ):
             self.assertIn(required, self.html)
 
     def test_claim_boundaries_are_visible(self):
-        self.assertIn('Recorded replay is not live customer telemetry.', self.html)
-        self.assertIn('not proof of production zero-day detection', self.html)
-        self.assertIn('not verified compromise lead time', self.html)
+        self.assertIn('No live customer sensor is connected.', self.html)
+        self.assertIn('Recorded replay is labelled as recorded replay.', self.html)
+        self.assertIn('Forecast risk is not presented as verified compromise probability.', self.html)
+        self.assertIn('Containment remains scoped and authorization-gated by the runtime.', self.html)
         self.assertIn('RECORDED REPLAY', self.html)
+
+    def test_mock_marketing_metrics_are_not_shipped_as_product_claims(self):
+        for forbidden in ('99.8%', '99.7%', 'Threats Predicted', 'Protected Endpoints', '2.4 TB', 'at National Scale'):
+            self.assertNotIn(forbidden, self.html)
 
     def test_runtime_api_bindings_are_real(self):
         for endpoint in ('/api/status', '/api/response', '/api/benchmarks', '/api/replay', '/api/analyze'):
             self.assertIn(endpoint, self.js)
         self.assertIn('setInterval(()=>{if(connected&&!busy&&!document.hidden)run(refresh);},5000)', self.js)
 
-    def test_premium_3d_and_responsive_contract(self):
-        for marker in ('.orbitalScene', '.coreSphere', '.orbitalRing', '.heroGlass', '@media (max-width:820px)'):
+    def test_selected_enterprise_design_and_responsive_contract(self):
+        for marker in ('.heroConsole', '.garudaOutline', '.statusRail', '.processFlow', '.moduleGrid', '@media (max-width:930px)'):
             self.assertIn(marker, self.css)
 
     def test_javascript_syntax(self):

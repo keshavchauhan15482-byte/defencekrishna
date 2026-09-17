@@ -3,55 +3,195 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#05070b">
-  <meta name="description" content="Krishna Defence predictive cyber command centre powered by Garuda forecasting, Arjuna known-threat response, Krishna adaptive investigation and Sudarshana scoped containment.">
-  <title>Krishna Defence — Predictive Cyber Command Centre</title>
+  <meta name="theme-color" content="#031012">
+  <meta name="description" content="Garuda AI predictive cyber command centre for observed network-state forecasting and evidence-gated defence orchestration.">
+  <title>Garuda AI — Predictive Cyber Defence</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <a class="skip" href="#overview">Skip to command centre</a>
-<div class="ambient" aria-hidden="true"><div class="ambientGrid"></div><div class="ambientGlow one"></div><div class="ambientGlow two"></div><div class="noise"></div></div>
+<div class="ambient" aria-hidden="true">
+  <div class="ambientGrid"></div><div class="ambientGlow one"></div><div class="ambientGlow two"></div><div class="noise"></div>
+</div>
 <header class="siteHeader">
-  <a class="brand" href="#overview" aria-label="Krishna Defence home"><span class="brandMark"><span>K</span></span><span class="brandText">KRISHNA <b>DEFENCE</b><small>PREDICTIVE CYBER SYSTEMS</small></span></a>
-  <nav class="mainNav" aria-label="Primary navigation"><a class="active" href="#overview">Overview</a><a href="#telemetry">Intelligence</a><a href="#response">Defence</a><a href="#evidence">Evidence</a></nav>
-  <div class="headerActions"><span class="connection" id="connection"><i></i>Disconnected</span><span class="clock" id="clock">— UTC</span><button class="button ghost compact" id="sessionToggle">Connect workspace</button></div>
+  <a class="brand" href="#overview" aria-label="Garuda AI home">
+    <span class="brandMark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" focusable="false"><path d="M24 7 19 18 7 11l8 13-9 2 15 5 3 10 3-10 15-5-9-2 8-13-12 7Z"/><path class="inner" d="m24 12-2 12-8-6 6 10-6 1 8 3 2 6 2-6 8-3-6-1 6-10-8 6-2-12Z"/></svg>
+    </span>
+    <span class="brandText"><b>GARUDA AI</b><small>KRISHNA DEFENCE · PREDICTIVE CYBER SYSTEM</small></span>
+  </a>
+  <nav class="mainNav" aria-label="Primary navigation">
+    <a class="active" href="#overview">Platform</a><a href="#telemetry">Intelligence</a><a href="#modules">Modules</a><a href="#response">Response</a><a href="#evidence">Evidence</a>
+  </nav>
+  <div class="headerActions">
+    <span class="connection" id="connection"><i></i>Disconnected</span>
+    <span class="clock" id="clock">— UTC</span>
+    <button class="button headerButton" id="sessionToggle">Connect workspace <span>→</span></button>
+  </div>
 </header>
+
 <main id="overview">
   <section class="hero sectionShell">
-    <div class="heroCopyWrap">
-      <div class="eyebrow"><span></span>SIH26153 · AI NETWORK ATTACK FORECASTING</div>
-      <h1>See the attack path<br><em>before it becomes impact.</em></h1>
-      <p class="heroCopy">A premium command layer for forecasting evolving network risk, recognizing reviewed threats, studying unfamiliar behaviour and containing confirmed escapes with scoped controls.</p>
-      <div class="heroActions"><button class="button primary" id="replay" disabled>Run recorded intelligence <span>↗</span></button><button class="button secondary" id="hostReplay" disabled>Host topology</button><button class="button secondary" id="alertReplay" disabled>Alert replay</button></div>
-      <div class="trustRow"><span><i class="ok"></i>Artifact-backed benchmarks</span><span><i class="ok"></i>Audit-led response</span><span><i class="ok"></i>Offline-first local runtime</span></div>
+    <div class="heroBackdrop" aria-hidden="true">
+      <svg class="garudaOutline" viewBox="0 0 880 560" preserveAspectRatio="xMidYMid meet">
+        <path d="M415 105c-108-61-217-58-330-1 89 12 158 45 221 99-82-29-157-24-226 16 84 11 153 42 214 89-68-15-126-5-176 28 77 9 143 35 205 80l57-109 35-202Z"/>
+        <path d="M465 105c108-61 217-58 330-1-89 12-158 45-221 99 82-29 157-24 226 16-84 11-153 42-214 89 68-15 126-5 176 28-77 9-143 35-205 80l-57-109-35-202Z"/>
+        <path d="M440 84c-22 49-27 104-14 164l14 64 14-64c13-60 8-115-14-164Z"/>
+      </svg>
     </div>
-    <div class="heroVisual" aria-label="Krishna Defence system visual">
-      <div class="heroGlass"><div class="visualTop"><span>GARUDA / WORLD MODEL</span><span class="modeBadge" id="demoDataMode">RECORDED REPLAY</span></div>
-        <div class="orbitalScene" aria-hidden="true"><div class="orbitalRing ringA"></div><div class="orbitalRing ringB"></div><div class="orbitalRing ringC"></div><div class="coreSphere"><span>G</span><small>GARUDA</small></div><div class="satellite s1">A</div><div class="satellite s2">K</div><div class="satellite s3">S</div><div class="scanPlane"></div></div>
-        <div class="visualBottom"><div><small>Runtime</small><strong id="healthState">Awaiting connection</strong></div><div><small>Model</small><strong id="modelState">GNN + LSTM</strong></div><div><small>Refresh</small><strong id="refreshAge">—</strong></div></div>
+
+    <div class="heroCopyWrap">
+      <div class="eyebrow"><span></span>AI-BASED NETWORK ATTACK FORECASTING · SIH26153</div>
+      <h1><span>Predict.</span><br><span>Prevent.</span><br><em>Protect.</em></h1>
+      <p class="heroCopy">Forecast evolving network risk from observed traffic, inspect the predicted trajectory, and route evidence through Garuda, Arjuna, Krishna and Sudarshana without hiding the system's claim boundaries.</p>
+      <div class="heroActions">
+        <button class="button primary" id="replay" disabled>Run recorded forecast <span>▶</span></button>
+        <button class="button secondary" id="hostReplay" disabled>Host topology</button>
+        <button class="button secondary" id="alertReplay" disabled>Alert replay</button>
+      </div>
+      <div class="heroFacts" aria-label="Runtime facts">
+        <div><span>Forecast horizon</span><strong id="horizon">—</strong><small>loaded from model metadata</small></div>
+        <div><span>Response posture</span><strong id="responseMode">Standby</strong><small id="responseCaption">No policy is armed</small></div>
+        <div><span>Runtime</span><strong id="healthState">Awaiting connection</strong><small id="refreshAge">—</small></div>
+      </div>
+      <div class="trustRow"><span><i class="ok"></i>Source-labelled forecasts</span><span><i class="ok"></i>Audit-led response</span><span><i class="ok"></i>Local/offline runtime</span></div>
+    </div>
+
+    <div class="heroConsole" aria-label="Live Garuda command view">
+      <div class="consoleTopbar">
+        <div class="consoleBrand"><span class="miniWing">⌁</span><b>GARUDA AI</b><span>LIVE THREAT OPERATIONS</span></div>
+        <div class="consoleMeta"><span class="liveDot">UI LIVE</span><span id="demoDataMode" class="modeBadge">RECORDED REPLAY</span><strong id="modelState">MODEL PENDING</strong></div>
+      </div>
+      <div class="consoleBody">
+        <aside class="consoleRail" aria-label="Command sections">
+          <span class="railActive">Overview</span><span>Network</span><span>Forecast</span><span>Response</span><span>Evidence</span>
+        </aside>
+        <article class="heroTopology">
+          <div class="panelHead compactHead"><div><span class="panelKicker">OBSERVED NETWORK STATE</span><h3>Threat topology</h3><p id="graphType">Awaiting observed relationships</p></div><div class="panelActions"><button class="iconButton" id="rotate" aria-label="Pause graph rotation" aria-pressed="false">Ⅱ</button><button class="iconButton" id="zoomIn" aria-label="Zoom in">+</button><button class="iconButton" id="zoomOut" aria-label="Zoom out">−</button><button class="iconButton" id="resetView" aria-label="Reset camera">↺</button></div></div>
+          <div class="graphStage heroGraphStage">
+            <canvas id="graph" width="1000" height="560" aria-label="Interactive perspective view of the observed graph"></canvas>
+            <div class="graphEmpty" id="graphEmpty"><span>◇</span><strong>Awaiting network state</strong><p>Connect to load recorded evidence or analyze a capture.</p></div>
+            <div class="graphHud"><span id="edgeCount">— observed edges</span><span id="cutoff">No observation cutoff</span></div>
+            <div class="nodeDetail" id="nodeDetail" hidden></div>
+          </div>
+          <details class="accessibleData"><summary>Observed node data</summary><div id="nodeTable">No observed nodes.</div></details>
+        </article>
+        <aside class="heroSide">
+          <article class="miniPanel riskPanel">
+            <div class="miniPanelTitle"><span>LIVE RISK SCORE</span><span class="signalBadge" id="signalBadge">WAITING</span></div>
+            <div class="gaugeWrap heroGauge"><canvas id="riskGauge" width="460" height="300" aria-label="Peak forecast risk gauge"></canvas><div class="gaugeCenter"><strong id="gaugeValue">—</strong><span id="gaugeLabel">NO FORECAST</span></div></div>
+            <div class="riskMeta"><div><span>Peak</span><strong id="forecastLarge">—</strong></div><div><span>Mode</span><strong id="runtimeMode">REVIEW</strong></div></div>
+          </article>
+          <article class="miniPanel heroThreats">
+            <div class="miniPanelTitle"><span>RUNTIME SIGNALS</span><span id="eventCount" class="miniTag">0 EVENTS</span></div>
+            <div class="heroThreatGrid"><div><span>Observed nodes</span><strong id="nodeCount">—</strong><small id="nodeCaption">Awaiting graph</small></div><div><span>Peak forecast</span><strong id="peak">—</strong><small id="source">NO CAPTURE LOADED</small></div></div>
+          </article>
+          <article class="miniPanel miniTimeline"><div class="miniPanelTitle"><span>FORWARD TRAJECTORY</span><span>MODEL OUTPUT</span></div><canvas id="timeline" width="900" height="330" aria-label="Forecast probability across future horizons"></canvas></article>
+        </aside>
       </div>
     </div>
   </section>
-  <section class="sessionPanel sectionShell" id="sessionPanel"><div><span class="eyebrow">SECURE LOCAL SESSION</span><h2>Connect the command centre</h2><p>Use the local viewer or operator token created in <code>garuda_v3/runtime/access.json</code>. Credentials remain in this browser tab.</p></div><form id="sessionForm" class="sessionForm"><label class="sr-only" for="token">Access token</label><input id="token" type="password" autocomplete="off" placeholder="Workspace access token" required><button class="button primary" id="connect" type="submit">Connect <span>→</span></button></form></section>
-  <section class="notice sectionShell" id="notice" role="status"><span class="noticeGlyph">i</span><span id="noticeText">Connect to load model metadata and recorded network observations. No live customer sensor is connected.</span></section>
-  <section class="kpiDeck sectionShell" aria-label="Current system observation"><article><span>Observed nodes</span><strong id="nodeCount">—</strong><small id="nodeCaption">Awaiting observed graph</small></article><article><span>Peak forecast risk</span><strong id="peak">—</strong><small>Future malicious-flow score</small></article><article><span>Forecast horizon</span><strong id="horizon">—</strong><small>Beyond observation cutoff</small></article><article><span>Response posture</span><strong id="responseMode">Standby</strong><small id="responseCaption">No policy is armed</small></article></section>
-  <section class="sectionTitle sectionShell" id="telemetry"><div><span class="eyebrow">01 / REAL-TIME COMMAND VIEW</span><h2>Network intelligence with provenance.</h2><p>The interface updates continuously; the underlying forecast is always labelled by its actual source.</p></div><span class="sourcePill" id="source">NO CAPTURE LOADED</span></section>
-  <section class="commandGrid sectionShell">
-    <article class="panel topologyPanel"><div class="panelHead"><div><span class="panelKicker">NETWORK WORLD STATE</span><h3>3D topology</h3><p id="graphType">Awaiting observed relationships</p></div><div class="panelActions"><button class="iconButton" id="rotate" aria-label="Pause graph rotation" aria-pressed="false">Ⅱ</button><button class="iconButton" id="zoomIn" aria-label="Zoom in">+</button><button class="iconButton" id="zoomOut" aria-label="Zoom out">−</button><button class="iconButton" id="resetView" aria-label="Reset camera">↺</button></div></div><div class="graphStage"><canvas id="graph" width="1000" height="560" aria-label="Interactive perspective view of the observed graph"></canvas><div class="graphEmpty" id="graphEmpty"><span>◇</span><strong>Awaiting network state</strong><p>Connect and run recorded traffic, or analyze a capture.</p></div><div class="graphHud"><span id="edgeCount">— observed edges</span><span id="cutoff">No observation cutoff</span></div><div class="nodeDetail" id="nodeDetail" hidden></div></div><details class="accessibleData"><summary>Observed node data</summary><div id="nodeTable">No observed nodes.</div></details></article>
-    <aside class="sideStack"><article class="panel riskPanel"><div class="panelHead"><div><span class="panelKicker">FORECAST RISK</span><h3>Predictive gauge</h3></div><span class="signalBadge" id="signalBadge">WAITING</span></div><div class="gaugeWrap"><canvas id="riskGauge" width="460" height="300" aria-label="Peak forecast risk gauge"></canvas><div class="gaugeCenter"><strong id="gaugeValue">—</strong><span id="gaugeLabel">NO FORECAST</span></div></div><div class="riskMeta"><div><span>Peak</span><strong id="forecastLarge">—</strong></div><div><span>Mode</span><strong id="runtimeMode">REVIEW</strong></div></div></article><article class="panel activityPanel"><div class="panelHead"><div><span class="panelKicker">RISK HISTORY</span><h3>Session pulse</h3></div><span class="liveDot">UI LIVE</span></div><canvas id="activitySpark" width="520" height="160" aria-label="Recent forecast risk history"></canvas><p>Only forecasts actually rendered in this session are plotted.</p></article></aside>
+
+  <section class="statusRail sectionShell" aria-label="Current command status">
+    <div><i class="pulse"></i><span>Session</span><strong id="armStatus">DISARMED</strong></div>
+    <div><span>Model source</span><strong>Runtime metadata</strong></div>
+    <div><span>Audit</span><strong id="audit">AUDIT NOT LOADED</strong></div>
+    <div><span>Threat memory</span><strong id="memoryCount">0 REVIEWED</strong></div>
+    <div><span>System refresh</span><strong>5s status cycle</strong></div>
   </section>
-  <section class="forecastGrid sectionShell"><article class="panel forecastPanel"><div class="panelHead"><div><span class="panelKicker">FORWARD TRAJECTORY</span><h3>Future malicious-flow likelihood</h3><p>Garuda · directed graph encoder + LSTM temporal forecaster</p></div></div><canvas id="timeline" width="900" height="330" aria-label="Forecast probability across future horizons"></canvas><div id="horizonValues" class="horizonValues"></div><p class="contextNote">Forecast risk is not a verified compromise probability. The source is recorded replay unless you upload an observed capture.</p></article><article class="panel driversPanel"><div class="panelHead"><div><span class="panelKicker">MODEL EXPLANATION</span><h3>Prediction drivers</h3><p>Observed features contributing to the current forecast</p></div><span class="miniTag">ATTRIBUTION</span></div><div id="features" class="features"><div class="emptyRow">Run a forecast to inspect feature contributions.</div></div><p class="contextNote">Gradient × input sensitivity. Explanatory, not causal proof.</p></article></section>
-  <section class="captureStrip sectionShell panel"><div><span class="panelKicker">BRING YOUR OWN TELEMETRY</span><h3>Analyze an observed capture locally</h3><p>CSV flow records or classic PCAP · up to 72 MiB · processed by the local runtime</p></div><div class="captureControls"><select id="mode" aria-label="Graph representation"><option value="service">Protocol / service graph</option><option value="host">Host graph</option></select><label class="fileButton" for="file">Choose capture<input id="file" type="file" accept=".csv,.pcap"></label><button class="button primary" id="analyze" disabled>Analyze</button><small id="fileName">No file selected</small></div></section>
-  <section class="stageGrid sectionShell"><article class="panel"><div class="panelHead"><div><span class="panelKicker">ATTACK-STAGE EVIDENCE</span><h3 id="stage">Unresolved</h3></div><span class="miniTag amber">REVIEW</span></div><p id="stageText">Load a forecast to inspect stage-label availability.</p><div class="provenanceBox"><span>MODEL PROVENANCE</span><p id="provenance">Checkpoint and dataset evidence will appear after connection.</p></div><button class="button ghost" id="download" disabled>Export forecast JSON ↓</button></article><article class="panel architecturePanel"><div class="panelHead"><div><span class="panelKicker">TRUSTED MEMORY CONTRACT</span><h3>Separated attack memory</h3></div></div><div class="memoryArchitecture"><div><span>Known Attack Bloom</span><strong id="knownBloomSize">1 KB</strong><small>Reviewed roots</small></div><div class="memoryArrow">→ ARJUNA ←</div><div><span>Mutation Bloom</span><strong id="mutationBloomSize">1 KB</strong><small>Validated variants</small></div></div><p class="contextNote">Bloom filters are fixed-size prefilters only. Exact-store confirmation remains required before an Arjuna memory match becomes block authority.</p></article></section>
-  <section class="sectionTitle sectionShell" id="response"><div><span class="eyebrow">02 / DEFENCE ORCHESTRATION</span><h2>Four layers. One traceable decision path.</h2><p>Reviewed known threats go to Arjuna; unfamiliar structures go to Krishna; Sudarshana is reserved for confirmed scoped escalation.</p></div><span class="sourcePill" id="audit">AUDIT NOT LOADED</span></section>
-  <section class="defenceFlow sectionShell"><article class="defenceCard" data-layer="garuda"><span class="layerNo">01</span><div class="defenceIcon">G</div><h3>Garuda</h3><p>Predictive intelligence</p><strong id="garudaState">Awaiting observations</strong><small>Forecasts future network state and emits an evidence-bearing signal.</small></article><div class="flowLine">→</div><article class="defenceCard" data-layer="arjuna"><span class="layerNo">02</span><div class="defenceIcon">A</div><h3>Arjuna</h3><p>Known-threat response</p><strong id="arjunaState">Reviewed memory ready</strong><small>Reads reviewed known roots and independently validated mutations.</small></article><div class="flowLine">→</div><article class="defenceCard" data-layer="krishna"><span class="layerNo">03</span><div class="defenceIcon">K</div><h3>Krishna</h3><p>Unknown investigation</p><strong id="krishnaState">No pending signal</strong><small>Studies unfamiliar behaviour before controlled promotion to trusted memory.</small></article><div class="flowLine">→</div><article class="defenceCard" data-layer="sudarshana"><span class="layerNo">04</span><div class="defenceIcon">S</div><h3>Sudarshana</h3><p>Scoped containment</p><strong id="sudarshanaState">Standing by</strong><small>Fail-closed containment for explicitly confirmed offender scope.</small></article></section>
-  <section class="warEvidence sectionShell panel"><div class="warLead"><span class="panelKicker">LATEST LOCAL DEFENCE WAR EXERCISE</span><h3>5 / 5 waves passed</h3><p>Deterministic owned-lab regression on CI #373. This is engineering evidence, not production zero-day proof.</p></div><div class="warWaves"><span><b>W0</b> Benign 10/10 safe</span><span><b>W1</b> Known 10/10 Arjuna</span><span><b>W2</b> Unknown 5/5 Krishna</span><span><b>W3</b> Evolve → Arjuna</span><span><b>W4</b> Scoped recovery</span></div></section>
-  <section class="operationsGrid sectionShell"><article class="panel responsePanel"><div class="panelHead"><div><span class="panelKicker">OPERATOR CONTROL</span><h3>Response authorization</h3><p>Review-only by default. Lab automation requires explicit startup configuration and operator scope.</p></div><span class="miniTag amber" id="armStatus">DISARMED</span></div><div class="policyFields"><label>Target IP<input id="target" placeholder="IP in configured lab scope"></label><label>Policy TTL<input id="ttl" type="number" min="10" max="60" value="30"></label><label>Operator reason<input id="reason" placeholder="Reason for manual containment"></label></div><div class="buttonRow"><button class="button primary" id="contain" disabled>Publish manual policy</button><button class="button secondary" id="arm" disabled>Arm lab response · 2 min</button><button class="button ghost" id="disarm" disabled>Disarm</button><button class="button danger" id="kill" disabled>Emergency revoke</button></div><p class="contextNote">Target scope is operator-selected, not attacker attribution inferred by the model.</p><div id="policies" class="policies"><div class="emptyRow">No policy data loaded.</div></div></article><article class="panel"><div class="panelHead"><div><span class="panelKicker">SIGNAL LEDGER</span><h3>Decision stream</h3></div><span class="miniTag" id="eventCount">0 EVENTS</span></div><div id="events" class="events"><div class="emptyRow">Connect to inspect response events.</div></div></article></section>
-  <section class="operationsGrid sectionShell"><article class="panel"><div class="panelHead"><div><span class="panelKicker">REVIEWED THREAT MEMORY</span><h3>Krishna review → Arjuna recognition</h3></div><span class="miniTag" id="memoryCount">0 REVIEWED</span></div><form id="reviewForm" class="reviewForm"><label>Signal<select id="reviewEvent"><option value="">No alert selected</option></select></label><label>Attack type<input id="attackType" placeholder="Reviewed classification" maxlength="80"></label><label>Evidence reference<textarea id="reviewEvidence" placeholder="Reference the lab observation or reviewed incident evidence" minlength="12" maxlength="500" rows="3"></textarea></label><div class="buttonRow"><button class="button primary" id="approve" disabled>Approve fingerprint</button><button class="button ghost" id="escalate" type="button" disabled>Report breach evidence</button></div></form><div id="memory" class="memory"></div></article><article class="panel evidenceBoundaries"><div class="panelHead"><div><span class="panelKicker">SAFETY & CLAIM BOUNDARIES</span><h3>Evidence before claims</h3></div></div><ul><li>Recorded replay is not live customer telemetry.</li><li>Unseen-to-system fixtures are not proof of production zero-day detection.</li><li>Forecast horizon is not verified compromise lead time.</li><li>Signed containment remains operator-scoped and fail-closed.</li></ul></article></section>
-  <section class="sectionTitle sectionShell" id="evidence"><div><span class="eyebrow">03 / MEASURED MODEL EVIDENCE</span><h2>Benchmarks you can inspect, not marketing numbers.</h2><p>The dashboard loads model metrics from the local benchmark API using the same stored run artifacts.</p></div><span class="sourcePill">ARTIFACT-BACKED</span></section>
-  <section class="evidenceGrid sectionShell"><article class="panel benchmarkVisual"><div class="panelHead"><div><span class="panelKicker">MODEL COMPARISON</span><h3>Measured performance</h3><p>F1, recall and false-positive rate across matched runs</p></div></div><canvas id="benchmarkChart" width="900" height="380" aria-label="Model benchmark bar chart"></canvas><div id="benchmarkLegend" class="benchmarkLegend"><span><i class="legend F1"></i>F1</span><span><i class="legend recall"></i>Recall</span><span><i class="legend fpr"></i>FPR</span></div></article><article class="panel evidenceSummary"><div class="evidenceScore"><span>Forecasting core</span><strong>GNN + LSTM</strong><small>Directed GraphSAGE-style encoder + temporal decoder</small></div><div class="evidenceScore"><span>State baseline</span><strong id="persistenceMse">—</strong><small>Persistence MSE loaded from artifacts</small></div><div class="evidenceScore"><span>Validation</span><strong>3 seeds</strong><small>Same internal holdout; not independent-dataset uncertainty</small></div><div class="evidenceScore"><span>War regression</span><strong>5 / 5</strong><small>Owned/local deterministic defence waves</small></div></article></section>
-  <section class="panel sectionShell tablePanel"><div class="panelHead"><div><span class="panelKicker">FULL METRICS</span><h3>Model benchmark table</h3><p>Same observation cutoff and future target. Threshold selection remains validation-only.</p></div></div><div class="tableWrap"><table><thead><tr><th>Model</th><th>F1 score</th><th>Precision</th><th>Recall</th><th>False-positive rate</th><th>State MSE</th></tr></thead><tbody id="metrics"><tr><td colspan="6">Connect to load measured results.</td></tr></tbody></table></div><p id="evidenceLimit" class="evidenceLimit">No accuracy or prevented-breach claims are inferred from visual activity.</p></section>
-  <footer class="sectionShell"><div><strong>KRISHNA DEFENCE</strong><span>Team The Predators · SIH26153</span></div><p>Predictive cyber defence · offline research console · evidence before claims</p></footer>
+
+  <section class="sessionPanel sectionShell" id="sessionPanel">
+    <div><span class="eyebrow">SECURE LOCAL SESSION</span><h2>Connect the command centre</h2><p>Use the viewer or operator token generated locally in <code>garuda_v3/runtime/access.json</code>. The token stays in this browser tab.</p></div>
+    <form id="sessionForm" class="sessionForm"><label class="sr-only" for="token">Access token</label><input id="token" type="password" autocomplete="off" placeholder="Workspace access token" required><button class="button primary" id="connect" type="submit">Connect <span>→</span></button></form>
+  </section>
+  <section class="notice sectionShell" id="notice" role="status"><span class="noticeGlyph">i</span><span id="noticeText">Connect to load model metadata and recorded network observations. No live customer sensor is connected.</span></section>
+
+  <section class="sectionTitle sectionShell" id="telemetry">
+    <div><span class="eyebrow">01 / PREDICTIVE INTELLIGENCE</span><h2>From observed signals to what's next.</h2><p>Every visual below is tied to runtime output, model metadata, stored response state, or artifact-backed benchmark data.</p></div>
+    <span class="sourcePill">PROVENANCE FIRST</span>
+  </section>
+
+  <section class="processFlow sectionShell">
+    <article><span class="processNo">01</span><div class="processIcon">⌁</div><h3>Ingest</h3><p>Recorded graph evidence or a local CSV / classic PCAP capture.</p></article>
+    <div class="processArrow">→</div>
+    <article><span class="processNo">02</span><div class="processIcon">◎</div><h3>Understand</h3><p>Build the graph state and preserve observation timing and source labels.</p></article>
+    <div class="processArrow">→</div>
+    <article><span class="processNo">03</span><div class="processIcon">↗</div><h3>Forecast</h3><p>Render the model's future malicious-flow trajectory and feature attribution.</p></article>
+    <div class="processArrow">→</div>
+    <article><span class="processNo">04</span><div class="processIcon">◇</div><h3>Act</h3><p>Route the signal through evidence-gated known, unknown and containment paths.</p></article>
+  </section>
+
+  <section class="analyticsGrid sectionShell">
+    <article class="panel forecastPanel">
+      <div class="panelHead"><div><span class="panelKicker">ATTACK FORECAST</span><h3>Future malicious-flow likelihood</h3><p>Forecast risk is a model score, not a verified compromise probability.</p></div><span class="miniTag">SOURCE LABELLED</span></div>
+      <div id="horizonValues" class="horizonValues"></div>
+      <p class="contextNote">The main trajectory chart is shown in the command console above. Horizon values here are populated only from the current forecast response.</p>
+    </article>
+    <article class="panel activityPanel">
+      <div class="panelHead"><div><span class="panelKicker">SESSION PULSE</span><h3>Rendered forecast history</h3><p>Only forecast scores actually rendered in this browser session.</p></div><span class="liveDot">UI LIVE</span></div>
+      <canvas id="activitySpark" width="520" height="160" aria-label="Recent forecast risk history"></canvas>
+    </article>
+    <article class="panel driversPanel">
+      <div class="panelHead"><div><span class="panelKicker">MODEL EXPLANATION</span><h3>Prediction drivers</h3><p>Returned feature attribution for the current forecast.</p></div><span class="miniTag">ATTRIBUTION</span></div>
+      <div id="features" class="features"><div class="emptyRow">Run a forecast to inspect feature contributions.</div></div>
+      <p class="contextNote">Gradient × input sensitivity. Explanatory, not causal proof.</p>
+    </article>
+  </section>
+
+  <section class="captureStrip sectionShell panel">
+    <div><span class="panelKicker">BRING YOUR OWN TELEMETRY</span><h3>Analyze an observed capture locally</h3><p>CSV flow records or classic PCAP · up to 72 MiB · processed by the local runtime.</p></div>
+    <div class="captureControls"><select id="mode" aria-label="Graph representation"><option value="service">Protocol / service graph</option><option value="host">Host graph</option></select><label class="fileButton" for="file">Choose capture<input id="file" type="file" accept=".csv,.pcap"></label><button class="button primary" id="analyze" disabled>Analyze</button><small id="fileName">No file selected</small></div>
+  </section>
+
+  <section class="stageGrid sectionShell">
+    <article class="panel stageCard"><div class="panelHead"><div><span class="panelKicker">ATTACK-STAGE EVIDENCE</span><h3 id="stage">Unresolved</h3></div><span class="miniTag amber">EVIDENCE-GATED</span></div><p id="stageText">Load a forecast to inspect stage-label availability.</p><div class="provenanceBox"><span>MODEL PROVENANCE</span><p id="provenance">Checkpoint and dataset evidence will appear after connection.</p></div><button class="button ghost" id="download" disabled>Export forecast JSON ↓</button></article>
+    <article class="panel evidenceBoundaries"><div class="panelHead"><div><span class="panelKicker">CLAIM BOUNDARIES</span><h3>What the console does not pretend</h3></div></div><ul><li>Recorded replay is labelled as recorded replay.</li><li>Forecast risk is not presented as verified compromise probability.</li><li>Stage hints remain marked when they are heuristic rather than supervised evidence.</li><li>Containment remains scoped and authorization-gated by the runtime.</li></ul></article>
+  </section>
+
+  <section class="sectionTitle sectionShell" id="modules">
+    <div><span class="eyebrow">02 / CORE DEFENCE MODULES</span><h2>One forecast. Three defence paths.</h2><p>Garuda supplies predictive intelligence; Arjuna, Krishna and Sudarshana expose their actual current runtime state below.</p></div>
+    <span class="sourcePill">LIVE LEDGER STATE</span>
+  </section>
+
+  <section class="moduleGrid sectionShell">
+    <article class="defenceCard arjunaCard" data-layer="arjuna"><div class="moduleArt bowArt" aria-hidden="true"><span></span><i></i></div><span class="layerNo">01</span><div class="moduleCopy"><span class="moduleType">KNOWN-THREAT RESPONSE</span><h3>ARJUNA</h3><p>Uses reviewed exact threat memory for known snapshot recognition before any response authority is considered.</p><strong id="arjunaState">Awaiting runtime state</strong><small>State loaded from the response memory ledger.</small></div></article>
+    <article class="defenceCard krishnaCard" data-layer="krishna"><div class="moduleArt brainArt" aria-hidden="true"><span>ॐ</span></div><span class="layerNo">02</span><div class="moduleCopy"><span class="moduleType">UNKNOWN INVESTIGATION</span><h3>KRISHNA</h3><p>Routes unfamiliar forecast alerts into review rather than pretending they are already-known attack signatures.</p><strong id="krishnaState">Awaiting runtime state</strong><small>Pending review count comes from stored response events.</small></div></article>
+    <article class="defenceCard sudarshanaCard" data-layer="sudarshana"><div class="moduleArt discArt" aria-hidden="true"><span></span><i></i></div><span class="layerNo">03</span><div class="moduleCopy"><span class="moduleType">SCOPED CONTAINMENT</span><h3>SUDARSHANA</h3><p>Publishes scoped signed containment only when the runtime's authorization and evidence gates permit it.</p><strong id="sudarshanaState">Standing by</strong><small>Fail-closed status comes from the latest response event.</small></div></article>
+  </section>
+
+  <section class="garudaBridge sectionShell panel">
+    <div class="bridgeLead"><span class="panelKicker">GARUDA PREDICTIVE LAYER</span><h3>Forecast signal → traceable defence decision</h3><p id="garudaState">Awaiting observations</p></div>
+    <div class="bridgeLine"><span>OBSERVE</span><i></i><span>FORECAST</span><i></i><span>ROUTE</span><i></i><span>REVIEW / ACT</span></div>
+  </section>
+
+  <section class="sectionTitle sectionShell" id="response">
+    <div><span class="eyebrow">03 / RESPONSE OPERATIONS</span><h2>Operator control stays visible.</h2><p>Read-only viewers can inspect state. Policy creation, review approval and escalation remain operator-only.</p></div>
+    <span class="sourcePill" id="runtimeAuthority">RUNTIME AUTHORITY</span>
+  </section>
+
+  <section class="operationsGrid sectionShell">
+    <article class="panel responsePanel"><div class="panelHead"><div><span class="panelKicker">OPERATOR CONTROL</span><h3>Response authorization</h3><p>Review-only by default. Lab automation requires explicit startup configuration and target scope.</p></div></div><div class="policyFields"><label>Target IP<input id="target" placeholder="IP in configured lab scope"></label><label>Policy TTL<input id="ttl" type="number" min="10" max="60" value="30"></label><label>Operator reason<input id="reason" placeholder="Reason for manual containment"></label></div><div class="buttonRow"><button class="button primary" id="contain" disabled>Publish manual policy</button><button class="button secondary" id="arm" disabled>Arm lab response · 2 min</button><button class="button ghost" id="disarm" disabled>Disarm</button><button class="button danger" id="kill" disabled>Emergency revoke</button></div><p class="contextNote">Target scope is operator-selected, not attacker attribution inferred by the model.</p><div id="policies" class="policies"><div class="emptyRow">No policy data loaded.</div></div></article>
+    <article class="panel ledgerPanel"><div class="panelHead"><div><span class="panelKicker">SIGNAL LEDGER</span><h3>Decision stream</h3><p>Latest stored Garuda/Arjuna/Krishna/Sudarshana response events.</p></div></div><div id="events" class="events"><div class="emptyRow">Connect to inspect response events.</div></div></article>
+  </section>
+
+  <section class="operationsGrid sectionShell">
+    <article class="panel"><div class="panelHead"><div><span class="panelKicker">REVIEWED THREAT MEMORY</span><h3>Krishna review → Arjuna recognition</h3></div></div><form id="reviewForm" class="reviewForm"><label>Signal<select id="reviewEvent"><option value="">No alert selected</option></select></label><label>Attack type<input id="attackType" placeholder="Reviewed classification" maxlength="80"></label><label>Evidence reference<textarea id="reviewEvidence" placeholder="Reference the lab observation or reviewed incident evidence" minlength="12" maxlength="500" rows="3"></textarea></label><div class="buttonRow"><button class="button primary" id="approve" disabled>Approve fingerprint</button><button class="button ghost" id="escalate" type="button" disabled>Report breach evidence</button></div></form><div id="memory" class="memory"><div class="emptyRow">No reviewed response fingerprints loaded.</div></div></article>
+    <article class="panel runtimeNotes"><div class="panelHead"><div><span class="panelKicker">RUNTIME CONTRACT</span><h3>Evidence before automation</h3></div></div><div class="contractRows"><div><span>Garuda</span><p>Produces the forecast response and data-source provenance.</p></div><div><span>Arjuna</span><p>Requires reviewed exact-memory match for known recognition.</p></div><div><span>Krishna</span><p>Keeps unfamiliar alerts in review when autonomous unknown containment is not approved.</p></div><div><span>Sudarshana</span><p>Uses operator-scoped containment / escalation; policy enforcement depends on runtime configuration.</p></div></div></article>
+  </section>
+
+  <section class="sectionTitle sectionShell" id="evidence">
+    <div><span class="eyebrow">04 / MEASURED EVIDENCE</span><h2>Benchmarks, not decorative accuracy numbers.</h2><p>The benchmark API summarizes matched stored runs and publishes its scope alongside the metrics.</p></div>
+    <span class="sourcePill">ARTIFACT-BACKED</span>
+  </section>
+
+  <section class="evidenceGrid sectionShell">
+    <article class="panel benchmarkVisual"><div class="panelHead"><div><span class="panelKicker">MODEL COMPARISON</span><h3>Measured performance</h3><p>F1, recall and false-positive rate across the stored matched runs.</p></div></div><canvas id="benchmarkChart" width="900" height="380" aria-label="Model benchmark bar chart"></canvas><div id="benchmarkLegend" class="benchmarkLegend"><span><i class="legend F1"></i>F1</span><span><i class="legend recall"></i>Recall</span><span><i class="legend fpr"></i>FPR</span></div></article>
+    <article class="panel evidenceSummary"><div class="evidenceScore"><span>State baseline</span><strong id="persistenceMse">—</strong><small>Persistence MSE loaded from artifacts</small></div><div class="evidenceScore"><span>Model details</span><strong>API-backed</strong><small>Architecture is loaded into the header after connection</small></div><div class="evidenceScore"><span>Benchmark scope</span><strong>Stored matched runs</strong><small>Exact caveat is printed below the table</small></div><div class="evidenceScore"><span>Claims</span><strong>Fail closed</strong><small>No prevented-breach claim inferred from UI activity</small></div></article>
+  </section>
+
+  <section class="panel sectionShell tablePanel"><div class="panelHead"><div><span class="panelKicker">FULL METRICS</span><h3>Model benchmark table</h3><p>Loaded directly from <code>/api/benchmarks</code>.</p></div></div><div class="tableWrap"><table><thead><tr><th>Model</th><th>F1 score</th><th>Precision</th><th>Recall</th><th>False-positive rate</th><th>State MSE</th></tr></thead><tbody id="metrics"><tr><td colspan="6">Connect to load measured results.</td></tr></tbody></table></div><p id="evidenceLimit" class="evidenceLimit">No accuracy or prevented-breach claims are inferred from visual activity.</p></section>
+
+  <footer class="sectionShell"><div class="footerBrand"><span class="brandMark small" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 7 19 18 7 11l8 13-9 2 15 5 3 10 3-10 15-5-9-2 8-13-12 7Z"/></svg></span><div><strong>GARUDA AI</strong><span>Krishna Defence predictive cyber system · SIH26153</span></div></div><p>Observed signals → forecast → evidence-gated response.</p></footer>
 </main>
 <script src="/app.js"></script>
 </body>
