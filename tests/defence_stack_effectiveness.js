@@ -111,6 +111,10 @@ for (let i = 0; i < mutationSeeds.length; i++) {
     confidenceScore: 96
   });
 
+  assert.equal(learned.mutationLimits && learned.mutationLimits.maxSyntheticMutationsPerToken, 96, 'effective per-token mutation telemetry drifted from V2 runtime');
+  assert.equal(learned.mutationLimits && learned.mutationLimits.maxRawMutationCandidatesPerIncident, 256, 'effective per-incident mutation telemetry drifted from V2 runtime');
+  assert.equal(learned.mutationLimits && learned.mutationLimits.source, 'defence-stack-v2-patch', 'mutation telemetry must identify the effective overlay');
+
   mutationCandidatesGenerated += learned.mutationCandidatesGeneratedBeforeBudget || learned.mutationCandidates || 0;
   mutationCandidates += learned.mutationCandidates || 0;
   mutationBudgetWithheld += learned.mutationCandidatesBudgetWithheld || 0;
@@ -138,7 +142,8 @@ for (let i = 0; i < mutationSeeds.length; i++) {
     validated: learned.mutationsValidated || 0,
     coverage: learned.mutationValidationCoverage || 0,
     learnedRoots: (learned.newlyLearned || []).length,
-    mutationBudget: learned.mutationBudget || null
+    mutationBudget: learned.mutationBudget || null,
+    mutationLimits: learned.mutationLimits || null
   });
 }
 
