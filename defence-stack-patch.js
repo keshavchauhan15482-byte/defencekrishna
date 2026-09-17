@@ -84,6 +84,16 @@ if (!globalThis[PATCH_FLAG]) {
       return { newlyLearned: [], totalLearned: this.learnedPatterns.length, validationRejected: true, reason: 'Empty incident payload' };
     }
 
+    const requestedConfidence = Number(args.confidenceScore || 0);
+    if (!Number.isFinite(requestedConfidence) || requestedConfidence < 75) {
+      return {
+        newlyLearned: [],
+        totalLearned: this.learnedPatterns.length,
+        confidenceRejected: true,
+        reason: `Incident confidence ${Number.isFinite(requestedConfidence) ? requestedConfidence : 0}% is below the 75% promotion gate`
+      };
+    }
+
     const rootValidation = independentlyDetect(rawInput);
     if (rootValidation.tier !== 'danger') {
       return {
@@ -96,7 +106,7 @@ if (!globalThis[PATCH_FLAG]) {
       };
     }
 
-    const boundedConfidence = Math.max(75, Math.min(Number(args.confidenceScore || 0), Number(rootValidation.score || 0), 99));
+    const boundedConfidence = Math.min(requestedConfidence, 99);
     const learned = originalLearn.call(this, { ...args, confidenceScore: boundedConfidence });
 
     let candidates = 0;
