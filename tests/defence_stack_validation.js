@@ -75,8 +75,13 @@ async function main() {
     assert.ok(entry.mutationValidation.coverage > 0);
   });
 
-  const mutation = entry.validatedSyntheticMutations.find(m => m.token !== entry.token && !m.token.includes(entry.token))
-    || entry.validatedSyntheticMutations[0];
+  const allRoots = (learned.newlyLearned || []).map(e => e.token).filter(Boolean);
+  const allValidated = (learned.newlyLearned || []).flatMap(e => e.validatedSyntheticMutations || []);
+  const mutation = allValidated.find(m => allRoots.every(root => !m.token.includes(root)));
+  check('Krishna produces at least one distinct validated mutation', () => {
+    assert.ok(mutation, 'expected a validated mutation that is not an exact learned root token');
+  });
+
   check('Arjuna fast-path recognizes a validated related mutation', () => {
     const match = counter.checkLearned(mutation.token);
     assert.ok(match);
