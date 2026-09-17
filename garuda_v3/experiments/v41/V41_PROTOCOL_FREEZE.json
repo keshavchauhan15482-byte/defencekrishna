@@ -1,0 +1,40 @@
+{
+  "schema": "krishna-v41-unsw-unseen-family-early-progression-v1",
+  "frozen_before_results": true,
+  "source": "UNSW IoT Attack Traces verified in V33/V34",
+  "purpose": "Detect an unseen attack family from its first observable network change and forecast malicious continuation over the next four minutes.",
+  "claim_scope": "zero-day-like unseen-family early progression forecasting; not prediction before the first malicious packet and not universal zero-day prediction",
+  "strict_network_only": true,
+  "raw_device_ip_port_timestamp_model_features": false,
+  "history": "four one-minute rows ending at the current minute; model input is the 3x12 derivative sequence of V37 scale-free fraction/concentration channels",
+  "forecast_horizon_seconds": 240,
+  "positive_training_sample": "current minute is in the first 120 seconds of a non-held-out attack and the same annotated attack remains active in the future horizon",
+  "negative_sample": "history/current/future are fully benign",
+  "development_holdout_families": ["TcpSynReflection", "ArpSpoof", "PingOfDeath", "Ssdp"],
+  "locked_final_validation_families": ["TcpSynDevice", "UdpDevice"],
+  "locked_family_rule": "all samples overlapping a locked family in history/current/future are excluded from every V41 development split and are never scored",
+  "split": {
+    "unit": "non-overlapping 30-minute device-time blocks",
+    "assignment": "SHA256(device:block_start) modulo 100: train<60, calibration<75, policy<88, test otherwise",
+    "heldout_family_rule": "any sample overlapping the development held-out family is excluded from train/calibration/policy; held-out early-event candidates are scored only for event evaluation",
+    "block_overlap": "samples must be wholly inside one 30-minute block"
+  },
+  "model": {
+    "supervised_head": "HistGradientBoostingClassifier on flattened invariant derivative trajectory",
+    "unknown_head": "IsolationForest fit only to benign train samples",
+    "calibration": "supervised logit calibration on calibration split only",
+    "fusion_weights": [0.0, 0.25, 0.5, 0.75, 1.0],
+    "policy_fpr_budgets": [0.0025, 0.005, 0.01],
+    "selection": "policy split only; maximize known-attack progression recall subject to <=1% policy benign FPR",
+    "seeds": [42, 43, 44],
+    "test_information_used_for_selection": false
+  },
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.01,
+    "macro_unseen_event_recall_min": 0.80,
+    "each_unseen_family_event_recall_min": 0.70,
+    "median_detection_delay_seconds_max": 120,
+    "minimum_evaluable_events_per_family": 5
+  },
+  "final_validation": "locked; after V41 development, a newly reserved external campaign/dataset is still required for a final zero-day forecasting claim"
+}

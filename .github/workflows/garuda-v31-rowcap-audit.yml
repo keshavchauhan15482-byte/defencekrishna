@@ -1,0 +1,42 @@
+name: Garuda V31 IoT-23 Row-Cap Support Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v31-rowcap-support-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify V31 support-only protocol freeze
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v31/V31_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v31_results'] is True
+          assert p['row_checkpoints'] == [100000, 300000]
+          assert p['audit_only'] is True
+          assert p['model_training'] is False
+          assert p['threshold_selection'] is False
+          assert 'locked' in p['final_validation']
+          print('V31 protocol freeze: PASS')
+          PY
+      - name: Syntax-check V31 audit
+        run: python -m py_compile garuda_v3/experiments/v31/v31_iot23_rowcap_audit.py
+      - name: Run V31 row-cap temporal support audit
+        working-directory: garuda_v3/experiments/v31
+        run: python v31_iot23_rowcap_audit.py
+      - name: Upload V31 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v31-rowcap-support-evidence
+          path: garuda_v3/experiments/v31/artifacts/iot23_rowcap_audit/
+          if-no-files-found: warn

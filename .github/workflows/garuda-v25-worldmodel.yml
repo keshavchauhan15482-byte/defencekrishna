@@ -1,0 +1,36 @@
+name: Garuda V25 ToN-IoT Onset Support Diagnostic
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  toniot-onset-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install audit dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'pandas<2.3'
+      - name: Reproduce ToN-IoT clean-onset support diagnostic
+        continue-on-error: true
+        working-directory: garuda_v3/experiments/v25
+        run: python v25_toniot_onset_audit.py
+      - name: Upload V25 onset audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v25-toniot-onset-audit
+          path: garuda_v3/experiments/v25/artifacts/toniot_onset_audit/
+          if-no-files-found: error

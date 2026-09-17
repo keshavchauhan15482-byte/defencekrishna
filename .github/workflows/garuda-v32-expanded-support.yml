@@ -1,0 +1,54 @@
+name: Garuda V32 300k Expanded-Support Isolation Baseline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v32-expanded-support:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install V32 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Verify V32 frozen isolation protocol
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v32/V32_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v32_results'] is True
+          assert p['data_change']['v29_row_cap'] == 100000
+          assert p['data_change']['v32_row_cap'] == 300000
+          assert p['feature_policy']['strict_network_only'] is True
+          assert p['feature_policy']['raw_ip_identity_model_feature'] is False
+          assert 'exact V29' in p['model']['architecture']
+          assert 'single global threshold' in p['model']['threshold']
+          assert p['model']['test_information_used'] is False
+          assert p['model']['evaluation_never_selects_model_or_threshold'] is True
+          assert 'locked' in p['final_validation']
+          print('V32 isolation protocol freeze: PASS')
+          PY
+      - name: Syntax-check V32
+        run: python -m py_compile garuda_v3/experiments/v32/v32_iot23_expanded_support.py
+      - name: Run V32 300k-row isolation baseline
+        working-directory: garuda_v3/experiments/v32
+        run: python v32_iot23_expanded_support.py
+      - name: Upload V32 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v32-expanded-support-evidence
+          path: garuda_v3/experiments/v32/artifacts/iot23_expanded_support/
+          if-no-files-found: warn

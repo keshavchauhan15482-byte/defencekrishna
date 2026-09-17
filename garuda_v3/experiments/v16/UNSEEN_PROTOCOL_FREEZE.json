@@ -1,0 +1,38 @@
+{
+  "schema": "krishna-unseen-family-freeze-v1",
+  "frozen_at_utc": "2026-09-15T17:05:00Z",
+  "dataset": "X-IIoTID",
+  "dataset_sha256": "7b9290057ee42e784da3c0d84b781815502c9205c74175c96374e71a5ffd98a0",
+  "family_label": "class3",
+  "selection_rule": "Development families are the five families already consumed by the first V16 block-disjoint diagnostic. Final-validation families are chosen only from the remaining never-scored families using pre-model support counts, before any V17 model evaluation. Do not tune on final_validation_families.",
+  "development_families": [
+    "bruteforce",
+    "false_data_injection",
+    "modbus_register_reading",
+    "mqtt_cloud_broker_subscription",
+    "tcp relay"
+  ],
+  "final_validation_families": [
+    "exfiltration",
+    "dictionary",
+    "insider_malcious",
+    "c&c",
+    "reverse_shell"
+  ],
+  "reserve_families": [
+    "discovering_resources",
+    "fuzzing",
+    "generic_scanning",
+    "rdos",
+    "scanning_vulnerability"
+  ],
+  "known_support_counts_used_for_freeze": {
+    "exfiltration": 387,
+    "dictionary": 247,
+    "insider_malcious": 209,
+    "c&c": 159,
+    "reverse_shell": 152
+  },
+  "final_validation_model_scores_seen_before_freeze": false,
+  "important_limit": "X-IIoTID contains almost no clean-history future-positive onset windows for these final families. This frozen family test can validate unseen-family generalization, not verified pre-attack onset lead time. A separate timestamped ground-truth dataset is required for the pre-compromise forecasting claim."
+}

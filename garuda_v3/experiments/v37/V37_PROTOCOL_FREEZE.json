@@ -1,0 +1,38 @@
+{
+  "schema": "krishna-v37-unsw-invariant-representation-freeze-v1",
+  "frozen_before_v37_results": true,
+  "purpose": "Select a less device-identifying network-history representation using benign development-device histories only, after V36 confirmed strong cross-device domain fingerprinting.",
+  "source": {
+    "dataset": "UNSW IoT Attack Traces",
+    "reuse": "exact V35 canonical rows and history summaries",
+    "development_devices_only": ["00166cab6b88", "0017882b9a25", "44650d56ccd3", "50c7bf005639", "70ee50183443", "74c63b29d71d", "d073d5018308", "ec1a5979f489"],
+    "v35_test_devices_excluded_from_selection": ["ec1a59832811", "f4f5d88f0a3c"]
+  },
+  "audit_only": true,
+  "attack_labels_used_for_view_selection": false,
+  "attack_forecaster_trained": false,
+  "candidate_views": {
+    "v35_full": "all seven V35 history-operation blocks over all 33 canonical channels",
+    "derivative_channels": "delta/recent2/recent4 blocks over all canonical channels",
+    "fraction_derivatives": "delta/recent2/recent4 over fraction/concentration channels only",
+    "anonymous_dynamics": "std/delta/recent2/recent4 pooled across count and fraction channel groups using anonymous distribution summaries",
+    "anonymous_derivatives": "delta/recent2/recent4 pooled across count and fraction channel groups using anonymous distribution summaries",
+    "anonymous_fraction_derivatives": "delta/recent2/recent4 pooled across fraction channels only using anonymous distribution summaries"
+  },
+  "anonymous_summary_per_channel_group": ["mean", "median", "std", "max_abs", "mean_abs", "fraction_positive", "fraction_abs_gt_1"],
+  "domain_cv": {
+    "seed": 3701,
+    "max_benign_histories_per_device": 10000,
+    "folds": [
+      {"heldout": ["00166cab6b88", "0017882b9a25"]},
+      {"heldout": ["44650d56ccd3", "50c7bf005639"]},
+      {"heldout": ["70ee50183443", "74c63b29d71d"]},
+      {"heldout": ["d073d5018308", "ec1a5979f489"]}
+    ],
+    "metric": "mean benign heldout-vs-other-device logistic domain ROC-AUC",
+    "selection_rule": "choose lowest mean ROC-AUC; if views are within 0.01 AUC choose the lower-dimensional view",
+    "target": "ROC-AUC <= 0.70 is preferred but not required for audit completion"
+  },
+  "claim_boundary": "V37 is representation diagnosis/selection only. It produces no attack forecasting accuracy claim.",
+  "final_validation": "locked; external/new final validation remains required after any representation changes"
+}

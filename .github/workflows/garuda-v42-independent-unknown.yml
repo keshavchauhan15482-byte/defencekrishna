@@ -1,0 +1,49 @@
+name: Garuda V42 Independent Unknown Lane (Superseded Diagnostic)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v42-independent-unknown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install V42 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Verify frozen V42 protocol
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v42/V42_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_results'] is True
+          assert p['strict_network_only'] is True
+          assert p['decision_policy']['logic'] == 'supervised_lane_alert OR unknown_lane_alert'
+          assert p['decision_policy']['test_information_used'] is False
+          assert p['locked_final_validation_families'] == ['TcpSynDevice','UdpDevice']
+          print('V42 protocol freeze: PASS')
+          PY
+      - name: Syntax-check V42
+        run: python -m py_compile garuda_v3/experiments/v42/v42_independent_unknown_lane.py
+      - name: Run V42 independent unknown lane
+        working-directory: garuda_v3/experiments/v42
+        run: python v42_independent_unknown_lane.py
+      - name: Upload V42 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v42-independent-unknown-evidence
+          path: garuda_v3/experiments/v42/artifacts/independent_unknown_lane/
+          if-no-files-found: warn

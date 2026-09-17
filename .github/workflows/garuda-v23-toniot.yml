@@ -1,0 +1,46 @@
+name: Garuda V24 Clean-Onset Forecast Diagnostic
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  forecast-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install forecast dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Reproduce V24 adaptive forecast diagnostic
+        continue-on-error: true
+        working-directory: garuda_v3/experiments/v23
+        run: python v24_iot23_adaptive_forecast.py
+      - name: Upload V24 forecast evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v24-iot23-adaptive-forecast
+          path: garuda_v3/experiments/v23/artifacts/iot23_adaptive_v24/
+          if-no-files-found: warn
+      - name: Audit official IoT-23 clean-onset chronology
+        working-directory: garuda_v3/experiments/v23
+        run: python v23_iot23_onset_audit.py
+      - name: Upload IoT-23 onset audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v24-iot23-onset-audit
+          path: garuda_v3/experiments/v23/artifacts/iot23_onset_audit/
+          if-no-files-found: error

@@ -1,0 +1,54 @@
+{
+  "schema": "krishna-v29-iot23-topology-precursor-freeze-v1",
+  "frozen_before_v29_results": true,
+  "purpose": "Forecast held-out unseen malicious behaviour from attack-free network histories using causal topology churn, edge persistence, fan-out and periodicity features in addition to traffic dynamics.",
+  "source": "Official CTU IoT-23 timestamped Zeek conn.log.labeled scenarios",
+  "development_families": ["c&c-heartbeat", "c&c", "partofahorizontalportscan"],
+  "final_validation": "locked; no final-validation family may be scored while V29 development is tuned",
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_minutes": 8,
+    "history_windows": 16,
+    "future_minutes": 4,
+    "future_windows": 8,
+    "training_history_rule": "history must be fully benign",
+    "heldout_family_rule": "all blocks with held-out-family history or future exposure are excluded from train/calibration/policy",
+    "test_positive": "fully benign history followed by held-out family within 30-240 seconds",
+    "test_negative": "fully benign history with fully benign next four minutes",
+    "split": "deterministic one-hour block split inherited from V23"
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_ip_identity_model_feature": false,
+    "raw_uid": false,
+    "process_or_host_telemetry": false,
+    "allowed_identity_use": "IP/edge/port identities may only be used transiently to compute aggregate causal counts, overlap, churn, entropy and persistence; identities themselves never enter the model",
+    "topology_precursors": [
+      "source_fanout_distribution",
+      "destination_and_port_entropy",
+      "new_destination_fraction",
+      "new_edge_fraction",
+      "edge_overlap_lag_1_2_4_8",
+      "destination_overlap_lag_1_2_4_8",
+      "connection_failure_ratio",
+      "flow_and_edge_acceleration",
+      "history_periodicity_autocorrelation"
+    ]
+  },
+  "model": {
+    "supervised_future_head": "balanced HistGradientBoostingClassifier trained on non-heldout clean histories",
+    "novelty_head": "IsolationForest fitted on clean benign train histories only",
+    "fusion_weights": [0.0, 0.15, 0.3, 0.45],
+    "policy_fpr_budgets": [0.005, 0.01, 0.015, 0.02],
+    "selection": "policy split only; maximize non-heldout future recall subject to <=2.05% policy benign FPR, then lower FPR and lower novelty weight",
+    "evaluation_never_selects_model_or_threshold": true
+  },
+  "seeds": [42, 43, 44],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.02,
+    "macro_event_recall_min": 0.80,
+    "per_family_event_recall_min": 0.70,
+    "positive_lead_time_seconds_min": 30
+  },
+  "claim_boundary": "A pass supports forecasting these held-out unseen development behaviours from clean network histories. It does not prove prediction of every zero-day attack."
+}

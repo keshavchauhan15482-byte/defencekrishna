@@ -1,0 +1,41 @@
+name: Garuda V34 UNSW Flow-Schema Preflight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v34-unsw-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify V34 preflight freeze
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v34/V34_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v34_results'] is True
+          assert p['preflight_only'] is True
+          assert p['model_training'] is False
+          assert p['threshold_selection'] is False
+          assert 'locked' in p['final_validation']
+          print('V34 protocol freeze: PASS')
+          PY
+      - name: Syntax-check V34
+        run: python -m py_compile garuda_v3/experiments/v34/v34_unsw_schema_preflight.py
+      - name: Run V34 flow-schema preflight
+        working-directory: garuda_v3/experiments/v34
+        run: python v34_unsw_schema_preflight.py
+      - name: Upload V34 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v34-unsw-schema-evidence
+          path: garuda_v3/experiments/v34/artifacts/unsw_schema_preflight/
+          if-no-files-found: warn

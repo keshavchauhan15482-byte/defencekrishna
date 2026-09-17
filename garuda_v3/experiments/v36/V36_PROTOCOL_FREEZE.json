@@ -1,0 +1,35 @@
+{
+  "schema": "krishna-v36-unsw-domain-shift-audit-freeze-v1",
+  "frozen_before_v36_results": true,
+  "purpose": "Diagnose why V35 cross-device clean-onset recall collapsed despite adequate held-out event support and controlled FPR.",
+  "source": {
+    "dataset": "UNSW IoT Attack Traces",
+    "flow_sha256": "04131cbe9ccd255b2bf001aaee029ae8e84f9542f7440412a1dd28ac80e40295",
+    "annotation_sha256": "1990c33d5430c4939336d79b08e9ba6a90a8c97621069cb748c3c0282d1eaafd",
+    "reuse": "V35 canonical network-only representation and frozen whole-device split"
+  },
+  "audit_only": true,
+  "attack_forecast_model_training": false,
+  "attack_threshold_selection": false,
+  "diagnostics": {
+    "benign_domain_shift": {
+      "population": "V35 clean-history negative samples only",
+      "feature_shift": "absolute median shift relative to pooled train benign IQR, per feature/device and grouped by history operation and count-vs-fraction base channel",
+      "domain_classifier": "fixed logistic classifier distinguishing pooled train-device benign histories from V35 test-device benign histories; diagnostic only",
+      "domain_classifier_seed": 3601,
+      "max_samples_per_domain": 20000
+    },
+    "attack_label_overlap": {
+      "inventory": "normalized annotation labels per V35 split",
+      "test_breakdown": "test annotated and evaluable clean-onset events whose label was seen vs unseen on train devices"
+    }
+  },
+  "interpretation_rules": {
+    "strong_domain_shift": "benign train-vs-test domain ROC-AUC >= 0.80 or median standardized feature shift >= 1.0",
+    "label_shift_material": "at least 25% of evaluable V35 test events have labels absent from train-device annotations",
+    "next_representation_if_domain_shift": "develop scale-free derivative/ratio-only device-invariant features using development devices only",
+    "next_protocol_if_label_shift": "separate seen-label cross-device and unseen-label cross-device development claims; do not merge them into one recall number"
+  },
+  "v35_test_reuse_boundary": "V35 test devices are now development diagnostics and are no longer untouched final-validation data after V35 results were inspected.",
+  "final_validation": "locked; V36 cannot establish forecasting accuracy or support a final zero-day/pre-compromise claim"
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "krishna-v40-xiiotid-stage-progression-support-freeze-v1",
+  "frozen_before_v40_results": true,
+  "purpose": "Audit whether X-IIoTID contains enough temporal support to forecast progression from observable early malicious stages to exploitation-or-later activity, before training any progression model.",
+  "dataset": {
+    "name": "X-IIoTID",
+    "official_repo": "https://github.com/Alhawawreh/X-IIoTID",
+    "transport_mirror": "munaalhawawreh/xiiotid-iiot-intrusion-dataset",
+    "expected_largest_csv_sha256": "7b9290057ee42e784da3c0d84b781815502c9205c74175c96374e71a5ffd98a0",
+    "expected_largest_csv_bytes": 355308902
+  },
+  "audit_only": true,
+  "model_training": false,
+  "threshold_selection": false,
+  "stage_semantics": {
+    "benign": ["normal", "benign", "background", "0"],
+    "early_pre_compromise": ["reconnaissance", "recon", "weaponisation", "weaponization"],
+    "compromise_or_later": ["exploitation", "lateral movement", "command and control", "c2", "exfiltration", "tampering", "crypto-ransomware", "crypto ransomware", "rdos"],
+    "boundary": "Exploitation or later is treated as the progression/compromise-side boundary for this development audit. Reconnaissance and Weaponisation are observable malicious precursors, not compromise."
+  },
+  "temporal_protocol": {
+    "entity": "source IP when present, otherwise GLOBAL",
+    "aggregation": "one-minute stage sets",
+    "history_minutes": 8,
+    "future_minutes": 4,
+    "contiguity_required": true,
+    "eligible_history": "all eight history minutes contain only benign or early-pre-compromise stages",
+    "observed_early_history_subset": "eligible history with at least one Reconnaissance/Weaponisation stage in the eight-minute history",
+    "positive_target": "future four minutes contain at least one Exploitation-or-later stage",
+    "negative_target": "future four minutes contain only benign or early-pre-compromise stages",
+    "unknown_or_unmapped_stage_rule": "skip the sequence rather than force a label",
+    "lead_time": "for positive sequences, seconds from history cutoff to first Exploitation-or-later stage in the future horizon"
+  },
+  "split_protocol": {
+    "type": "global chronological cutoff split",
+    "fractions": {"train_end": 0.60, "calibration_end": 0.75, "policy_end": 0.85},
+    "embargo_minutes": 12,
+    "fit_on_labels": false,
+    "purpose": "support audit only; report observed-early positive/negative support in every partition"
+  },
+  "support_gate_for_v41": {
+    "minimum_observed_early_positive_sequences_per_split": {"train": 50, "calibration": 10, "policy": 10, "test": 20},
+    "minimum_observed_early_negative_sequences_per_split": {"train": 100, "calibration": 50, "policy": 50, "test": 100},
+    "minimum_distinct_entities_with_positive_progression": 5,
+    "minimum_distinct_progression_stage_pairs": 2,
+    "require_nonzero_lead_time_support": true
+  },
+  "claim_boundary": "A V40 pass only establishes that X-IIoTID has enough development support for an early-stage-to-later-stage progression experiment. It is not forecasting accuracy, not a final pre-compromise claim, and not a production containment approval.",
+  "final_validation": "locked; X-IIoTID has already informed earlier development, so any later V41/V42 model selected here requires a newly reserved external dataset or controlled campaign for final claims"
+}

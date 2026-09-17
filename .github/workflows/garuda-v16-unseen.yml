@@ -1,0 +1,48 @@
+name: Garuda V21-V22 Unseen Forecast Diagnostics
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unseen-forecast-diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install experiment dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+      - name: Run unseen protocol tests
+        run: python -m unittest garuda_v3.tests.test_v16_unseen -v
+      - name: Reproduce V21B retry-burst future forecast
+        working-directory: garuda_v3/experiments/v16
+        run: python v21_dev_retry_burst_tree.py
+      - name: Reproduce V22 clean-onset diagnostic
+        continue-on-error: true
+        working-directory: garuda_v3/experiments/v16
+        run: python v22_dev_dual_lane.py
+      - name: Upload V21B evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v21b-retry-dev-evidence
+          path: garuda_v3/experiments/v16/artifacts/v21_retry_dev/
+          if-no-files-found: warn
+      - name: Upload V22 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v22-dev-evidence
+          path: garuda_v3/experiments/v16/artifacts/v22_dev/
+          if-no-files-found: warn

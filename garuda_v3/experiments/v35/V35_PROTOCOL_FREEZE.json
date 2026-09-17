@@ -1,0 +1,65 @@
+{
+  "schema": "krishna-v35-unsw-cross-device-clean-onset-freeze-v1",
+  "frozen_before_v35_results": true,
+  "purpose": "Test whether attack onset can be forecast from attack-free network-flow history on completely held-out IoT devices using a device-agnostic network representation.",
+  "source": {
+    "flow_data": "https://iotanalytics.unsw.edu.au/anomaly-data/flowdata.zip",
+    "annotations": "https://iotanalytics.unsw.edu.au/anomaly-data/annotations.zip",
+    "flow_sha256_v33": "04131cbe9ccd255b2bf001aaee029ae8e84f9542f7440412a1dd28ac80e40295",
+    "annotations_sha256_v33": "1990c33d5430c4939336d79b08e9ba6a90a8c97621069cb748c3c0282d1eaafd"
+  },
+  "claim_scope": "cross-device clean-onset forecasting development pilot; attack labels are not held out by family in V35",
+  "final_validation": "locked; no existing Garuda final-validation family is scored by V35",
+  "device_split": {
+    "selection_rule": "lexicographic device-id partition frozen before model results; no label or metric information used",
+    "train": ["00166cab6b88", "0017882b9a25", "44650d56ccd3", "50c7bf005639", "70ee50183443", "74c63b29d71d"],
+    "calibration": ["d073d5018308"],
+    "policy": ["ec1a5979f489"],
+    "test": ["ec1a59832811", "f4f5d88f0a3c"]
+  },
+  "temporal_protocol": {
+    "flow_resolution": "one-minute device flow rows",
+    "history_minutes": 8,
+    "forecast_horizon_minutes": 4,
+    "history_rule": "all eight history minute bins must exist and must not overlap any annotated attack interval",
+    "positive": "one or more annotated attack onsets occur after the cutoff and within 240 seconds",
+    "negative": "the next four observed minute bins exist and do not overlap an annotated attack interval and contain no attack onset",
+    "attack_time_rows_as_model_input": false,
+    "overlapping_event_cross_split_leakage": false,
+    "split_unit": "entire device; a device exists in exactly one split"
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_device_id_model_feature": false,
+    "raw_ip_identity_model_feature": false,
+    "raw_port_identity_model_feature": false,
+    "raw_timestamp_model_feature": false,
+    "process_or_host_telemetry": false,
+    "canonical_row_features": [
+      "aggregate packet/byte/flow volume",
+      "FromLocal/ToLocal/FromInternet/ToInternet aggregate volume",
+      "TCP/UDP/ICMP/ARP/other aggregate volume",
+      "active packet/byte channel counts",
+      "packet/byte channel concentration",
+      "direction and protocol fractions"
+    ],
+    "history_representation": "per-history robust median/IQR normalization followed by last, mean, std, max, delta, recent-2-minus-prior-2 and recent-4-minus-prior-4 summaries"
+  },
+  "models": {
+    "primary": "HistGradientBoostingClassifier with fixed hyperparameters and class_weight=balanced",
+    "diagnostic_baseline": "class-weighted logistic regression",
+    "seeds": [42, 43, 44],
+    "primary_model_never_selected_from_test": true,
+    "calibration": "logit logistic calibration on calibration-device samples only",
+    "threshold": "95th percentile of policy-device benign calibrated scores; policy FPR budget 5%",
+    "test_information_used": false
+  },
+  "development_gate": {
+    "primary_test_fpr_max": 0.05,
+    "primary_test_event_recall_min": 0.80,
+    "primary_test_sequence_recall_min": 0.70,
+    "heldout_evaluable_event_n_min": 20,
+    "detected_event_median_max_lead_seconds_min": 60
+  },
+  "claim_boundary": "A pass would support cross-device prediction of attack onset in this UNSW development corpus from clean network histories. It would not prove unseen-family zero-day prediction, compromise prediction, or universal attack forecasting."
+}

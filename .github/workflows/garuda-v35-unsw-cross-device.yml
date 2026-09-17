@@ -1,0 +1,55 @@
+name: Garuda V35 UNSW Cross-Device Clean-Onset Forecast
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v35-cross-device-forecast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install V35 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+      - name: Verify V35 frozen protocol
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v35/V35_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v35_results'] is True
+          assert p['claim_scope'].startswith('cross-device clean-onset')
+          assert p['feature_policy']['strict_network_only'] is True
+          assert p['feature_policy']['raw_device_id_model_feature'] is False
+          assert p['feature_policy']['raw_ip_identity_model_feature'] is False
+          assert p['feature_policy']['raw_port_identity_model_feature'] is False
+          assert p['temporal_protocol']['attack_time_rows_as_model_input'] is False
+          assert p['models']['primary_model_never_selected_from_test'] is True
+          assert p['models']['test_information_used'] is False
+          assert set(p['device_split']['train']).isdisjoint(p['device_split']['test'])
+          assert 'locked' in p['final_validation']
+          print('V35 protocol freeze: PASS')
+          PY
+      - name: Syntax-check V35
+        run: python -m py_compile garuda_v3/experiments/v35/v35_unsw_cross_device_forecast.py
+      - name: Run V35 cross-device clean-onset forecast
+        working-directory: garuda_v3/experiments/v35
+        run: python v35_unsw_cross_device_forecast.py
+      - name: Upload V35 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v35-unsw-cross-device-evidence
+          path: garuda_v3/experiments/v35/artifacts/unsw_cross_device_forecast/
+          if-no-files-found: warn

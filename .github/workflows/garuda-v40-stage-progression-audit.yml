@@ -1,0 +1,50 @@
+name: Garuda V40 X-IIoTID Stage-Progression Support Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v40-stage-progression-support:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install V40 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'kagglehub<0.4'
+      - name: Verify V40 frozen protocol
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v40/V40_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v40_results'] is True
+          assert p['audit_only'] is True
+          assert p['model_training'] is False
+          assert p['threshold_selection'] is False
+          assert p['temporal_protocol']['history_minutes'] == 8
+          assert p['temporal_protocol']['future_minutes'] == 4
+          assert 'Exploitation or later' in p['stage_semantics']['boundary']
+          assert 'locked' in p['final_validation']
+          print('V40 protocol freeze: PASS')
+          PY
+      - name: Run frozen V40 diagnostic
+        working-directory: garuda_v3/experiments/v40
+        run: python v40_xiiotid_stage_progression_audit.py
+      - name: Upload V40 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v40-stage-progression-support-evidence
+          path: garuda_v3/experiments/v40/artifacts/xiiotid_stage_progression_audit/
+          if-no-files-found: warn

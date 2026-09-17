@@ -1,0 +1,49 @@
+{
+  "schema": "krishna-v27-iot23-clean-precursor-freeze-v1",
+  "frozen_before_v27_results": true,
+  "purpose": "Force Garuda to learn pre-attack precursors by excluding every sequence with attack-labelled traffic in its 8-minute history from training, calibration, policy and evaluation negatives.",
+  "source": "Official CTU IoT-23 timestamped Zeek conn.log.labeled scenarios",
+  "development_families": ["c&c-heartbeat", "c&c", "partofahorizontalportscan"],
+  "final_validation": "locked; no final-validation family may be scored while V27 development is being tuned",
+  "temporal_protocol": {
+    "window_seconds": 30,
+    "history_minutes": 8,
+    "future_minutes": 4,
+    "history_windows": 16,
+    "future_windows": 8,
+    "training_population": "clean-history sequences only",
+    "positive_target": "history is fully benign and at least one attack-labelled network window begins in the next 4 minutes",
+    "negative_target": "history is fully benign and the next 4 minutes are fully benign",
+    "heldout_family_rule": "all blocks containing held-out-family history or future exposure are absent from train/calibration/policy",
+    "split": "deterministic one-hour block split inherited from V23",
+    "test": "clean-history held-out-family future positives plus reserved clean benign negatives"
+  },
+  "feature_policy": {
+    "strict_network_only": true,
+    "raw_ip_identity": false,
+    "raw_uid": false,
+    "process_or_host_telemetry": false,
+    "causal_adaptive_summary": "V24 per-history median/IQR normalized network dynamics only"
+  },
+  "model": {
+    "branches": ["balanced HistGradientBoosting future-risk", "balanced LogisticRegression future-risk", "benign-only IsolationForest novelty"],
+    "attack_in_history_training_allowed": false,
+    "heldout_family_as_model_input": false,
+    "fusion_grid": {
+      "tree_weight": [0.0, 0.25, 0.5, 0.75, 1.0],
+      "novelty_weight": [0.0, 0.25],
+      "linear_weight": "remainder after tree and novelty weights"
+    },
+    "policy_fpr_budgets": [0.005, 0.01, 0.02],
+    "selection": "policy-clean population only; maximize clean-history known-family future recall subject to <=2% policy benign FPR, then lower FPR",
+    "evaluation_never_selects_model_or_threshold": true
+  },
+  "seeds": [42, 43, 44],
+  "development_gate": {
+    "macro_reserved_benign_fpr_max": 0.02,
+    "macro_event_recall_min": 0.80,
+    "per_family_event_recall_min": 0.70,
+    "positive_lead_time_seconds_min": 30
+  },
+  "claim_boundary": "A pass is evidence for forecasting held-out attack behaviours from clean network histories. It is not a claim to predict every zero-day attack."
+}

@@ -1,0 +1,42 @@
+name: Garuda V33 UNSW Attack-Trace Support Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v33-unsw-attacktrace-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify V33 support-only protocol freeze
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('garuda_v3/experiments/v33/V33_PROTOCOL_FREEZE.json'))
+          assert p['frozen_before_v33_results'] is True
+          assert p['audit_only'] is True
+          assert p['model_training'] is False
+          assert p['threshold_selection'] is False
+          assert p['dataset_properties_expected_from_publisher']['flow_resolution'] == 'one-minute flow counters'
+          assert 'locked' in p['final_validation']
+          print('V33 protocol freeze: PASS')
+          PY
+      - name: Syntax-check V33 audit
+        run: python -m py_compile garuda_v3/experiments/v33/v33_unsw_attacktrace_audit.py
+      - name: Run V33 UNSW attack-trace audit
+        working-directory: garuda_v3/experiments/v33
+        run: python v33_unsw_attacktrace_audit.py
+      - name: Upload V33 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garuda-v33-unsw-attacktrace-evidence
+          path: garuda_v3/experiments/v33/artifacts/unsw_attacktrace_audit/
+          if-no-files-found: warn
