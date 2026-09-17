@@ -2,7 +2,6 @@ import re
 from html.parser import HTMLParser
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 UI = ROOT / "garuda_v3" / "ui"
 
@@ -23,7 +22,6 @@ def test_live_console_preserves_all_javascript_bindings_and_unique_ids():
     js = (UI / "app.js").read_text(encoding="utf-8")
     parser = _Ids()
     parser.feed(html)
-
     assert len(parser.ids) == len(set(parser.ids)), "duplicate HTML ids break live bindings"
     js_ids = set(re.findall(r"\$\(['\"]([^'\"]+)['\"]\)", js))
     missing = sorted(js_ids - set(parser.ids))
@@ -33,37 +31,34 @@ def test_live_console_preserves_all_javascript_bindings_and_unique_ids():
 def test_console_keeps_source_and_claim_boundaries_visible():
     html = (UI / "index.html").read_text(encoding="utf-8")
     assert "No live customer sensor is connected" in html
-    assert "Recorded replay is labelled as recorded replay" in html
-    assert "Forecast risk is not presented as verified compromise probability" in html
+    assert "Forecast risk is a model score, not a verified compromise probability" in html
     assert "Benchmarks, not decorative accuracy numbers" in html
+    assert "RECORDED REPLAY" in html
 
 
 def test_console_does_not_ship_mock_marketing_metrics_as_product_claims():
     html = (UI / "index.html").read_text(encoding="utf-8")
-    forbidden = (
-        "99.8%",
-        "99.7%",
-        "Threats Predicted",
-        "Protected Endpoints",
-        "2.4 TB",
-        "at National Scale",
-    )
+    forbidden = ("99.8%", "99.7%", "Threats Predicted", "Protected Endpoints", "2.4 TB", "at National Scale")
     for claim in forbidden:
         assert claim not in html
 
 
-def test_third_design_visual_contract_is_present():
+def test_second_design_visual_contract_is_present():
     html = (UI / "index.html").read_text(encoding="utf-8")
     css = (UI / "style.css").read_text(encoding="utf-8")
     for marker in (
-        'class="heroConsole"',
-        'class="processFlow sectionShell"',
-        'class="moduleGrid sectionShell"',
-        'id="arjunaState"',
-        'id="krishnaState"',
-        'id="sudarshanaState"',
-        'id="benchmarkChart"',
+        'class="landingHero sectionShell"', 'class="heroRiskCard"', 'class="garudaArt"',
+        'class="dashboardGrid sectionShell"', 'class="defenceCards"',
+        'id="arjunaState"', 'id="krishnaState"', 'id="sudarshanaState"', 'id="benchmarkChart"',
     ):
         assert marker in html
-    for selector in (".heroConsole", ".moduleGrid", ".statusRail", "@media (max-width:930px)"):
+    for selector in (".landingHero", ".heroRiskCard", ".garudaArt", ".dashboardGrid", ".defenceCards", "@media(max-width:930px)"):
         assert selector in css
+
+
+def test_secondary_pages_exist_and_use_shared_design():
+    for name in ("platform.html", "technology.html", "defence.html", "evidence.html"):
+        page = (UI / name).read_text(encoding="utf-8")
+        assert 'href="/style.css"' in page
+        assert 'class="siteHeader"' in page
+        assert 'class="subHero sectionShell"' in page
