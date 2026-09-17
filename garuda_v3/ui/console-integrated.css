@@ -1,4 +1,6 @@
 /* Garuda integration layer for the preserved legacy Ultron console. */
+body > div[style*="#fff1c9"]{display:none!important}
+
 .garuda-route-strip{
   display:grid;
   grid-template-columns:1fr 24px 1.25fr 24px 1fr;
