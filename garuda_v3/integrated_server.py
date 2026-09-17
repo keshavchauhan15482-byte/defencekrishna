@@ -12,10 +12,34 @@ import json
 import os
 import secrets
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from .response import ResponseCoordinator
-from .server import App, Server
+from .server import App, Handler, Server
 from .v15_bridge import V15EvidenceBridge
+
+
+class IntegratedHandler(Handler):
+    """Serve the extra UI assets used by the reference-matched homepage."""
+
+    EXTRA_STATIC = {
+        '/pixel.css': ('pixel.css', 'text/css'),
+        '/reference.css': ('reference.css', 'text/css'),
+        '/reference-live.js': ('reference-live.js', 'application/javascript'),
+    }
+
+    def handle_request(self):
+        url = urlsplit(self.path)
+        if self.command == 'GET' and url.path in self.EXTRA_STATIC:
+            host = self.headers.get('Host', '')
+            if host not in self.server.allowed_hosts:
+                return self.respond(403, {'error': 'Unexpected host'})
+            origin = self.headers.get('Origin')
+            if origin and origin != 'http://' + host:
+                return self.respond(403, {'error': 'Cross-origin request denied'})
+            name, mime = self.EXTRA_STATIC[url.path]
+            return self.respond(200, (Path(__file__).parent / 'ui' / name).read_bytes(), mime)
+        return super().handle_request()
 
 
 class IntegratedApp(App):
@@ -80,6 +104,7 @@ def main():
         os.environ.get('GARUDA_LAB_AUTOMATION') == '1',
     )
     server = Server(('127.0.0.1', args.port), app)
+    server.RequestHandlerClass = IntegratedHandler
     print(f'Krishna Defence + Garuda V15 bridge: http://127.0.0.1:{server.server_port}. Dry-run by default.', flush=True)
     try:
         server.serve_forever()
