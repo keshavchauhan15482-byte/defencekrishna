@@ -1,0 +1,70 @@
+/* Garuda integration layer for the preserved legacy Ultron console. */
+.garuda-route-strip{
+  display:grid;
+  grid-template-columns:1fr 24px 1.25fr 24px 1fr;
+  align-items:center;
+  gap:6px;
+  padding:8px;
+  margin:-3px 0 10px;
+  border:1px solid rgba(0,242,254,.13);
+  border-radius:9px;
+  background:linear-gradient(135deg,rgba(0,242,254,.035),rgba(139,92,246,.035));
+}
+.route-node{
+  min-height:44px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  padding:6px 7px;
+  border:1px solid rgba(148,163,184,.14);
+  border-radius:7px;
+  background:rgba(0,0,0,.32);
+  color:#64748b;
+  text-align:center;
+  transition:.24s ease;
+}
+.route-node b{font-size:10px;letter-spacing:1px}
+.route-node span{font-size:7.5px;line-height:1.25;letter-spacing:.3px}
+.route-node.active{
+  color:#e6fdff;
+  border-color:rgba(0,242,254,.6);
+  background:rgba(0,242,254,.09);
+  box-shadow:0 0 16px rgba(0,242,254,.14),inset 0 0 12px rgba(0,242,254,.05);
+}
+.route-node.arjuna.active{color:#ffe8ae;border-color:rgba(245,158,11,.65);background:rgba(245,158,11,.09);box-shadow:0 0 16px rgba(245,158,11,.15)}
+.route-node.krishna.active{color:#dffcff;border-color:rgba(0,242,254,.65);background:rgba(0,242,254,.09)}
+.route-node.sudarshana.active{color:#ffd7e5;border-color:rgba(255,0,85,.65);background:rgba(255,0,85,.09);box-shadow:0 0 16px rgba(255,0,85,.14)}
+.route-node.sudarshana.standby{border-style:dashed;opacity:.72}
+.route-split{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.route-arrow{color:rgba(0,242,254,.5);font-size:15px;text-align:center;text-shadow:0 0 8px rgba(0,242,254,.3)}
+
+.network-source-note{
+  margin:7px 0 10px;
+  padding:7px 9px;
+  border-left:2px solid rgba(139,92,246,.65);
+  border-radius:4px;
+  background:rgba(139,92,246,.055);
+  color:#94a3b8;
+  font-size:8.5px;
+  line-height:1.45;
+}
+.network-source-note b{color:#c4b5fd;letter-spacing:1px}
+.network-ab{min-height:52px!important;padding:8px 3px!important;font-size:10px!important}
+.network-ab .ab-sub{font-size:7.5px!important;margin-top:3px!important;white-space:normal!important;line-height:1.2}
+.network-ab:disabled{opacity:.45;cursor:wait}
+.route-inline{display:inline-block;margin-top:3px;color:#94a3b8;letter-spacing:.5px}
+
+#defst{line-height:1.45}
+#defst b{color:var(--cy);letter-spacing:1px}
+
+/* Keep the original 3D core, chart and gauge dominant on wide judge screens. */
+@media (min-width:1450px){
+  .main-dashboard{grid-template-columns:minmax(300px,1fr) minmax(540px,600px) minmax(330px,1fr)}
+}
+@media (max-width:1180px){
+  .garuda-route-strip{grid-template-columns:1fr;gap:5px}
+  .route-arrow{transform:rotate(90deg)}
+  .route-split{width:100%}
+}
