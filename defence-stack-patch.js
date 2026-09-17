@@ -17,6 +17,11 @@ const { DetectionEngine } = require('./detection-engine');
 const { SudarshanaCore } = require('./sudarshana-core');
 
 const PATCH_FLAG = Symbol.for('krishna.defenceStackPatch.v1');
+// General JavaScript bracket-notation prototype-chain access. The base WAF
+// already catches __proto__ and constructor.prototype dot forms; this closes the
+// structural evasion class without matching ordinary prose containing the words.
+const KRISHNA_NOVEL_PROTOTYPE_CHAIN = /\[\s*['"]constructor['"]\s*\]\s*\[\s*['"]prototype['"]\s*\]/i;
+
 if (!globalThis[PATCH_FLAG]) {
   globalThis[PATCH_FLAG] = true;
 
@@ -38,6 +43,14 @@ if (!globalThis[PATCH_FLAG]) {
         .replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
     }
     return s.replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  function requestEvidenceText(req) {
+    if (!req) return '';
+    const parts = [req.url || req.path || '', req.rawBodyStr || ''];
+    try { parts.push(JSON.stringify(req.query || {})); } catch (_) {}
+    try { parts.push(JSON.stringify(req.body || {})); } catch (_) {}
+    return parts.join('\n');
   }
 
   function validationRequest(token) {
@@ -67,7 +80,28 @@ if (!globalThis[PATCH_FLAG]) {
   }
 
   DetectionEngine.prototype.inspect = function patchedInspect(req) {
-    const result = originalInspect.call(this, req);
+    let result = originalInspect.call(this, req);
+    const evidence = requestEvidenceText(req);
+
+    // This is a Krishna unknown-structure heuristic, not a claim that the
+    // payload is a real zero-day. It catches a structural prototype-pollution
+    // evasion class the static dot-notation rule does not represent.
+    if (result.tier !== 'danger' && KRISHNA_NOVEL_PROTOTYPE_CHAIN.test(evidence)) {
+      const reasons = Array.isArray(result.reasons) ? [...result.reasons] : [];
+      reasons.push('Krishna novel-structure heuristic: bracket-notation constructor/prototype chain');
+      const zeroDayReasons = Array.isArray(result.zeroDayReasons) ? [...result.zeroDayReasons] : [];
+      zeroDayReasons.push('Unseen structural prototype-chain access form');
+      result = {
+        ...result,
+        score: Math.max(Number(result.score || 0), 65),
+        tier: 'danger',
+        attackType: result.attackType || 'prototype-pollution',
+        reasons,
+        isZeroDayAnomaly: true,
+        zeroDayReasons
+      };
+    }
+
     if (req && req.ip) {
       recentInspectionByIp.set(String(req.ip), { at: Date.now(), result });
       if (recentInspectionByIp.size > 256) {
