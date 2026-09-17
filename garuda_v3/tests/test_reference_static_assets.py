@@ -1,7 +1,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SERVER = (ROOT / "garuda_v3" / "server.py").read_text(encoding="utf-8")
+SERVER = (ROOT / "garuda_v3" / "integrated_server.py").read_text(encoding="utf-8")
 INDEX = (ROOT / "garuda_v3" / "ui" / "index.html").read_text(encoding="utf-8")
 
 
@@ -12,7 +12,7 @@ def test_reference_homepage_assets_are_served_by_local_server():
         "/reference-live.js": "reference-live.js",
     }
     for url, filename in required.items():
-        assert f"'{url}':('{filename}'" in SERVER or f'"{url}":("{filename}"' in SERVER
+        assert f"'{url}': ('{filename}'" in SERVER or f'"{url}": ("{filename}"' in SERVER
         assert f'href="{url}"' in INDEX or f'src="{url}"' in INDEX
 
 
