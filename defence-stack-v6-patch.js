@@ -9,12 +9,14 @@
  *   - deterministic known signature / learned memory -> Arjuna
  *   - otherwise-unclassified structural anomaly -> Krishna
  *
- * V6 does not weaken blocking. It only removes the contradictory "unknown"
- * label when a concrete known attack family already matched.
+ * V6 does not weaken blocking. It removes the contradictory "unknown" label
+ * when a concrete known attack family already matched and keeps Sudarshana on
+ * the same normalized route authority.
  */
 require('./defence-stack-v5-patch');
 
 const { DetectionEngine } = require('./detection-engine');
+const { SudarshanaCore } = require('./sudarshana-core');
 
 const V6_FLAG = Symbol.for('krishna.defenceStackV6Patch.v1');
 
@@ -71,39 +73,70 @@ function isZeroDayReason(reason) {
 if (!globalThis[V6_FLAG]) {
   globalThis[V6_FLAG] = true;
   const priorInspect = DetectionEngine.prototype.inspect;
+  const priorEngage = SudarshanaCore.prototype.engageScopedLockdown;
+  const normalizedRecentByIp = new Map();
 
   DetectionEngine.prototype.inspect = function v6ExclusiveKnownUnknownRouting(req) {
-    const result = priorInspect.call(this, req);
-    if (!result || typeof result !== 'object') return result;
+    const baseResult = priorInspect.call(this, req);
+    if (!baseResult || typeof baseResult !== 'object') return baseResult;
 
-    const reasons = Array.isArray(result.reasons) ? result.reasons : [];
-    const knownMatched = Boolean(result.isLearnedMatch) || reasons.some(isKnownAttackReason);
+    const reasons = Array.isArray(baseResult.reasons) ? baseResult.reasons : [];
+    const knownMatched = Boolean(baseResult.isLearnedMatch) || reasons.some(isKnownAttackReason);
+    let result = baseResult;
 
-    if (result.isZeroDayAnomaly && knownMatched) {
+    if (baseResult.isZeroDayAnomaly && knownMatched) {
       const normalizedReasons = reasons.filter(reason => !isZeroDayReason(reason));
       normalizedReasons.push('Routing normalized: deterministic known signature takes Arjuna precedence over structural-anomaly labeling');
-      return {
-        ...result,
+      result = {
+        ...baseResult,
         reasons: normalizedReasons,
         isZeroDayAnomaly: false,
         zeroDayReasons: [],
         routingAuthority: 'arjuna_known',
         routingNormalization: 'known_signature_precedence'
       };
+    } else if (baseResult.isZeroDayAnomaly) {
+      result = { ...baseResult, routingAuthority: 'krishna_unknown' };
+    } else if (knownMatched) {
+      result = { ...baseResult, routingAuthority: 'arjuna_known' };
     }
 
-    if (result.isZeroDayAnomaly) {
-      return { ...result, routingAuthority: 'krishna_unknown' };
-    }
-    if (knownMatched) {
-      return { ...result, routingAuthority: 'arjuna_known' };
+    if (req && req.ip) {
+      normalizedRecentByIp.set(String(req.ip), { at: Date.now(), result });
+      if (normalizedRecentByIp.size > 256) {
+        const cutoff = Date.now() - 5 * 60 * 1000;
+        for (const [ip, item] of normalizedRecentByIp) {
+          if (item.at < cutoff) normalizedRecentByIp.delete(ip);
+        }
+      }
     }
     return result;
+  };
+
+  SudarshanaCore.prototype.engageScopedLockdown = function v6NormalizedContainment(opts = {}) {
+    const ip = opts.forensicSnapshot && opts.forensicSnapshot.ip ? String(opts.forensicSnapshot.ip) : null;
+    const recent = ip ? normalizedRecentByIp.get(ip) : null;
+    const fresh = recent && Date.now() - recent.at < 5000 ? recent.result : null;
+
+    if (fresh && fresh.tier === 'danger' && fresh.routingAuthority === 'arjuna_known') {
+      return {
+        id: null,
+        scopeKey: `ip:${ip}`,
+        scopeType: 'ip',
+        scopeValue: ip,
+        status: 'STANDBY_ARJUNA_BLOCKED',
+        reason: 'Normalized known threat already neutralized by Arjuna; Sudarshana not required',
+        lockedAt: null,
+        expiresAt: null
+      };
+    }
+    return priorEngage.call(this, opts);
   };
 }
 
 module.exports = {
   patched: true,
   knownReasonPatterns: KNOWN_REASON_PATTERNS.length,
-  exclusiveKnownUnknownRouting: true
+  exclusiveKnownUnknownRouting: true,
+  sudarshanaUsesNormalizedRoute: true
 };
