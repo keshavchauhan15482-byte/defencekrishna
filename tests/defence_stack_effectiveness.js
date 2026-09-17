@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-require('../defence-stack-patch');
+const defencePatch = require('../defence-stack-patch');
 const { DetectionEngine } = require('../detection-engine');
 const { CounterEngine } = require('../counter-engine');
 const { BloomFilter } = require('../bloom-filter');
@@ -90,11 +90,14 @@ const mutationSeeds = [
   { type: 'ssrf', payload: 'http://127.0.0.1/internal/admin' }
 ];
 
+let rawMutationCandidatesGenerated = 0;
 let mutationCandidates = 0;
+let mutationCandidatesTruncated = 0;
 let mutationsValidated = 0;
 let promotionEligibleChecks = 0;
 let promotionWithheldForSpecificity = 0;
 let promotionReuseHits = 0;
+let maxObservedPerSignature = 0;
 const reuseMisses = [];
 const mutationRuns = [];
 
@@ -107,13 +110,14 @@ for (let i = 0; i < mutationSeeds.length; i++) {
     sourceIp: `192.0.2.${100 + i}`,
     confidenceScore: 96
   });
+  rawMutationCandidatesGenerated += learned.rawMutationCandidatesGenerated || learned.mutationCandidates || 0;
   mutationCandidates += learned.mutationCandidates || 0;
+  mutationCandidatesTruncated += learned.mutationCandidatesTruncated || 0;
   mutationsValidated += learned.mutationsValidated || 0;
   for (const entry of learned.newlyLearned || []) {
+    const count = entry.mutationValidation ? Number(entry.mutationValidation.candidateCount || 0) : 0;
+    maxObservedPerSignature = Math.max(maxObservedPerSignature, count);
     for (const mutation of entry.validatedSyntheticMutations || []) {
-      // Independent danger validation is necessary but not sufficient for
-      // Arjuna promotion. Very short signatures are deliberately withheld to
-      // avoid broad/common-token false positives in the permanent fast path.
       if (!mutation.token || mutation.token.length < 8) {
         promotionWithheldForSpecificity++;
         continue;
@@ -126,10 +130,13 @@ for (let i = 0; i < mutationSeeds.length; i++) {
   }
   mutationRuns.push({
     attackType: seed.type,
-    candidates: learned.mutationCandidates || 0,
+    rawCandidatesGenerated: learned.rawMutationCandidatesGenerated || learned.mutationCandidates || 0,
+    candidatesConsidered: learned.mutationCandidates || 0,
+    candidatesTruncated: learned.mutationCandidatesTruncated || 0,
     validated: learned.mutationsValidated || 0,
     coverage: learned.mutationValidationCoverage || 0,
-    learnedRoots: (learned.newlyLearned || []).length
+    learnedRoots: (learned.newlyLearned || []).length,
+    limits: learned.mutationCandidateLimits || defencePatch.mutationLimits
   });
 }
 
@@ -152,9 +159,13 @@ const metrics = {
     krishnaRouteRate: novelResults.length ? novelKrishna / novelResults.length : 0
   },
   mutations: {
-    candidates: mutationCandidates,
+    rawCandidatesGenerated: rawMutationCandidatesGenerated,
+    candidatesConsidered: mutationCandidates,
+    candidatesTruncated: mutationCandidatesTruncated,
     independentlyValidated: mutationsValidated,
     validationCoverage: mutationCandidates ? mutationsValidated / mutationCandidates : 0,
+    maxObservedPerSignature,
+    limits: defencePatch.mutationLimits,
     promotionEligible: promotionEligibleChecks,
     promotionWithheldForSpecificity,
     arjunaPromotionReuseHits: promotionReuseHits,
@@ -164,13 +175,11 @@ const metrics = {
   }
 };
 
-// Emit measured values before the release-safety gates so a failed gate still
-// leaves useful diagnostics in CI logs rather than hiding the real result.
 console.log(JSON.stringify({
   status: 'MEASURED',
   metrics,
   knownCases: knownResults.map(x => ({ name: x.name, tier: x.result.tier, score: x.result.score, attackType: x.result.attackType })),
-  novelCases: novelResults.map(x => ({ tier: x.result.tier, score: x.result.score, isZeroDayAnomaly: x.result.isZeroDayAnomaly, attackType: x.result.attackType })),
+  novelCases: novelResults.map(x => ({ payload: x.payload, tier: x.result.tier, score: x.result.score, isZeroDayAnomaly: x.result.isZeroDayAnomaly, attackType: x.result.attackType })),
   scope: 'deterministic local/module effectiveness benchmark; documentation-range IPs only; not production zero-day evidence'
 }, null, 2));
 
@@ -178,9 +187,13 @@ console.log(JSON.stringify({
 // production accuracy claims; they simply prevent obvious defensive regressions.
 assert.ok(metrics.benign.observedDangerRate <= 0.10, `local benign danger rate too high: ${metrics.benign.observedDangerRate}`);
 assert.ok(metrics.knownAttacks.blockRate >= 0.80, `known attack block rate too low: ${metrics.knownAttacks.blockRate}`);
-assert.ok(metrics.novelStructural.krishnaRouteRate >= 0.60, `novel structural Krishna routing too low: ${metrics.novelStructural.krishnaRouteRate}`);
-assert.ok(metrics.mutations.candidates > 0, 'mutation generator produced no candidates');
+assert.equal(metrics.novelStructural.krishnaRouteRate, 1, 'every deterministic novel structural probe must route to Krishna');
+assert.ok(metrics.mutations.candidatesConsidered > 0, 'mutation generator produced no bounded candidates');
 assert.ok(metrics.mutations.independentlyValidated > 0, 'no mutation candidate passed independent validation');
+assert.ok(metrics.mutations.maxObservedPerSignature <= defencePatch.mutationLimits.perSignature, 'per-signature mutation budget exceeded');
+for (const run of metrics.mutations.runs) {
+  assert.ok(run.candidatesConsidered <= defencePatch.mutationLimits.perIncident, `incident mutation budget exceeded for ${run.attackType}`);
+}
 assert.ok(metrics.mutations.promotionEligible > 0, 'no independently validated mutation was specific enough for Arjuna promotion');
 assert.equal(metrics.mutations.arjunaPromotionReuseRate, 1, 'not all promotion-eligible validated mutations were reusable by Arjuna');
 
