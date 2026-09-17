@@ -5,13 +5,15 @@
  *
  * This deliberately layers on top of defence-stack-patch.js so the current
  * main-branch Arjuna/Krishna routing and Sudarshana confirmed-escape gate stay
- * authoritative. V2 adds only:
+ * authoritative. V2 adds:
  *   1) direct nested-value evidence enrichment for structural unknown routing;
  *   2) bounded adaptive mutation generation (96/root token, 256/incident);
  *   3) explicit mutation-budget telemetry;
- *   4) consistent learning-time evidence so a routed unknown can be promoted.
+ *   4) consistent learning-time evidence so a routed unknown can be promoted;
+ *   5) canonical root dedupe so case/encoding-equivalent repeats reuse Arjuna
+ *      memory instead of creating duplicate permanent entries.
  */
-require('./defence-stack-patch');
+const basePatch = require('./defence-stack-patch');
 
 const { CounterEngine } = require('./counter-engine');
 const { DetectionEngine } = require('./detection-engine');
@@ -19,8 +21,24 @@ const { DetectionEngine } = require('./detection-engine');
 const V2_FLAG = Symbol.for('krishna.defenceStackV2Patch.v1');
 const MAX_MUTATIONS_PER_TOKEN = 96;
 const MAX_MUTATIONS_PER_INCIDENT = 256;
-const MAX_ROOT_TOKENS_PER_INCIDENT = 8;
+const MAX_ROOT_TOKENS_PER_INCIDENT = Number(
+  basePatch && basePatch.mutationLimits && basePatch.mutationLimits.maxLearnedTokensPerIncident
+) || 8;
 const STRUCTURAL_PROTOTYPE_TOKEN = /\[\s*['"]constructor['"]\s*\]\s*\[\s*['"]prototype['"]\s*\](?:\s*\[\s*['"][^'"]{1,64}['"]\s*\])?/gi;
+
+function canonicalMemoryToken(value) {
+  let text = String(value || '').normalize('NFKD');
+  let previous = '';
+  for (let i = 0; i < 4 && text !== previous; i++) {
+    previous = text;
+    try { text = decodeURIComponent(text.replace(/\+/g, ' ')); } catch (_) {}
+    text = text
+      .replace(/\/\*[\s\S]*?\*\//g, ' ')
+      .replace(/%00/gi, '')
+      .replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
+  }
+  return text.replace(/\s+/g, ' ').trim().toLowerCase();
+}
 
 if (!globalThis[V2_FLAG]) {
   globalThis[V2_FLAG] = true;
@@ -127,6 +145,47 @@ if (!globalThis[V2_FLAG]) {
     this._v2MutationBudgetWithheld = 0;
     this._v2MaxPerTokenCandidates = 0;
 
+    const activeExtractor = this._extractTokens;
+    const knownCanonical = new Map();
+    for (const entry of this.learnedPatterns || []) {
+      const canonical = canonicalMemoryToken(entry && entry.token);
+      if (canonical && !knownCanonical.has(canonical)) knownCanonical.set(canonical, entry);
+    }
+    let canonicalDuplicatesSkipped = 0;
+    const reusedEntries = new Set();
+
+    // The lower-level learner compares root tokens byte-for-byte. During this
+    // transaction, preserve its extraction semantics but remove roots that are
+    // canonically equivalent to already-reviewed memory or to another root in
+    // the same incident. This prevents casing/encoding churn from growing the
+    // permanent metadata list while retaining the first reviewed representation.
+    this._extractTokens = function v2CanonicalDedupeExtract(rawInput, attackTypes) {
+      const roots = activeExtractor.call(this, rawInput, attackTypes);
+      if (!Array.isArray(roots)) return [];
+      const seenThisIncident = new Set();
+      const filtered = [];
+      for (const root of roots) {
+        const canonical = canonicalMemoryToken(root);
+        if (!canonical) continue;
+        const existing = knownCanonical.get(canonical);
+        if (existing) {
+          canonicalDuplicatesSkipped++;
+          if (!reusedEntries.has(existing)) {
+            existing.timesReused = (existing.timesReused || 0) + 1;
+            reusedEntries.add(existing);
+          }
+          continue;
+        }
+        if (seenThisIncident.has(canonical)) {
+          canonicalDuplicatesSkipped++;
+          continue;
+        }
+        seenThisIncident.add(canonical);
+        filtered.push(root);
+      }
+      return filtered;
+    };
+
     try {
       // The routing path already examines primitive nested values. Give the
       // independent learning gate the same evidence view, otherwise JSON
@@ -138,22 +197,22 @@ if (!globalThis[V2_FLAG]) {
       const result = priorLearn.call(this, learningArgs);
       if (!result || typeof result !== 'object') return result;
 
+      if (reusedEntries.size > 0 && typeof this._persist === 'function') this._persist();
       const evaluated = Number(result.mutationCandidates || 0);
-      const learnedTokenLimit = result.mutationLimits && Number.isFinite(Number(result.mutationLimits.maxLearnedTokensPerIncident))
-        ? Number(result.mutationLimits.maxLearnedTokensPerIncident)
-        : null;
 
       return {
         ...result,
-        // Override lower-layer mutation telemetry with the effective runtime
-        // limits enforced by this V2 overlay. This prevents APIs/dashboards from
-        // simultaneously reporting obsolete 128/token or 1024/incident limits.
+        // Single authoritative runtime limits. Lower-layer 128/token and
+        // 1024/incident values remain implementation ceilings, but V2 is the
+        // stricter effective contract actually enforced at runtime.
         mutationLimits: {
-          maxLearnedTokensPerIncident: learnedTokenLimit,
+          maxLearnedTokensPerIncident: MAX_ROOT_TOKENS_PER_INCIDENT,
           maxSyntheticMutationsPerToken: MAX_MUTATIONS_PER_TOKEN,
           maxRawMutationCandidatesPerIncident: MAX_MUTATIONS_PER_INCIDENT,
           source: 'defence-stack-v2-patch'
         },
+        canonicalDuplicatesSkipped,
+        canonicalReuses: reusedEntries.size,
         mutationCandidatesGeneratedBeforeBudget: this._v2MutationGeneratedBeforeBudget,
         mutationCandidatesBudgetWithheld: this._v2MutationBudgetWithheld,
         mutationBudget: {
@@ -166,6 +225,7 @@ if (!globalThis[V2_FLAG]) {
         }
       };
     } finally {
+      this._extractTokens = activeExtractor;
       delete this._v2MutationBudgetRemaining;
       delete this._v2MutationGeneratedBeforeBudget;
       delete this._v2MutationBudgetWithheld;
@@ -176,8 +236,14 @@ if (!globalThis[V2_FLAG]) {
 
 module.exports = {
   patched: true,
+  canonicalMemoryToken,
   mutationBudget: {
     perToken: MAX_MUTATIONS_PER_TOKEN,
     perIncident: MAX_MUTATIONS_PER_INCIDENT
+  },
+  mutationLimits: {
+    maxLearnedTokensPerIncident: MAX_ROOT_TOKENS_PER_INCIDENT,
+    maxSyntheticMutationsPerToken: MAX_MUTATIONS_PER_TOKEN,
+    maxRawMutationCandidatesPerIncident: MAX_MUTATIONS_PER_INCIDENT
   }
 };
