@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-require('../defence-stack-v2-patch');
+require('../defence-stack-v6-patch');
 const { DetectionEngine } = require('../detection-engine');
 const { CounterEngine } = require('../counter-engine');
 const { BloomFilter } = require('../bloom-filter');
@@ -20,7 +20,7 @@ function request({ ip = '192.0.2.10', method = 'POST', path = '/api/input', payl
     rawBodyBytes: Buffer.byteLength(raw),
     headers: {
       'content-type': 'application/json',
-      'user-agent': 'Mozilla/5.0 Krishna-Defence-Effectiveness/3.0',
+      'user-agent': 'Mozilla/5.0 Krishna-Defence-Effectiveness/4.0',
       ...headers
     },
     isLoginAttemptFailed: false
@@ -67,12 +67,14 @@ const known = [
   { name: 'Template expression', payload: '{{7*7}}' }
 ];
 
+// These fixtures intentionally avoid deterministic known-family signatures.
+// They exercise the structural anomaly route only; they are not zero-day claims.
 const novelStructural = [
-  'probe ${process.mainModule.require("child_process")}',
-  'x; eval(user_supplied_expression)',
-  "' and 7=7 union 'x'",
-  '<custom-tag onpointerdown=doSomething()>',
-  '["constructor"]["prototype"]["isAdmin"]'
+  '["constructor"]["prototype"]["isAdmin"]',
+  'grep /tmp/runtime-state',
+  'ps -aux',
+  'bash ./local-stage',
+  'ls /var/tmp/krishna'
 ];
 
 const benignResults = benign.map((spec, i) => ({ name: `benign-${i + 1}`, result: inspectFresh({ ...spec, ip: `192.0.2.${30 + i}` }) }));
@@ -81,8 +83,9 @@ const novelResults = novelStructural.map((payload, i) => ({ payload, result: ins
 
 const benignDanger = benignResults.filter(x => x.result.tier === 'danger').length;
 const knownBlocked = knownResults.filter(x => x.result.tier === 'danger').length;
+const knownKrishna = knownResults.filter(x => x.result.isZeroDayAnomaly).length;
 const novelDanger = novelResults.filter(x => x.result.tier === 'danger').length;
-const novelKrishna = novelResults.filter(x => x.result.tier === 'danger' && x.result.isZeroDayAnomaly).length;
+const novelKrishna = novelResults.filter(x => x.result.tier === 'danger' && x.result.isZeroDayAnomaly && x.result.routingAuthority === 'krishna_unknown').length;
 
 const mutationSeeds = [
   { type: 'sql-injection', payload: 'UNION SELECT username,password FROM users WHERE id=1' },
@@ -156,7 +159,8 @@ const metrics = {
   knownAttacks: {
     total: knownResults.length,
     blockedDanger: knownBlocked,
-    blockRate: knownResults.length ? knownBlocked / knownResults.length : 0
+    blockRate: knownResults.length ? knownBlocked / knownResults.length : 0,
+    incorrectlyRoutedToKrishna: knownKrishna
   },
   novelStructural: {
     total: novelResults.length,
@@ -186,13 +190,14 @@ const metrics = {
 console.log(JSON.stringify({
   status: 'MEASURED',
   metrics,
-  knownCases: knownResults.map(x => ({ name: x.name, tier: x.result.tier, score: x.result.score, attackType: x.result.attackType })),
-  novelCases: novelResults.map(x => ({ payload: x.payload, tier: x.result.tier, score: x.result.score, isZeroDayAnomaly: x.result.isZeroDayAnomaly, attackType: x.result.attackType })),
+  knownCases: knownResults.map(x => ({ name: x.name, tier: x.result.tier, score: x.result.score, attackType: x.result.attackType, routingAuthority: x.result.routingAuthority, isZeroDayAnomaly: x.result.isZeroDayAnomaly })),
+  novelCases: novelResults.map(x => ({ payload: x.payload, tier: x.result.tier, score: x.result.score, isZeroDayAnomaly: x.result.isZeroDayAnomaly, routingAuthority: x.result.routingAuthority, attackType: x.result.attackType })),
   scope: 'deterministic local/module effectiveness benchmark; documentation-range IPs only; not production zero-day evidence'
 }, null, 2));
 
 assert.ok(metrics.benign.observedDangerRate <= 0.10, `local benign danger rate too high: ${metrics.benign.observedDangerRate}`);
 assert.ok(metrics.knownAttacks.blockRate >= 0.80, `known attack block rate too low: ${metrics.knownAttacks.blockRate}`);
+assert.equal(metrics.knownAttacks.incorrectlyRoutedToKrishna, 0, 'known attack routing overlapped Krishna unknown path');
 assert.equal(metrics.novelStructural.krishnaRouteRate, 1, `curated novel structural routing regression: ${metrics.novelStructural.krishnaRouteRate}`);
 assert.ok(metrics.mutations.candidatesEvaluated > 0, 'mutation generator produced no bounded candidates');
 assert.ok(metrics.mutations.independentlyValidated > 0, 'no mutation candidate passed independent validation');
