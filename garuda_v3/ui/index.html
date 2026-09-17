@@ -3,124 +3,196 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#020716">
-  <meta name="description" content="Garuda AI predictive cyber defence dashboard.">
+  <meta name="theme-color" content="#020711">
   <title>Garuda AI — Predictive Cyber Defence</title>
-  <link rel="stylesheet" href="/pixel.css">
   <link rel="stylesheet" href="/reference.css">
 </head>
-<body class="refPage refExact">
-<div id="refFit" class="refFit">
-  <div id="refStage" class="refStage">
-    <header class="rHeader">
-      <a class="rBrand" href="/" aria-label="Garuda AI home"><span class="rBrandBird brandBird"></span><span><b>GARUDA AI</b><small>PREDICT · PREVENT · PROTECT</small></span></a>
-      <nav class="rNav" aria-label="Primary"><a class="active" href="/">Home</a><a href="/platform.html">Platform</a><a href="/technology.html">Technology</a><a href="/defence.html">Defence</a><a href="/evidence.html">Evidence</a><a href="#datasets">Datasets</a><a href="#live">Live Demo</a><a href="#docs">Docs</a></nav>
-      <div class="rHeaderRight"><span class="connection" id="connection"><i></i>Disconnected</span><span class="clock" id="clock">— UTC</span><button class="avatarButton" id="sessionToggle" aria-label="Session settings">K</button></div>
+<body>
+<div id="fit" class="fit">
+  <div id="stage" class="stage">
+
+    <header class="header">
+      <a class="brand" href="#">
+        <img src="data:image/webp;base64,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" alt="" class="brand-img">
+        <div class="brand-copy">
+          <b>GARUDA AI</b>
+          <small>PREDICT · PREVENT · PROTECT</small>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <a class="active" href="#">Home</a>
+        <a href="#platform">Platform</a>
+        <a href="#technology">Technology</a>
+        <a href="#defence">Defence</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#datasets">Datasets</a>
+        <a href="#live">Live Demo</a>
+        <a href="#docs">Docs</a>
+      </nav>
+
+      <div class="header-right">
+        <button id="sessionToggle" class="online disconnected" type="button"><i></i><span id="connectionText">Disconnected</span></button>
+        <span class="date">LOCAL RUNTIME</span>
+        <span id="clock">--:--:--</span>
+        <span class="avatar">K</span>
+      </div>
     </header>
 
-    <main id="overview">
-      <section class="rHero" id="live">
-        <article class="rHeroCopy">
-          <div class="rEyebrow"><i></i>AI-BASED NETWORK ATTACK FORECASTING</div>
-          <h1>Garuda <span>AI</span></h1>
-          <h2>Predicting attacks<br>before compromise.</h2>
-          <p>From network signals to future risk — powered by forecasting, graph intelligence and adaptive defence.</p>
-          <div class="rHeroButtons"><button class="rPrimary" id="replay" disabled>▶&nbsp; Watch Live Demo</button><a class="rSecondary" href="/platform.html">Explore Platform&nbsp; →</a></div>
-        </article>
-
-        <article class="rRiskCard rCard">
-          <div class="rCardHead"><span><i class="dot cyan"></i>LIVE THREAT RISK</span><span class="rLive">● LIVE</span></div>
-          <div class="rGaugeWrap"><canvas id="riskGauge" aria-label="Live threat risk gauge"></canvas><div class="rGaugeCenter"><strong id="gaugeValue">—</strong><span id="gaugeLabel">NO FORECAST</span></div></div>
-          <div class="rRiskStats">
-            <div><span>Trend</span><strong id="trendValue">—</strong><small>current session</small></div>
-            <div><span>Peak (Session)</span><strong id="forecastLarge">—</strong><small>live model output</small></div>
-            <div><span>Status</span><strong id="runtimeMode">REVIEW</strong><small id="signalBadge">WAITING</small></div>
-          </div>
-        </article>
-
-        <section class="rIntelStack">
-          <article class="rForecastCard rCard">
-            <div class="rCardHead"><span><i class="dot blue"></i>ATTACK PROBABILITY FORECAST</span><span class="rLegend"><b class="legendCyan"></b>Current&nbsp;&nbsp;<b class="legendPurple"></b>Forecast (Next 40s)</span></div>
-            <canvas id="timeline" aria-label="Attack probability forecast"></canvas>
-            <div id="horizonValues" class="rHorizonValues"></div>
-          </article>
-          <article class="rTopologyCard rCard">
-            <div class="rCardHead"><span><i class="dot violet"></i>LIVE NETWORK TOPOLOGY</span><span class="rNodeLegend"><i class="server"></i>Server <i class="workstation"></i>Workstation <i class="iot"></i>IoT Device <i class="external"></i>External IP <i class="suspicious"></i>Suspicious</span></div>
-            <div class="rGraphWrap"><canvas id="graph" aria-label="Live network topology"></canvas><div class="graphEmpty" id="graphEmpty"><strong>Awaiting network state</strong></div><div class="nodeDetail" id="nodeDetail" hidden></div><div class="graphHud"><span id="edgeCount">— observed edges</span><span id="cutoff">No observation cutoff</span></div></div>
-            <div class="rTopologyStats"><div><strong id="nodeCount">—</strong><span>Nodes</span></div><div><strong id="eventCount">0</strong><span>Connections / signals</span></div><div><strong id="suspiciousCount">0</strong><span>Suspicious</span></div></div>
-            <details class="srOnly"><summary>Observed node data</summary><div id="nodeTable"></div></details>
-          </article>
-        </section>
-
-        <aside class="rEaglePanel garudaArt">
-          <blockquote>“A safer tomorrow,<br>by seeing it first.”<small>GARUDA AI</small></blockquote>
-          <article class="rAnalysisCard">
-            <div class="rAnalysisHead"><span>CURRENTLY ANALYSING</span><span id="demoDataMode">RECORDED REPLAY</span></div>
-            <dl><div><dt>Capture source</dt><dd id="source">NO CAPTURE LOADED</dd></div><div><dt>Dataset</dt><dd id="datasetName">Runtime source</dd></div><div><dt>Window</dt><dd id="horizon">—</dd></div><div><dt>Model</dt><dd id="modelState">MODEL PENDING</dd></div><div><dt>Runtime</dt><dd id="healthState">Awaiting connection</dd></div></dl>
-          </article>
-        </aside>
-
-        <section class="rCapabilityStrip">
-          <article><span class="rCapIcon">▣</span><div><strong>Real Network Data</strong><small>PCAP / Flow / Graph</small></div></article>
-          <article><span class="rCapIcon">⌘</span><div><strong>AI Forecasting</strong><small>State + Risk Prediction</small></div></article>
-          <article><span class="rCapIcon">✦</span><div><strong>3-Layer Defence</strong><small>Arjuna · Krishna · Sudarshana</small></div></article>
-          <article><span class="rCapIcon">◉</span><div><strong>Evidence-Based</strong><small>Verified Results</small></div></article>
-        </section>
-      </section>
-
-      <section class="rKpiStrip">
-        <article><span class="rKpiIcon blue">♟</span><div><strong id="nodeCaption">Awaiting graph</strong><span id="observedNodesValue">—</span><small>Protocol / service nodes</small></div></article>
-        <article><span class="rKpiIcon cyan">〽</span><div><strong id="peak">—</strong><span>Current Risk</span><small>Live model output</small></div></article>
-        <article><span class="rKpiIcon violet">◷</span><div><strong id="horizonKpi">—</strong><span>Forecast Horizon</span><small>Loaded from metadata</small></div></article>
-        <article><span class="rKpiIcon amber">⬡</span><div><strong id="responseMode">Standby</strong><span>Response Posture</span><small id="responseCaption">Operator authorization required</small></div></article>
-        <article><span class="rKpiIcon mint">▱</span><div><strong id="audit">AUDIT NOT LOADED</strong><span>System Status</span><small id="refreshAge">—</small></div></article>
-      </section>
-
-      <section class="rDefence" id="telemetry">
-        <div class="rSectionTitle"><div><h2>Three-Layer Defence System <i></i></h2><p>Predict + Prevent + Protect + Evolve</p></div></div>
-        <div class="rDefenceCards">
-          <article class="rDefCard arjuna defenceCard" data-layer="arjuna"><div class="rDefIcon">◇</div><div class="rDefMain"><div class="rDefTitle"><div><h3>Arjuna</h3><span>Known Threat Response</span></div><em>ACTIVE</em></div><p>Detects and blocks reviewed, known attacks using model evidence and threat signatures.</p><div class="rDefMini"><div><strong id="arjunaState">0</strong><span>Threats / memory</span></div><div><strong>0</strong><span>Blocks</span></div><button type="button">Review Logs →</button></div></div></article>
-          <article class="rDefCard krishna defenceCard" data-layer="krishna"><div class="rDefIcon">⌬</div><div class="rDefMain"><div class="rDefTitle"><div><h3>Krishna</h3><span>Unknown Threat Investigation</span></div><em>MONITORING</em></div><p>Routes unfamiliar alerts to evidence review and learns new patterns for future defence.</p><div class="rDefMini"><div><strong id="krishnaState">0</strong><span>Pending Alerts</span></div><div><strong>0</strong><span>Under Analysis</span></div><button type="button">View Alerts →</button></div></div></article>
-          <article class="rDefCard sudarshana defenceCard" data-layer="sudarshana"><div class="rDefIcon">◎</div><div class="rDefMain"><div class="rDefTitle"><div><h3>Sudarshana</h3><span>Scoped Containment</span></div><em>STANDBY</em></div><p>Enforces cryptographic lockdown for confirmed breaches with operator authorization.</p><div class="rDefMini"><div><strong id="sudarshanaState">0</strong><span>Active Blocks</span></div><div><strong id="memoryCount">0 REVIEWED</strong><span>Reviewed Memory</span></div><button type="button">View Actions →</button></div></div></article>
+    <main>
+      <section class="hero-left">
+        <div class="eyebrow"><i></i>AI-BASED NETWORK ATTACK FORECASTING</div>
+        <h1>Garuda <span>AI</span></h1>
+        <h2>Predicting attacks<br>before compromise.</h2>
+        <p>From network signals to future risk — powered by forecasting, graph intelligence and adaptive defence.</p>
+        <div class="hero-buttons">
+          <button id="demoBtn" class="btn primary">▶ Watch Live Demo</button>
+          <button class="btn secondary">Explore Platform →</button>
+        </div>
+        <div class="hero-feature-row">
+          <div><span class="round-icon">✥</span><p><b>Real Network Data</b><small>PCAP / Flow / Graph</small></p></div>
+          <div><span class="round-icon">⌁</span><p><b>AI Forecasting</b><small>State + Risk Prediction</small></p></div>
+          <div><span class="round-icon">♜</span><p><b>3-Layer Defence</b><small>Arjuna · Krishna · Sudarshana</small></p></div>
+          <div><span class="round-icon">⌾</span><p><b>Evidence-Based</b><small>Verified Results</small></p></div>
         </div>
       </section>
 
-      <section class="rBottomGrid" id="response">
-        <article class="rBottomCard"><div class="rBottomHead"><span>Recent Alerts</span><strong id="garudaState">Awaiting observations</strong></div><div id="events" class="rEvents"><div class="rEmpty">No recorded signals yet.</div></div></article>
-        <article class="rBottomCard" id="datasets"><div class="rBottomHead"><span>Dataset & Evidence</span><strong>PROVENANCE</strong></div><div class="rDatasetRows"><div><span class="dbIcon">▤</span><div><b>CIC-IDS-2018</b><small>Web / Botnet / DoS</small></div></div><div><span class="dbIcon">◈</span><div><b>CICAPT-IIoT2024</b><small>Industrial IoT</small></div></div></div><div class="rStageLine"><b id="stage">No specific stage evidence</b><span id="stageText">Evidence shown when available.</span></div><div id="provenance" class="rHiddenText"></div><button id="download" class="rTinyButton" disabled>Export JSON</button></article>
-        <article class="rBottomCard"><div class="rBottomHead"><span>Model Performance (Current)</span><strong>Evidence →</strong></div><canvas id="benchmarkChart" aria-label="Current model performance"></canvas><div class="rPerfRows"><span>State Forecasting</span><i></i><b id="persistenceMse">—</b></div></article>
-        <article class="rBottomCard"><div class="rBottomHead"><span>Live Session Control</span><strong class="rLocal">● LOCAL</strong></div><canvas id="activitySpark" aria-label="Session activity"></canvas><div class="rSessionBtns"><button id="hostReplay" disabled>Ⅱ Host View</button><button id="alertReplay" disabled>■ Alert Replay</button><button id="newCaptureBtn" type="button">✚ New Capture</button></div><div class="rSessionRun"><span id="sessionReady">● Session Ready</span><span id="fileName">No file selected</span><button id="analyze" disabled>Run</button></div></article>
+      <section class="risk-card card">
+        <div class="card-head"><span><i class="dot cyan"></i>LIVE THREAT RISK</span><span class="live-pill">● LIVE</span></div>
+        <div class="gauge-wrap">
+          <canvas id="gauge"></canvas>
+          <div class="gauge-center">
+            <strong id="riskValue">—</strong>
+            <small>Current Risk</small>
+            <span id="riskBadge">LOW</span>
+          </div>
+        </div>
+        <div class="risk-mini">
+          <div><span>Trend</span><strong id="trend">—</strong><small>(last 5 min)</small></div>
+          <div><span>Peak (Session)</span><strong id="peak">—</strong><canvas id="spark"></canvas></div>
+          <div><span>Status</span><strong id="statusText">WAITING</strong><small>No immediate threat</small></div>
+        </div>
       </section>
 
-      <footer class="rFooter"><div><span class="rFooterBird brandBird"></span><b>GARUDA AI</b><i></i><span>Predictive Cyber Defence</span></div><p>“From signals to a safer nation.”</p><nav><a href="#">Privacy</a><a href="#">About</a><a href="#">Contact</a><span>●</span></nav></footer>
+      <section class="forecast-card card">
+        <div class="card-head"><span><i class="dot blue"></i>ATTACK PROBABILITY FORECAST</span><span class="legend-inline"><i class="current"></i>Current <i class="future"></i>Forecast (Next 40s)</span></div>
+        <canvas id="forecast"></canvas>
+      </section>
+
+      <section class="topology-card card">
+        <div class="card-head"><span><i class="dot blue"></i>LIVE NETWORK TOPOLOGY</span></div>
+        <canvas id="topology"></canvas>
+        <div class="topo-legend">
+          <span><i class="server"></i>Server</span>
+          <span><i class="work"></i>Workstation</span>
+          <span><i class="iot"></i>IoT Device</span>
+          <span><i class="external"></i>External IP</span>
+          <span><i class="suspicious"></i>Suspicious</span>
+        </div>
+        <div class="topo-stats">
+          <div><strong id="nodesCount">—</strong><span>Nodes</span></div>
+          <div><strong id="connCount">—</strong><span>Connections</span></div>
+          <div><strong id="suspiciousCount">—</strong><span>Suspicious</span></div>
+        </div>
+      </section>
+
+      <section class="eagle-panel">
+        <img src="data:image/webp;base64,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" alt="Neon Garuda eagle artwork">
+        <blockquote>“A safer tomorrow,<br>by seeing it first.”<small>GARUDA AI</small></blockquote>
+        <div class="analysis-card">
+          <div class="analysis-title">CURRENTLY ANALYSING</div>
+          <dl>
+            <div><dt>Capture source</dt><dd id="analysisSource">—</dd></div>
+            <div><dt>Dataset</dt><dd id="analysisDataset">—</dd></div>
+            <div><dt>Window</dt><dd id="analysisWindow">—</dd></div>
+            <div><dt>Model</dt><dd id="analysisModel">—</dd></div>
+            <div><dt>Runtime</dt><dd id="analysisRuntime">Local (Offline)</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="kpi-strip">
+        <div class="kpi"><span class="kpi-icon cyan">♟</span><div><strong id="kpiNodes">—</strong><span>Observed Nodes</span><small>Protocol / service nodes</small></div></div>
+        <div class="kpi"><span class="kpi-icon blue">✦</span><div><strong id="kpiRisk">—</strong><span>Current Risk</span><small>Live model output</small></div></div>
+        <div class="kpi"><span class="kpi-icon violet">◷</span><div><strong id="kpiHorizon">—</strong><span>Forecast Horizon</span><small>Loaded from metadata</small></div></div>
+        <div class="kpi"><span class="kpi-icon amber">⬡</span><div><strong id="kpiPosture">Standby</strong><span>Response Posture</span><small>Operator authorization required</small></div></div>
+        <div class="kpi"><span class="kpi-icon mint">⚙</span><div><strong id="kpiRuntime">Awaiting connection</strong><span>System Status</span><small>All services operational</small></div></div>
+      </section>
+
+      <section id="defence" class="defence-section">
+        <div class="section-title">
+          <h3>Three-Layer Defence System <i></i></h3>
+          <small>Predict + Prevent + Protect + Evolve</small>
+        </div>
+        <div class="defence-grid">
+          <article class="def-card arjuna">
+            <div class="def-icon bow-icon"></div>
+            <div class="def-body">
+              <div class="def-head"><div><h4>Arjuna</h4><span>Known Threat Response</span></div><em>ACTIVE</em></div>
+              <p>Detects and blocks reviewed, known attacks using model evidence and threat signatures.</p>
+              <div class="def-stats"><div><strong id="arjunaCount">0</strong><span>Reviewed memory</span></div><div><strong>0</strong><span>Blocks</span></div><button>Review Logs →</button></div>
+            </div>
+          </article>
+
+          <article class="def-card krishna">
+            <div class="def-icon krishna-icon">ॐ</div>
+            <div class="def-body">
+              <div class="def-head"><div><h4>Krishna</h4><span>Unknown Threat Investigation</span></div><em>MONITORING</em></div>
+              <p>Routes unfamiliar alerts to evidence review and learns new patterns for future defence.</p>
+              <div class="def-stats"><div><strong id="krishnaCount">0</strong><span>Pending Alerts</span></div><div><strong>0</strong><span>Under Analysis</span></div><button>View Alerts →</button></div>
+            </div>
+          </article>
+
+          <article class="def-card sudarshana">
+            <div class="def-icon disc-icon"></div>
+            <div class="def-body">
+              <div class="def-head"><div><h4>Sudarshana</h4><span>Scoped Containment</span></div><em>STANDBY</em></div>
+              <p>Enforces cryptographic lockdown for confirmed breaches with operator authorization.</p>
+              <div class="def-stats"><div><strong id="sudarshanaCount">0</strong><span>Active Policies</span></div><div><strong>0</strong><span>Isolated IPs</span></div><button>View Actions →</button></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="bottom-row">
+        <article class="bottom-card alerts">
+          <h5>Recent Alerts</h5>
+          <div class="alert-table">
+            <div class="tr th"><span>Time</span><span>Source</span><span>Type</span><span>Risk</span><span>Status</span></div>
+            <div id="latestAlert" class="tr"><span>—</span><span>—</span><span>No signals yet</span><span>—</span><span class="reviewed">Waiting</span></div>
+          </div>
+        </article>
+
+        <article id="datasets" class="bottom-card evidence">
+          <h5>Dataset & Evidence</h5>
+          <div class="dataset-row">
+            <div><span class="db">◫</span><p><b>CIC-IDS-2018</b><small>Project development evidence</small></p></div>
+            <div><span class="db mint">♧</span><p><b>CICAPT-IIoT2024</b><small>Project development evidence</small></p></div>
+          </div>
+        </article>
+
+        <article class="bottom-card model">
+          <h5>Model Performance (Current)</h5>
+          <div class="metric-row"><span>State Forecasting (MSE)</span><i><b id="mseBar" style="--v:0%"></b></i><strong id="mseValue">—</strong></div>
+          <div class="metric-row"><span>Persistence Improvement</span><i><b id="improveBar" style="--v:0%"></b></i><strong id="improveValue">—</strong></div>
+          <div class="metric-row"><span>Attack Recall (matched runs)</span><i><b id="recallBar" style="--v:0%"></b></i><strong id="recallValue">—</strong></div>
+        </article>
+
+        <article class="bottom-card control">
+          <h5>Live Session Control</h5>
+          <div class="control-buttons"><button id="pauseBtn">Ⅱ Pause</button><button id="stopBtn" class="stop">■ Stop</button><button id="newBtn" class="new">◈ New Capture</button><input id="captureInput" type="file" accept=".csv,.pcap" hidden></div>
+          <div class="session-line"><span><i></i>Session Running</span><strong id="runtimeClock">00:12:45</strong></div>
+        </article>
+      </section>
     </main>
+
+    <footer>
+      <div><b>GARUDA AI</b><span>|</span><span>Predictive Cyber Defence</span></div>
+      <em>“From signals to a safer nation.”</em>
+      <nav><a href="#">Privacy</a><a href="#">About</a><a href="#">Contact</a><a href="#">◉</a></nav>
+    </footer>
   </div>
 </div>
-
-<section class="sessionPanel" id="sessionPanel" hidden><div class="sessionModal"><span class="modalKicker">SECURE LOCAL SESSION</span><h2>Connect the command centre</h2><p>Use the viewer or operator token from <code>garuda_v3/runtime/access.json</code>.</p><form id="sessionForm"><input id="token" type="password" autocomplete="off" placeholder="Workspace access token" required><button id="connect" type="submit">Connect</button></form></div></section>
-
-<section class="rPlumbing" aria-hidden="true">
-  <span>No live customer sensor is connected.</span><span>Forecast risk is a model score, not a verified compromise probability.</span><span>Benchmarks, not decorative accuracy numbers.</span>
-  <span id="noticeText"></span><span id="notice"></span><span id="runtimeAuthority"></span><span id="armStatus">DISARMED</span><span id="graphType"></span><span id="forecastLarge2"></span>
-  <button id="rotate"></button><button id="zoomIn"></button><button id="zoomOut"></button><button id="resetView"></button>
-  <select id="mode"><option value="service">service</option><option value="host">host</option></select><input id="file" type="file" accept=".csv,.pcap"><div id="features"></div><div id="policies"></div>
-  <input id="target"><input id="ttl" type="number" value="30"><input id="reason"><button id="contain"></button><button id="arm"></button><button id="disarm"></button><button id="kill"></button>
-  <form id="reviewForm"><select id="reviewEvent"><option value="">None</option></select><input id="attackType"><textarea id="reviewEvidence"></textarea><button id="approve" type="submit"></button><button id="escalate" type="button"></button></form><div id="memory"></div>
-  <table><tbody id="metrics"></tbody></table><span id="evidenceLimit"></span><span id="runtimeModeHidden"></span><span id="signalBadgeHidden"></span>
-  <section id="evidence"></section><section id="docs"></section>
-</section>
-
-<script>
-(function(){
-  const stage=document.getElementById('refStage'),fit=document.getElementById('refFit');
-  const DESIGN_W=1365, DESIGN_H=900;
-  function sync(){const s=Math.min(window.innerWidth/DESIGN_W,1);stage.style.transform=`scale(${s})`;fit.style.height=(DESIGN_H*s)+'px';}
-  window.addEventListener('resize',sync,{passive:true});sync();
-  const capture=document.getElementById('newCaptureBtn'),file=document.getElementById('file');
-  if(capture&&file)capture.addEventListener('click',()=>file.click());
-})();
-</script>
-<script src="/app.js"></script>
-<script src="/reference-live.js"></script>
+<div id="sessionModal" class="session-modal" hidden><div class="session-dialog"><span class="session-kicker">LOCAL GARUDA SESSION</span><h2>Connect command deck</h2><p>Paste the viewer or operator token from <code>garuda_v3/runtime/access.json</code>. The token stays in this browser tab.</p><form id="sessionForm"><input id="tokenInput" type="password" autocomplete="off" placeholder="Bearer token" required><button type="submit">Connect</button></form><button id="sessionClose" class="session-close" type="button">Close</button></div></div><div id="toast" class="toast" hidden></div><script src="/reference-live.js"></script>
 </body>
 </html>

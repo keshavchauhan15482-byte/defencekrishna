@@ -5,9 +5,8 @@ SERVER = (ROOT / "garuda_v3" / "integrated_server.py").read_text(encoding="utf-8
 INDEX = (ROOT / "garuda_v3" / "ui" / "index.html").read_text(encoding="utf-8")
 
 
-def test_reference_homepage_assets_are_served_by_local_server():
+def test_approved_homepage_assets_are_served_by_local_server():
     required = {
-        "/pixel.css": "pixel.css",
         "/reference.css": "reference.css",
         "/reference-live.js": "reference-live.js",
     }
@@ -16,9 +15,13 @@ def test_reference_homepage_assets_are_served_by_local_server():
         assert f'href="{url}"' in INDEX or f'src="{url}"' in INDEX
 
 
-def test_reference_assets_exist_on_disk():
+def test_approved_assets_exist_on_disk():
     ui = ROOT / "garuda_v3" / "ui"
-    for filename in ("pixel.css", "reference.css", "reference-live.js"):
+    for filename in ("reference.css", "reference-live.js"):
         path = ui / filename
         assert path.is_file()
         assert path.stat().st_size > 0
+
+
+def test_eagle_and_logo_are_self_contained_data_assets():
+    assert INDEX.count('data:image/webp;base64,') >= 2

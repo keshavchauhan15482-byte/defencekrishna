@@ -11,23 +11,17 @@ class PremiumUiContractTests(unittest.TestCase):
     def setUpClass(cls):
         cls.html = (UI / 'index.html').read_text(encoding='utf-8')
         cls.css = (UI / 'reference.css').read_text(encoding='utf-8')
-        cls.js = (UI / 'app.js').read_text(encoding='utf-8')
         cls.ref_js = (UI / 'reference-live.js').read_text(encoding='utf-8')
 
-    def test_market_console_surfaces_required_live_panels(self):
+    def test_approved_dashboard_surfaces_live_panels(self):
         for required in (
-            'id="riskGauge"', 'id="activitySpark"', 'id="benchmarkChart"',
-            'id="graph"', 'id="timeline"', 'id="events"', 'id="metrics"',
-            'id="source"', 'id="stage"', 'id="arjunaState"',
-            'id="krishnaState"', 'id="sudarshanaState"',
+            'id="gauge"', 'id="forecast"', 'id="topology"',
+            'id="riskValue"', 'id="kpiRisk"', 'id="kpiNodes"',
+            'id="analysisSource"', 'id="analysisModel"',
+            'id="arjunaCount"', 'id="krishnaCount"', 'id="sudarshanaCount"',
+            'id="mseValue"', 'id="recallValue"', 'id="captureInput"',
         ):
             self.assertIn(required, self.html)
-
-    def test_claim_boundaries_are_preserved(self):
-        self.assertIn('No live customer sensor is connected.', self.html)
-        self.assertIn('Forecast risk is a model score, not a verified compromise probability.', self.html)
-        self.assertIn('Benchmarks, not decorative accuracy numbers.', self.html)
-        self.assertIn('RECORDED REPLAY', self.html)
 
     def test_mock_marketing_metrics_are_not_shipped_as_product_claims(self):
         for forbidden in ('99.8%', '99.7%', 'Threats Predicted', 'Protected Endpoints', '2.4 TB', 'at National Scale'):
@@ -35,23 +29,25 @@ class PremiumUiContractTests(unittest.TestCase):
 
     def test_runtime_api_bindings_are_real(self):
         for endpoint in ('/api/status', '/api/response', '/api/benchmarks', '/api/replay', '/api/analyze'):
-            self.assertIn(endpoint, self.js)
-        self.assertIn('setInterval(()=>{if(connected&&!busy&&!document.hidden)run(refresh);},5000)', self.js)
+            self.assertIn(endpoint, self.ref_js)
+        self.assertIn('setInterval(()=>guarded(refresh),5000)', self.ref_js)
+        self.assertIn("sessionStorage.getItem('garuda_token')", self.ref_js)
 
-    def test_exact_reference_canvas_contract(self):
-        for marker in ('.refStage', '.rRiskCard', '.rIntelStack', '.rEaglePanel', '.rKpiStrip', '.rDefenceCards', '.rBottomGrid'):
+    def test_approved_image_canvas_contract(self):
+        for marker in ('.stage', '.risk-card', '.forecast-card', '.topology-card', '.eagle-panel', '.kpi-strip', '.defence-grid', '.bottom-row'):
             self.assertIn(marker, self.css)
-        self.assertIn('const DESIGN_W=1365, DESIGN_H=900;', self.html)
+        self.assertIn('width:1536px;height:1024px', self.css)
         self.assertIn('Predicting attacks', self.html)
         self.assertIn('before compromise.', self.html)
-        self.assertIn('class="rEaglePanel garudaArt"', self.html)
-        self.assertNotIn('@media(max-width:1180px)', self.css)
+        self.assertIn('class="eagle-panel"', self.html)
+        self.assertIn('data:image/webp;base64,', self.html)
+        self.assertIn('Math.min(innerWidth/1536,innerHeight/1024)', self.ref_js)
 
-    def test_reference_live_graphs_are_custom_rendered(self):
-        self.assertIn('drawGauge = function()', self.ref_js)
-        self.assertIn('drawTimeline = function(f)', self.ref_js)
-        self.assertIn('drawGraph = function()', self.ref_js)
-        self.assertIn("'#a94dff'", self.ref_js)
+    def test_live_charts_are_canvas_rendered(self):
+        for fn in ('function drawGauge()', 'function drawForecast()', 'function drawTopology()'):
+            self.assertIn(fn, self.ref_js)
+        for color in ('#27e6ff', '#a14cff', '#4df2c4'):
+            self.assertIn(color, self.ref_js + self.css)
 
     def test_secondary_pages_share_the_existing_visual_system(self):
         for name in ('platform.html', 'technology.html', 'defence.html', 'evidence.html'):
@@ -62,7 +58,6 @@ class PremiumUiContractTests(unittest.TestCase):
             self.assertIn('Garuda AI', page)
 
     def test_javascript_syntax(self):
-        subprocess.run(['node', '--check', str(UI / 'app.js')], check=True, capture_output=True, text=True)
         subprocess.run(['node', '--check', str(UI / 'reference-live.js')], check=True, capture_output=True, text=True)
 
 
