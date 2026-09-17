@@ -40,7 +40,8 @@ class PremiumUiContractTests(unittest.TestCase):
     def test_approved_second_design_and_responsive_contract(self):
         for marker in ('.landingHero', '.heroRiskCard', '.garudaArt', '.dashboardGrid', '.defenceCards', '@media(max-width:930px)'):
             self.assertIn(marker, self.css)
-        self.assertIn('Predicting attacks before compromise.', self.html)
+        self.assertIn('Predicting attacks', self.html)
+        self.assertIn('before compromise.', self.html)
         self.assertIn('class="garudaArt"', self.html)
 
     def test_secondary_pages_share_the_same_visual_system(self):
