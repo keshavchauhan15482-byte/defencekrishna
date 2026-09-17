@@ -17,6 +17,11 @@ const { DetectionEngine } = require('./detection-engine');
 const { SudarshanaCore } = require('./sudarshana-core');
 
 const PATCH_FLAG = Symbol.for('krishna.defenceStackPatch.v1');
+const MAX_LEARNED_TOKENS_PER_INCIDENT = 8;
+const MAX_SYNTHETIC_MUTATIONS_PER_TOKEN = 128;
+const MAX_EVIDENCE_STRINGS = 64;
+const MAX_EVIDENCE_TEXT_CHARS = 8192;
+
 // General JavaScript bracket-notation prototype-chain access. The base WAF
 // already catches __proto__ and constructor.prototype dot forms; this closes the
 // structural evasion class without matching ordinary prose containing the words.
@@ -28,6 +33,8 @@ if (!globalThis[PATCH_FLAG]) {
   const originalInspect = DetectionEngine.prototype.inspect;
   const originalLearn = CounterEngine.prototype.learnFromIncident;
   const originalCheckLearned = CounterEngine.prototype.checkLearned;
+  const originalExtractTokens = CounterEngine.prototype._extractTokens;
+  const originalGenerateSyntheticMutations = CounterEngine.prototype._generateSyntheticMutations;
   const originalEngage = SudarshanaCore.prototype.engageScopedLockdown;
   const originalRecovery = SudarshanaCore.prototype.evaluateAutonomousRecovery;
   const recentInspectionByIp = new Map();
@@ -45,12 +52,35 @@ if (!globalThis[PATCH_FLAG]) {
     return s.replace(/\s+/g, ' ').trim().toLowerCase();
   }
 
+  function collectPrimitiveEvidence(value, out, depth = 0) {
+    if (out.length >= MAX_EVIDENCE_STRINGS || depth > 5 || value === null || value === undefined) return;
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      const text = String(value);
+      if (text) out.push(text.slice(0, 2048));
+      return;
+    }
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        collectPrimitiveEvidence(item, out, depth + 1);
+        if (out.length >= MAX_EVIDENCE_STRINGS) break;
+      }
+      return;
+    }
+    if (typeof value === 'object') {
+      for (const [key, item] of Object.entries(value)) {
+        if (out.length >= MAX_EVIDENCE_STRINGS) break;
+        out.push(String(key).slice(0, 256));
+        collectPrimitiveEvidence(item, out, depth + 1);
+      }
+    }
+  }
+
   function requestEvidenceText(req) {
     if (!req) return '';
     const parts = [req.url || req.path || '', req.rawBodyStr || ''];
-    try { parts.push(JSON.stringify(req.query || {})); } catch (_) {}
-    try { parts.push(JSON.stringify(req.body || {})); } catch (_) {}
-    return parts.join('\n');
+    collectPrimitiveEvidence(req.query, parts);
+    collectPrimitiveEvidence(req.body, parts);
+    return parts.join('\n').slice(0, MAX_EVIDENCE_TEXT_CHARS);
   }
 
   function validationRequest(token) {
@@ -79,13 +109,26 @@ if (!globalThis[PATCH_FLAG]) {
     return validator.inspect(validationRequest(token));
   }
 
+  // Hard resource ceiling for one unknown incident. The underlying generator
+  // stays diverse and attack-aware, but a single request cannot cause unbounded
+  // token extraction or mutation fan-out.
+  CounterEngine.prototype._extractTokens = function boundedExtractTokens(rawInput, attackTypes) {
+    const tokens = originalExtractTokens.call(this, rawInput, attackTypes);
+    return Array.isArray(tokens) ? tokens.slice(0, MAX_LEARNED_TOKENS_PER_INCIDENT) : [];
+  };
+
+  CounterEngine.prototype._generateSyntheticMutations = function boundedMutationGenerator(token, attackTypes) {
+    const mutations = originalGenerateSyntheticMutations.call(this, token, attackTypes);
+    return Array.isArray(mutations) ? mutations.slice(0, MAX_SYNTHETIC_MUTATIONS_PER_TOKEN) : [];
+  };
+
   DetectionEngine.prototype.inspect = function patchedInspect(req) {
     let result = originalInspect.call(this, req);
     const evidence = requestEvidenceText(req);
 
     // This is a Krishna unknown-structure heuristic, not a claim that the
-    // payload is a real zero-day. It catches a structural prototype-pollution
-    // evasion class the static dot-notation rule does not represent.
+    // payload is a real zero-day. Primitive body/query extraction is included
+    // so JSON escaping cannot hide bracket-notation structure from this check.
     if (result.tier !== 'danger' && KRISHNA_NOVEL_PROTOTYPE_CHAIN.test(evidence)) {
       const reasons = Array.isArray(result.reasons) ? [...result.reasons] : [];
       reasons.push('Krishna novel-structure heuristic: bracket-notation constructor/prototype chain');
@@ -196,6 +239,11 @@ if (!globalThis[PATCH_FLAG]) {
       mutationCandidates: candidates,
       mutationsValidated: validated,
       mutationValidationCoverage: candidates ? validated / candidates : 0,
+      mutationLimits: {
+        maxLearnedTokensPerIncident: MAX_LEARNED_TOKENS_PER_INCIDENT,
+        maxSyntheticMutationsPerToken: MAX_SYNTHETIC_MUTATIONS_PER_TOKEN,
+        maxRawMutationCandidatesPerIncident: MAX_LEARNED_TOKENS_PER_INCIDENT * MAX_SYNTHETIC_MUTATIONS_PER_TOKEN
+      },
       // Existing proxy uses this field for the Krishna study summary. Report
       // independently validated and Arjuna-reusable mutations, not raw candidates.
       mutationsSynthesized: validated
@@ -325,4 +373,11 @@ if (!globalThis[PATCH_FLAG]) {
   };
 }
 
-module.exports = { patched: true };
+module.exports = {
+  patched: true,
+  mutationLimits: {
+    maxLearnedTokensPerIncident: MAX_LEARNED_TOKENS_PER_INCIDENT,
+    maxSyntheticMutationsPerToken: MAX_SYNTHETIC_MUTATIONS_PER_TOKEN,
+    maxRawMutationCandidatesPerIncident: MAX_LEARNED_TOKENS_PER_INCIDENT * MAX_SYNTHETIC_MUTATIONS_PER_TOKEN
+  }
+};
