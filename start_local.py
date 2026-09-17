@@ -13,9 +13,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 VENV = ROOT / ".venv"
-URL = "http://127.0.0.1:8090"
-HEALTH_URL = URL + "/health"
-LOG = ROOT / "garuda_v3" / "runtime" / "localhost.log"
+ENGINE_URL = "http://127.0.0.1:8090"
+CONSOLE_URL = "http://127.0.0.1:8091"
+ENGINE_HEALTH_URL = ENGINE_URL + "/health"
+CONSOLE_HEALTH_URL = CONSOLE_URL + "/health"
+ENGINE_LOG = ROOT / "garuda_v3" / "runtime" / "localhost.log"
+CONSOLE_LOG = ROOT / "garuda_v3" / "runtime" / "legacy_console.log"
 
 
 def venv_python() -> Path:
@@ -41,10 +44,10 @@ def ensure_env(*, use_current_python: bool = False, skip_install: bool = False) 
     return py
 
 
-def port_is_open() -> bool:
+def port_is_open(port: int) -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.settimeout(0.3)
-        return sock.connect_ex(("127.0.0.1", 8090)) == 0
+        return sock.connect_ex(("127.0.0.1", port)) == 0
 
 
 def http_ok(url: str) -> bool:
@@ -55,44 +58,59 @@ def http_ok(url: str) -> bool:
         return False
 
 
-def tail_log(lines: int = 40) -> str:
+def tail_log(path: Path, lines: int = 40) -> str:
     try:
-        text = LOG.read_text(errors="replace").splitlines()
+        text = path.read_text(errors="replace").splitlines()
         return "\n".join(text[-lines:])
     except Exception:
         return "(no localhost log was written)"
 
 
-def wait_until_ready(proc: subprocess.Popen, timeout: float = 45.0) -> bool:
+def wait_until_ready(processes: list[subprocess.Popen], timeout: float = 45.0) -> bool:
     deadline = time.time() + timeout
     while time.time() < deadline:
-        code = proc.poll()
-        if code is not None:
-            print(f"[Krishna Defence] Server exited during startup (code {code}).", flush=True)
-            print(tail_log(), flush=True)
-            return False
-        if http_ok(HEALTH_URL) and http_ok(URL):
+        for proc in processes:
+            code = proc.poll()
+            if code is not None:
+                print(f"[Krishna Defence] A localhost service exited during startup (code {code}).", flush=True)
+                print("--- Garuda engine log ---", flush=True)
+                print(tail_log(ENGINE_LOG), flush=True)
+                print("--- Legacy console log ---", flush=True)
+                print(tail_log(CONSOLE_LOG), flush=True)
+                return False
+        if http_ok(ENGINE_HEALTH_URL) and http_ok(ENGINE_URL) and http_ok(CONSOLE_HEALTH_URL) and http_ok(CONSOLE_URL):
             return True
         time.sleep(0.4)
-    print("[Krishna Defence] Server did not become healthy in time.", flush=True)
-    print(tail_log(), flush=True)
+    print("[Krishna Defence] Local services did not become healthy in time.", flush=True)
+    print("--- Garuda engine log ---", flush=True)
+    print(tail_log(ENGINE_LOG), flush=True)
+    print("--- Legacy console log ---", flush=True)
+    print(tail_log(CONSOLE_LOG), flush=True)
     return False
 
 
-def start_server(py: Path) -> tuple[subprocess.Popen, object]:
-    LOG.parent.mkdir(parents=True, exist_ok=True)
-    log_handle = LOG.open("w")
-    proc = subprocess.Popen(
+def start_services(py: Path) -> tuple[list[subprocess.Popen], list[object]]:
+    ENGINE_LOG.parent.mkdir(parents=True, exist_ok=True)
+    engine_log = ENGINE_LOG.open("w")
+    console_log = CONSOLE_LOG.open("w")
+    engine = subprocess.Popen(
         [str(py), "-m", "garuda_v3.integrated_server"],
         cwd=ROOT,
-        stdout=log_handle,
+        stdout=engine_log,
         stderr=subprocess.STDOUT,
         text=True,
     )
-    return proc, log_handle
+    console = subprocess.Popen(
+        [str(py), "-m", "garuda_v3.legacy_console"],
+        cwd=ROOT,
+        stdout=console_log,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    return [engine, console], [engine_log, console_log]
 
 
-def stop_server(proc: subprocess.Popen) -> None:
+def stop_service(proc: subprocess.Popen) -> None:
     if proc.poll() is not None:
         return
     proc.terminate()
@@ -104,21 +122,29 @@ def stop_server(proc: subprocess.Popen) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Launch the integrated Krishna Defence + Garuda V15 localhost demo")
-    parser.add_argument("--smoke", action="store_true", help="verify localhost startup and exit")
+    parser = argparse.ArgumentParser(description="Launch Garuda engine + integrated legacy Ultron console")
+    parser.add_argument("--smoke", action="store_true", help="verify both localhost services and exit")
     parser.add_argument("--skip-install", action="store_true", help="do not install requirements")
     parser.add_argument("--current-python", action="store_true", help="use the current Python instead of .venv")
     parser.add_argument("--no-browser", action="store_true", help="do not open the default browser")
     args = parser.parse_args()
 
     os.chdir(ROOT)
-    if port_is_open():
-        if http_ok(HEALTH_URL) and http_ok(URL):
-            print(f"[Krishna Defence] Demo is already running at {URL}", flush=True)
+    engine_open = port_is_open(8090)
+    console_open = port_is_open(8091)
+    if engine_open or console_open:
+        if http_ok(ENGINE_HEALTH_URL) and http_ok(ENGINE_URL) and http_ok(CONSOLE_HEALTH_URL) and http_ok(CONSOLE_URL):
+            print(f"[Krishna Defence] Garuda engine is running at {ENGINE_URL}", flush=True)
+            print(f"[Krishna Defence] Integrated Ultron console is running at {CONSOLE_URL}", flush=True)
             if not args.smoke and not args.no_browser:
-                webbrowser.open(URL)
+                webbrowser.open(CONSOLE_URL)
             return 0
-        print("[Krishna Defence] Port 8090 is already used by another process. Stop it and retry.", flush=True)
+        occupied = []
+        if engine_open:
+            occupied.append("8090")
+        if console_open:
+            occupied.append("8091")
+        print("[Krishna Defence] Port(s) " + ", ".join(occupied) + " are already in use by an incomplete/other service. Stop them and retry.", flush=True)
         return 2
 
     try:
@@ -127,30 +153,36 @@ def main() -> int:
         print(f"[Krishna Defence] Setup failed: {exc}", flush=True)
         return 2
 
-    print("[Krishna Defence] Starting integrated Garuda V15 localhost demo...", flush=True)
-    proc, log_handle = start_server(py)
+    print("[Krishna Defence] Starting Garuda V15 engine on 8090 + integrated Ultron console on 8091...", flush=True)
+    processes, log_handles = start_services(py)
     try:
-        if not wait_until_ready(proc):
+        if not wait_until_ready(processes):
             return 3
-        print(f"[Krishna Defence] HEALTHY: {URL}", flush=True)
+        print(f"[Krishna Defence] ENGINE HEALTHY: {ENGINE_URL}", flush=True)
+        print(f"[Krishna Defence] ULTRON CONSOLE HEALTHY: {CONSOLE_URL}", flush=True)
         token_file = ROOT / "garuda_v3" / "runtime" / "access.json"
-        print(f"[Krishna Defence] Local access tokens: {token_file}", flush=True)
+        print(f"[Krishna Defence] Local access tokens remain server-side: {token_file}", flush=True)
         if args.smoke:
             return 0
         if not args.no_browser:
-            opened = webbrowser.open(URL)
+            opened = webbrowser.open(CONSOLE_URL)
             if opened:
-                print("[Krishna Defence] Browser launch requested.", flush=True)
+                print("[Krishna Defence] Browser launch requested for the integrated Ultron console.", flush=True)
             else:
-                print(f"[Krishna Defence] Browser could not be opened automatically. Open {URL} manually.", flush=True)
-        print("[Krishna Defence] Keep this window open. Press Ctrl+C to stop.", flush=True)
-        return proc.wait()
+                print(f"[Krishna Defence] Browser could not be opened automatically. Open {CONSOLE_URL} manually.", flush=True)
+        print("[Krishna Defence] Keep this window open. Press Ctrl+C to stop both services.", flush=True)
+        while all(proc.poll() is None for proc in processes):
+            time.sleep(0.5)
+        print("[Krishna Defence] A localhost service stopped unexpectedly.", flush=True)
+        return 3
     except KeyboardInterrupt:
-        print("\n[Krishna Defence] Stopping localhost demo...", flush=True)
+        print("\n[Krishna Defence] Stopping localhost services...", flush=True)
         return 0
     finally:
-        stop_server(proc)
-        log_handle.close()
+        for proc in processes:
+            stop_service(proc)
+        for handle in log_handles:
+            handle.close()
 
 
 if __name__ == "__main__":
