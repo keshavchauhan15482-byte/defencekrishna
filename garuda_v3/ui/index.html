@@ -100,7 +100,9 @@
 <section class="sessionPanel" id="sessionPanel" hidden><div class="sessionModal"><span class="modalKicker">SECURE LOCAL SESSION</span><h2>Connect the command centre</h2><p>Use the viewer or operator token from <code>garuda_v3/runtime/access.json</code>.</p><form id="sessionForm"><input id="token" type="password" autocomplete="off" placeholder="Workspace access token" required><button id="connect" type="submit">Connect</button></form></div></section>
 
 <section class="rPlumbing" aria-hidden="true">
+  <span>No live customer sensor is connected.</span><span>Forecast risk is a model score, not a verified compromise probability.</span><span>Benchmarks, not decorative accuracy numbers.</span>
   <span id="noticeText"></span><span id="notice"></span><span id="runtimeAuthority"></span><span id="armStatus">DISARMED</span><span id="graphType"></span><span id="forecastLarge2"></span>
+  <button id="rotate"></button><button id="zoomIn"></button><button id="zoomOut"></button><button id="resetView"></button>
   <select id="mode"><option value="service">service</option><option value="host">host</option></select><input id="file" type="file" accept=".csv,.pcap"><div id="features"></div><div id="policies"></div>
   <input id="target"><input id="ttl" type="number" value="30"><input id="reason"><button id="contain"></button><button id="arm"></button><button id="disarm"></button><button id="kill"></button>
   <form id="reviewForm"><select id="reviewEvent"><option value="">None</option></select><input id="attackType"><textarea id="reviewEvidence"></textarea><button id="approve" type="submit"></button><button id="escalate" type="button"></button></form><div id="memory"></div>
