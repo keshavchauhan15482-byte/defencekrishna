@@ -99,8 +99,21 @@ if (!globalThis[V2_FLAG]) {
       if (!result || typeof result !== 'object') return result;
 
       const evaluated = Number(result.mutationCandidates || 0);
+      const learnedTokenLimit = result.mutationLimits && Number.isFinite(Number(result.mutationLimits.maxLearnedTokensPerIncident))
+        ? Number(result.mutationLimits.maxLearnedTokensPerIncident)
+        : null;
+
       return {
         ...result,
+        // Override lower-layer mutation telemetry with the effective runtime
+        // limits enforced by this V2 overlay. This prevents APIs/dashboards from
+        // simultaneously reporting obsolete 128/token or 1024/incident limits.
+        mutationLimits: {
+          maxLearnedTokensPerIncident: learnedTokenLimit,
+          maxSyntheticMutationsPerToken: MAX_MUTATIONS_PER_TOKEN,
+          maxRawMutationCandidatesPerIncident: MAX_MUTATIONS_PER_INCIDENT,
+          source: 'defence-stack-v2-patch'
+        },
         mutationCandidatesGeneratedBeforeBudget: this._v2MutationGeneratedBeforeBudget,
         mutationCandidatesBudgetWithheld: this._v2MutationBudgetWithheld,
         mutationBudget: {
