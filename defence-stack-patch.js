@@ -17,6 +17,7 @@ const { DetectionEngine } = require('./detection-engine');
 const { SudarshanaCore } = require('./sudarshana-core');
 
 const PATCH_FLAG = Symbol.for('krishna.defenceStackPatch.v1');
+const MAX_SYNTHETIC_MUTATIONS_PER_TOKEN = 128;
 // General JavaScript bracket-notation prototype-chain access. The base WAF
 // already catches __proto__ and constructor.prototype dot forms; this closes the
 // structural evasion class without matching ordinary prose containing the words.
@@ -28,6 +29,7 @@ if (!globalThis[PATCH_FLAG]) {
   const originalInspect = DetectionEngine.prototype.inspect;
   const originalLearn = CounterEngine.prototype.learnFromIncident;
   const originalCheckLearned = CounterEngine.prototype.checkLearned;
+  const originalGenerateSyntheticMutations = CounterEngine.prototype._generateSyntheticMutations;
   const originalEngage = SudarshanaCore.prototype.engageScopedLockdown;
   const originalRecovery = SudarshanaCore.prototype.evaluateAutonomousRecovery;
   const recentInspectionByIp = new Map();
@@ -45,9 +47,38 @@ if (!globalThis[PATCH_FLAG]) {
     return s.replace(/\s+/g, ' ').trim().toLowerCase();
   }
 
+  CounterEngine.prototype._generateSyntheticMutations = function boundedSyntheticMutations(token, attackTypes = []) {
+    const generated = originalGenerateSyntheticMutations.call(this, token, attackTypes);
+    if (!Array.isArray(generated)) return [];
+    // Resource-safety boundary: one learned root signature may create at most
+    // 128 candidate variants. Independent validation below decides which of
+    // those candidates are actually trusted by Arjuna.
+    return generated.slice(0, MAX_SYNTHETIC_MUTATIONS_PER_TOKEN);
+  };
+
+  function collectEvidenceStrings(value, parts, depth = 0) {
+    if (value == null || depth > 3 || parts.length >= 32) return;
+    if (typeof value === 'string') {
+      parts.push(value.slice(0, 4096));
+      return;
+    }
+    if (Array.isArray(value)) {
+      for (const item of value.slice(0, 16)) collectEvidenceStrings(item, parts, depth + 1);
+      return;
+    }
+    if (typeof value === 'object') {
+      for (const item of Object.values(value).slice(0, 16)) collectEvidenceStrings(item, parts, depth + 1);
+    }
+  }
+
   function requestEvidenceText(req) {
     if (!req) return '';
     const parts = [req.url || req.path || '', req.rawBodyStr || ''];
+    // Inspect bounded scalar values directly before JSON serialization escapes
+    // quotes/backslashes. This keeps structural evidence visible without
+    // recursively walking unbounded attacker-controlled objects.
+    collectEvidenceStrings(req.query, parts);
+    collectEvidenceStrings(req.body, parts);
     try { parts.push(JSON.stringify(req.query || {})); } catch (_) {}
     try { parts.push(JSON.stringify(req.body || {})); } catch (_) {}
     return parts.join('\n');
@@ -204,6 +235,7 @@ if (!globalThis[PATCH_FLAG]) {
       entry.rejectedSyntheticMutations = rejected.slice(0, 20);
       entry.mutationValidation = {
         candidateCount: (entry.syntheticMutations || []).length,
+        candidateCapPerToken: MAX_SYNTHETIC_MUTATIONS_PER_TOKEN,
         validatedCount: accepted.length,
         coverage: (entry.syntheticMutations || []).length ? accepted.length / entry.syntheticMutations.length : 0,
         validator: 'fresh DetectionEngine without learned memory + Arjuna reuse eligibility'
@@ -215,6 +247,7 @@ if (!globalThis[PATCH_FLAG]) {
       ...learned,
       confidenceScore: boundedConfidence,
       rootValidation: { tier: rootValidation.tier, score: rootValidation.score, attackType: rootValidation.attackType },
+      mutationCandidateCapPerToken: MAX_SYNTHETIC_MUTATIONS_PER_TOKEN,
       mutationCandidates: candidates,
       mutationsValidated: validated,
       mutationValidationCoverage: candidates ? validated / candidates : 0,
@@ -375,4 +408,4 @@ if (!globalThis[PATCH_FLAG]) {
   };
 }
 
-module.exports = { patched: true };
+module.exports = { patched: true, MAX_SYNTHETIC_MUTATIONS_PER_TOKEN };
