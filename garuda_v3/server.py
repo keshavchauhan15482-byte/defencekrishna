@@ -52,7 +52,6 @@ class App:
             d=convert(path,mode,**settings) if kind=='csv' else convert_pcap(path,mode,**settings)
         history=self.service.meta['history']
         if len(d['times'])<history:raise ValueError('Insufficient observed history')
-        # Last completed contiguous history only; never pad missing traffic.
         payload=dict(schema=SCHEMA,mode=mode,window_seconds=d['metadata']['window_seconds'],
             x=d['x'][-history:].tolist(),adj=d['adj'][-history:].tolist(),mask=d['mask'][-history:].tolist(),
             times=d['times'][-history:].tolist(),node_names=d['metadata']['node_names'][-1],data_source='uploaded_'+kind)
@@ -65,7 +64,7 @@ class Handler(BaseHTTPRequestHandler):
     server_version='Garuda/3'
     def setup(self):
         super().setup();self.connection.settimeout(15)
-    def log_message(self,format,*args):pass  # tokens/bodies never logged
+    def log_message(self,format,*args):pass
     def respond(self,status,data,mime='application/json'):
         body=json.dumps(data,allow_nan=False).encode() if mime=='application/json' else data
         self.send_response(status);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(body)))
@@ -77,14 +76,22 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):self.handle_request()
     def handle_request(self):
         app=self.server.app;url=urlsplit(self.path);method=self.command
-        # Exact host/origin comparison protects local services against browser rebinding/CSRF.
         host=self.headers.get('Host','')
         if host not in self.server.allowed_hosts:return self.respond(403,{'error':'Unexpected host'})
         origin=self.headers.get('Origin')
         if origin and origin!='http://'+host:return self.respond(403,{'error':'Cross-origin request denied'})
-        if method=='GET' and url.path in ('/','/app.js','/style.css'):
-            name={'/':'index.html','/app.js':'app.js','/style.css':'style.css'}[url.path]
-            mime={'/':'text/html; charset=utf-8','/app.js':'application/javascript','/style.css':'text/css'}[url.path]
+        static_files={
+            '/':('index.html','text/html; charset=utf-8'),
+            '/index.html':('index.html','text/html; charset=utf-8'),
+            '/platform.html':('platform.html','text/html; charset=utf-8'),
+            '/technology.html':('technology.html','text/html; charset=utf-8'),
+            '/defence.html':('defence.html','text/html; charset=utf-8'),
+            '/evidence.html':('evidence.html','text/html; charset=utf-8'),
+            '/app.js':('app.js','application/javascript'),
+            '/style.css':('style.css','text/css'),
+        }
+        if method=='GET' and url.path in static_files:
+            name,mime=static_files[url.path]
             return self.respond(200,(Path(__file__).parent/'ui'/name).read_bytes(),mime)
         if method=='GET' and url.path=='/health':return self.respond(200,{'status':'alive'})
         auth=self.headers.get('Authorization','');token=auth[7:] if auth.startswith('Bearer ') else ''
