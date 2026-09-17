@@ -20,7 +20,7 @@ function request({ ip = '192.0.2.10', method = 'POST', path = '/api/input', payl
     rawBodyBytes: Buffer.byteLength(raw),
     headers: {
       'content-type': 'application/json',
-      'user-agent': 'Mozilla/5.0 Krishna-Defence-Effectiveness/2.0',
+      'user-agent': 'Mozilla/5.0 Krishna-Defence-Effectiveness/3.0',
       ...headers
     },
     isLoginAttemptFailed: false
@@ -111,8 +111,8 @@ for (let i = 0; i < mutationSeeds.length; i++) {
     confidenceScore: 96
   });
 
-  assert.equal(learned.mutationLimits && learned.mutationLimits.maxSyntheticMutationsPerToken, 96, 'effective per-token mutation telemetry drifted from V2 runtime');
-  assert.equal(learned.mutationLimits && learned.mutationLimits.maxRawMutationCandidatesPerIncident, 256, 'effective per-incident mutation telemetry drifted from V2 runtime');
+  assert.equal(learned.mutationLimits && learned.mutationLimits.maxSyntheticMutationsPerToken, 48, 'effective per-token mutation telemetry drifted from runtime');
+  assert.equal(learned.mutationLimits && learned.mutationLimits.maxRawMutationCandidatesPerIncident, 128, 'effective per-incident mutation telemetry drifted from runtime');
   assert.equal(learned.mutationLimits && learned.mutationLimits.source, 'defence-stack-v2-patch', 'mutation telemetry must identify the effective overlay');
 
   mutationCandidatesGenerated += learned.mutationCandidatesGeneratedBeforeBudget || learned.mutationCandidates || 0;
@@ -169,8 +169,8 @@ const metrics = {
     generatedBeforeBudget: mutationCandidatesGenerated,
     candidatesEvaluated: mutationCandidates,
     budgetWithheld: mutationBudgetWithheld,
-    configuredPerTokenBudget: 96,
-    configuredPerIncidentBudget: 256,
+    configuredPerTokenBudget: 48,
+    configuredPerIncidentBudget: 128,
     maxPerTokenObserved,
     independentlyValidated: mutationsValidated,
     validationCoverage: mutationCandidates ? mutationsValidated / mutationCandidates : 0,

@@ -25,7 +25,7 @@ function learn(counter, payload, type, ip) {
 }
 
 assert.equal(patch.canonicalMemoryDedupe, true);
-assert.deepEqual(patch.mutationBudget, { perToken: 96, perIncident: 256 });
+assert.deepEqual(patch.mutationBudget, { perToken: 48, perIncident: 128 });
 assert.equal(patch.maxLearnedTokensPerIncident, 8);
 
 const counter = isolatedCounter();

@@ -7,7 +7,7 @@
  * main-branch Arjuna/Krishna routing and Sudarshana confirmed-escape gate stay
  * authoritative. V2 adds only:
  *   1) direct nested-value evidence enrichment for structural unknown routing;
- *   2) bounded adaptive mutation generation (96/root token, 256/incident);
+ *   2) bounded adaptive mutation generation (48/root token, 128/incident);
  *   3) explicit mutation-budget telemetry;
  *   4) consistent learning-time evidence so a routed unknown can be promoted.
  */
@@ -17,8 +17,8 @@ const { CounterEngine } = require('./counter-engine');
 const { DetectionEngine } = require('./detection-engine');
 
 const V2_FLAG = Symbol.for('krishna.defenceStackV2Patch.v1');
-const MAX_MUTATIONS_PER_TOKEN = 96;
-const MAX_MUTATIONS_PER_INCIDENT = 256;
+const MAX_MUTATIONS_PER_TOKEN = 48;
+const MAX_MUTATIONS_PER_INCIDENT = 128;
 const MAX_ROOT_TOKENS_PER_INCIDENT = 8;
 const STRUCTURAL_PROTOTYPE_TOKEN = /\[\s*['"]constructor['"]\s*\]\s*\[\s*['"]prototype['"]\s*\](?:\s*\[\s*['"][^'"]{1,64}['"]\s*\])?/gi;
 
@@ -72,10 +72,6 @@ if (!globalThis[V2_FLAG]) {
     collectEvidence(req.body || {}, directEvidence);
     if (!directEvidence.length) return priorInspect.call(this, req);
 
-    // Feed direct values into the existing hardening layer before it records
-    // recent per-IP routing state. This avoids JSON escaping hiding structural
-    // syntax such as ["constructor"]["prototype"] while preserving all current
-    // main-branch routing/Sudarshana semantics.
     const originalRaw = String(req.rawBodyStr || '');
     const enrichedRaw = [originalRaw, ...directEvidence].filter(Boolean).join('\n');
     const enriched = {
@@ -97,8 +93,6 @@ if (!globalThis[V2_FLAG]) {
       if (structural.length >= MAX_ROOT_TOKENS_PER_INCIDENT) break;
     }
 
-    // Put the precise structural evidence first so a generic fallback token
-    // cannot consume the bounded root-token budget before the reusable signal.
     return [...new Set([...structural, ...(Array.isArray(existing) ? existing : [])])]
       .slice(0, MAX_ROOT_TOKENS_PER_INCIDENT);
   };
@@ -107,7 +101,6 @@ if (!globalThis[V2_FLAG]) {
     const generated = priorGenerate.call(this, token, attackTypes);
     const source = Array.isArray(generated) ? generated : [];
 
-    // Outside a learnFromIncident transaction the per-token bound still holds.
     if (!Number.isFinite(this._v2MutationBudgetRemaining)) {
       return source.slice(0, MAX_MUTATIONS_PER_TOKEN);
     }
@@ -128,9 +121,6 @@ if (!globalThis[V2_FLAG]) {
     this._v2MaxPerTokenCandidates = 0;
 
     try {
-      // The routing path already examines primitive nested values. Give the
-      // independent learning gate the same evidence view, otherwise JSON
-      // escaping can make an unknown route correctly but fail promotion.
       const learningArgs = {
         ...args,
         rawInput: enrichRawEvidence(args.rawInput)
@@ -145,9 +135,6 @@ if (!globalThis[V2_FLAG]) {
 
       return {
         ...result,
-        // Override lower-layer mutation telemetry with the effective runtime
-        // limits enforced by this V2 overlay. This prevents APIs/dashboards from
-        // simultaneously reporting obsolete 128/token or 1024/incident limits.
         mutationLimits: {
           maxLearnedTokensPerIncident: learnedTokenLimit,
           maxSyntheticMutationsPerToken: MAX_MUTATIONS_PER_TOKEN,

@@ -30,13 +30,13 @@ function request(payload, ip = '203.0.113.90') {
     rawBodyBytes: Buffer.byteLength(raw),
     headers: {
       'content-type': 'application/json',
-      'user-agent': 'Krishna-Mutation-Limit-Test/2.0'
+      'user-agent': 'Krishna-Mutation-Limit-Test/3.0'
     },
     isLoginAttemptFailed: false
   };
 }
 
-assert.deepEqual(patch.mutationBudget, { perToken: 96, perIncident: 256 });
+assert.deepEqual(patch.mutationBudget, { perToken: 48, perIncident: 128 });
 assert.equal(patch.maxLearnedTokensPerIncident, 8);
 
 const novelPayload = '["constructor"]["prototype"]["isAdmin"]';
