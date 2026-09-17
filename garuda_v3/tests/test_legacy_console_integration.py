@@ -1,3 +1,4 @@
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -40,7 +41,8 @@ class LegacyConsoleIntegrationTests(unittest.TestCase):
         self.assertTrue(a["data_source"].startswith("recorded_network_lab_unknown_variant:"))
 
     def test_integration_js_uses_runtime_routes_not_old_web_payload_names(self):
-        js = (Path(legacy_console.UI) / "console-integrated.js").read_text()
+        path = Path(legacy_console.UI) / "console-integrated.js"
+        js = path.read_text()
         self.assertIn("ARJUNA · REVIEWED KNOWN MEMORY", js)
         self.assertIn("KRISHNA · UNKNOWN FORECAST TRIAGE", js)
         self.assertIn("SUDARSHANA", js)
@@ -48,6 +50,7 @@ class LegacyConsoleIntegrationTests(unittest.TestCase):
             self.assertIn(name, js)
         self.assertNotIn("Every malicious attack payload", js)
         self.assertNotIn("100.0%", js)
+        subprocess.run(["node", "--check", str(path)], check=True, capture_output=True, text=True)
 
 
 if __name__ == "__main__":
