@@ -6,7 +6,7 @@
  * This module preserves the existing WAF/model implementation while tightening
  * the runtime semantics around the project design:
  *   Garuda/Detection -> Arjuna known fast path -> Krishna unknown study ->
- *   Sudarshana scoped containment only for unresolved/high-risk unknowns.
+ *   Sudarshana scoped containment only after confirmed escape/breach evidence.
  *
  * It also prevents generated mutations from becoming trusted Arjuna memory
  * merely because they were synthesized. Mutations must first be independently
@@ -79,6 +79,12 @@ if (!globalThis[PATCH_FLAG]) {
     return validator.inspect(validationRequest(token));
   }
 
+  function freshInspectionForIp(ip, maxAgeMs = 5000) {
+    if (!ip) return null;
+    const recent = recentInspectionByIp.get(String(ip));
+    return recent && Date.now() - recent.at < maxAgeMs ? recent.result : null;
+  }
+
   DetectionEngine.prototype.inspect = function patchedInspect(req) {
     let result = originalInspect.call(this, req);
     const evidence = requestEvidenceText(req);
@@ -125,6 +131,22 @@ if (!globalThis[PATCH_FLAG]) {
         totalLearned: this.learnedPatterns.length,
         confidenceRejected: true,
         reason: `Incident confidence ${Number.isFinite(requestedConfidence) ? requestedConfidence : 0}% is below the 75% promotion gate`
+      };
+    }
+
+    // The legacy proxy attempts adaptive learning for every danger result. Keep
+    // Arjuna and Krishna responsibilities separate: a normal known/static
+    // signature hit is already neutralized by Arjuna and does not need Krishna
+    // promotion. Unknown structural or multi-vector cases continue below.
+    const routedInspection = freshInspectionForIp(args.sourceIp);
+    if (routedInspection && routedInspection.tier === 'danger' &&
+        !routedInspection.isZeroDayAnomaly && !routedInspection.multiVectorSuspected) {
+      return {
+        newlyLearned: [],
+        totalLearned: this.learnedPatterns.length,
+        learningNotRequired: true,
+        route: 'arjuna_known_fast_path',
+        reason: 'Known/static danger already neutralized by Arjuna; Krishna adaptive learning not required'
       };
     }
 
@@ -247,27 +269,55 @@ if (!globalThis[PATCH_FLAG]) {
 
   SudarshanaCore.prototype.engageScopedLockdown = function routedLockdown(opts = {}) {
     const ip = opts.forensicSnapshot && opts.forensicSnapshot.ip ? String(opts.forensicSnapshot.ip) : null;
-    const recent = ip ? recentInspectionByIp.get(ip) : null;
-    const fresh = recent && Date.now() - recent.at < 5000 ? recent.result : null;
+    const fresh = freshInspectionForIp(ip);
+    const evidence = opts.escalationEvidence && typeof opts.escalationEvidence === 'object' ? opts.escalationEvidence : null;
+    const confirmedEscape = Boolean(evidence && evidence.confirmed === true && typeof evidence.source === 'string' && evidence.source.length >= 4);
 
-    // Arjuna/static known detections were already blocked at the boundary.
-    // Do not disrupt the rest of a shared IP with a second containment layer.
-    if (fresh && fresh.tier === 'danger' && !fresh.isZeroDayAnomaly && !fresh.multiVectorSuspected) {
-      return {
-        id: null,
-        scopeKey: `ip:${ip}`,
-        scopeType: 'ip',
-        scopeValue: ip,
-        status: 'STANDBY_ARJUNA_BLOCKED',
-        reason: 'Known/static threat already neutralized at front line; Sudarshana not required',
-        lockedAt: null,
-        expiresAt: null
-      };
+    if (fresh && fresh.tier === 'danger') {
+      // Arjuna/static known detections were already blocked at the boundary.
+      // Do not disrupt the rest of a shared IP with a second containment layer.
+      if (!fresh.isZeroDayAnomaly && !fresh.multiVectorSuspected) {
+        return {
+          id: null,
+          scopeKey: `ip:${ip}`,
+          scopeType: 'ip',
+          scopeValue: ip,
+          status: 'STANDBY_ARJUNA_BLOCKED',
+          reason: 'Known/static threat already neutralized at front line; Sudarshana not required',
+          lockedAt: null,
+          expiresAt: null
+        };
+      }
+
+      // Unknown/multi-vector traffic first belongs to Krishna. If Krishna has
+      // blocked it at the boundary, there is no escaped threat to isolate yet.
+      // Sudarshana requires evidence that the unknown threat crossed that first
+      // defensive boundary instead of treating every unknown alert as a breach.
+      if (!confirmedEscape) {
+        return {
+          id: null,
+          scopeKey: `ip:${ip}`,
+          scopeType: 'ip',
+          scopeValue: ip,
+          status: 'STANDBY_KRISHNA_CONTAINED',
+          reason: 'Unknown/high-risk threat contained by Krishna at the boundary; no confirmed escape evidence for Sudarshana',
+          lockedAt: null,
+          expiresAt: null,
+          escalationRequired: 'confirmed_escape_or_breach_evidence'
+        };
+      }
     }
 
     const lock = originalEngage.call(this, opts);
     lock.minimumHoldMs = Math.min(1500, Math.max(250, Math.floor(this.timeBudgetMs / 4)));
     lock.studyState = 'KRISHNA_VALIDATION_IN_PROGRESS';
+    if (confirmedEscape) {
+      lock.escalationEvidence = {
+        confirmed: true,
+        source: evidence.source,
+        reference: typeof evidence.reference === 'string' ? evidence.reference.slice(0, 160) : null
+      };
+    }
     return lock;
   };
 
