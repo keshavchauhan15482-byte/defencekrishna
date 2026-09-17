@@ -162,19 +162,63 @@ function recordKnownMatch(engine, item, matchMode) {
   };
 }
 
-function findKnownMatch(engine, rawInput, canonical = false) {
+function recordMutationMatch(engine, item, matchMode) {
+  const entry = (engine.learnedPatterns || []).find(candidate => candidate && candidate.token === item.parentToken) || {
+    token: item.parentToken || null,
+    attackType: item.attackType,
+    learnedAt: item.validatedAt
+  };
+  entry.timesReused = Number(entry.timesReused || 0) + 1;
+  entry.mutationTimesReused = Number(entry.mutationTimesReused || 0) + 1;
+  if (typeof engine._persist === 'function') engine._persist();
+  return {
+    ...entry,
+    matchSource: 'validated_mutation',
+    matchedMutation: item.token,
+    mutationMatchMode: matchMode,
+    arjunaStore: 'validated_mutation_store',
+    bloomPrefilter: 'validatedMutationBloom'
+  };
+}
+
+function mostSpecificExactStoreMatch(engine, rawInput) {
   const raw = String(rawInput || '');
-  const haystack = canonical ? canonicalToken(raw) : raw;
-  if (!haystack) return null;
+  if (!raw) return null;
+  const matches = [];
 
   for (const item of engine.knownAttackStore || []) {
     const token = item && item.token;
     if (!token || !engine.knownAttackBloom.mightContain(token)) continue;
-    const needle = canonical ? canonicalToken(token) : token;
-    if (!needle) continue;
-    if (haystack.includes(needle)) return recordKnownMatch(engine, item, canonical ? 'canonical_equivalent' : 'exact');
+    if (raw.includes(token)) matches.push({ kind: 'known', item, length: token.length });
   }
-  return null;
+  for (const item of engine.validatedMutationStore || []) {
+    const token = item && item.token;
+    if (!token || !engine.validatedMutationBloom.mightContain(token)) continue;
+    if (raw.includes(token)) matches.push({ kind: 'mutation', item, length: token.length });
+  }
+
+  if (!matches.length) return null;
+  // Prefer the most specific exact token. If lengths tie, the reviewed root wins
+  // so a true original/root replay never loses provenance to a generated copy.
+  matches.sort((a, b) => b.length - a.length || (a.kind === 'known' ? -1 : 1));
+  const best = matches[0];
+  return best.kind === 'known'
+    ? recordKnownMatch(engine, best.item, 'exact_specific')
+    : recordMutationMatch(engine, best.item, 'exact_specific');
+}
+
+function findKnownCanonicalMatch(engine, rawInput) {
+  const haystack = canonicalToken(rawInput);
+  if (!haystack) return null;
+  let best = null;
+  for (const item of engine.knownAttackStore || []) {
+    const token = item && item.token;
+    if (!token || !engine.knownAttackBloom.mightContain(token)) continue;
+    const needle = canonicalToken(token);
+    if (!needle || !haystack.includes(needle)) continue;
+    if (!best || needle.length > best.length) best = { item, length: needle.length };
+  }
+  return best ? recordKnownMatch(engine, best.item, 'canonical_equivalent') : null;
 }
 
 if (!globalThis[V5_FLAG]) {
@@ -201,11 +245,12 @@ if (!globalThis[V5_FLAG]) {
   CounterEngine.prototype.checkLearned = function v5ArjunaTwoStoreLookup(rawInput) {
     if (!this.knownAttackBloom || !this.validatedMutationBloom) rebuildSeparatedMemory(this);
 
-    // Preserve root provenance when the reviewed root itself is present exactly.
-    // This prevents generator-produced case copies of the root from stealing the
-    // attribution and makes Known vs Mutation datasets genuinely disjoint.
-    const exactRoot = findKnownMatch(this, rawInput, false);
-    if (exactRoot) return exactRoot;
+    // Exact store hits are resolved by token specificity across BOTH datasets.
+    // This makes a replay of a longer validated variant land in Mutation Store
+    // even when it contains its parent root as a substring, while a true root
+    // replay remains Known Attack Store knowledge.
+    const exactStoreMatch = mostSpecificExactStoreMatch(this, rawInput);
+    if (exactStoreMatch) return exactStoreMatch;
 
     const match = priorCheckLearned.call(this, rawInput);
     if (match && match.matchSource === 'validated_mutation') {
@@ -215,7 +260,7 @@ if (!globalThis[V5_FLAG]) {
       }
       // Parent-equivalent generated variants are intentionally excluded from the
       // mutation store; allow them to resolve back to the reviewed root class.
-      return findKnownMatch(this, rawInput, true);
+      return findKnownCanonicalMatch(this, rawInput);
     }
 
     if (match) {
@@ -225,7 +270,7 @@ if (!globalThis[V5_FLAG]) {
       }
     }
 
-    return findKnownMatch(this, rawInput, true);
+    return findKnownCanonicalMatch(this, rawInput);
   };
 
   CounterEngine.prototype.stats = function v5SeparatedStats() {
