@@ -8,7 +8,8 @@
  * authoritative. V2 adds only:
  *   1) direct nested-value evidence enrichment for structural unknown routing;
  *   2) bounded adaptive mutation generation (96/root token, 256/incident);
- *   3) explicit mutation-budget telemetry.
+ *   3) explicit mutation-budget telemetry;
+ *   4) consistent learning-time evidence so a routed unknown can be promoted.
  */
 require('./defence-stack-patch');
 
@@ -18,11 +19,14 @@ const { DetectionEngine } = require('./detection-engine');
 const V2_FLAG = Symbol.for('krishna.defenceStackV2Patch.v1');
 const MAX_MUTATIONS_PER_TOKEN = 96;
 const MAX_MUTATIONS_PER_INCIDENT = 256;
+const MAX_ROOT_TOKENS_PER_INCIDENT = 8;
+const STRUCTURAL_PROTOTYPE_TOKEN = /\[\s*['"]constructor['"]\s*\]\s*\[\s*['"]prototype['"]\s*\](?:\s*\[\s*['"][^'"]{1,64}['"]\s*\])?/gi;
 
 if (!globalThis[V2_FLAG]) {
   globalThis[V2_FLAG] = true;
 
   const priorInspect = DetectionEngine.prototype.inspect;
+  const priorExtract = CounterEngine.prototype._extractTokens;
   const priorGenerate = CounterEngine.prototype._generateSyntheticMutations;
   const priorLearn = CounterEngine.prototype.learnFromIncident;
 
@@ -48,6 +52,18 @@ if (!globalThis[V2_FLAG]) {
     }
   }
 
+  function enrichRawEvidence(rawInput) {
+    const raw = String(rawInput || '');
+    if (!raw) return raw;
+    const direct = [];
+    try {
+      collectEvidence(JSON.parse(raw), direct);
+    } catch (_) {
+      // Already-enriched/non-JSON evidence is still valid input below.
+    }
+    return [raw, ...direct].filter(Boolean).join('\n');
+  }
+
   DetectionEngine.prototype.inspect = function v2EvidenceInspect(req) {
     if (!req) return priorInspect.call(this, req);
 
@@ -68,6 +84,23 @@ if (!globalThis[V2_FLAG]) {
       rawBodyBytes: Buffer.byteLength(enrichedRaw)
     };
     return priorInspect.call(this, enriched);
+  };
+
+  CounterEngine.prototype._extractTokens = function v2StructuralExtract(rawInput, attackTypes = []) {
+    const enrichedRaw = enrichRawEvidence(rawInput);
+    const existing = priorExtract.call(this, enrichedRaw, attackTypes);
+    const structural = [];
+    let match;
+    STRUCTURAL_PROTOTYPE_TOKEN.lastIndex = 0;
+    while ((match = STRUCTURAL_PROTOTYPE_TOKEN.exec(enrichedRaw)) !== null) {
+      structural.push(match[0]);
+      if (structural.length >= MAX_ROOT_TOKENS_PER_INCIDENT) break;
+    }
+
+    // Put the precise structural evidence first so a generic fallback token
+    // cannot consume the bounded root-token budget before the reusable signal.
+    return [...new Set([...structural, ...(Array.isArray(existing) ? existing : [])])]
+      .slice(0, MAX_ROOT_TOKENS_PER_INCIDENT);
   };
 
   CounterEngine.prototype._generateSyntheticMutations = function v2BoundedGenerator(token, attackTypes = []) {
@@ -95,7 +128,14 @@ if (!globalThis[V2_FLAG]) {
     this._v2MaxPerTokenCandidates = 0;
 
     try {
-      const result = priorLearn.call(this, args);
+      // The routing path already examines primitive nested values. Give the
+      // independent learning gate the same evidence view, otherwise JSON
+      // escaping can make an unknown route correctly but fail promotion.
+      const learningArgs = {
+        ...args,
+        rawInput: enrichRawEvidence(args.rawInput)
+      };
+      const result = priorLearn.call(this, learningArgs);
       if (!result || typeof result !== 'object') return result;
 
       const evaluated = Number(result.mutationCandidates || 0);
