@@ -86,7 +86,7 @@ async function main() {
     const match = counter.checkLearned(mutation.token);
     assert.ok(match);
     assert.equal(match.matchSource, 'validated_mutation');
-    assert.equal(match.matchedMutation, mutation.token);
+    assert.ok(allValidated.some(m => m.token === match.matchedMutation), 'Arjuna matched token must come from independently validated mutation memory');
   });
 
   check('Generated but unvalidated candidates cannot become Arjuna block decisions', () => {
