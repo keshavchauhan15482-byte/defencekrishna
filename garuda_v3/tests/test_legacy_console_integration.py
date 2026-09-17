@@ -25,15 +25,19 @@ class LegacyConsoleIntegrationTests(unittest.TestCase):
         a = legacy_console._variant_payload("syn_flood", 0)
         b = legacy_console._variant_payload("syn_flood", 0)
         self.assertEqual(a["x"], b["x"])
-        self.assertEqual(a["data_source"], "synthetic_network_lab_known:syn_flood")
+        self.assertEqual(a["times"], b["times"])
+        self.assertEqual(a["data_source"], "recorded_network_lab_known:syn_flood")
         self.assertEqual(a["schema"], b["schema"])
 
-    def test_unknown_variant_can_be_fresh_without_breaking_schema(self):
+    def test_unknown_variant_is_fresh_but_keeps_model_features_identical(self):
         a = legacy_console._variant_payload("dns_tunnel", 1)
         b = legacy_console._variant_payload("dns_tunnel", 2)
-        self.assertNotEqual(a["x"], b["x"])
-        self.assertEqual(a["schema"], b["schema"])
-        self.assertTrue(a["data_source"].startswith("synthetic_network_lab_unknown:"))
+        self.assertEqual(a["x"], b["x"])
+        self.assertEqual(a["adj"], b["adj"])
+        self.assertEqual(a["mask"], b["mask"])
+        self.assertNotEqual(a["times"], b["times"])
+        self.assertEqual(a["times"][1] - a["times"][0], b["times"][1] - b["times"][0])
+        self.assertTrue(a["data_source"].startswith("recorded_network_lab_unknown_variant:"))
 
     def test_integration_js_uses_runtime_routes_not_old_web_payload_names(self):
         js = (Path(legacy_console.UI) / "console-integrated.js").read_text()
