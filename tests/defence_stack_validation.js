@@ -27,8 +27,7 @@ function req(ip, payload) {
     isLoginAttemptFailed: false
   };
 }
-
-async function main() {
+function isolatedCounter() {
   const counter = new CounterEngine();
   // Isolate this contract from committed demo memory and filesystem writes.
   counter.learnedPatterns = [];
@@ -36,7 +35,23 @@ async function main() {
   counter.sourceIncidentHistory = new Map();
   counter.bloom = new BloomFilter(8192, 4);
   counter._persist = () => {};
+  return counter;
+}
 
+async function main() {
+  const lowConfidenceCounter = isolatedCounter();
+  const lowConfidence = lowConfidenceCounter.learnFromIncident({
+    rawInput: JSON.stringify({ payload: '<script>alert(1)</script>' }),
+    attackTypes: ['xss'],
+    sourceIp: '192.0.2.9',
+    confidenceScore: 60
+  });
+  check('Low-confidence incident cannot poison Arjuna memory', () => {
+    assert.equal(lowConfidence.confidenceRejected, true);
+    assert.equal(lowConfidenceCounter.learnedPatterns.length, 0);
+  });
+
+  const counter = isolatedCounter();
   const rootPayload = 'UNION SELECT username,password FROM users WHERE id=1';
   const learned = counter.learnFromIncident({
     rawInput: JSON.stringify({ payload: rootPayload }),
@@ -85,7 +100,7 @@ async function main() {
 
   check('Known/static front-line block does not unnecessarily invoke Sudarshana', () => {
     const engine = new DetectionEngine(null);
-    const known = engine.inspect(req('192.0.2.20', "' OR 1=1-- UNION SELECT password FROM users"));
+    const known = engine.inspect(req('192.0.2.20', '<script>alert(1)</script>'));
     assert.equal(known.tier, 'danger');
     assert.equal(known.isZeroDayAnomaly, false);
     const core = new SudarshanaCore({ timeBudgetMs: 1000 });
@@ -99,7 +114,7 @@ async function main() {
 
   check('Unresolved unknown stays fail-closed under scoped Sudarshana containment', () => {
     const engine = new DetectionEngine(null);
-    const unknown = engine.inspect(req('192.0.2.21', 'probe ${process.mainModule.require("child_process")}')); 
+    const unknown = engine.inspect(req('192.0.2.21', 'probe ${process.mainModule.require("child_process")}'));
     assert.equal(unknown.tier, 'danger');
     assert.equal(unknown.isZeroDayAnomaly, true);
     const core = new SudarshanaCore({ timeBudgetMs: 1000 });
