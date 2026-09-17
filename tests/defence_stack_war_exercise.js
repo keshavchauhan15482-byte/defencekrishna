@@ -134,8 +134,10 @@ async function main() {
 
   // WAVE 3 — study/evolve/promote. Start with an unseen structure, let Krishna
   // independently validate it, generate bounded mutations, then prove that the
-  // original root and a distinct validated mutation occupy different Arjuna
-  // knowledge stores.
+  // original reviewed root and a genuinely promoted mutation occupy different
+  // Arjuna knowledge stores. Note that independent validation alone is not
+  // promotion: parent-equivalent variants are deliberately withheld from the
+  // Mutation Store.
   const counter = isolatedCounter();
   const learningPayload = '["constructor"]["prototype"]["isAdmin"]';
   const firstSight = new DetectionEngine(counter).inspect(request('203.0.113.50', learningPayload));
@@ -156,24 +158,33 @@ async function main() {
   assert.ok((learned.mutationsValidated || 0) > 0, 'no mutation candidate passed independent validation');
 
   const roots = (learned.newlyLearned || []).map(entry => entry.token).filter(Boolean);
-  const validated = (learned.newlyLearned || []).flatMap(entry => entry.validatedSyntheticMutations || []);
-  const distinctMutation = validated.find(item => item && item.token && roots.every(root => item.token !== root));
-  assert.ok(distinctMutation, 'no distinct validated mutation available for promotion replay');
-
   v5.rebuildSeparatedMemory(counter);
+  assert.ok(counter.validatedMutationStore.length > 0, 'independent validation produced no mutation eligible for separate-store promotion');
+
   const originalMatch = counter.checkLearned(roots[0]);
-  const mutationMatch = counter.checkLearned(distinctMutation.token);
   assert.ok(originalMatch, 'reviewed root was not reusable by Arjuna');
-  assert.ok(mutationMatch, 'validated mutation was not reusable by Arjuna');
   assert.equal(originalMatch.arjunaStore, 'known_attack_store');
+
+  let promotedMutation = null;
+  let mutationMatch = null;
+  for (const item of counter.validatedMutationStore) {
+    const candidateMatch = counter.checkLearned(item.token);
+    if (candidateMatch && candidateMatch.arjunaStore === 'validated_mutation_store') {
+      promotedMutation = item;
+      mutationMatch = candidateMatch;
+      break;
+    }
+  }
+  assert.ok(promotedMutation, 'no promoted mutation-store entry was reusable through Arjuna');
+  assert.ok(mutationMatch, 'promoted mutation did not resolve through Arjuna');
   assert.equal(mutationMatch.arjunaStore, 'validated_mutation_store');
   assert.equal(counter.knownAttackBloom.sizeBytes(), 1024);
   assert.equal(counter.validatedMutationBloom.sizeBytes(), 1024);
 
   const replayOriginal = new DetectionEngine(counter).inspect(request('203.0.113.51', roots[0]));
-  const replayMutation = new DetectionEngine(counter).inspect(request('203.0.113.52', distinctMutation.token));
+  const replayMutation = new DetectionEngine(counter).inspect(request('203.0.113.52', promotedMutation.token));
   assert.equal(replayOriginal.isLearnedMatch, true, 'original unknown did not become Arjuna-known after study');
-  assert.equal(replayMutation.isLearnedMatch, true, 'validated related mutation did not become Arjuna-known');
+  assert.equal(replayMutation.isLearnedMatch, true, 'promoted related mutation did not become Arjuna-known');
   assert.equal(replayOriginal.routingAuthority, 'arjuna_known');
   assert.equal(replayMutation.routingAuthority, 'arjuna_known');
 
@@ -183,6 +194,7 @@ async function main() {
     reviewedRoots: learned.newlyLearned.length,
     mutationCandidates: learned.mutationCandidates,
     validatedMutations: learned.mutationsValidated,
+    promotedMutationEntries: counter.validatedMutationStore.length,
     validationCoverage: learned.mutationValidationCoverage,
     perRootCap: 48,
     perIncidentCap: 128,
