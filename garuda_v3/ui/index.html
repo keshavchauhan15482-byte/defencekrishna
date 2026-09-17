@@ -3,18 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#040515">
-  <meta name="description" content="Garuda AI predictive cyber-defence console with runtime-bound forecasting, topology, evidence and response state.">
+  <meta name="theme-color" content="#020716">
+  <meta name="description" content="Garuda AI predictive cyber-defence dashboard with live runtime-bound risk, forecast, topology and response state.">
   <title>Garuda AI — Predictive Cyber Defence</title>
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/pixel.css">
+  <style>.refPage .brandBird{width:178px;height:46px}.refPage .brand>span:last-child{display:none}</style>
 </head>
-<body>
+<body class="refPage">
 <a class="skip" href="#overview">Skip to live console</a>
 <div class="siteFx" aria-hidden="true"><div class="gridFx"></div><div class="purpleOrb one"></div><div class="purpleOrb two"></div><div class="stars"></div></div>
+
 <header class="siteHeader">
-  <a class="brand" href="/"><span class="brandBird"><svg viewBox="0 0 64 64"><path d="M31 10 23 22 8 16l10 12-11 3 18 5 6 15 6-15 18-5-11-3 10-12-15 6Z"/><path d="M31 16 27 28l-9-6 7 11 6 3 6-3 7-11-9 6Z"/></svg></span><span><b>GARUDA AI</b><small>PREDICT · PREVENT · PROTECT</small></span></a>
-  <nav class="mainNav"><a class="active" href="/">Home</a><a href="/platform.html">Platform</a><a href="/technology.html">Technology</a><a href="/defence.html">Defence</a><a href="/evidence.html">Evidence</a><a href="#live">Live Demo</a></nav>
-  <div class="headerActions"><span class="connection" id="connection"><i></i>Disconnected</span><span class="clock" id="clock">— UTC</span><button class="button headerButton" id="sessionToggle">Connect <span>→</span></button></div>
+  <a class="brand" href="/" aria-label="Garuda AI home"><span class="brandBird" aria-hidden="true"></span><span><b>GARUDA AI</b><small>PREDICT · PREVENT · PROTECT</small></span></a>
+  <nav class="mainNav" aria-label="Primary navigation">
+    <a class="active" href="/">Home</a><a href="/platform.html">Platform</a><a href="/technology.html">Technology</a><a href="/defence.html">Defence</a><a href="/evidence.html">Evidence</a><a href="/evidence.html#datasets">Datasets</a><a href="#live">Live Demo</a><a href="/platform.html#docs">Docs</a>
+  </nav>
+  <div class="headerActions"><span class="connection" id="connection"><i></i>Disconnected</span><span class="clock" id="clock">— UTC</span><button class="button headerButton" id="sessionToggle" aria-label="Connect session">Connect</button></div>
 </header>
 
 <main id="overview">
@@ -23,15 +28,18 @@
       <div class="microLabel"><i></i>AI-BASED NETWORK ATTACK FORECASTING</div>
       <h1>Garuda <span>AI</span></h1>
       <h2>Predicting attacks<br>before compromise.</h2>
-      <p class="heroCopy">From observed network signals to a forward risk trajectory — with graph intelligence, source-labelled evidence and explicit response boundaries.</p>
-      <div class="heroActions"><button class="button primary" id="replay" disabled>▶ Watch live demo</button><a class="button secondary" href="/platform.html">Explore platform →</a></div>
-      <div class="featurePills"><span><b>◈</b> Real network data</span><span><b>⌁</b> AI forecasting</span><span><b>✦</b> 3-layer defence</span><span><b>⬡</b> Evidence based</span></div>
+      <p class="heroCopy">From network signals to future risk — powered by forecasting, graph intelligence and evidence-gated defence.</p>
+      <div class="heroActions"><button class="button primary" id="replay" disabled>▶ Watch Live Demo</button><a class="button secondary" href="/platform.html">Explore Platform →</a></div>
     </div>
 
     <article class="heroRiskCard glassCard">
       <div class="cardTop"><span><b class="pulseIcon"></b>LIVE THREAT RISK</span><span class="liveDot">LIVE</span></div>
       <div class="gaugeWrap heroGauge"><canvas id="riskGauge" width="520" height="380" aria-label="Current forecast risk meter"></canvas><div class="gaugeCenter"><strong id="gaugeValue">—</strong><span id="gaugeLabel">NO FORECAST</span></div></div>
-      <div class="riskFooter"><div><small>Peak</small><strong id="forecastLarge">—</strong></div><div><small>Runtime</small><strong id="runtimeMode">REVIEW</strong></div><div><small>Signal</small><strong id="signalBadge" class="signalBadge">WAITING</strong></div></div>
+      <div class="riskMiniGrid">
+        <div class="riskTrend"><span>Trend</span><strong id="forecastLarge">—</strong><canvas id="activitySpark" width="160" height="38" aria-label="Recent risk trend"></canvas></div>
+        <div><span>Peak (Session)</span><strong id="peak">—</strong><small>Live model output</small></div>
+        <div><span>Status</span><strong id="signalBadge" class="signalBadge">WAITING</strong><small id="runtimeMode">REVIEW</small></div>
+      </div>
     </article>
 
     <div class="heroIntelStack">
@@ -41,80 +49,75 @@
         <div id="horizonValues" class="horizonValues compact"></div>
       </article>
       <article class="glassCard topologyCard">
-        <div class="cardTop"><span><b class="pulseIcon violet"></b>LIVE NETWORK TOPOLOGY</span><div class="panelActions"><button class="iconButton" id="rotate" aria-label="Pause graph rotation">Ⅱ</button><button class="iconButton" id="zoomIn">+</button><button class="iconButton" id="zoomOut">−</button><button class="iconButton" id="resetView">↺</button></div></div>
+        <div class="cardTop"><span><b class="pulseIcon violet"></b>LIVE NETWORK TOPOLOGY</span><div class="panelActions"><button class="iconButton" id="rotate" aria-label="Pause graph rotation">Ⅱ</button><button class="iconButton" id="zoomIn" aria-label="Zoom in">+</button><button class="iconButton" id="zoomOut" aria-label="Zoom out">−</button><button class="iconButton" id="resetView" aria-label="Reset view">↺</button></div></div>
         <div class="graphStage"><canvas id="graph" width="760" height="390" aria-label="Observed network graph"></canvas><div class="graphEmpty" id="graphEmpty"><span>◇</span><strong>Awaiting network state</strong></div><div class="nodeDetail" id="nodeDetail" hidden></div><div class="graphHud"><span id="edgeCount">— observed edges</span><span id="cutoff">No observation cutoff</span></div></div>
-        <div class="topologyStats"><div><strong id="nodeCount">—</strong><span>Nodes</span></div><div><strong id="eventCount">0 EVENTS</strong><span>Signals</span></div><div><strong id="armStatus">DISARMED</strong><span>Response</span></div></div>
+        <div class="topologyStats"><div><strong id="eventCount">0 EVENTS</strong><span>Signals</span></div><div><strong id="armStatus">DISARMED</strong><span>Response</span></div><div><strong>LIVE</strong><span>Observed graph</span></div></div>
         <details class="accessibleData"><summary>Observed node data</summary><div id="nodeTable">No observed nodes.</div></details>
       </article>
     </div>
 
-    <aside class="garudaArt" aria-label="Garuda visual">
-      <div class="eagleGlow"></div>
-      <svg viewBox="0 0 700 720" role="img" aria-label="Stylized Garuda eagle">
-        <defs>
-          <linearGradient id="wingL" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#9a5cff"/><stop offset=".45" stop-color="#4f8cff"/><stop offset="1" stop-color="#16d9ff"/></linearGradient>
-          <linearGradient id="wingR" x1="1" x2="0" y1="0" y2="1"><stop stop-color="#8d4dff"/><stop offset=".5" stop-color="#376bff"/><stop offset="1" stop-color="#10d1ff"/></linearGradient>
-          <linearGradient id="bodyG" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#17358f"/><stop offset=".45" stop-color="#0c163f"/><stop offset="1" stop-color="#040817"/></linearGradient>
-          <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-        <g opacity=".97" filter="url(#glow)">
-          <path fill="url(#wingL)" d="M337 255C252 136 132 77 23 83c73 38 120 79 157 128-63-23-118-19-171 11 70 22 124 56 171 100-56-10-104 0-148 29 67 13 122 40 174 84 35-56 78-105 131-180Z"/>
-          <path fill="url(#wingR)" d="M363 255C448 136 568 77 677 83c-73 38-120 79-157 128 63-23 118-19 171 11-70 22-124 56-171 100 56-10 104 0 148 29-67 13-122 40-174 84-35-56-78-105-131-180Z"/>
-          <path fill="url(#bodyG)" stroke="#7c55ff" stroke-width="4" d="M350 176c-55 57-78 122-70 199l24 226 46-75 46 75 24-226c8-77-15-142-70-199Z"/>
-          <path fill="#0a102a" stroke="#52c9ff" stroke-width="3" d="M350 191 297 260l53 43 53-43Z"/>
-          <path fill="#78e9ff" d="m350 203-13 44 13 16 13-16Z"/>
-          <path fill="#6652ff" d="m307 269 43 35 43-35-43 66Z"/>
-          <circle cx="350" cy="227" r="7" fill="#75fbff"/>
-          <path fill="#10205c" d="m289 584 61-67 61 67-61 82Z"/>
-        </g>
-        <g opacity=".55" fill="none" stroke="#75dfff" stroke-width="1.2"><path d="M350 156c-139 9-238 87-298 203"/><path d="M350 156c139 9 238 87 298 203"/><path d="M350 188v462"/></g>
-      </svg>
+    <aside class="garudaArt" aria-label="Garuda eagle visual">
+      <div class="eagleGlow" aria-hidden="true"></div>
+      <svg viewBox="0 0 1 1" aria-hidden="true"></svg>
       <blockquote>“A safer tomorrow,<br>by seeing it first.”<small>— GARUDA AI</small></blockquote>
-      <article class="analysisCard glassCard"><div class="cardTop"><span>CURRENTLY ANALYSING</span><span id="demoDataMode" class="modeBadge">RECORDED REPLAY</span></div><dl><div><dt>Capture source</dt><dd id="source">NO CAPTURE LOADED</dd></div><div><dt>Graph</dt><dd id="graphType">Awaiting graph</dd></div><div><dt>Forecast horizon</dt><dd id="horizon">—</dd></div><div><dt>Runtime</dt><dd id="healthState">Awaiting connection</dd></div></dl></article>
+      <article class="analysisCard glassCard">
+        <div class="cardTop"><span>CURRENTLY ANALYSING</span><span id="demoDataMode" class="modeBadge">RECORDED REPLAY</span></div>
+        <dl><div><dt>Capture source</dt><dd id="source">NO CAPTURE LOADED</dd></div><div><dt>Graph</dt><dd id="graphType">Awaiting graph</dd></div><div><dt>Model input</dt><dd>Observed network state</dd></div><div><dt>Runtime</dt><dd id="healthState">Awaiting connection</dd></div></dl>
+      </article>
     </aside>
+
+    <div class="capabilityStrip">
+      <article><span class="capIcon">▣</span><div><strong>Real Network Data</strong><small>PCAP / Flow / Graph</small></div></article>
+      <article><span class="capIcon">⌘</span><div><strong>AI Forecasting</strong><small>State + Risk Prediction</small></div></article>
+      <article><span class="capIcon">✧</span><div><strong>3-Layer Defence</strong><small>Arjuna · Krishna · Sudarshana</small></div></article>
+      <article><span class="capIcon">◉</span><div><strong>Evidence-Based</strong><small>Verified Results</small></div></article>
+    </div>
   </section>
 
-  <section class="runtimeStrip sectionShell">
-    <article><span class="metricIcon cyan">⌘</span><div><strong id="nodeCaption">Awaiting graph</strong><small>Observed network state</small></div></article>
-    <article><span class="metricIcon blue">⌁</span><div><strong id="peak">—</strong><small>Current peak forecast</small></div></article>
-    <article><span class="metricIcon violet">◷</span><div><strong id="responseMode">Standby</strong><small id="responseCaption">No policy is armed</small></div></article>
-    <article><span class="metricIcon amber">⬡</span><div><strong id="audit">AUDIT NOT LOADED</strong><small>Evidence integrity</small></div></article>
-    <article><span class="metricIcon mint">▱</span><div><strong id="memoryCount">0 REVIEWED</strong><small id="refreshAge">—</small></div></article>
+  <section class="runtimeStrip sectionShell" aria-label="Live runtime summary">
+    <article><span class="metricIcon cyan">♟</span><div><strong id="nodeCount">—</strong><span>Observed Nodes</span><small id="nodeCaption">Awaiting graph</small></div></article>
+    <article><span class="metricIcon cyan">⌁</span><div><strong id="horizon">—</strong><span>Forecast Horizon</span><small>Loaded from model metadata</small></div></article>
+    <article><span class="metricIcon violet">◷</span><div><strong id="responseMode">Standby</strong><span>Response Posture</span><small id="responseCaption">No policy is armed</small></div></article>
+    <article><span class="metricIcon amber">⬡</span><div><strong id="audit">AUDIT NOT LOADED</strong><span>Evidence Integrity</span><small>Runtime chain state</small></div></article>
+    <article><span class="metricIcon mint">▱</span><div><strong>Runtime Healthy</strong><span>System Status</span><small id="refreshAge">—</small></div></article>
   </section>
 
-  <section class="notice sectionShell" id="notice" role="status"><span>ⓘ</span><span id="noticeText">Connect to load model metadata and recorded network observations. No live customer sensor is connected.</span></section>
+  <section class="refNotice sectionShell notice" id="notice" role="status"><span>ⓘ</span><span id="noticeText">Connect to load model metadata and recorded network observations. No live customer sensor is connected.</span></section>
 
   <section class="defenceSection sectionShell" id="telemetry">
-    <div class="sectionBar"><div><h2>Three-Layer Defence System</h2><p>Forecast → evidence → review / action</p></div><a href="/defence.html">Explore architecture →</a></div>
+    <div class="sectionBar"><div><h2>Three-Layer Defence System</h2><p>Predict · Prevent · Protect · Evolve</p></div><a href="/defence.html">Explore architecture →</a></div>
     <div class="defenceCards">
-      <article class="defenceCard arjunaCard" data-layer="arjuna"><div class="defenceIcon bowIcon">◇</div><div><div class="defenceHead"><h3>Arjuna</h3><span>KNOWN THREAT RESPONSE</span></div><p>Reviewed exact threat-memory matches route through the known-response path.</p><div class="defenceNumbers"><strong id="arjunaState">Awaiting runtime state</strong><small>Reviewed recognition memory</small></div></div></article>
-      <article class="defenceCard krishnaCard" data-layer="krishna"><div class="defenceIcon brainIcon">⌬</div><div><div class="defenceHead"><h3>Krishna</h3><span>UNKNOWN THREAT INVESTIGATION</span></div><p>Unfamiliar forecast alerts remain in evidence review instead of being mislabeled as known signatures.</p><div class="defenceNumbers"><strong id="krishnaState">Awaiting runtime state</strong><small>Pending investigation state</small></div></div></article>
-      <article class="defenceCard sudarshanaCard" data-layer="sudarshana"><div class="defenceIcon chakraIcon">◎</div><div><div class="defenceHead"><h3>Sudarshana</h3><span>SCOPED CONTAINMENT</span></div><p>Containment remains explicit, scoped and authorization-gated by the runtime.</p><div class="defenceNumbers"><strong id="sudarshanaState">Standing by</strong><small>Current containment state</small></div></div></article>
+      <article class="defenceCard arjunaCard" data-layer="arjuna">
+        <div class="defenceIcon bowIcon">◇</div><div><div class="defenceHead"><div><h3>Arjuna</h3><span>KNOWN THREAT RESPONSE</span></div><span>KNOWN PATH</span></div><p>Recognizes reviewed exact threat-memory matches and routes them through the known-response path.</p><div class="defenceNumbers"><span><strong id="arjunaState">Awaiting runtime state</strong><small>Reviewed fingerprints</small></span><span><strong>Evidence gated</strong><small>Recognition path</small></span></div></div>
+      </article>
+      <article class="defenceCard krishnaCard" data-layer="krishna">
+        <div class="defenceIcon brainIcon">⌬</div><div><div class="defenceHead"><div><h3>Krishna</h3><span>UNKNOWN THREAT INVESTIGATION</span></div><span>REVIEW</span></div><p>Routes unfamiliar forecast alerts into evidence review instead of pretending they are already-known signatures.</p><div class="defenceNumbers"><span><strong id="krishnaState">Awaiting runtime state</strong><small>Pending investigation</small></span><span><strong>Adaptive review</strong><small>Unknown path</small></span></div></div>
+      </article>
+      <article class="defenceCard sudarshanaCard" data-layer="sudarshana">
+        <div class="defenceIcon chakraIcon">◎</div><div><div class="defenceHead"><div><h3>Sudarshana</h3><span>SCOPED CONTAINMENT</span></div><span>GATED</span></div><p>Publishes scoped containment only when operator scope and runtime authorization permit it.</p><div class="defenceNumbers"><span><strong id="sudarshanaState">Standing by</strong><small>Containment state</small></span><span><strong id="garudaState">Awaiting observations</strong><small>Forecast signal</small></span></div></div>
+      </article>
     </div>
   </section>
 
   <section class="dashboardGrid sectionShell" id="response">
-    <article class="glassCard alertsCard"><div class="cardTop"><span>RECENT SIGNALS</span><strong id="garudaState">Awaiting observations</strong></div><div id="events" class="events"><div class="emptyRow">Connect to inspect response events.</div></div></article>
+    <article class="glassCard alertsCard"><div class="cardTop"><span>RECENT ALERTS</span><span>LIVE LEDGER</span></div><div id="events" class="events"><div class="emptyRow">Connect to inspect response events.</div></div></article>
     <article class="glassCard evidenceCard"><div class="cardTop"><span>DATASET & EVIDENCE</span><span class="modeBadge">PROVENANCE</span></div><h3 id="stage">No specific stage evidence</h3><p id="stageText">Load a forecast to inspect stage-label availability.</p><div class="provenanceBox"><small>MODEL PROVENANCE</small><p id="provenance">Checkpoint and dataset evidence will appear after connection.</p></div><button class="button secondary compactButton" id="download" disabled>Export forecast JSON ↓</button></article>
-    <article class="glassCard modelCard"><div class="cardTop"><span>MODEL PERFORMANCE</span><a href="/evidence.html">Full evidence →</a></div><canvas id="benchmarkChart" width="520" height="210" aria-label="Model benchmark chart"></canvas><div class="perfFoot"><span>Persistence state MSE</span><strong id="persistenceMse">—</strong></div></article>
-    <article class="glassCard sessionCard"><div class="cardTop"><span>LIVE SESSION CONTROL</span><span class="liveDot">LOCAL</span></div><canvas id="activitySpark" width="520" height="120" aria-label="Recent forecast risk history"></canvas><div class="buttonRow"><button class="button secondary" id="hostReplay" disabled>Host topology</button><button class="button secondary" id="alertReplay" disabled>Alert replay</button></div></article>
+    <article class="glassCard modelCard"><div class="cardTop"><span>MODEL PERFORMANCE (CURRENT)</span><a href="/evidence.html">Evidence →</a></div><canvas id="benchmarkChart" width="520" height="210" aria-label="Model benchmark chart"></canvas><div class="perfFoot"><span>Persistence state MSE</span><strong id="persistenceMse">—</strong></div></article>
+    <article class="glassCard sessionCard"><div class="cardTop"><span>LIVE SESSION CONTROL</span><span class="liveDot">LOCAL</span></div><div class="sessionButtons"><button class="button secondary" id="hostReplay" disabled>Ⅱ Host View</button><button class="button secondary" id="alertReplay" disabled>■ Alert Replay</button><label class="fileButton button primary" for="file">＋ New Capture<input id="file" type="file" accept=".csv,.pcap"></label></div><div class="sessionState"><span><i></i>Session ready</span><span id="fileName">No file selected</span></div><select id="mode" hidden><option value="service">Protocol / service graph</option><option value="host">Host graph</option></select><button id="analyze" class="button primary" disabled hidden>Analyze</button></article>
   </section>
 
-  <section class="utilityGrid sectionShell">
-    <article class="glassCard uploadCard"><div><span class="microLabel">BRING YOUR OWN TELEMETRY</span><h3>Analyze an observed capture locally</h3><p>CSV flow records or classic PCAP · processed by the local runtime.</p></div><div class="captureControls"><select id="mode"><option value="service">Protocol / service graph</option><option value="host">Host graph</option></select><label class="fileButton" for="file">Choose capture<input id="file" type="file" accept=".csv,.pcap"></label><button class="button primary" id="analyze" disabled>Analyze</button><small id="fileName">No file selected</small></div></article>
-    <article class="glassCard explainCard"><div class="cardTop"><span>MODEL EXPLANATION</span><span class="modeBadge">ATTRIBUTION</span></div><div id="features" class="features"><div class="emptyRow">Run a forecast to inspect feature contributions.</div></div></article>
+  <footer class="siteFooter sectionShell"><div class="brand footerBrand"><span class="brandBird" aria-hidden="true"></span><span><b>GARUDA AI</b><small>PREDICTIVE CYBER DEFENCE</small></span></div><p>“From signals to a safer nation.”</p><nav><a href="/platform.html">Privacy</a><a href="/platform.html">About</a><a href="/platform.html">Contact</a><a href="https://github.com/keshavchauhan15482-byte/defencekrishna" aria-label="GitHub">◉</a></nav></footer>
+
+  <section class="sessionPanel" id="sessionPanel" hidden><div class="sessionModal"><span class="microLabel">SECURE LOCAL SESSION</span><h2>Connect the live console</h2><p>Use the local viewer or operator token from <code>garuda_v3/runtime/access.json</code>. Recorded replay is clearly labelled; no live customer sensor is connected.</p><form id="sessionForm"><input id="token" type="password" autocomplete="off" placeholder="Workspace access token" required><button class="button primary" id="connect" type="submit">Connect →</button></form></div></section>
+
+  <section class="technicalVault" id="evidence" aria-hidden="true">
+    <div id="features"><div class="emptyRow">Run a forecast to inspect feature contributions.</div></div>
+    <div id="policies"><div class="emptyRow">No policy data loaded.</div></div>
+    <form id="reviewForm"><select id="reviewEvent"><option value="">No alert selected</option></select><input id="attackType" maxlength="80"><textarea id="reviewEvidence" minlength="12" maxlength="500"></textarea><button id="approve" disabled>Approve fingerprint</button></form>
+    <input id="target"><input id="ttl" type="number" value="30"><input id="reason"><button id="contain" disabled>Publish policy</button><button id="arm" disabled>Arm</button><button id="disarm" disabled>Disarm</button><button id="kill" disabled>Kill</button><button id="escalate" disabled>Escalate</button>
+    <div id="memory"><div class="emptyRow">No reviewed response fingerprints loaded.</div></div><strong id="memoryCount">0 REVIEWED</strong><span id="runtimeModeHidden"></span>
+    <p id="evidenceLimit">Forecast risk is a model score, not a verified compromise probability.</p><table><tbody id="metrics"><tr><td>Connect to load measured results.</td></tr></tbody></table>
   </section>
-
-  <details class="operatorDeck sectionShell glassCard">
-    <summary>Operator response controls & reviewed memory</summary>
-    <div class="operatorGrid"><section><h3>Response authorization</h3><div class="policyFields"><label>Target IP<input id="target" placeholder="IP in configured lab scope"></label><label>TTL<input id="ttl" type="number" min="10" max="60" value="30"></label><label>Reason<input id="reason" placeholder="Operator reason"></label></div><div class="buttonRow"><button class="button primary" id="contain" disabled>Publish policy</button><button class="button secondary" id="arm" disabled>Arm lab response</button><button class="button secondary" id="disarm" disabled>Disarm</button><button class="button danger" id="kill" disabled>Emergency revoke</button></div><div id="policies" class="policies"><div class="emptyRow">No policy data loaded.</div></div></section><section><h3>Review unknown signal</h3><form id="reviewForm" class="reviewForm"><label>Signal<select id="reviewEvent"><option value="">No alert selected</option></select></label><label>Attack type<input id="attackType" maxlength="80" placeholder="Reviewed classification"></label><label>Evidence<textarea id="reviewEvidence" minlength="12" maxlength="500" rows="3" placeholder="Reviewed evidence reference"></textarea></label><div class="buttonRow"><button class="button primary" id="approve" disabled>Approve fingerprint</button><button class="button secondary" id="escalate" type="button" disabled>Report breach evidence</button></div></form><div id="memory" class="memory"><div class="emptyRow">No reviewed response fingerprints loaded.</div></div></section></div>
-  </details>
-
-  <details class="evidenceDeck sectionShell glassCard" id="evidence"><summary>Benchmarks, not decorative accuracy numbers.</summary><p id="evidenceLimit">Forecast risk is a model score, not a verified compromise probability.</p><div class="tableWrap"><table><thead><tr><th>Model</th><th>F1</th><th>Precision</th><th>Recall</th><th>FPR</th><th>State MSE</th></tr></thead><tbody id="metrics"><tr><td colspan="6">Connect to load measured results.</td></tr></tbody></table></div></details>
-
-  <section class="sessionPanel sectionShell glassCard" id="sessionPanel" hidden><div><span class="microLabel">SECURE LOCAL SESSION</span><h2>Connect the live console</h2><p>Use the local viewer or operator token from <code>garuda_v3/runtime/access.json</code>.</p></div><form id="sessionForm"><input id="token" type="password" autocomplete="off" placeholder="Workspace access token" required><button class="button primary" id="connect" type="submit">Connect →</button></form></section>
-
-  <footer class="siteFooter sectionShell"><div class="brand footerBrand"><span class="brandBird">✦</span><span><b>GARUDA AI</b><small>PREDICTIVE CYBER DEFENCE</small></span></div><p>From observed signals to a safer tomorrow.</p><nav><a href="/platform.html">Platform</a><a href="/technology.html">Technology</a><a href="/defence.html">Defence</a><a href="/evidence.html">Evidence</a></nav></footer>
 </main>
 <script src="/app.js"></script>
 </body>
