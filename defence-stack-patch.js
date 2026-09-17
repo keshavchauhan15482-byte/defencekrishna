@@ -17,6 +17,8 @@ const { DetectionEngine } = require('./detection-engine');
 const { SudarshanaCore } = require('./sudarshana-core');
 
 const PATCH_FLAG = Symbol.for('krishna.defenceStackPatch.v1');
+const MAX_MUTATION_CANDIDATES_PER_SIGNATURE = 64;
+const MAX_MUTATION_CANDIDATES_PER_INCIDENT = 192;
 // General JavaScript bracket-notation prototype-chain access. The base WAF
 // already catches __proto__ and constructor.prototype dot forms; this closes the
 // structural evasion class without matching ordinary prose containing the words.
@@ -48,6 +50,17 @@ if (!globalThis[PATCH_FLAG]) {
   function requestEvidenceText(req) {
     if (!req) return '';
     const parts = [req.url || req.path || '', req.rawBodyStr || ''];
+    const appendStringValues = value => {
+      if (!value || typeof value !== 'object') return;
+      for (const item of Object.values(value)) {
+        if (typeof item === 'string') parts.push(item.slice(0, 4096));
+      }
+    };
+    // Include decoded primitive values as evidence, not only JSON-escaped
+    // serialization. This prevents bracket-notation structures inside payload
+    // strings from being hidden by escape characters in raw JSON text.
+    appendStringValues(req.query);
+    appendStringValues(req.body);
     try { parts.push(JSON.stringify(req.query || {})); } catch (_) {}
     try { parts.push(JSON.stringify(req.body || {})); } catch (_) {}
     return parts.join('\n');
@@ -145,10 +158,24 @@ if (!globalThis[PATCH_FLAG]) {
 
     let candidates = 0;
     let validated = 0;
+    let rawCandidatesGenerated = 0;
+    let candidatesTruncated = 0;
+    let incidentBudget = MAX_MUTATION_CANDIDATES_PER_INCIDENT;
     for (const entry of learned.newlyLearned || []) {
       const accepted = [];
       const rejected = [];
-      for (const mutation of entry.syntheticMutations || []) {
+      const rawCandidates = Array.isArray(entry.syntheticMutations) ? entry.syntheticMutations : [];
+      rawCandidatesGenerated += rawCandidates.length;
+      const signatureBudget = Math.min(MAX_MUTATION_CANDIDATES_PER_SIGNATURE, incidentBudget);
+      const boundedCandidates = rawCandidates.slice(0, signatureBudget);
+      candidatesTruncated += Math.max(0, rawCandidates.length - boundedCandidates.length);
+      incidentBudget -= boundedCandidates.length;
+      // Persist only the bounded candidate set. The fixed-size Bloom filter may
+      // have seen additional legacy candidates, but Arjuna authority below is
+      // exact-list based and therefore limited to validated bounded candidates.
+      entry.syntheticMutations = boundedCandidates;
+
+      for (const mutation of boundedCandidates) {
         candidates++;
         const verdict = independentlyDetect(mutation);
         const canonicalMutation = normalizeToken(mutation);
@@ -169,9 +196,6 @@ if (!globalThis[PATCH_FLAG]) {
         if (verdict.tier === 'danger' && arjunaEligible) {
           accepted.push(record);
           validated++;
-          // The old implementation already inserted every candidate in the
-          // Bloom filter. Exact confirmation below only trusts this accepted
-          // list, so rejected candidates cannot become block decisions.
           this.bloom.add(mutation);
         } else {
           if (verdict.tier === 'danger' && !arjunaEligible) record.rejectionReason = 'dangerous_but_not_arjuna_reusable_signature';
@@ -181,9 +205,13 @@ if (!globalThis[PATCH_FLAG]) {
       entry.validatedSyntheticMutations = accepted;
       entry.rejectedSyntheticMutations = rejected.slice(0, 20);
       entry.mutationValidation = {
-        candidateCount: (entry.syntheticMutations || []).length,
+        rawCandidateCount: rawCandidates.length,
+        candidateCount: boundedCandidates.length,
+        candidatesTruncated: Math.max(0, rawCandidates.length - boundedCandidates.length),
         validatedCount: accepted.length,
-        coverage: (entry.syntheticMutations || []).length ? accepted.length / entry.syntheticMutations.length : 0,
+        coverage: boundedCandidates.length ? accepted.length / boundedCandidates.length : 0,
+        maxCandidatesPerSignature: MAX_MUTATION_CANDIDATES_PER_SIGNATURE,
+        maxCandidatesPerIncident: MAX_MUTATION_CANDIDATES_PER_INCIDENT,
         validator: 'fresh DetectionEngine without learned memory + Arjuna reuse eligibility'
       };
     }
@@ -193,9 +221,15 @@ if (!globalThis[PATCH_FLAG]) {
       ...learned,
       confidenceScore: boundedConfidence,
       rootValidation: { tier: rootValidation.tier, score: rootValidation.score, attackType: rootValidation.attackType },
+      rawMutationCandidatesGenerated: rawCandidatesGenerated,
       mutationCandidates: candidates,
+      mutationCandidatesTruncated: candidatesTruncated,
       mutationsValidated: validated,
       mutationValidationCoverage: candidates ? validated / candidates : 0,
+      mutationCandidateLimits: {
+        perSignature: MAX_MUTATION_CANDIDATES_PER_SIGNATURE,
+        perIncident: MAX_MUTATION_CANDIDATES_PER_INCIDENT
+      },
       // Existing proxy uses this field for the Krishna study summary. Report
       // independently validated and Arjuna-reusable mutations, not raw candidates.
       mutationsSynthesized: validated
@@ -325,4 +359,10 @@ if (!globalThis[PATCH_FLAG]) {
   };
 }
 
-module.exports = { patched: true };
+module.exports = {
+  patched: true,
+  mutationLimits: {
+    perSignature: MAX_MUTATION_CANDIDATES_PER_SIGNATURE,
+    perIncident: MAX_MUTATION_CANDIDATES_PER_INCIDENT
+  }
+};
