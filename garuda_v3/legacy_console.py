@@ -10,7 +10,6 @@ subject to the runtime's real authorization and enforcement gates.
 """
 from __future__ import annotations
 
-import copy
 import json
 import os
 import time
@@ -27,15 +26,19 @@ RUNTIME = ROOT / "garuda_v3" / "runtime"
 ARTIFACTS = ROOT / "garuda_v3" / "artifacts" / "residual_run"
 ENGINE = "http://127.0.0.1:8090"
 
+# The scenario label is operator/demo metadata, not a class emitted by the model.
+# time_shift changes only absolute timestamps, never the graph values or spacing;
+# this gives reviewed-memory exercises distinct fingerprints without altering the
+# Garuda model input features or its forecast score.
 SCENARIOS = {
-    "syn_flood": {"label": "SYN Flood", "mode": "known", "offset": 0.011, "family": "volumetric"},
-    "port_scan": {"label": "Port Scan", "mode": "known", "offset": 0.017, "family": "reconnaissance"},
-    "lateral_smb": {"label": "SMB Lateral Movement", "mode": "known", "offset": 0.023, "family": "lateral-movement"},
-    "burst_ddos": {"label": "DDoS Burst", "mode": "known", "offset": 0.029, "family": "volumetric"},
-    "dns_tunnel": {"label": "DNS Tunnel Anomaly", "mode": "unknown", "offset": 0.013, "family": "novel-anomaly"},
-    "c2_beacon": {"label": "C2 Beacon Anomaly", "mode": "unknown", "offset": 0.019, "family": "novel-anomaly"},
-    "exfil_spike": {"label": "Exfiltration Spike", "mode": "unknown", "offset": 0.031, "family": "novel-anomaly"},
-    "clean_baseline": {"label": "Clean Baseline", "mode": "clean", "offset": 0.0, "family": "benign"},
+    "syn_flood": {"label": "SYN Flood", "mode": "known", "time_shift": 1010, "family": "volumetric"},
+    "port_scan": {"label": "Port Scan", "mode": "known", "time_shift": 2020, "family": "reconnaissance"},
+    "lateral_smb": {"label": "SMB Lateral Movement", "mode": "known", "time_shift": 3030, "family": "lateral-movement"},
+    "burst_ddos": {"label": "DDoS Burst", "mode": "known", "time_shift": 4040, "family": "volumetric"},
+    "dns_tunnel": {"label": "DNS Tunnel Anomaly", "mode": "unknown", "time_shift": 5050, "family": "novel-anomaly"},
+    "c2_beacon": {"label": "C2 Beacon Anomaly", "mode": "unknown", "time_shift": 6060, "family": "novel-anomaly"},
+    "exfil_spike": {"label": "Exfiltration Spike", "mode": "unknown", "time_shift": 7070, "family": "novel-anomaly"},
+    "clean_baseline": {"label": "Clean Baseline", "mode": "clean", "time_shift": 0, "family": "benign"},
 }
 
 
@@ -77,7 +80,7 @@ def _read_replay(name: str) -> dict:
 
 
 def _variant_payload(key: str, nonce: int = 0) -> dict:
-    """Create a schema-valid local lab variant without pretending the scenario label is a model class."""
+    """Create a schema-valid route demo without changing model feature values."""
     if key not in SCENARIOS:
         raise ValueError("Unknown network-lab scenario")
     scenario = SCENARIOS[key]
@@ -86,33 +89,17 @@ def _variant_payload(key: str, nonce: int = 0) -> dict:
         payload["data_source"] = "recorded_network_baseline"
         return payload
 
-    payload = copy.deepcopy(_read_replay("alert_replay.json"))
-    # Deterministically nudge a few observed numeric features. This gives each
-    # network-lab scenario a distinct response fingerprint while preserving the
-    # real graph schema and keeping the model inference path unchanged.
-    base = float(scenario["offset"])
-    jitter = (nonce % 97) * 0.000001
-    x = payload.get("x", [])
-    mask = payload.get("mask", [])
-    touched = 0
-    for t in range(max(0, len(x) - 3), len(x)):
-        row_mask = mask[t] if t < len(mask) else []
-        for node, feats in enumerate(x[t]):
-            active = node < len(row_mask) and bool(row_mask[node])
-            if not active or not feats:
-                continue
-            for feature_index, scale in ((0, 1.0), (2, 0.55), (3, 0.35)):
-                if feature_index < len(feats):
-                    value = float(feats[feature_index]) + base * scale + jitter
-                    feats[feature_index] = max(0.0, min(1.0, value))
-            touched += 1
-            if touched >= 5:
-                break
-        if touched >= 5:
-            break
+    payload = _read_replay("alert_replay.json")
+    base_shift = int(scenario["time_shift"])
+    # Unknown runs receive a small fresh integer timestamp shift so a previously
+    # reviewed fingerprint cannot silently turn an unknown demonstration into an
+    # Arjuna match. Contiguous 10-second spacing remains exactly unchanged.
+    fresh_shift = 0 if scenario["mode"] == "known" else int(nonce % 997) + 1
+    total_shift = base_shift + fresh_shift
+    payload["times"] = [float(t) + total_shift for t in payload.get("times", [])]
     payload["data_source"] = (
-        "synthetic_network_lab_known:" if scenario["mode"] == "known"
-        else "synthetic_network_lab_unknown:"
+        "recorded_network_lab_known:" if scenario["mode"] == "known"
+        else "recorded_network_lab_unknown_variant:"
     ) + key
     return payload
 
@@ -134,8 +121,8 @@ def _simulate(key: str) -> dict:
             "forecast": forecast,
         }
 
-    # Unknown scenarios are intentionally fresh fingerprints on each run. Known
-    # scenarios are deterministic so the reviewed exact-memory path can match.
+    # Known routes are deterministic so an operator-reviewed exact fingerprint
+    # can be replayed through Arjuna. Unknown routes receive a fresh fingerprint.
     nonce = 0 if scenario["mode"] == "known" else time.time_ns()
     payload = _variant_payload(key, nonce)
     first = _forecast(payload)
@@ -162,7 +149,7 @@ def _simulate(key: str) -> dict:
     return {
         "scenario": scenario,
         "scenario_key": key,
-        "telemetry_kind": "synthetic",
+        "telemetry_kind": "recorded-variant",
         "forecast": forecast,
         "first_route": (first.get("defence_signal") or {}).get("route"),
     }
@@ -186,7 +173,8 @@ class LegacyConsoleHandler(BaseHTTPRequestHandler):
         pass
 
     def _host_ok(self) -> bool:
-        return self.headers.get("Host", "") in {"127.0.0.1:8091", "localhost:8091"}
+        port = self.server.server_port
+        return self.headers.get("Host", "") in {f"127.0.0.1:{port}", f"localhost:{port}"}
 
     def _send(self, status: int, data: bytes, mime: str) -> None:
         self.send_response(status)
@@ -229,7 +217,9 @@ class LegacyConsoleHandler(BaseHTTPRequestHandler):
                     raise ValueError("Unknown replay scenario")
                 return self._json(200, _engine_json("/api/replay?scenario=" + scenario))
             return self._json(404, {"error": "Unknown endpoint"})
-        except (RuntimeError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        except ValueError as exc:
+            return self._json(422, {"error": str(exc)})
+        except (RuntimeError, KeyError, json.JSONDecodeError) as exc:
             return self._json(502, {"error": str(exc)})
 
     def do_POST(self) -> None:
@@ -245,8 +235,10 @@ class LegacyConsoleHandler(BaseHTTPRequestHandler):
             obj = json.loads(self.rfile.read(length).decode("utf-8"))
             key = obj.get("scenario")
             return self._json(200, _simulate(key))
-        except (RuntimeError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        except ValueError as exc:
             return self._json(422, {"error": str(exc)})
+        except (RuntimeError, KeyError, TypeError, json.JSONDecodeError) as exc:
+            return self._json(502, {"error": str(exc)})
 
 
 class LegacyConsoleServer(ThreadingHTTPServer):
