@@ -38,6 +38,8 @@ jobs:
         run: python ntro-world-model/tests/test_data_integrity.py
       - name: Proxy exposure regression
         run: python tests/test_proxy_exposure.py
+      - name: Premium command centre UI contract
+        run: python tests/test_premium_ui.py -v
       - name: V11 enforcement regression
         run: npm run test:v11
       - name: Krishna V15 integration contract
