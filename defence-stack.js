@@ -1,6 +1,6 @@
 'use strict';
 
-// Load the validated Arjuna/Krishna/Sudarshana runtime hardening before the
-// legacy-compatible proxy module is evaluated.
-require('./defence-stack-patch');
+// Load the validated defence loop plus structural-evidence normalization before
+// the legacy-compatible proxy module is evaluated.
+require('./defence-evidence-hardening');
 require('./proxy');
