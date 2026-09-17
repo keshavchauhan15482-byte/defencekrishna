@@ -161,11 +161,31 @@ if (!globalThis[PATCH_FLAG]) {
   };
 
   CounterEngine.prototype.checkLearned = function validatedKnownFastPath(rawInput) {
-    const haystack = normalizeToken(rawInput);
+    const raw = String(rawInput || '');
+    const haystack = normalizeToken(raw);
     if (!haystack) return null;
 
-    // Prefer a specifically validated mutation match so the audit trail records
-    // why Arjuna trusted this variant. Root-token matching remains the fallback.
+    const recordMutationMatch = (entry, token, matchMode) => {
+      entry.timesReused = (entry.timesReused || 0) + 1;
+      entry.mutationTimesReused = (entry.mutationTimesReused || 0) + 1;
+      this._persist();
+      return { ...entry, matchSource: 'validated_mutation', matchedMutation: token, mutationMatchMode: matchMode };
+    };
+
+    // First prefer the exact validated representation that actually appeared in
+    // the request. This preserves precise audit provenance when multiple safe
+    // canonical variants (for example upper/lower case) normalize identically.
+    for (const entry of this.learnedPatterns || []) {
+      for (const item of entry.validatedSyntheticMutations || []) {
+        const token = typeof item === 'string' ? item : item.token;
+        if (!token || token.length < 8) continue;
+        if (!this.bloom.mightContain(token)) continue;
+        if (raw.includes(token)) return recordMutationMatch(entry, token, 'exact');
+      }
+    }
+
+    // Then allow a canonical-equivalent validated mutation. Generated but
+    // unvalidated variants are never consulted here, even if Bloom says maybe.
     for (const entry of this.learnedPatterns || []) {
       for (const item of entry.validatedSyntheticMutations || []) {
         const token = typeof item === 'string' ? item : item.token;
@@ -173,10 +193,7 @@ if (!globalThis[PATCH_FLAG]) {
         if (!this.bloom.mightContain(token)) continue;
         const needle = normalizeToken(token);
         if (needle.length >= 8 && haystack.includes(needle)) {
-          entry.timesReused = (entry.timesReused || 0) + 1;
-          entry.mutationTimesReused = (entry.mutationTimesReused || 0) + 1;
-          this._persist();
-          return { ...entry, matchSource: 'validated_mutation', matchedMutation: token };
+          return recordMutationMatch(entry, token, 'canonical_equivalent');
         }
       }
     }
