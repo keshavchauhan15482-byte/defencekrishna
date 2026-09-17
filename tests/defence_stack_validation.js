@@ -117,45 +117,72 @@ async function main() {
     assert.equal(core.isUnderLockdown({ ip: '192.0.2.20' }).locked, false);
   });
 
-  check('Unresolved unknown stays fail-closed under scoped Sudarshana containment', () => {
+  check('Unknown blocked by Krishna does not invoke Sudarshana without escape evidence', () => {
     const engine = new DetectionEngine(null);
     const unknown = engine.inspect(req('192.0.2.21', 'probe ${process.mainModule.require("child_process")}'));
     assert.equal(unknown.tier, 'danger');
     assert.equal(unknown.isZeroDayAnomaly, true);
     const core = new SudarshanaCore({ timeBudgetMs: 1000 });
-    core.engageScopedLockdown({
-      scopeType: 'ip', scopeValue: '192.0.2.21', incidentId: 'unknown',
+    const result = core.engageScopedLockdown({
+      scopeType: 'ip', scopeValue: '192.0.2.21', incidentId: 'krishna-contained',
       reason: unknown.reasons[0], forensicSnapshot: { ip: '192.0.2.21' }
     });
+    assert.equal(result.status, 'STANDBY_KRISHNA_CONTAINED');
+    assert.equal(result.escalationRequired, 'confirmed_escape_or_breach_evidence');
+    assert.equal(core.isUnderLockdown({ ip: '192.0.2.21' }).locked, false);
+  });
+
+  check('Confirmed unknown escape stays fail-closed under scoped Sudarshana containment', () => {
+    const engine = new DetectionEngine(null);
+    const unknown = engine.inspect(req('192.0.2.22', 'probe ${process.mainModule.require("child_process")}'));
+    assert.equal(unknown.tier, 'danger');
+    assert.equal(unknown.isZeroDayAnomaly, true);
+    const core = new SudarshanaCore({ timeBudgetMs: 1000 });
+    const lock = core.engageScopedLockdown({
+      scopeType: 'ip', scopeValue: '192.0.2.22', incidentId: 'confirmed-escape',
+      reason: unknown.reasons[0], forensicSnapshot: { ip: '192.0.2.22' },
+      escalationEvidence: {
+        confirmed: true,
+        source: 'owned_lab_backend_receipt',
+        reference: 'controlled escape evidence for defensive contract'
+      }
+    });
+    assert.equal(lock.status, 'LOCKED');
+    assert.equal(lock.escalationEvidence.confirmed, true);
     const recovery = core.evaluateAutonomousRecovery({
-      scopeType: 'ip', scopeValue: '192.0.2.21',
+      scopeType: 'ip', scopeValue: '192.0.2.22',
       krishnaAnalysis: { confidenceScore: 98, mutationsCount: 0, learnedTokens: [] }
     });
     assert.equal(recovery.recovered, false);
-    assert.equal(core.isUnderLockdown({ ip: '192.0.2.21' }).locked, true);
+    assert.equal(core.isUnderLockdown({ ip: '192.0.2.22' }).locked, true);
   });
 
   const successEngine = new DetectionEngine(null);
-  const successUnknown = successEngine.inspect(req('192.0.2.22', 'probe ${process.mainModule.require("child_process")}'));
+  const successUnknown = successEngine.inspect(req('192.0.2.23', 'probe ${process.mainModule.require("child_process")}'));
   const successCore = new SudarshanaCore({ timeBudgetMs: 1000 });
   const lock = successCore.engageScopedLockdown({
-    scopeType: 'ip', scopeValue: '192.0.2.22', incidentId: 'study',
-    reason: successUnknown.reasons[0], forensicSnapshot: { ip: '192.0.2.22' }
+    scopeType: 'ip', scopeValue: '192.0.2.23', incidentId: 'study',
+    reason: successUnknown.reasons[0], forensicSnapshot: { ip: '192.0.2.23' },
+    escalationEvidence: {
+      confirmed: true,
+      source: 'owned_lab_backend_receipt',
+      reference: 'controlled escape evidence followed by Krishna study'
+    }
   });
   const pending = successCore.evaluateAutonomousRecovery({
-    scopeType: 'ip', scopeValue: '192.0.2.22',
+    scopeType: 'ip', scopeValue: '192.0.2.23',
     krishnaAnalysis: { confidenceScore: 98, mutationsCount: 2, learnedTokens: ['validated-token'] }
   });
-  check('Sudarshana holds the offender scope while Krishna validation completes', () => {
+  check('Sudarshana holds only the confirmed offender scope while Krishna validation completes', () => {
     assert.equal(lock.status, 'LOCKED');
     assert.equal(pending.pending, true);
-    assert.equal(successCore.isUnderLockdown({ ip: '192.0.2.22' }).locked, true);
-    assert.equal(successCore.isUnderLockdown({ ip: '192.0.2.23' }).locked, false);
+    assert.equal(successCore.isUnderLockdown({ ip: '192.0.2.23' }).locked, true);
+    assert.equal(successCore.isUnderLockdown({ ip: '192.0.2.24' }).locked, false);
   });
 
   await new Promise(resolve => setTimeout(resolve, 350));
-  check('Validated Krishna study permits time-bound autonomous recovery', () => {
-    assert.equal(successCore.isUnderLockdown({ ip: '192.0.2.22' }).locked, false);
+  check('Validated Krishna study permits time-bound autonomous recovery after confirmed escape', () => {
+    assert.equal(successCore.isUnderLockdown({ ip: '192.0.2.23' }).locked, false);
     assert.equal(successCore.verifyLedgerIntegrity().isValid, true);
   });
 
