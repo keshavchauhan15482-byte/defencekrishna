@@ -11,6 +11,7 @@ subject to the runtime's real authorization and enforcement gates.
 from __future__ import annotations
 
 import json
+from .dashboard_lab import LAB
 import os
 import time
 import urllib.error
@@ -226,15 +227,20 @@ class LegacyConsoleHandler(BaseHTTPRequestHandler):
         url = urlsplit(self.path)
         if not self._host_ok() or not self._check_origin():
             return self._json(403, {"error": "Local same-origin console only"})
-        if url.path != "/bridge/simulate":
+        if url.path not in ("/bridge/simulate", "/bridge/lab/probe"):
             return self._json(404, {"error": "Unknown endpoint"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
             if not 0 < length <= 4096:
                 raise ValueError("Invalid request size")
             obj = json.loads(self.rfile.read(length).decode("utf-8"))
+            if url.path == "/bridge/lab/probe":
+                status, result = LAB.probe(obj.get("ticket"))
+                return self._json(status, result)
             key = obj.get("scenario")
-            return self._json(200, _simulate(key))
+            result = _simulate(key)
+            result["lab"] = LAB.issue(result["forecast"])
+            return self._json(200, result)
         except ValueError as exc:
             return self._json(422, {"error": str(exc)})
         except (RuntimeError, KeyError, TypeError, json.JSONDecodeError) as exc:

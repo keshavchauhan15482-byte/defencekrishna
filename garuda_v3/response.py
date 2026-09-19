@@ -21,6 +21,8 @@ class ResponseCoordinator:
             events=[json.loads(row[0]) for row in self.policy.db.execute('SELECT payload FROM response_events ORDER BY created DESC LIMIT 40')]
             memory=[dict(fingerprint=f,attack_type=a,evidence=e,approved=t) for f,a,e,t in self.policy.db.execute('SELECT * FROM threat_memory ORDER BY approved DESC LIMIT 40')]
             return dict(lab_enabled=self.lab_enabled,armed=self.arm_state,events=events,memory=memory,
+                memory_count=self.policy.db.execute('SELECT COUNT(*) FROM threat_memory').fetchone()[0],
+                validated_mutation_count=None, mutation_status='not_supported_by_this_runtime',
                 unknown_forecast_autonomous_containment_approved=self.unknown_auto_approved,
                 scope='Application-proxy containment; signing authenticates policies, not data encryption or a breach-prevention guarantee')
     def arm(self,target,ttl=30,duration=120):
