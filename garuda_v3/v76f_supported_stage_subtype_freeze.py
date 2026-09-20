@@ -5,10 +5,10 @@ Support-only protocol for X-IIoTID after the V76c hierarchy audit established:
   class2 = lifecycle/coarse family
   class1 = fine attack subtype
 
-A five-stage subtype-disjoint benchmark is not assumed.  This script finds the largest
+A five-stage subtype-disjoint benchmark is not assumed. This script finds the largest
 subset of lifecycle stages for which one class1 subtype can be held out with sufficient
 reserve support while leaving sufficient development support after *all* selected
-reserve subtypes are isolated.  Selection uses support counts only; no model is trained
+reserve subtypes are isolated. Selection uses support counts only; no model is trained
 or scored here.
 """
 from __future__ import annotations
@@ -45,7 +45,13 @@ def _candidate_pools(table):
             if row["target_support"] >= MIN_RESERVE_PER_STAGE
             and row["remaining_stage_support_if_held_out_alone"][stage] >= MIN_DEV_PER_STAGE
         ]
-        eligible.sort(key=lambda row: (-row["target_support"], -row["remaining_stage_support_if_held_out_alone"][stage], row["subtype"]))
+        eligible.sort(
+            key=lambda row: (
+                -row["target_support"],
+                -row["remaining_stage_support_if_held_out_alone"][stage],
+                row["subtype"],
+            )
+        )
         pools[stage] = eligible[:MAX_CANDIDATES_PER_STAGE]
         if eligible:
             individual_status[stage] = {
@@ -55,12 +61,15 @@ def _candidate_pools(table):
             }
         else:
             reason = "no_fine_subtype_with_required_reserve_and_remaining_development_support"
-            if raw and all(row["remaining_stage_support_if_held_out_alone"][stage] < MIN_DEV_PER_STAGE for row in raw):
+            if raw and all(
+                row["remaining_stage_support_if_held_out_alone"][stage] < MIN_DEV_PER_STAGE
+                for row in raw
+            ):
                 reason = "holding_out_any_fine_subtype_leaves_insufficient_same_stage_development_support"
             elif raw and all(row["target_support"] < MIN_RESERVE_PER_STAGE for row in raw):
                 reason = "all_fine_subtypes_have_insufficient_reserve_target_support"
             elif not raw:
-                reason = "no_unique_fine_subtype_targets_in_sequence_contract"
+                reason = "no_fine_subtype_targets_in_sequence_contract"
             individual_status[stage] = {
                 "supportable_individually": False,
                 "reason": reason,
@@ -80,15 +89,13 @@ def _score_combination(rows, chosen):
         reserve_support[stage] = int(sum(
             1 for row in rows
             if row["target_stage"] == stage
-            and row["target_subtype"] == subtype
-            and pair in row["future_pairs"]
+            and subtype in row["target_subtypes"]
             and not (reserve_pairs - {pair}).intersection(row["all_pairs"])
         ))
         clean_onset_support[stage] = int(sum(
             1 for row in rows
             if row["target_stage"] == stage
-            and row["target_subtype"] == subtype
-            and pair in row["future_pairs"]
+            and subtype in row["target_subtypes"]
             and pair not in row["history_pairs"]
             and not (reserve_pairs - {pair}).intersection(row["all_pairs"])
         ))
@@ -98,7 +105,7 @@ def _score_combination(rows, chosen):
         development_support[stage] = int(sum(
             1 for row in rows
             if row["target_stage"] == stage
-            and row["target_subtype"] is not None
+            and row["target_subtypes"]
             and not reserve_pairs.intersection(row["all_pairs"])
         ))
 
@@ -118,13 +125,14 @@ def _score_combination(rows, chosen):
 def choose_maximal(rows, pools):
     individually = [stage for stage in STAGES if pools[stage]]
     if not individually:
-        raise RuntimeError("No lifecycle stage supports a subtype-disjoint reserve under the declared support gates")
+        raise RuntimeError(
+            "No lifecycle stage supports a subtype-disjoint reserve under the declared support gates"
+        )
 
-    best = None
     best_row = None
     audit_counts = {"subsets_considered": 0, "candidate_combinations_considered": 0}
 
-    # Largest stage subset first.  Within a fixed cardinality, choose by support only.
+    # Largest stage subset first. Within a fixed cardinality, choose by support only.
     for size in range(len(individually), 0, -1):
         found_at_size = []
         for subset in itertools.combinations(individually, size):
@@ -132,7 +140,7 @@ def choose_maximal(rows, pools):
             candidate_lists = [pools[stage] for stage in subset]
             for combo in itertools.product(*candidate_lists):
                 audit_counts["candidate_combinations_considered"] += 1
-                chosen = {stage: row["subtype"] for stage, row in zip(subset, combo)}
+                chosen = {stage: candidate["subtype"] for stage, candidate in zip(subset, combo)}
                 scored = _score_combination(rows, chosen)
                 if not scored["qualified"]:
                     continue
@@ -148,7 +156,7 @@ def choose_maximal(rows, pools):
                 )
                 found_at_size.append((objective, scored))
         if found_at_size:
-            best, best_row = max(found_at_size, key=lambda item: item[0])
+            _, best_row = max(found_at_size, key=lambda item: item[0])
             break
 
     if best_row is None:
@@ -171,7 +179,9 @@ def main():
     dt, date_col, ts_col, time_method = parse_time(df)
     binary, family, binary_col, family_col, profiles = detect_label_hierarchy(df)
     if norm(binary_col) != "class3" or norm(family_col) != "class2":
-        raise RuntimeError(f"Hierarchy drift: expected class3 binary/class2 family, got {binary_col}/{family_col}")
+        raise RuntimeError(
+            f"Hierarchy drift: expected class3 binary/class2 family, got {binary_col}/{family_col}"
+        )
     subtype_col = columns["class1"]
     family = family.map(canonical_family_name)
 
@@ -223,9 +233,15 @@ def main():
         "total_stage_support": total_stage_support,
         "all_candidate_support": table,
         "sequence_count": int(len(sequences)),
-        "reserve_touch_sequence_count": int(sum(bool(reserve_pairs.intersection(row["all_pairs"])) for row in sequences)),
+        "reserve_touch_sequence_count": int(sum(
+            bool(reserve_pairs.intersection(row["all_pairs"])) for row in sequences
+        )),
         "search_audit": search_audit,
-        "time": {"date_column": date_col, "timestamp_column": ts_col, "method": time_method},
+        "time": {
+            "date_column": date_col,
+            "timestamp_column": ts_col,
+            "method": time_method,
+        },
         "label_profiles": profiles,
         "stage_mapping": {
             "Reconnaissance": "Reconnaissance",
@@ -234,9 +250,19 @@ def main():
             "C&C": "Command & Control",
             "Exfiltration": "Exfiltration",
         },
-        "evaluation_scope": "zero-development-exposure fine-subtype generalisation only on selected supported stages; not a five-stage claim unless selected_stage_count equals five",
-        "development_isolation_rule": "V77 must exclude every sequence touching any selected (stage,class1 subtype) pair, plus overlap-neighbour embargo, from world-model and stage-mapper development",
-        "claim_boundary": "Clean-onset support is diagnostic only. A reserve subtype can already appear in a test sequence history. This is not pre-attack onset evidence and Exploitation remains only an Initial Access proxy.",
+        "evaluation_scope": (
+            "zero-development-exposure fine-subtype generalisation only on selected supported stages; "
+            "not a five-stage claim unless selected_stage_count equals five"
+        ),
+        "development_isolation_rule": (
+            "V77 must exclude every sequence touching any selected (stage,class1 subtype) pair, "
+            "plus overlap-neighbour embargo, from world-model and stage-mapper development"
+        ),
+        "claim_boundary": (
+            "Clean-onset support is diagnostic only. A reserve subtype can already appear in a test "
+            "sequence history. This is not pre-attack onset evidence and Exploitation remains only "
+            "an Initial Access proxy."
+        ),
     }
 
     out = Path(args.output)
