@@ -1,0 +1,91 @@
+name: V67 same-input LR vs Garuda benchmark
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v67_same_input_baseline.py'
+      - '.github/workflows/v67-same-input-baseline.yml'
+      - 'garuda_v3/v62_unsw_episode_holdout.py'
+      - 'docs/release/v57_metric_strengthening/frozen_config.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  same-input-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V67
+        run: python -m compileall -q garuda_v3/v67_same_input_baseline.py
+      - name: Download UNSW-NB15
+        run: |
+          mkdir -p datasets/v67
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v67/root.txt').write_text(str(root))
+          print(root)
+          for p in sorted(root.rglob('UNSW-NB15_[1-4].csv')):
+              print(p.name, p.stat().st_size)
+          PY
+      - name: Run same-input benchmark
+        run: |
+          ROOT=$(cat datasets/v67/root.txt)
+          python -m garuda_v3.v67_same_input_baseline \
+            --dataset-root "$ROOT" \
+            --frozen-config docs/release/v57_metric_strengthening/frozen_config.json \
+            --output garuda_v3/artifacts/v67_same_input_baseline \
+            --seeds 42 43 44 \
+            --epochs 18 \
+            --max-audits 2
+      - name: Verify no test leakage and print exact results
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v67_same_input_baseline/summary.json')
+          d=json.loads(p.read_text())
+          c=d['fairness_contract']
+          assert c['same_observed_history_source'] is True
+          assert c['future_or_test_features_in_lr'] is False
+          assert c['family_identity_in_lr'] is False
+          assert c['lr_threshold_uses_test'] is False
+          assert c['garuda_fusion_uses_unsw_test'] is False
+          assert c['episode_selection_uses_model_metrics'] is False
+          assert len(d['results']) >= 2
+          for r in d['results']:
+              m=r['logistic_regression']['metric']
+              assert {'tp','fp','tn','fn','recall','fpr','precision','f1'} <= set(m)
+              for seed,row in r['garuda']['seeds'].items():
+                  gm=row['all_future_test']
+                  assert {'tp','fp','tn','fn','recall','fpr','precision','f1'} <= set(gm)
+          print(json.dumps(d['summary'], indent=2))
+          for r in d['results']:
+              print('\nFAMILY', r['family'])
+              print('LR', json.dumps(r['logistic_regression']['metric'], indent=2))
+              print('Garuda macro', json.dumps(r['garuda_macro'], indent=2))
+          PY
+      - name: Upload V67 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v67-same-input-baseline-evidence
+          path: garuda_v3/artifacts/v67_same_input_baseline/*.json
+          if-no-files-found: error
+          retention-days: 30
