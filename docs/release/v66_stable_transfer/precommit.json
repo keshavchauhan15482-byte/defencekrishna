@@ -33,10 +33,13 @@
     "min_samples_leaf": 2,
     "class_weight": "balanced",
     "outer_world_model_seeds": [42, 43, 44],
-    "reason": "reduce algorithmic seed variance without looking at Fuzzers outcomes"
+    "fusion_objective": "development-only family-all-seeds gate count, total safe gate count, worst recall, q10 recall, mean recall, then lower seed variance and lower max FPR",
+    "reason": "reduce algorithmic seed variance exposed by V65 without looking at Fuzzers outcomes"
   },
   "selection_contract": {
-    "development_families": ["backdoor", "analysis"],
+    "development_campaign_rule": "support-qualified campaigns before the Fuzzers cutoff, excluding Fuzzers and Worms; model-free feasibility additionally requires two-class train support and at least 20 clean-benign calibration and policy windows",
+    "max_development_families": 3,
+    "development_family_identity_not_selected_from_fuzzers_metrics": true,
     "fusion_candidates": "existing fixed V55 coarse simplex",
     "policy_budgets": [0.001, 0.0025, 0.005, 0.01],
     "selection_data": "development campaigns only; Fuzzers blocked from fit/calibration/policy/fusion selection",
