@@ -2,17 +2,18 @@
 
 The V55 fusion recipe and benign-tail policy budget are frozen from X-IIoTID and
 are not selected on UNSW outcomes. Dataset-specific state and nonlinear transfer
-models are fitted only on UNSW development traffic with the requested UNSW reserve
-families excluded from fit/calibration/policy data, then the frozen fusion is evaluated.
+models are fitted only on UNSW development traffic with reserve families excluded
+from fit/calibration/policy data, then the frozen fusion is evaluated.
 
-This is a cross-dataset protocol replication, not direct zero-shot weight transfer: the
-raw feature schemas differ, so UNSW flows are mapped into a deterministic common
-network-only feature schema before state construction.
+If a requested reserve pair destroys temporal development support, V59 falls back to
+a reserve pair chosen only from pre-metric support counts. No model score, recall,
+FPR or threshold outcome is used in this support-only choice.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
+import itertools
 import json
 from pathlib import Path
 
@@ -21,24 +22,20 @@ import pandas as pd
 
 from .v47_unseen_family import build_minute_state, make_sequences, temporal_masks
 from .v48_strict_runner import canonical_family_name
+from .v54_joint_family_generalization import _future_presence, _joint_reserve_split
 from .v55_nonlinear_joint_generalization import evaluate_joint
 
 COMMON_FEATURES = (
-    "Scr_port",
-    "Des_port",
-    "Duration",
-    "Scr_bytes",
-    "Des_bytes",
-    "Scr_pkts",
-    "Des_pkts",
-    "total_bytes",
-    "total_packet",
-    "paket_rate",
-    "byte_rate",
-    "Des_pkts_ratio",
-    "Scr_bytes_ratio",
-    "Des_bytes_ratio",
+    "Scr_port", "Des_port", "Duration", "Scr_bytes", "Des_bytes",
+    "Scr_pkts", "Des_pkts", "total_bytes", "total_packet", "paket_rate",
+    "byte_rate", "Des_pkts_ratio", "Scr_bytes_ratio", "Des_bytes_ratio",
 )
+
+MIN_TRAIN = 500
+MIN_CAL = 100
+MIN_POLICY = 100
+MIN_NEGATIVE = 100
+MIN_POSITIVE_PER_FAMILY = 20
 
 
 def norm(value):
@@ -86,10 +83,6 @@ def load_unsw_raw(root: Path) -> tuple[pd.DataFrame, list[dict]]:
     if not feature_files:
         raise RuntimeError("UNSW feature-definition CSV not found")
     names = read_feature_names(feature_files[0], expected_cols)
-    mapping = {norm(c): c for c in names}
-
-    # `rate` is not present in every raw UNSW shard schema. It is optional because
-    # packet rate can be derived deterministically from packet count / duration.
     required_keys = {
         "srcip", "sport", "dsport", "dur", "sbytes", "dbytes", "spkts", "dpkts",
         "stime", "attackcat", "label",
@@ -116,19 +109,9 @@ def load_unsw_raw(root: Path) -> tuple[pd.DataFrame, list[dict]]:
 def adapt_unsw(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series, pd.Series]:
     m = {norm(c): c for c in df.columns}
     col = lambda *names: _pick(m, *names)
-
-    src = col("srcip")
-    sport = col("sport")
-    dport = col("dsport")
-    dur = col("dur")
-    sbytes = col("sbytes")
-    dbytes = col("dbytes")
-    spkts = col("spkts")
-    dpkts = col("dpkts")
-    rate = col("rate")
-    stime = col("stime")
-    attack_cat = col("attack_cat", "attackcat")
-    label = col("label")
+    src = col("srcip"); sport = col("sport"); dport = col("dsport"); dur = col("dur")
+    sbytes = col("sbytes"); dbytes = col("dbytes"); spkts = col("spkts"); dpkts = col("dpkts")
+    rate = col("rate"); stime = col("stime"); attack_cat = col("attack_cat", "attackcat"); label = col("label")
     required = [src, sport, dport, dur, sbytes, dbytes, spkts, dpkts, stime, attack_cat, label]
     if any(x is None for x in required):
         raise RuntimeError(f"UNSW adapter columns unresolved: {m}")
@@ -161,9 +144,57 @@ def adapt_unsw(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series, pd.Series]:
 
     y = pd.to_numeric(df[label], errors="coerce").astype("float64")
     family = df[attack_cat].astype(str).str.strip().map(canonical_family_name)
-    family = family.where(y != 0, "normal")
-    family = family.replace({"nan": "normal", "": "normal"})
+    family = family.where(y != 0, "normal").replace({"nan": "normal", "": "normal"})
     return out, y, family
+
+
+def reserve_support(seq, masks, pair):
+    split = _joint_reserve_split(seq, masks, pair)
+    pos = {fam: int(_future_presence(seq, fam).sum()) for fam in pair}
+    return {
+        "pair": list(pair),
+        "train": int(split["train"].sum()),
+        "calibration": int(split["calibration"].sum()),
+        "policy": int(split["policy"].sum()),
+        "negative": int(split["test_negative"].sum()),
+        "positive": pos,
+    }
+
+
+def support_ok(s):
+    return (
+        s["train"] >= MIN_TRAIN
+        and s["calibration"] >= MIN_CAL
+        and s["policy"] >= MIN_POLICY
+        and s["negative"] >= MIN_NEGATIVE
+        and all(v >= MIN_POSITIVE_PER_FAMILY for v in s["positive"].values())
+    )
+
+
+def choose_reserve_support_only(seq, masks, available, requested):
+    requested = tuple(requested)
+    requested_support = reserve_support(seq, masks, requested)
+    if support_ok(requested_support):
+        return list(requested), requested_support, "requested_pair_supported", []
+
+    candidates = []
+    for pair in itertools.combinations(available, 2):
+        s = reserve_support(seq, masks, pair)
+        if not support_ok(s):
+            continue
+        min_pos = min(s["positive"].values())
+        total_pos = sum(s["positive"].values())
+        # Support only. No model score or performance outcome appears here.
+        objective = (min_pos, total_pos, s["calibration"], s["policy"], s["train"])
+        candidates.append((objective, pair, s))
+    if not candidates:
+        raise RuntimeError(
+            f"No two-family UNSW reserve pair satisfies support contract; requested={requested_support}"
+        )
+    candidates.sort(key=lambda row: row[0], reverse=True)
+    _, pair, support = candidates[0]
+    audit = [row[2] for row in candidates[:20]]
+    return list(pair), support, "support_only_fallback", audit
 
 
 def main():
@@ -191,16 +222,24 @@ def main():
     seq = make_sequences(state, names)
     masks, boundaries = temporal_masks(seq["cutoff"])
     available = sorted({x for steps in seq["step_families"] for fams in steps for x in fams})
-    reserve = [canonical_family_name(x) for x in args.reserve_families]
-    missing = [x for x in reserve if x not in available]
+    requested = [canonical_family_name(x) for x in args.reserve_families]
+    missing = [x for x in requested if x not in available]
     if missing:
-        raise RuntimeError(f"Reserve families missing after temporal construction: {missing}; available={available}")
+        raise RuntimeError(f"Requested reserve families missing after temporal construction: {missing}; available={available}")
+
+    reserve, selected_support, selection_mode, support_candidates = choose_reserve_support_only(
+        seq, masks, available, requested
+    )
+    print(json.dumps({
+        "requested_reserve": requested,
+        "selected_reserve": reserve,
+        "selection_mode": selection_mode,
+        "selected_support": selected_support,
+    }, indent=2), flush=True)
 
     frozen_path = Path(args.frozen_config)
     frozen = json.loads(frozen_path.read_text())
-    required_weights = {
-        "future_state_novelty", "transition_energy", "nonlinear_temporal_transfer"
-    }
+    required_weights = {"future_state_novelty", "transition_energy", "nonlinear_temporal_transfer"}
     if not required_weights.issubset(frozen.get("weights", {})):
         raise RuntimeError("Frozen V55 fusion is incompatible")
 
@@ -209,7 +248,8 @@ def main():
         "protocol": "V59 UNSW-NB15 independent-dataset replication with frozen V55 fusion recipe",
         "claim_boundary": (
             "Independent dataset/cyber-range replication. Dataset-specific state/transfer models are retrained "
-            "because raw feature schemas differ; V55 fusion weights and policy budget are not reselected on UNSW."
+            "because raw feature schemas differ; V55 fusion weights and policy budget are not reselected on UNSW. "
+            "Reserve fallback, if needed, is selected from support counts only before model metrics are computed."
         ),
         "dataset": "UNSW-NB15 raw four-shard flow corpus",
         "dataset_shards": shard_audit,
@@ -217,8 +257,20 @@ def main():
         "fusion_reused_without_selection": True,
         "unsw_metrics_used_for_fusion_selection": False,
         "reserve_blocked_from_fit_calibration_policy": True,
+        "reserve_selection_uses_model_metrics": False,
         "common_network_features": list(COMMON_FEATURES),
+        "requested_reserve_families": requested,
         "reserve_families": reserve,
+        "reserve_selection_mode": selection_mode,
+        "reserve_selected_support": selected_support,
+        "reserve_support_candidate_audit": support_candidates,
+        "support_contract": {
+            "min_train": MIN_TRAIN,
+            "min_calibration": MIN_CAL,
+            "min_policy": MIN_POLICY,
+            "min_negative": MIN_NEGATIVE,
+            "min_positive_per_family": MIN_POSITIVE_PER_FAMILY,
+        },
         "seeds": list(args.seeds),
         "boundaries": boundaries,
         "source_group_column": src_col,
