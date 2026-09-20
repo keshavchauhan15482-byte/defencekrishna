@@ -1,0 +1,94 @@
+name: V57 metric strengthening
+
+on:
+  push:
+    branches: [fix/v57-metric-strengthening]
+    paths:
+      - 'garuda_v3/v57_metric_strengthening.py'
+      - '.github/workflows/v57-metric-strengthening.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  strengthen-metrics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V57
+        run: |
+          python -m compileall -q garuda_v3/v57_metric_strengthening.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v57
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v57/XIIoTID.csv'))
+          PY
+      - name: Run V57 development-selected joint regression
+        run: |
+          python -m garuda_v3.v57_metric_strengthening \
+            --csv datasets/v57/XIIoTID.csv \
+            --output garuda_v3/artifacts/v57 \
+            --seeds 42 43 44 \
+            --epochs 12 \
+            --reserve-families exploitation 'c&c'
+      - name: Compare against V55 and verify leakage-safe gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v57/summary.json').read_text())
+          assert d['frozen_config']['reserve_metrics_used_for_selection'] is False
+          assert d['frozen_config']['reserve_blocked_during_selection'] is True
+          baseline={
+              'exploitation': {'recall':0.9879101899827288,'fpr':0.004880429884333171,'f1':0.9769199708417185,'sd':0.01196577654279667},
+              'c&c': {'recall':0.8853046594982078,'fpr':0.004880429884333171,'f1':0.9197706098938785,'sd':0.09932907594732354},
+          }
+          out={}
+          for fam, payload in d['joint_reserve_regression']['families'].items():
+              s=payload['summary']
+              assert s['reference_gate_passed_all_seeds'], (fam,s)
+              assert s['fpr']['mean'] <= 0.01, (fam,s['fpr'])
+              b=baseline[fam]
+              out[fam]={
+                  'v57':s,
+                  'delta_recall_pp':100*(s['recall']['mean']-b['recall']),
+                  'delta_fpr_pp':100*(s['fpr']['mean']-b['fpr']),
+                  'delta_f1_pp':100*(s['f1']['mean']-b['f1']),
+                  'delta_recall_sd_pp':100*(s['recall']['sd']-b['sd']),
+              }
+          print(json.dumps({'frozen_config':d['frozen_config'],'comparison_to_v55':out},indent=2))
+          PY
+      - name: Upload V57 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v57-metric-strengthening-evidence
+          retention-days: 14
+          if-no-files-found: warn
+          path: garuda_v3/artifacts/v57/*.json
