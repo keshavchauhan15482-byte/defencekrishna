@@ -1,13 +1,14 @@
-"""V76 support-only Class3 subtype freeze for fresh five-stage generalisation.
+"""V76 support-only fine-subtype freeze for fresh five-stage generalisation.
 
 This step intentionally performs NO model training or scoring. It freezes one fine-
-grained X-IIoTID Class3 attack subtype per lifecycle stage using only temporal sequence
-support counts. Reserve subtypes selected here can then be evaluated by a later V77
-model run without choosing the holdout from model metrics.
+grained X-IIoTID attack subtype per lifecycle stage using only temporal sequence support
+counts. X-IIoTID's hierarchy is: class3 = binary Normal/Attack, class2 = lifecycle
+family, class1 = fine-grained attack subtype. Reserve subtypes selected here can then be
+evaluated by a later V77 model run without choosing the holdout from model metrics.
 
-Important: a four-minute future horizon can contain more than one subtype from the same
-lifecycle stage. V76 therefore treats the target as (furthest future stage, set of
-subtypes observed at that stage) instead of discarding multi-subtype horizons.
+A four-minute future horizon can contain more than one subtype from the same lifecycle
+stage. V76 therefore treats the target as (furthest future stage, set of subtypes
+observed at that stage) instead of discarding multi-subtype horizons.
 """
 from __future__ import annotations
 
@@ -47,8 +48,9 @@ def subtype_name(value) -> str | None:
 
 def find_subtype_column(df: pd.DataFrame, binary_col: str, family_col: str) -> str:
     mapping = {norm(c): c for c in df.columns}
-    if "class3" in mapping:
-        return mapping["class3"]
+    # Verified X-IIoTID hierarchy: class3=binary, class2=lifecycle, class1=fine subtype.
+    if "class1" in mapping and mapping["class1"] not in {binary_col, family_col}:
+        return mapping["class1"]
     candidates = []
     for col in df.columns:
         if col in {binary_col, family_col}:
@@ -184,7 +186,7 @@ def choose_combination(rows, table):
             and row["remaining_stage_support_if_held_out_alone"][stage] >= MIN_DEV_PER_STAGE
         ][:MAX_CANDIDATES_PER_STAGE]
         if not eligible:
-            raise RuntimeError(f"No support-qualified Class3 subtype for {stage}; candidates={table[stage][:12]}")
+            raise RuntimeError(f"No support-qualified fine subtype for {stage}; candidates={table[stage][:12]}")
         pools[stage] = eligible
 
     best = None
@@ -195,7 +197,6 @@ def choose_combination(rows, table):
         reserve_support = {}
         dev_support = {}
         for stage in STAGES:
-            pair = (stage, chosen[stage])
             reserve_support[stage] = sum(
                 1 for r in rows
                 if r["target_stage"] == stage
@@ -252,13 +253,14 @@ def main():
     reserve_pairs = {(stage, subtype) for stage, subtype in selected["chosen"].items()}
     reserve_touch_count = sum(bool(reserve_pairs.intersection(r["all_pairs"])) for r in sequences)
     output = {
-        "protocol": "V76 support-only X-IIoTID Class3 unseen-subtype freeze",
+        "protocol": "V76 support-only X-IIoTID fine-subtype unseen holdout freeze",
         "dataset_sha256": sha256(csv),
         "selection_used_model_metrics": False,
         "model_scored_reserve_before_freeze": False,
         "binary_label_column": binary_col,
         "lifecycle_family_column": family_col,
         "fine_subtype_column": subtype_col,
+        "verified_label_hierarchy": {"binary": binary_col, "lifecycle": family_col, "fine_subtype": subtype_col},
         "source_column": src_col,
         "stage_mapping": {
             "Reconnaissance": "Reconnaissance",
@@ -280,15 +282,15 @@ def main():
         "all_candidate_support": table,
         "time": {"date_column": date_col, "timestamp_column": ts_col, "method": time_method},
         "label_profiles": profiles,
-        "target_rule": "furthest mapped lifecycle stage in the next four one-minute windows; all subtypes at that target stage are retained",
-        "claim_boundary": "Support-only freeze. No model has been trained or scored on any selected reserve Class3 subtype. Exploitation remains an Initial Access proxy, not exact MITRE truth.",
+        "target_rule": "furthest mapped lifecycle stage in next four one-minute windows; all fine subtypes at that target stage retained",
+        "claim_boundary": "Support-only freeze. No model has been trained or scored on any selected reserve fine subtype. Exploitation remains an Initial Access proxy, not exact MITRE truth.",
     }
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(output, indent=2, allow_nan=False) + "\n")
     print(json.dumps({
         "dataset_sha256": output["dataset_sha256"],
-        "fine_subtype_column": subtype_col,
+        "verified_label_hierarchy": output["verified_label_hierarchy"],
         "selected_reserve_subtype_by_stage": selected["chosen"],
         "reserve_stage_support": selected["reserve_support"],
         "development_stage_support_after_all_reserves": selected["development_support"],
