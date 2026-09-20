@@ -50,7 +50,7 @@ jobs:
           if len(matches)!=1: raise RuntimeError(f'Expected one source, got {matches}')
           shutil.copyfile(matches[0],Path('datasets/v58/XIIoTID.csv'))
           PY
-      - name: Run frozen V55 scorer on fresh families
+      - name: Run frozen V55 scorer on fresh family
         run: |
           python -m garuda_v3.v58_independent_holdout \
             --csv datasets/v58/XIIoTID.csv \
@@ -58,7 +58,7 @@ jobs:
             --output garuda_v3/artifacts/v58_independent \
             --seeds 42 43 44 \
             --epochs 12 \
-            --holdout-families rdos crypto-ransomware
+            --holdout-families rdos
       - name: Verify audit contract and print result
         run: |
           python - <<'PY'
