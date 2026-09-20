@@ -1,0 +1,46 @@
+{
+  "protocol": "V77 frozen unseen-subtype stage-generalisation reserve",
+  "frozen_from_support_only_run": 35528392802,
+  "frozen_before_any_v77_model_scoring": true,
+  "selection_used_model_metrics": false,
+  "dataset_sha256": "7b9290057ee42e784da3c0d84b781815502c9205c74175c96374e71a5ffd98a0",
+  "hierarchy": {
+    "class3": "binary Attack/Normal",
+    "class2": "lifecycle/coarse family",
+    "class1": "fine attack subtype"
+  },
+  "selected_stages": [
+    "Reconnaissance",
+    "Lateral Movement"
+  ],
+  "reserve_subtype_by_stage": {
+    "Reconnaissance": "discovering resources",
+    "Lateral Movement": "modbus register reading"
+  },
+  "support_at_freeze": {
+    "reserve_target_sequences": {
+      "Reconnaissance": 182,
+      "Lateral Movement": 595
+    },
+    "development_stage_sequences_after_all_reserves": {
+      "Reconnaissance": 182,
+      "Initial Access proxy": 193,
+      "Lateral Movement": 1003,
+      "Command & Control": 186,
+      "Exfiltration": 471
+    },
+    "clean_onset_sequences_diagnostic_only": {
+      "Reconnaissance": 0,
+      "Lateral Movement": 0
+    }
+  },
+  "unsupported_stage_boundary": {
+    "Initial Access proxy": "only fine subtype is reverse shell; holding it out leaves zero same-stage development support",
+    "Command & Control": "only fine subtype is c&c; holding it out leaves zero same-stage development support",
+    "Exfiltration": "only fine subtype is exfiltration; holding it out leaves zero same-stage development support"
+  },
+  "development_isolation_rule": "Exclude every sequence touching either frozen reserve (stage,class1 subtype) pair and all same-source sequence cutoffs whose 12-window spans can overlap a reserve-touch sequence. Fit world model, scaling, stage mapper and any model selection only on remaining development data.",
+  "test_rule": "Evaluate only frozen selected-stage target sequences that contain the selected subtype in the future target stage and do not touch the other selected reserve subtype. The selected subtype may already occur in the runtime history; this is zero-development-exposure stage generalisation, not onset forecasting.",
+  "stage_mapping_boundary": "X-IIoTID Exploitation is an Initial Access proxy, not exact MITRE Initial Access truth.",
+  "claim_boundary": "This freeze supports a two-stage unseen-fine-subtype generalisation test only. It must not be presented as a five-stage unseen-subtype benchmark or as pre-compromise lead-time evidence."
+}
