@@ -27,7 +27,7 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: |
-          python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7'
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Compile V70
         run: python -m compileall -q garuda_v3/v70_cicapt_packet_world_model.py
