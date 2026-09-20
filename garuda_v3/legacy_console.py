@@ -11,6 +11,7 @@ subject to the runtime's real authorization and enforcement gates.
 from __future__ import annotations
 
 import json
+from .upload_inference import analyze, MAX_BYTES
 from .dashboard_lab import LAB
 import os
 import time
@@ -227,6 +228,20 @@ class LegacyConsoleHandler(BaseHTTPRequestHandler):
         url = urlsplit(self.path)
         if not self._host_ok() or not self._check_origin():
             return self._json(403, {"error": "Local same-origin console only"})
+        if url.path == "/bridge/analyze":
+            try:
+                if self.headers.get("Transfer-Encoding"):
+                    raise ValueError("Chunked uploads are unsupported")
+                length = int(self.headers.get("Content-Length", "0"))
+                if not 0 < length <= MAX_BYTES:
+                    raise ValueError("Upload limit is 8 MiB")
+                kind = parse_qs(url.query).get("kind", [""])[0]
+                raw = self.rfile.read(length)
+                if len(raw) != length:
+                    raise ValueError("Incomplete upload")
+                return self._json(200, analyze(raw, kind, ARTIFACTS))
+            except (ValueError, UnicodeError, KeyError) as exc:
+                return self._json(422, {"error": str(exc)})
         if url.path not in ("/bridge/simulate", "/bridge/lab/probe"):
             return self._json(404, {"error": "Unknown endpoint"})
         try:

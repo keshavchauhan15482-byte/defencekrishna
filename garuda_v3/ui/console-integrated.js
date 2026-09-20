@@ -18,5 +18,20 @@ for(const [key,name,desc] of scenarios){const b=document.createElement('button')
 $('campaign').onclick=async()=>{paused=true;text('pause','Resume replay');for(const [key] of scenarios)await run(key)};
 $('pause').onclick=()=>{paused=!paused;text('pause',paused?'Resume replay':'Pause replay');text('mode',paused?'Replay paused':'Recorded replay · auto')};
 async function counters(){try{const r=await api('/bridge/response');text('patterns',r.memory_count??'—');text('mutations',r.validated_mutation_count??'N/A');}catch(e){text('patterns','—');text('mutations','—');}}
+$('analyze-file').onclick=async()=>{
+const file=$('capture-file').files[0];
+if(!file||file.size>8*1024*1024){text('upload-status','Select a CSV or PCAP of at most 8 MiB.');return;}
+if(busy){text('upload-status','Wait for the active forecast to finish.');return;}
+const kind=file.name.split('.').pop().toLowerCase();
+paused=true;busy=true;locked(true);$('analyze-file').disabled=true;text('pause','Resume replay');text('upload-status','Analyzing local telemetry…');
+try{
+ const r=await fetch('/bridge/analyze?kind='+encodeURIComponent(kind),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:file});
+ const d=await r.json();if(!r.ok)throw Error(d.error||'Upload failed');
+ text('upload-status',d.status+' · '+d.windows+' windows · '+d.forecasts.length+' forecasts');
+ text('upload-result',JSON.stringify({input_sha256:d.input_sha256,model_sha256:d.model_sha256,scope:d.scope,withheld:d.withheld,forecasts:d.forecasts.map(f=>({cutoff:f.cutoff_epoch_seconds,trajectory:f.trajectory.map(p=>({horizon_seconds:p.horizon_seconds,risk:p.malicious_flow_probability})),stage:f.predicted_attack_stage||'Insufficient evidence',features:f.explanation.feature_attributions.slice(0,5),nodes:f.explanation.node_importance}))},null,2));
+ for(const f of d.forecasts)render(f);
+ if(d.forecasts.length)feed('Uploaded file analyzed',d.forecasts.length+' model outputs; no containment issued');
+}catch(e){text('upload-status',e.message)}finally{busy=false;locked(false);$('analyze-file').disabled=false}
+};
 counters();replay();setInterval(replay,3500);setInterval(counters,5000);
 })();
