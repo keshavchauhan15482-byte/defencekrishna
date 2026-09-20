@@ -1,0 +1,80 @@
+name: V59 UNSW independent-dataset replication
+
+on:
+  push:
+    branches: [fix/v57-metric-strengthening]
+    paths:
+      - 'garuda_v3/v59_unsw_independent_replication.py'
+      - '.github/workflows/v59-unsw-independent-replication.yml'
+      - 'docs/release/v55_joint_generalization/frozen_config.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unsw-replication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V59
+        run: |
+          python -m compileall -q garuda_v3/v59_unsw_independent_replication.py
+      - name: Download UNSW-NB15
+        run: |
+          mkdir -p datasets/v59
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v59/root.txt').write_text(str(root))
+          print(root)
+          for p in sorted(root.rglob('UNSW-NB15_[1-4].csv')):
+              print(p.name, p.stat().st_size)
+          PY
+      - name: Run frozen-fusion independent dataset replication
+        run: |
+          ROOT=$(cat datasets/v59/root.txt)
+          python -m garuda_v3.v59_unsw_independent_replication \
+            --dataset-root "$ROOT" \
+            --frozen-config docs/release/v55_joint_generalization/frozen_config.json \
+            --output garuda_v3/artifacts/v59_unsw \
+            --seeds 42 43 44 \
+            --epochs 12 \
+            --reserve-families exploits dos
+      - name: Verify audit contract and print result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v59_unsw/summary.json').read_text())
+          assert d['fusion_reused_without_selection'] is True
+          assert d['unsw_metrics_used_for_fusion_selection'] is False
+          assert d['reserve_blocked_from_fit_calibration_policy'] is True
+          print(json.dumps({
+              'dataset': d['dataset'],
+              'reserve_families': d['reserve_families'],
+              'support': d['joint_reserve']['support'],
+              'summary': {k:v['summary'] for k,v in d['joint_reserve']['families'].items()},
+          }, indent=2))
+          PY
+      - name: Upload V59 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v59-unsw-independent-replication-evidence
+          retention-days: 14
+          if-no-files-found: error
+          path: garuda_v3/artifacts/v59_unsw/*.json
