@@ -5,9 +5,10 @@ are not selected on UNSW outcomes. Dataset-specific state and nonlinear transfer
 models are fitted only on UNSW development traffic with reserve families excluded
 from fit/calibration/policy data, then the frozen fusion is evaluated.
 
-If a requested reserve pair destroys temporal development support, V59 falls back to
-a reserve pair chosen only from pre-metric support counts. No model score, recall,
-FPR or threshold outcome is used in this support-only choice.
+If a requested reserve pair destroys temporal development support, V59 first searches
+other two-family reserves and then, if necessary, a single-family reserve. The fallback
+is chosen only from pre-metric support counts. No model score, recall, FPR or threshold
+outcome is used in this support-only choice.
 """
 from __future__ import annotations
 
@@ -148,11 +149,12 @@ def adapt_unsw(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series, pd.Series]:
     return out, y, family
 
 
-def reserve_support(seq, masks, pair):
-    split = _joint_reserve_split(seq, masks, pair)
-    pos = {fam: int(_future_presence(seq, fam).sum()) for fam in pair}
+def reserve_support(seq, masks, reserve):
+    reserve = tuple(reserve)
+    split = _joint_reserve_split(seq, masks, reserve)
+    pos = {fam: int(_future_presence(seq, fam).sum()) for fam in reserve}
     return {
-        "pair": list(pair),
+        "reserve": list(reserve),
         "train": int(split["train"].sum()),
         "calibration": int(split["calibration"].sum()),
         "policy": int(split["policy"].sum()),
@@ -171,30 +173,57 @@ def support_ok(s):
     )
 
 
+def _support_objective(s):
+    positive = list(s["positive"].values())
+    return (
+        min(positive) if positive else 0,
+        sum(positive),
+        s["calibration"],
+        s["policy"],
+        s["train"],
+    )
+
+
 def choose_reserve_support_only(seq, masks, available, requested):
+    """Choose reserve solely from support counts, never from model outcomes.
+
+    Priority is the requested pair, then another valid pair, then a valid single
+    family. Falling back to one family is preferable to weakening the temporal
+    calibration/policy support contract.
+    """
     requested = tuple(requested)
     requested_support = reserve_support(seq, masks, requested)
     if support_ok(requested_support):
         return list(requested), requested_support, "requested_pair_supported", []
 
-    candidates = []
+    pair_candidates = []
     for pair in itertools.combinations(available, 2):
         s = reserve_support(seq, masks, pair)
-        if not support_ok(s):
-            continue
-        min_pos = min(s["positive"].values())
-        total_pos = sum(s["positive"].values())
-        # Support only. No model score or performance outcome appears here.
-        objective = (min_pos, total_pos, s["calibration"], s["policy"], s["train"])
-        candidates.append((objective, pair, s))
-    if not candidates:
-        raise RuntimeError(
-            f"No two-family UNSW reserve pair satisfies support contract; requested={requested_support}"
-        )
-    candidates.sort(key=lambda row: row[0], reverse=True)
-    _, pair, support = candidates[0]
-    audit = [row[2] for row in candidates[:20]]
-    return list(pair), support, "support_only_fallback", audit
+        if support_ok(s):
+            pair_candidates.append((_support_objective(s), pair, s))
+    if pair_candidates:
+        pair_candidates.sort(key=lambda row: row[0], reverse=True)
+        _, pair, support = pair_candidates[0]
+        audit = [row[2] for row in pair_candidates[:20]]
+        return list(pair), support, "support_only_pair_fallback", audit
+
+    single_candidates = []
+    for family in available:
+        reserve = (family,)
+        s = reserve_support(seq, masks, reserve)
+        if support_ok(s):
+            single_candidates.append((_support_objective(s), reserve, s))
+    if single_candidates:
+        single_candidates.sort(key=lambda row: row[0], reverse=True)
+        _, reserve, support = single_candidates[0]
+        audit = [row[2] for row in single_candidates[:20]]
+        return list(reserve), support, "support_only_single_family_fallback", audit
+
+    all_single_support = [reserve_support(seq, masks, (family,)) for family in available]
+    raise RuntimeError(
+        "No leakage-safe UNSW reserve satisfies the fixed temporal support contract; "
+        f"requested={requested_support}; single_family_support={all_single_support}"
+    )
 
 
 def main():
