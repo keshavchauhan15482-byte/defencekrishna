@@ -70,6 +70,26 @@ Therefore a five-class publisher-validated MITRE F1 is **not release-supported**
 
 Full evidence: [`docs/release/v69_cicapt_stage_alignment/RESULTS.md`](docs/release/v69_cicapt_stage_alignment/RESULTS.md).
 
+## Five-stage lifecycle proxy mapping: V73 development evidence
+
+Authoritative GitHub Actions run: `35525990295`.
+
+Because X-IIoTID lifecycle stages are globally campaign-ordered, V73 uses a predeclared **per-stage temporal block holdout**, not a single global chronological split. All five requested lifecycle-stage proxies are present in the held-out set (729 sequences). Seeds 42/43/44 produced the same held-out result:
+
+| Measure | Result |
+|---|---:|
+| Accuracy | **87.7915%** |
+| Macro F1 | **68.3203%** |
+| Macro recall | **79.8687%** |
+| Macro precision | **64.6423%** |
+| Forecast-state F1 gain vs persistence-state mapping | **0.0 pp** |
+
+The aggregate accuracy hides a serious class failure: **Reconnaissance recall is 0/86 = 0%**, with all 86 Reconnaissance sequences mapped to `Initial Access proxy`. Lateral Movement recall is 454/457, C&C is 33/33, Exfiltration is 118/118, and Initial Access proxy is 35/35 but with low precision because it absorbs Reconnaissance.
+
+This is preserved as honest development evidence, not presented as a solved MITRE-stage system. `Exploitation → Initial Access proxy` remains a proxy mapping, and publisher-validated CICAPT stage F1 remains unproven.
+
+Full evidence: [`docs/release/v73_stage_temporal/RESULTS.md`](docs/release/v73_stage_temporal/RESULTS.md).
+
 ## Prospective attack-step onset timing: V72 development evidence
 
 Authoritative GitHub Actions run: `35525685873`.
@@ -89,15 +109,15 @@ Full evidence: [`docs/release/v72_cicapt_attack_step_leadtime/RESULTS.md`](docs/
 | Independent attack generalisation | **Supported with bounded claim** | V63 UNSW audit passes conservative confidence-bound gate on two held-out family/episodes. |
 | Same-feature Logistic Regression benchmark | **Supported** | V67 shows large recall/F1 improvement and lower FPR on the same independent protocol. |
 | Explainability | Supported in system | SHAP/evidence-attribution infrastructure is implemented; this index does not claim a new quantitative explainability score. |
-| Five-stage attack mapping | **In progress / proxy evidence only** | CICAPT exact network-stage labels are too sparse for release F1; X-IIoTID lifecycle-stage proxy benchmark is being evaluated separately. |
-| Prospective pre-attack-step warning | **Partial** | V72 has low alert rate and positive lead-time hits but only 25.33% mean event coverage. |
+| Five-stage attack mapping | **Partial / needs improvement** | V73 produces a real five-stage proxy metric, but macro F1 is 68.32%, Recon recall is 0%, and forecast-state mapping does not beat persistence. Exact publisher-validated MITRE F1 remains unsupported. |
+| Prospective pre-attack-step warning | **Partial / needs improvement** | V72 has a low alert rate and positive lead-time hits but only 25.33% mean event coverage. |
 | Publisher-verified successful-compromise lead time | **Not proven** | Available recovered CICAPT timeline is third-party commit-pinned and not publisher-authenticated successful-compromise truth. |
 | Automatic enterprise containment | **Not approved** | Lab controls and scoped operator actions are not production authorization. |
 
 ## Historical / diagnostic failures kept visible
 
-Earlier V8–V54 failures, the V65 Worms seed-instability result, V66/V66b preparation failures, and other exploratory evidence are preserved rather than deleted. V65 is especially important: two outer seeds detected 21/21 Worms windows while one detected only 1/21, exposing seed instability. V66/V66b never reached fresh Fuzzers scoring, so Fuzzers remains unmeasured rather than being called pass/fail.
+Earlier V8–V54 failures, the V65 Worms seed-instability result, V66/V66b preparation failures, V71/V71b unsupported global stage splits, and other exploratory evidence are preserved rather than deleted. V65 is especially important: two outer seeds detected 21/21 Worms windows while one detected only 1/21, exposing seed instability. V66/V66b never reached fresh Fuzzers scoring, so Fuzzers remains unmeasured rather than being called pass/fail.
 
 ## Claim boundary
 
-Do not describe these experiments as proof of a truly undisclosed real-world zero-day, guaranteed compromise prevention, production enterprise readiness, or universal accuracy. Do not equate forecast horizon with measured warning lead time. Do not present the V72 third-party timeline as publisher-authenticated. Do not present an `Initial Access proxy` derived from X-IIoTID `Exploitation` as exact MITRE Initial Access truth. Prefer exact counts, multi-seed results and confidence bounds over perfect-looking point estimates.
+Do not describe these experiments as proof of a truly undisclosed real-world zero-day, guaranteed compromise prevention, production enterprise readiness, or universal accuracy. Do not equate forecast horizon with measured warning lead time. Do not present the V72 third-party timeline as publisher-authenticated. Do not present an `Initial Access proxy` derived from X-IIoTID `Exploitation` as exact MITRE Initial Access truth. Do not use V73 aggregate accuracy without its macro-F1, zero-Recon-recall and persistence-parity limitations. Prefer exact counts, multi-seed results and confidence bounds over perfect-looking point estimates.
