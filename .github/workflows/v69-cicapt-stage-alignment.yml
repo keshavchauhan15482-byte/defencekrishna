@@ -1,0 +1,65 @@
+name: V69 CICAPT stage alignment audit
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v69_cicapt_stage_alignment_audit.py'
+      - '.github/workflows/v69-cicapt-stage-alignment.yml'
+      - 'datasets/multisource/phase2_candidate_timeline.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stage-alignment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile V69
+        run: python -m compileall -q garuda_v3/v69_cicapt_stage_alignment_audit.py garuda_v3/pcap_reader.py
+      - name: Fetch hash-verified CICAPT Phase-2 network capture
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v69 \
+            --ids cicapt_network \
+            --extract
+      - name: Run timestamp alignment prerequisite audit
+        run: |
+          mkdir -p garuda_v3/artifacts/v69_cicapt_stage_alignment
+          python -m garuda_v3.v69_cicapt_stage_alignment_audit \
+            --capture datasets/v69/2ndPhase-timed-MergedV2.pcap \
+            --timeline datasets/multisource/phase2_candidate_timeline.json \
+            --packet-limit 12000000 \
+            --output garuda_v3/artifacts/v69_cicapt_stage_alignment/summary.json
+      - name: Verify fail-closed stage contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v69_cicapt_stage_alignment/summary.json').read_text())
+          assert d['supervised_network_stage_f1_release_claim_allowed'] is False
+          assert d['duplicate_provenance_rows_collapsed_by_stage_and_10s_bucket'] is True
+          assert d['decoded_ipv4_packets'] > 0
+          assert set(d['stage_support']) == {'Reconnaissance/Discovery','Initial Access','Lateral Movement','Command & Control','Exfiltration'}
+          print(json.dumps({
+            'capture_time': d['capture_time'],
+            'unique_required_publisher_event_windows': d['unique_required_publisher_event_windows'],
+            'aligned_required_event_windows': d['aligned_required_event_windows'],
+            'stage_support': d['stage_support'],
+            'all_five_stages_support_basic_metric': d['all_five_stages_support_basic_metric'],
+          }, indent=2))
+          PY
+      - name: Upload V69 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v69-cicapt-stage-alignment-evidence
+          path: garuda_v3/artifacts/v69_cicapt_stage_alignment/*.json
+          if-no-files-found: error
+          retention-days: 30
