@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install feature audit dependencies
-        run: python -m pip install 'numpy<2.1'
+        run: python -m pip install 'numpy<2.1' 'scikit-learn<1.7'
       - name: Compile and test PCAPNG reader
         run: |
           python -m compileall -q garuda_v3/pcap_reader.py garuda_v3/v68_cicapt_packet_contract.py
