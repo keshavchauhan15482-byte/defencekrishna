@@ -1,0 +1,81 @@
+name: V63 UNSW unseen-family transition holdout
+
+on:
+  push:
+    branches: [fix/v57-metric-strengthening]
+    paths:
+      - 'garuda_v3/v63_unsw_unseen_transition_holdout.py'
+      - '.github/workflows/v63-unsw-unseen-transition-holdout.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unseen-transition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V63
+        run: python -m compileall -q garuda_v3/v63_unsw_unseen_transition_holdout.py
+      - name: Download UNSW-NB15
+        run: |
+          mkdir -p datasets/v63
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v63/root.txt').write_text(str(root))
+          PY
+      - name: Run V63 unseen-family transition benchmark
+        run: |
+          ROOT=$(cat datasets/v63/root.txt)
+          python -m garuda_v3.v63_unsw_unseen_transition_holdout \
+            --dataset-root "$ROOT" \
+            --output garuda_v3/artifacts/v63_unsw \
+            --seeds 42 43 44 \
+            --epochs 18
+      - name: Verify evidence contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v63_unsw/summary.json').read_text())
+          sf=d['support_freeze']; f=d['frozen_config']; h=d['history_contract']
+          assert sf['selection_used_model_metrics'] is False
+          assert sf['fresh_reserve_family'] not in {'backdoor','backdoors'}
+          assert f['reserve_metrics_used_for_selection'] is False
+          assert f['fresh_reserve_family'] not in f['development_families']
+          assert h['same_reserve_family_absent_from_observed_history'] is True
+          assert h['clean_history_required'] is False
+          print(json.dumps({
+              'protocol': d['protocol'],
+              'fresh_reserve_family': f['fresh_reserve_family'],
+              'campaign_cutoff': f['fresh_reserve_campaign_cutoff'],
+              'development_families': f['development_families'],
+              'fusion': {k:f[k] for k in ('selection_candidate','weights','policy_budget','config_sha256')},
+              'support': d['fresh_reserve']['support'],
+              'summary': d['fresh_reserve']['summary'],
+              'seeds': d['fresh_reserve']['seeds'],
+          }, indent=2))
+          PY
+      - name: Upload V63 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v63-unsw-unseen-transition-evidence
+          retention-days: 14
+          if-no-files-found: error
+          path: garuda_v3/artifacts/v63_unsw/*.json
