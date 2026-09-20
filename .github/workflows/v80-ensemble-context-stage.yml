@@ -1,0 +1,118 @@
+name: V80 fresh sealed subtype ensemble benchmark
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v80_ensemble_context_stage.py'
+      - '.github/workflows/v80-ensemble-context-stage.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v80:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V79 and V80
+        run: python -m compileall -q garuda_v3/v79_fresh_subtype_freeze.py garuda_v3/v80_ensemble_context_stage.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v80
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v80/XIIoTID.csv'))
+          PY
+      - name: Reproduce and verify the already-sealed V79 freeze
+        run: |
+          mkdir -p garuda_v3/artifacts/v80
+          python -m garuda_v3.v79_fresh_subtype_freeze \
+            --csv datasets/v80/XIIoTID.csv \
+            --output garuda_v3/artifacts/v80/v79_freeze.json
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v80/v79_freeze.json')
+          d=json.loads(p.read_text())
+          digest=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert digest=='807f422b3351cf1f4ceb9ba7020239959b2e8b80ce7ed37b020f38fc604f8a8c', digest
+          assert d['selected_reserve_subtype_by_stage']=={
+            'Reconnaissance':'fuzzing',
+            'Lateral Movement':'mqtt cloud broker subscription'
+          }
+          assert d['reserve_stage_support']=={'Reconnaissance':126,'Lateral Movement':528}
+          assert d['selection_used_model_metrics'] is False
+          assert d['model_scored_reserve_before_freeze'] is False
+          print('SEALED_V79_FREEZE_SHA256',digest)
+          print(json.dumps({'selected':d['selected_reserve_subtype_by_stage'],'support':d['reserve_stage_support']},indent=2))
+          PY
+      - name: Run V80 first-time fresh reserve evaluation
+        run: |
+          python -m garuda_v3.v80_ensemble_context_stage \
+            --csv datasets/v80/XIIoTID.csv \
+            --freeze garuda_v3/artifacts/v80/v79_freeze.json \
+            --output garuda_v3/artifacts/v80/results \
+            --epochs 18
+      - name: Verify leakage and print exact metrics
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v80/results/summary.json').read_text())
+          c=d['leakage_contract']
+          assert d['architecture_frozen_before_v79_scoring'] is True
+          assert c['v79_reserve_selected_with_model_metrics'] is False
+          assert c['v79_reserve_scored_before_architecture_freeze'] is False
+          assert c['v79_reserve_subtypes_seen_by_world_fit'] is False
+          assert c['v79_reserve_subtypes_seen_by_world_validation'] is False
+          assert c['v79_reserve_subtypes_seen_by_stage_mapper_fit'] is False
+          assert c['attack_labels_are_world_model_inputs'] is False
+          assert c['test_used_for_gamma_selection'] is False
+          assert c['test_used_for_stage_mapper_fit'] is False
+          assert c['source_local_overlap_embargo_applied'] is True
+          assert c['clean_onset_claim'] is False
+          assert c['pre_compromise_claim'] is False
+          assert d['fresh_test_support']=={'Reconnaissance':126,'Lateral Movement':528}
+          for key,val in d['summary'].items():
+              if isinstance(val,float): assert math.isfinite(val), (key,val)
+          print(json.dumps({
+            'selected':d['selected_reserve_subtype_by_stage'],
+            'split':d['split'],
+            'architecture':d['architecture'],
+            'state_forecasting':d['state_forecasting'],
+            'per_stage':d['per_stage_summary'],
+            'summary':d['summary']
+          },indent=2))
+          PY
+      - name: Upload immutable V80 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v80-fresh-sealed-subtype-evidence
+          path: garuda_v3/artifacts/v80/**/*.json
+          if-no-files-found: error
+          retention-days: 30
