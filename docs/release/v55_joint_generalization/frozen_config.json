@@ -1,0 +1,28 @@
+{
+  "protocol": "V55 nonlinear pair-held-out development-selected fusion",
+  "weights": {
+    "known_attack_transfer": 0.0,
+    "future_state_novelty": 0.25,
+    "predicted_delta_novelty": 0.0,
+    "transition_energy": 0.25,
+    "history_state_novelty": 0.0,
+    "nonlinear_temporal_transfer": 0.5
+  },
+  "policy_budget": 0.0025,
+  "selection_candidate": "future_state_novelty25_transition_energy25_nonlinear_temporal_transfer50",
+  "selection_objective": [8, 18, 0.04883227176220807, 0.6027532592939083],
+  "development_fpr_margin": 0.0075,
+  "development_families": [
+    "tampering",
+    "lateral movement",
+    "weaponization",
+    "exfiltration",
+    "reconnaissance"
+  ],
+  "reserve_families": ["exploitation", "c&c"],
+  "reserve_metrics_used_for_selection": false,
+  "reserve_blocked_during_selection": true,
+  "authoritative_run": 35517835830,
+  "evaluated_head": "b9a04ac9fc3b5620fdb41d87a7c3bbbb0e48cd78",
+  "artifact_sha256": "2305e2a9237e63458cb9675b110b3515948fce3cc4dfa61fb6cbd266ecdec6b1"
+}
