@@ -49,6 +49,7 @@ jobs:
       - name: Freeze maximal supportable stage subset using support only
         run: |
           mkdir -p garuda_v3/artifacts/v76f_supported_stage_subtype_freeze
+          # v76f consumes the current V76 set-valued `target_subtypes` sequence contract.
           python -m garuda_v3.v76f_supported_stage_subtype_freeze \
             --csv datasets/v76f/XIIoTID.csv \
             --output garuda_v3/artifacts/v76f_supported_stage_subtype_freeze/support_freeze.json
