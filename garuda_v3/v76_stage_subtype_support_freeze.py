@@ -1,9 +1,13 @@
 """V76 support-only Class3 subtype freeze for fresh five-stage generalisation.
 
-This step intentionally performs NO model training or scoring.  It freezes one fine-
+This step intentionally performs NO model training or scoring. It freezes one fine-
 grained X-IIoTID Class3 attack subtype per lifecycle stage using only temporal sequence
-support counts.  Reserve subtypes selected here can then be evaluated by a later V77
+support counts. Reserve subtypes selected here can then be evaluated by a later V77
 model run without choosing the holdout from model metrics.
+
+Important: a four-minute future horizon can contain more than one subtype from the same
+lifecycle stage. V76 therefore treats the target as (furthest future stage, set of
+subtypes observed at that stage) instead of discarding multi-subtype horizons.
 """
 from __future__ import annotations
 
@@ -23,7 +27,7 @@ from .v71_future_stage_proxy import STAGES, stage_name
 
 MIN_RESERVE_PER_STAGE = 20
 MIN_DEV_PER_STAGE = 80
-MAX_CANDIDATES_PER_STAGE = 8
+MAX_CANDIDATES_PER_STAGE = 3
 
 
 def sha256(path: Path) -> str:
@@ -117,11 +121,10 @@ def make_sequence_metadata(minute_pairs):
             if future:
                 furthest_rank = max(rank[stage] for stage, _ in future)
                 target_stage = STAGES[furthest_rank]
-                subtypes = sorted({sub for stage, sub in future if stage == target_stage})
-                target_subtype = subtypes[0] if len(subtypes) == 1 else None
+                target_subtypes = frozenset(sub for stage, sub in future if stage == target_stage)
             else:
                 target_stage = None
-                target_subtype = None
+                target_subtypes = frozenset()
             rows.append({
                 "src": str(src),
                 "cutoff": int(times[i]),
@@ -129,7 +132,7 @@ def make_sequence_metadata(minute_pairs):
                 "future_pairs": frozenset(future),
                 "all_pairs": frozenset(hist | future),
                 "target_stage": target_stage,
-                "target_subtype": target_subtype,
+                "target_subtypes": target_subtypes,
             })
     if not rows:
         raise RuntimeError("No contiguous temporal sequences")
@@ -137,40 +140,34 @@ def make_sequence_metadata(minute_pairs):
 
 
 def candidate_table(rows):
-    total_stage = Counter(r["target_stage"] for r in rows if r["target_stage"] is not None and r["target_subtype"] is not None)
+    total_stage = Counter(r["target_stage"] for r in rows if r["target_stage"] is not None and r["target_subtypes"])
     by_pair = defaultdict(int)
     clean_onset = defaultdict(int)
     for row in rows:
         stage = row["target_stage"]
-        sub = row["target_subtype"]
-        if stage is None or sub is None:
+        if stage is None:
             continue
-        pair = (stage, sub)
-        by_pair[pair] += 1
-        if pair not in row["history_pairs"]:
-            clean_onset[pair] += 1
+        for sub in row["target_subtypes"]:
+            pair = (stage, sub)
+            by_pair[pair] += 1
+            if pair not in row["history_pairs"]:
+                clean_onset[pair] += 1
 
     table = {stage: [] for stage in STAGES}
     for (stage, subtype), target_support in sorted(by_pair.items()):
         reserve_pair = (stage, subtype)
-        reserve_target = sum(
-            1 for r in rows
-            if r["target_stage"] == stage
-            and r["target_subtype"] == subtype
-            and reserve_pair not in r["history_pairs"]
-        )
         remaining_by_stage = {}
         for dev_stage in STAGES:
             remaining_by_stage[dev_stage] = sum(
                 1 for r in rows
                 if r["target_stage"] == dev_stage
-                and r["target_subtype"] is not None
+                and r["target_subtypes"]
                 and reserve_pair not in r["all_pairs"]
             )
         table[stage].append({
             "subtype": subtype,
             "target_support": int(target_support),
-            "clean_onset_reserve_support": int(reserve_target),
+            "clean_onset_reserve_support": int(clean_onset[(stage, subtype)]),
             "remaining_stage_support_if_held_out_alone": remaining_by_stage,
         })
     for stage in STAGES:
@@ -202,14 +199,13 @@ def choose_combination(rows, table):
             reserve_support[stage] = sum(
                 1 for r in rows
                 if r["target_stage"] == stage
-                and r["target_subtype"] == chosen[stage]
-                and pair not in r["history_pairs"]
-                and not any(other in r["history_pairs"] for other in reserve_pairs)
+                and chosen[stage] in r["target_subtypes"]
+                and not reserve_pairs.intersection(r["history_pairs"])
             )
             dev_support[stage] = sum(
                 1 for r in rows
                 if r["target_stage"] == stage
-                and r["target_subtype"] is not None
+                and r["target_subtypes"]
                 and not reserve_pairs.intersection(r["all_pairs"])
             )
         ok = all(v >= MIN_RESERVE_PER_STAGE for v in reserve_support.values()) and all(v >= MIN_DEV_PER_STAGE for v in dev_support.values())
@@ -227,7 +223,11 @@ def choose_combination(rows, table):
         if best is None or objective > best[0]:
             best = (objective, row)
     if best is None:
-        best_audits = sorted(audits, key=lambda r: (min(r["reserve_support"].values()), min(r["development_support"].values())), reverse=True)[:10]
+        best_audits = sorted(
+            audits,
+            key=lambda r: (min(r["reserve_support"].values()), min(r["development_support"].values())),
+            reverse=True,
+        )[:10]
         raise RuntimeError(f"No five-stage subtype combination meets support gate; best={best_audits}")
     return best[1], pools
 
@@ -280,7 +280,7 @@ def main():
         "all_candidate_support": table,
         "time": {"date_column": date_col, "timestamp_column": ts_col, "method": time_method},
         "label_profiles": profiles,
-        "target_rule": "furthest mapped lifecycle stage in the next four one-minute windows; subtype must be unique within that target stage",
+        "target_rule": "furthest mapped lifecycle stage in the next four one-minute windows; all subtypes at that target stage are retained",
         "claim_boundary": "Support-only freeze. No model has been trained or scored on any selected reserve Class3 subtype. Exploitation remains an Initial Access proxy, not exact MITRE truth.",
     }
     out = Path(args.output)
