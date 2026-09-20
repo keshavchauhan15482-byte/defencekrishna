@@ -1,0 +1,70 @@
+name: V68 real CICAPT packet + flow contract
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/pcap_reader.py'
+      - 'garuda_v3/v68_cicapt_packet_contract.py'
+      - 'garuda_v3/tests/test_pcapng_reader.py'
+      - '.github/workflows/v68-cicapt-packet-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  packet-flow-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install feature audit dependencies
+        run: python -m pip install 'numpy<2.1'
+      - name: Compile and test PCAPNG reader
+        run: |
+          python -m compileall -q garuda_v3/pcap_reader.py garuda_v3/v68_cicapt_packet_contract.py
+          python -m unittest garuda_v3.tests.test_pcapng_reader garuda_v3.tests.test_v46_ps_complete -v
+      - name: Fetch and hash-verify CICAPT network capture archive
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v68 \
+            --ids cicapt_network \
+            --extract
+      - name: Audit real packet and flow features
+        run: |
+          mkdir -p garuda_v3/artifacts/v68_cicapt_packet_contract
+          python -m garuda_v3.v68_cicapt_packet_contract \
+            --captures datasets/v68/1stPhase-timed-Merged.pcap datasets/v68/2ndPhase-timed-MergedV2.pcap \
+            --packet-limit 200000 \
+            --output garuda_v3/artifacts/v68_cicapt_packet_contract/summary.json
+      - name: Verify evidence contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v68_cicapt_packet_contract/summary.json')
+          d=json.loads(p.read_text())
+          assert d['all_required_features_in_schema'] is True
+          assert len(d['captures']) == 2
+          for c in d['captures']:
+              assert c['format_detected_from_magic'] in {'pcapng','classic_pcap'}
+              assert c['decoded_ipv4_packets'] == d['packet_limit_per_capture']
+              assert c['windows_10s'] >= 2
+              assert c['feature_observation']['packet_features_present']['nonzero_windows'] > 0
+              assert c['ttl']['mean'] > 0
+              print(c['path'], c['format_detected_from_magic'], c['decoded_ipv4_packets'], 'packets', c['windows_10s'], 'windows')
+              for k in ('ttl_mean_scaled','tcp_window_log','payload_mean_log','retransmission_count_log','sequential_port_transition_fraction','random_port_transition_fraction'):
+                  print(k, c['feature_observation'][k])
+          PY
+      - name: Upload V68 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v68-cicapt-real-packet-flow-evidence
+          path: garuda_v3/artifacts/v68_cicapt_packet_contract/*.json
+          if-no-files-found: error
+          retention-days: 30
