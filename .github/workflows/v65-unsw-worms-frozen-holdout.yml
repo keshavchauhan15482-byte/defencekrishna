@@ -1,0 +1,82 @@
+name: V65 UNSW precommitted Worms fresh holdout
+
+on:
+  push:
+    branches: [fix/v57-metric-strengthening]
+    paths:
+      - 'garuda_v3/v65_unsw_worms_frozen_holdout.py'
+      - '.github/workflows/v65-unsw-worms-frozen-holdout.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  worms-holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V65
+        run: python -m compileall -q garuda_v3/v65_unsw_worms_frozen_holdout.py
+      - name: Download UNSW-NB15
+        run: |
+          mkdir -p datasets/v65
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v65/root.txt').write_text(str(root))
+          PY
+      - name: Run precommitted Worms benchmark
+        run: |
+          ROOT=$(cat datasets/v65/root.txt)
+          python -m garuda_v3.v65_unsw_worms_frozen_holdout \
+            --dataset-root "$ROOT" \
+            --output garuda_v3/artifacts/v65_unsw_worms \
+            --seeds 42 43 44 \
+            --epochs 18
+      - name: Verify precommit and print result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v65_unsw_worms/summary.json').read_text())
+          f=json.loads(Path('garuda_v3/artifacts/v65_unsw_worms/frozen_config.json').read_text())
+          p=d['precommit_contract']
+          assert p['reserve_family']=='worms'
+          assert p['campaign_cutoff']==1424259420
+          assert p['support_freeze_sha256']=='e1446ba66800160dcbf7a533dd5bebe32ebed9cdddc8ad262782ca390accb1ce'
+          assert p['reserve_model_scores_inspected_before_this_run'] is False
+          assert p['reserve_metrics_used_for_fusion_selection'] is False
+          assert f['development_families']==['backdoor','analysis']
+          assert f['fresh_reserve_family']=='worms'
+          print(json.dumps({
+              'protocol': d['protocol'],
+              'development_families': f['development_families'],
+              'fusion': {k:f[k] for k in ('selection_candidate','weights','policy_budget','config_sha256') if k in f},
+              'support': d['fresh_reserve']['support'],
+              'summary': d['fresh_reserve']['summary'],
+              'seeds': d['fresh_reserve']['seeds'],
+              'component_reference': d['fresh_reserve']['component_reference'],
+          }, indent=2))
+          PY
+      - name: Upload V65 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v65-unsw-worms-fresh-holdout-evidence
+          retention-days: 14
+          if-no-files-found: error
+          path: garuda_v3/artifacts/v65_unsw_worms/*.json
