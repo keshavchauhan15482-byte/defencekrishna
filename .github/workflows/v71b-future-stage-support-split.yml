@@ -1,0 +1,83 @@
+name: V71b support-frozen stage benchmark
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v71b_future_stage_support_split.py'
+      - '.github/workflows/v71b-future-stage-support-split.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stage-proxy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V71b
+        run: python -m compileall -q garuda_v3/v71b_future_stage_support_split.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v71b
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v71b/XIIoTID.csv'))
+          PY
+      - name: Run support-frozen stage benchmark
+        run: |
+          python -m garuda_v3.v71b_future_stage_support_split \
+            --csv datasets/v71b/XIIoTID.csv \
+            --output garuda_v3/artifacts/v71b_future_stage_proxy \
+            --seeds 42 43 44 \
+            --epochs 18
+      - name: Verify freeze and leakage contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v71b_future_stage_proxy/summary.json').read_text())
+          assert d['support_freeze']['selection_used_model_metrics'] is False
+          c=d['leakage_contract']
+          assert c['attack_labels_are_world_model_inputs'] is False
+          assert c['stage_mapper_fit_on_test'] is False
+          assert c['world_model_fit_on_test'] is False
+          assert c['test_boundary_selected_by_model_metrics'] is False
+          assert d['stage_mapping']['Exploitation']=='Initial Access proxy'
+          assert len(d['seeds'])==3
+          print(json.dumps({'train_stage_support':d['train_stage_support'],'test_stage_support':d['test_stage_support'],'summary':d['summary']},indent=2))
+          for seed,row in d['seeds'].items():
+              print('\nSEED',seed)
+              print(json.dumps(row['forecast_state_stage_metrics'],indent=2))
+          PY
+      - name: Upload V71b evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v71b-future-stage-proxy-evidence
+          path: garuda_v3/artifacts/v71b_future_stage_proxy/*.json
+          if-no-files-found: error
+          retention-days: 30
