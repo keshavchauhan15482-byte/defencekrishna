@@ -19,6 +19,7 @@ def main():
     p.add_argument('--csv', required=True)
     p.add_argument('--frozen-config', required=True)
     p.add_argument('--output', required=True)
+    p.add_argument('--include-reference', action='store_true')
     p.add_argument('--epochs', type=int, default=12)
     args = p.parse_args()
     out = Path(args.output); out.mkdir(parents=True, exist_ok=False)
@@ -42,6 +43,12 @@ def main():
         report['results'][fam] = evaluate_reserve_family(seq, masks, fam, (42, 43, 44), args.epochs, config,
             export_dir=out/'runtime', feature_names=names, fitting_exclusion=excluded)
         (out/'summary.json').write_text(json.dumps(report, indent=2, allow_nan=False))
+    if args.include_reference:
+        report['separate_family_reference'] = {}
+        for fam in reserve:
+            print('SEPARATE FAMILY REFERENCE', fam, flush=True)
+            report['separate_family_reference'][fam] = evaluate_reserve_family(seq, masks, fam, (42, 43, 44), args.epochs, config, export_dir=out/'reference_runtime', feature_names=names)
+            (out/'summary.json').write_text(json.dumps(report, indent=2, allow_nan=False))
     print(json.dumps({k: v['summary'] for k, v in report['results'].items()}, indent=2), flush=True)
 
 

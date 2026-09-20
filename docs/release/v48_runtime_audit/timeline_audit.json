@@ -1,0 +1,551 @@
+{
+  "protocol": "V52 CICAPT Attack_info provenance audit",
+  "source": {
+    "filename": "attack_info_axile.csv",
+    "bytes": 4310,
+    "sha256": "c4187ae745875d16ba2823e28e7059b834d4865c305f81717d75066ec2e2a172",
+    "rows": 58,
+    "columns": 5
+  },
+  "schema": {
+    "time": "Time of Attack",
+    "tactic": "Tactic Name",
+    "technique": "Technique Name",
+    "pid": "PID",
+    "status": null,
+    "compromise_time": null
+  },
+  "time_method": "epoch_s",
+  "event_count": 58,
+  "first_event_utc": "2023-12-01T22:25:07+00:00",
+  "last_event_utc": "2023-12-04T03:02:55+00:00",
+  "events": [
+    {
+      "row": 0,
+      "epoch": 1701469507.0,
+      "timestamp_utc": "2023-12-01T22:25:07+00:00",
+      "tactic": "collection",
+      "technique": "create staging directory",
+      "pid": "4437",
+      "status": null
+    },
+    {
+      "row": 1,
+      "epoch": 1701469537.0,
+      "timestamp_utc": "2023-12-01T22:25:37+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "7633",
+      "status": null
+    },
+    {
+      "row": 2,
+      "epoch": 1701473102.0,
+      "timestamp_utc": "2023-12-01T23:25:02+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "11179",
+      "status": null
+    },
+    {
+      "row": 3,
+      "epoch": 1701477068.0,
+      "timestamp_utc": "2023-12-02T00:31:08+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "14421",
+      "status": null
+    },
+    {
+      "row": 4,
+      "epoch": 1701480800.0,
+      "timestamp_utc": "2023-12-02T01:33:20+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "18197",
+      "status": null
+    },
+    {
+      "row": 5,
+      "epoch": 1701485116.0,
+      "timestamp_utc": "2023-12-02T02:45:16+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "21578",
+      "status": null
+    },
+    {
+      "row": 6,
+      "epoch": 1701489086.0,
+      "timestamp_utc": "2023-12-02T03:51:26+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "25165",
+      "status": null
+    },
+    {
+      "row": 7,
+      "epoch": 1701493286.0,
+      "timestamp_utc": "2023-12-02T05:01:26+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "28350",
+      "status": null
+    },
+    {
+      "row": 8,
+      "epoch": 1701497029.0,
+      "timestamp_utc": "2023-12-02T06:03:49+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "31272",
+      "status": null
+    },
+    {
+      "row": 9,
+      "epoch": 1701500589.0,
+      "timestamp_utc": "2023-12-02T07:03:09+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "34890",
+      "status": null
+    },
+    {
+      "row": 10,
+      "epoch": 1701504837.0,
+      "timestamp_utc": "2023-12-02T08:13:57+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "37937",
+      "status": null
+    },
+    {
+      "row": 11,
+      "epoch": 1701508469.0,
+      "timestamp_utc": "2023-12-02T09:14:29+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "40759",
+      "status": null
+    },
+    {
+      "row": 12,
+      "epoch": 1701511837.0,
+      "timestamp_utc": "2023-12-02T10:10:37+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "44856",
+      "status": null
+    },
+    {
+      "row": 13,
+      "epoch": 1701515017.0,
+      "timestamp_utc": "2023-12-02T11:03:37+00:00",
+      "tactic": "collection",
+      "technique": "find files",
+      "pid": "47568",
+      "status": null
+    },
+    {
+      "row": 14,
+      "epoch": 1701518094.0,
+      "timestamp_utc": "2023-12-02T11:54:54+00:00",
+      "tactic": "collection",
+      "technique": "stage sensitive files",
+      "pid": "50511",
+      "status": null
+    },
+    {
+      "row": 15,
+      "epoch": 1701521498.0,
+      "timestamp_utc": "2023-12-02T12:51:38+00:00",
+      "tactic": "collection",
+      "technique": "stage sensitive files",
+      "pid": "53148",
+      "status": null
+    },
+    {
+      "row": 16,
+      "epoch": 1701524593.0,
+      "timestamp_utc": "2023-12-02T13:43:13+00:00",
+      "tactic": "collection",
+      "technique": "stage sensitive files",
+      "pid": "56158",
+      "status": null
+    },
+    {
+      "row": 17,
+      "epoch": 1701528209.0,
+      "timestamp_utc": "2023-12-02T14:43:29+00:00",
+      "tactic": "collection",
+      "technique": "advanced file search and stager",
+      "pid": "59405",
+      "status": null
+    },
+    {
+      "row": 18,
+      "epoch": 1701532496.0,
+      "timestamp_utc": "2023-12-02T15:54:56+00:00",
+      "tactic": "collection",
+      "technique": "advanced file search and stager",
+      "pid": "64528",
+      "status": null
+    },
+    {
+      "row": 19,
+      "epoch": 1701535041.0,
+      "timestamp_utc": "2023-12-02T16:37:21+00:00",
+      "tactic": "collection",
+      "technique": "stage sensitive files",
+      "pid": "71772",
+      "status": null
+    },
+    {
+      "row": 20,
+      "epoch": 1701538050.0,
+      "timestamp_utc": "2023-12-02T17:27:30+00:00",
+      "tactic": "collection",
+      "technique": "stage sensitive files",
+      "pid": "75625",
+      "status": null
+    },
+    {
+      "row": 21,
+      "epoch": 1701542219.0,
+      "timestamp_utc": "2023-12-02T18:36:59+00:00",
+      "tactic": "collection",
+      "technique": "stage sensitive files",
+      "pid": "78245",
+      "status": null
+    },
+    {
+      "row": 22,
+      "epoch": 1701545137.0,
+      "timestamp_utc": "2023-12-02T19:25:37+00:00",
+      "tactic": "exfiltration",
+      "technique": "compress staged directory",
+      "pid": "82035",
+      "status": null
+    },
+    {
+      "row": 23,
+      "epoch": 1701549372.0,
+      "timestamp_utc": "2023-12-02T20:36:12+00:00",
+      "tactic": "exfiltration",
+      "technique": "compress staged directory",
+      "pid": "85807",
+      "status": null
+    },
+    {
+      "row": 24,
+      "epoch": 1701553567.0,
+      "timestamp_utc": "2023-12-02T21:46:07+00:00",
+      "tactic": "exfiltration",
+      "technique": "exfil staged directory",
+      "pid": "89730",
+      "status": null
+    },
+    {
+      "row": 25,
+      "epoch": 1701558169.0,
+      "timestamp_utc": "2023-12-02T23:02:49+00:00",
+      "tactic": "command and control",
+      "technique": "linux download file and run",
+      "pid": "92385",
+      "status": null
+    },
+    {
+      "row": 26,
+      "epoch": 1701560850.0,
+      "timestamp_utc": "2023-12-02T23:47:30+00:00",
+      "tactic": "command and control",
+      "technique": "add command",
+      "pid": "94961",
+      "status": null
+    },
+    {
+      "row": 27,
+      "epoch": 1701563744.0,
+      "timestamp_utc": "2023-12-03T00:35:44+00:00",
+      "tactic": "discovery",
+      "technique": "find local users",
+      "pid": "98270",
+      "status": null
+    },
+    {
+      "row": 28,
+      "epoch": 1701567399.0,
+      "timestamp_utc": "2023-12-03T01:36:39+00:00",
+      "tactic": "discovery",
+      "technique": "network interface configuration",
+      "pid": "101566",
+      "status": null
+    },
+    {
+      "row": 29,
+      "epoch": 1701570992.0,
+      "timestamp_utc": "2023-12-03T02:36:32+00:00",
+      "tactic": "discovery",
+      "technique": "scan wifi networks",
+      "pid": "105454",
+      "status": null
+    },
+    {
+      "row": 30,
+      "epoch": 1701575214.0,
+      "timestamp_utc": "2023-12-03T03:46:54+00:00",
+      "tactic": "discovery",
+      "technique": "system owner/user discovery",
+      "pid": "108683",
+      "status": null
+    },
+    {
+      "row": 31,
+      "epoch": 1701578675.0,
+      "timestamp_utc": "2023-12-03T04:44:35+00:00",
+      "tactic": "discovery",
+      "technique": "check python",
+      "pid": "111519",
+      "status": null
+    },
+    {
+      "row": 32,
+      "epoch": 1701581761.0,
+      "timestamp_utc": "2023-12-03T05:36:01+00:00",
+      "tactic": "discovery",
+      "technique": "permission groups discovery",
+      "pid": "114311",
+      "status": null
+    },
+    {
+      "row": 33,
+      "epoch": 1701584782.0,
+      "timestamp_utc": "2023-12-03T06:26:22+00:00",
+      "tactic": "discovery",
+      "technique": "list os information",
+      "pid": "117576",
+      "status": null
+    },
+    {
+      "row": 34,
+      "epoch": 1701588288.0,
+      "timestamp_utc": "2023-12-03T07:24:48+00:00",
+      "tactic": "discovery",
+      "technique": "list directory",
+      "pid": "120442",
+      "status": null
+    },
+    {
+      "row": 35,
+      "epoch": 1701591524.0,
+      "timestamp_utc": "2023-12-03T08:18:44+00:00",
+      "tactic": "persistence",
+      "technique": "create a new user in linux",
+      "pid": "123479",
+      "status": null
+    },
+    {
+      "row": 36,
+      "epoch": 1701594972.0,
+      "timestamp_utc": "2023-12-03T09:16:12+00:00",
+      "tactic": "credential access",
+      "technique": "extract password with grep",
+      "pid": "128298",
+      "status": null
+    },
+    {
+      "row": 37,
+      "epoch": 1701599411.0,
+      "timestamp_utc": "2023-12-03T10:30:11+00:00",
+      "tactic": "command and control",
+      "technique": "download sandcat and lazagne",
+      "pid": "131906",
+      "status": null
+    },
+    {
+      "row": 38,
+      "epoch": 1701603457.0,
+      "timestamp_utc": "2023-12-03T11:37:37+00:00",
+      "tactic": "credential access",
+      "technique": "dump credentials from firefox browser",
+      "pid": "135354",
+      "status": null
+    },
+    {
+      "row": 39,
+      "epoch": 1701607264.0,
+      "timestamp_utc": "2023-12-03T12:41:04+00:00",
+      "tactic": "credential access",
+      "technique": "dump credentials from firefox browser",
+      "pid": "138106",
+      "status": null
+    },
+    {
+      "row": 40,
+      "epoch": 1701610391.0,
+      "timestamp_utc": "2023-12-03T13:33:11+00:00",
+      "tactic": "collection",
+      "technique": "capture linux desktop",
+      "pid": "141900",
+      "status": null
+    },
+    {
+      "row": 41,
+      "epoch": 1701614558.0,
+      "timestamp_utc": "2023-12-03T14:42:38+00:00",
+      "tactic": "collection",
+      "technique": "add or copy content to clipboard",
+      "pid": "144446",
+      "status": null
+    },
+    {
+      "row": 42,
+      "epoch": 1701617497.0,
+      "timestamp_utc": "2023-12-03T15:31:37+00:00",
+      "tactic": "credential access",
+      "technique": "dump history",
+      "pid": "147357",
+      "status": null
+    },
+    {
+      "row": 43,
+      "epoch": 1701620703.0,
+      "timestamp_utc": "2023-12-03T16:25:03+00:00",
+      "tactic": "discovery",
+      "technique": "collect arp details",
+      "pid": "149940",
+      "status": null
+    },
+    {
+      "row": 44,
+      "epoch": 1701623585.0,
+      "timestamp_utc": "2023-12-03T17:13:05+00:00",
+      "tactic": "lateral movement",
+      "technique": "start sandcat",
+      "pid": "152566",
+      "status": null
+    },
+    {
+      "row": 45,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "capture linux desktop",
+      "pid": "181541",
+      "status": null
+    },
+    {
+      "row": 46,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "dump credentials from firefox",
+      "pid": "181543",
+      "status": null
+    },
+    {
+      "row": 47,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "dump credentials from firefox",
+      "pid": "181545",
+      "status": null
+    },
+    {
+      "row": 48,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "download sandcat and lazagne",
+      "pid": "181547",
+      "status": null
+    },
+    {
+      "row": 49,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "create a new user in linux",
+      "pid": "181552",
+      "status": null
+    },
+    {
+      "row": 50,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "list os information",
+      "pid": "181557",
+      "status": null
+    },
+    {
+      "row": 51,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "add command",
+      "pid": "181561",
+      "status": null
+    },
+    {
+      "row": 52,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "linux download file",
+      "pid": "181564",
+      "status": null
+    },
+    {
+      "row": 53,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "compress staged directory",
+      "pid": "181566",
+      "status": null
+    },
+    {
+      "row": 54,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "compress staged directory",
+      "pid": "181569",
+      "status": null
+    },
+    {
+      "row": 55,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "advanced file search and stager",
+      "pid": "181572",
+      "status": null
+    },
+    {
+      "row": 56,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "advanced file search and stager",
+      "pid": "181576",
+      "status": null
+    },
+    {
+      "row": 57,
+      "epoch": 1701658975.0,
+      "timestamp_utc": "2023-12-04T03:02:55+00:00",
+      "tactic": "cleanup",
+      "technique": "create staging directory",
+      "pid": "181578",
+      "status": null
+    }
+  ],
+  "candidate_comparison": null,
+  "explicit_compromise_timestamp_present": false,
+  "lead_time_claim_level": "attack_step_onset_only",
+  "verified_compromise_lead_time_supported": false,
+  "automatic_containment_approved": false
+}

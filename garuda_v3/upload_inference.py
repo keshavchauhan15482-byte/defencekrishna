@@ -10,6 +10,14 @@ from .inference import ForecastService
 MAX_BYTES = 8 * 1024 * 1024
 
 def analyze(raw, kind, artifacts):
+    if kind == "v48csv":
+        if not raw or len(raw) > MAX_BYTES:
+            raise ValueError("V48 CSV upload must be 1 byte to 8 MiB")
+        try:
+            from .v48_upload import analyze_v48
+            return analyze_v48(raw)
+        except (ImportError, OSError, RuntimeError) as exc:
+            raise ValueError("V48 shadow runtime unavailable or invalid; check installed research dependencies and artifacts") from exc
     if kind not in ("csv", "pcap") or not raw or len(raw) > MAX_BYTES:
         raise ValueError("Upload must be a CSV or PCAP file of 1 byte to 8 MiB")
     service = ForecastService(artifacts)

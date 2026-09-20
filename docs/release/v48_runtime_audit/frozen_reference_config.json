@@ -1,0 +1,15 @@
+{
+  "protocol": "Frozen values copied from docs/release/V48_RESULTS.md; no selection in this rerun",
+  "reserve_families": [
+    "exploitation",
+    "c&c"
+  ],
+  "weights": {
+    "known_attack_transfer": 0.75,
+    "future_state_novelty": 0.0,
+    "predicted_delta_novelty": 0.0,
+    "transition_energy": 0.25,
+    "history_state_novelty": 0.0
+  },
+  "policy_budget": 0.0025
+}

@@ -1,0 +1,8 @@
+{
+  "http_status": 200,
+  "status": "shadow_forecast_available",
+  "forecasts": 32,
+  "automatic_containment": false,
+  "score_kind": "benign_tail_evidence_not_probability",
+  "fixture_invalid_timestamp_rows_excluded": 4
+}

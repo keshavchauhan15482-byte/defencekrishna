@@ -347,6 +347,9 @@ def evaluate_reserve_family(sequences, time_masks, family, seeds, epochs, config
                 "state_gate_passed": fold["world"]["state_gate_passed"],
                 "test_mse": test_mse,
                 "test_persistence_mse": persistence_mse,
+                "test_state_gate_passed": bool(test_mse < persistence_mse),
+                "test_state_mse_by_horizon": np.mean((fold["world"]["pred"][state_mask] - fold["world"]["future_scaled"][state_mask]) ** 2, axis=(0, 2)).tolist(),
+                "test_persistence_mse_by_horizon": np.mean((fold["world"]["persistence"][state_mask] - fold["world"]["future_scaled"][state_mask]) ** 2, axis=(0, 2)).tolist(),
             },
             "fused_alert": {"threshold": threshold, "test": metrics, "clean_onset_test": onset},
             "transfer_only_reference": {"threshold": transfer_threshold, "test": transfer_metrics},
@@ -368,6 +371,7 @@ def evaluate_reserve_family(sequences, time_masks, family, seeds, epochs, config
 
     summary = {
         "evaluated_seeds": len(evaluated),
+        "test_state_gate_passed_all_seeds": bool(len(evaluated) == len(set(seeds)) and len(set(seeds)) >= 3 and all(r["state"]["test_state_gate_passed"] for r in evaluated)),
         "recall": mean_sd(("fused_alert", "test", "recall")),
         "fpr": mean_sd(("fused_alert", "test", "fpr")),
         "precision": mean_sd(("fused_alert", "test", "precision")),

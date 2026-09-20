@@ -1,0 +1,609 @@
+krishna-delivery-tests.log
+{"output": "/tmp/tmp8aq71c03/capture.pcap", "size": 2600000, "crc_verified": true}
+/workspace/scratch/ca9f1b3a363b/integration/garuda_v3/v50_wustl_support.py:85: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  dt = pd.to_datetime(series.astype(str), errors='coerce', utc=True)
+/workspace/scratch/ca9f1b3a363b/integration/garuda_v3/v52_cicapt_timeline.py:149: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  dt = pd.to_datetime(text, errors="coerce", utc=True)
+/workspace/scratch/ca9f1b3a363b/integration/garuda_v3/v52_cicapt_timeline.py:149: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  dt = pd.to_datetime(text, errors="coerce", utc=True)
+----------------------------------------------------------------------
+Ran 162 tests in 14.994s
+
+OK
+
+krishna-proxy.log
+PASS source not served: /proxy.js
+PASS source not served: /counter-memory.json
+PASS source not served: /trained_world_model_weights.json
+PASS source not served: /package.json
+PASS demo provenance explicit
+
+krishna-integrity.log
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.007s
+
+OK
+
+krishna-v11.log
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> krishna-defence-system@2.2.0 test:v11
+> node tests/v11_controls.js && node tests/defence_stack_validation.js && node tests/defence_stack_effectiveness.js && node tests/defence_stack_mutation_limits.js && node tests/defence_unknown_to_known_promotion.js && node tests/defence_stack_memory_evolution.js && node tests/defence_stack_trusted_memory.js && node tests/defence_stack_split_bloom.js && node tests/defence_stack_war_exercise.js && python3 tests/v11_http_lab.py && python3 -m unittest garuda_v3.tests.test_v11 -v
+
+[SUDARSHANA CORE] 🔒 SCOPED LOCKDOWN ENGAGED on ip:127.0.0.2 (Time Budget: 8s)
+[SUDARSHANA CORE] ⚠️ LOCKDOWN ESCALATED (Fail-Closed Safety) for ip:127.0.0.2
+[SUDARSHANA CORE] 🔒 SCOPED LOCKDOWN ENGAGED on ip:127.0.0.2 (Time Budget: 8s)
+{
+  "passed": 15,
+  "checks": [
+    "Escalation retains containment",
+    "Unrelated client remains allowed",
+    "Hardcoded legacy strings rejected",
+    "Duplicate signer rejected",
+    "Non-string signer identity rejected",
+    "Two aliases of one public key are not independent approvals",
+    "Tampered approval rejected",
+    "Two independent approvals release scope",
+    "Previous-lock approval replay rejected",
+    "Genesis tampering detected",
+    "Retained ledger chain remains consistent",
+    "Signed scope matches",
+    "Tampering cannot clear last verified policy",
+    "Older signed policy cannot revoke",
+    "Fresh signed emergency revoke works"
+  ],
+  "scope": "local module controls; not enterprise prevention"
+}
+[SUDARSHANA CORE] 🔒 SCOPED LOCKDOWN ENGAGED on ip:192.0.2.22 (Time Budget: 1s)
+[SUDARSHANA CORE] ⚠️ LOCKDOWN ESCALATED (Fail-Closed Safety) for ip:192.0.2.22
+[SUDARSHANA CORE] 🔒 SCOPED LOCKDOWN ENGAGED on ip:192.0.2.23 (Time Budget: 1s)
+[SUDARSHANA CORE] 🛡️ AUTONOMOUS RECOVERY COMPLETE for ip:192.0.2.23 in 250ms (Confidence: 98%) — Scoped Lockdown Safely Lifted!
+{
+  "passed": 12,
+  "checks": [
+    "Low-confidence incident cannot poison Arjuna memory",
+    "Krishna independently validates a root incident before learning",
+    "Mutation generation produces candidates and independently validated variants",
+    "Krishna produces at least one distinct validated mutation",
+    "Arjuna fast-path recognizes a validated related mutation",
+    "Generated but unvalidated candidates cannot become Arjuna block decisions",
+    "Detection layer routes validated known mutation to Arjuna danger fast-path",
+    "Known/static front-line block does not unnecessarily invoke Sudarshana",
+    "Unknown blocked by Krishna does not invoke Sudarshana without escape evidence",
+    "Confirmed unknown escape stays fail-closed under scoped Sudarshana containment",
+    "Sudarshana holds only the confirmed offender scope while Krishna validation completes",
+    "Validated Krishna study permits time-bound autonomous recovery after confirmed escape"
+  ],
+  "mutationValidation": {
+    "candidates": 79,
+    "validated": 69,
+    "coverage": 0.8734177215189873
+  },
+  "scope": "owned/local defensive module contract; no external target traffic"
+}
+{
+  "status": "MEASURED",
+  "metrics": {
+    "benign": {
+      "total": 10,
+      "danger": 0,
+      "observedDangerRate": 0
+    },
+    "knownAttacks": {
+      "total": 10,
+      "blockedDanger": 10,
+      "blockRate": 1,
+      "incorrectlyRoutedToKrishna": 0
+    },
+    "novelStructural": {
+      "total": 5,
+      "danger": 5,
+      "dangerRate": 1,
+      "routedToKrishna": 5,
+      "krishnaRouteRate": 1
+    },
+    "mutations": {
+      "generatedBeforeBudget": 150,
+      "candidatesEvaluated": 150,
+      "budgetWithheld": 0,
+      "configuredPerTokenBudget": 48,
+      "configuredPerIncidentBudget": 128,
+      "maxPerTokenObserved": 29,
+      "independentlyValidated": 135,
+      "validationCoverage": 0.9,
+      "promotionEligible": 135,
+      "promotionWithheldForSpecificity": 0,
+      "arjunaPromotionReuseHits": 135,
+      "arjunaPromotionReuseRate": 1,
+      "reuseMisses": [],
+      "runs": [
+        {
+          "attackType": "sql-injection",
+          "generatedBeforeBudget": 82,
+          "candidates": 82,
+          "budgetWithheld": 0,
+          "validated": 72,
+          "coverage": 0.8780487804878049,
+          "learnedRoots": 3,
+          "mutationBudget": {
+            "perToken": 48,
+            "perIncident": 128,
+            "maxPerTokenObserved": 29,
+            "evaluated": 82,
+            "remaining": 46,
+            "withheld": 0
+          },
+          "mutationLimits": {
+            "maxLearnedTokensPerIncident": 8,
+            "maxSyntheticMutationsPerToken": 48,
+            "maxRawMutationCandidatesPerIncident": 128,
+            "source": "defence-stack-v2-patch"
+          }
+        },
+        {
+          "attackType": "xss",
+          "generatedBeforeBudget": 55,
+          "candidates": 55,
+          "budgetWithheld": 0,
+          "validated": 51,
+          "coverage": 0.9272727272727272,
+          "learnedRoots": 4,
+          "mutationBudget": {
+            "perToken": 48,
+            "perIncident": 128,
+            "maxPerTokenObserved": 19,
+            "evaluated": 55,
+            "remaining": 73,
+            "withheld": 0
+          },
+          "mutationLimits": {
+            "maxLearnedTokensPerIncident": 8,
+            "maxSyntheticMutationsPerToken": 48,
+            "maxRawMutationCandidatesPerIncident": 128,
+            "source": "defence-stack-v2-patch"
+          }
+        },
+        {
+          "attackType": "ssrf",
+          "generatedBeforeBudget": 13,
+          "candidates": 13,
+          "budgetWithheld": 0,
+          "validated": 12,
+          "coverage": 0.9230769230769231,
+          "learnedRoots": 1,
+          "mutationBudget": {
+            "perToken": 48,
+            "perIncident": 128,
+            "maxPerTokenObserved": 13,
+            "evaluated": 13,
+            "remaining": 115,
+            "withheld": 0
+          },
+          "mutationLimits": {
+            "maxLearnedTokensPerIncident": 8,
+            "maxSyntheticMutationsPerToken": 48,
+            "maxRawMutationCandidatesPerIncident": 128,
+            "source": "defence-stack-v2-patch"
+          }
+        }
+      ]
+    }
+  },
+  "knownCases": [
+    {
+      "name": "SQL injection",
+      "tier": "danger",
+      "score": 100,
+      "attackType": "sql-injection",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "XSS",
+      "tier": "danger",
+      "score": 65,
+      "attackType": "xss",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "Path traversal",
+      "tier": "danger",
+      "score": 100,
+      "attackType": "path-traversal",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "Command injection",
+      "tier": "danger",
+      "score": 100,
+      "attackType": "command-injection",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "SSRF metadata",
+      "tier": "danger",
+      "score": 100,
+      "attackType": "ssrf",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "Log4j/JNDI",
+      "tier": "danger",
+      "score": 100,
+      "attackType": "log4j-rce",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "XXE",
+      "tier": "danger",
+      "score": 100,
+      "attackType": "path-traversal",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "NoSQL operator",
+      "tier": "danger",
+      "score": 65,
+      "attackType": "nosql-injection",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "Prototype pollution",
+      "tier": "danger",
+      "score": 100,
+      "attackType": "prototype-pollution",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    },
+    {
+      "name": "Template expression",
+      "tier": "danger",
+      "score": 60,
+      "attackType": "template-injection",
+      "routingAuthority": "arjuna_known",
+      "isZeroDayAnomaly": false
+    }
+  ],
+  "novelCases": [
+    {
+      "payload": "[\"constructor\"][\"prototype\"][\"isAdmin\"]",
+      "tier": "danger",
+      "score": 65,
+      "isZeroDayAnomaly": true,
+      "routingAuthority": "krishna_unknown",
+      "attackType": "zero-day-anomaly"
+    },
+    {
+      "payload": "grep /tmp/runtime-state",
+      "tier": "danger",
+      "score": 65,
+      "isZeroDayAnomaly": true,
+      "routingAuthority": "krishna_unknown",
+      "attackType": "zero-day-anomaly"
+    },
+    {
+      "payload": "ps -aux",
+      "tier": "danger",
+      "score": 65,
+      "isZeroDayAnomaly": true,
+      "routingAuthority": "krishna_unknown",
+      "attackType": "zero-day-anomaly"
+    },
+    {
+      "payload": "bash ./local-stage",
+      "tier": "danger",
+      "score": 65,
+      "isZeroDayAnomaly": true,
+      "routingAuthority": "krishna_unknown",
+      "attackType": "zero-day-anomaly"
+    },
+    {
+      "payload": "ls /var/tmp/krishna",
+      "tier": "danger",
+      "score": 65,
+      "isZeroDayAnomaly": true,
+      "routingAuthority": "krishna_unknown",
+      "attackType": "zero-day-anomaly"
+    }
+  ],
+  "scope": "deterministic local/module effectiveness benchmark; documentation-range IPs only; not production zero-day evidence"
+}
+{"status":"PASS","gates":"all deterministic local defence gates passed"}
+{
+  "status": "PASS",
+  "novelStructure": {
+    "tier": "danger",
+    "routedToKrishna": true,
+    "attackType": "zero-day-anomaly"
+  },
+  "runtimeMutationBudget": {
+    "perToken": 48,
+    "perIncident": 128
+  },
+  "maxLearnedTokensPerIncident": 8,
+  "measuredIncident": {
+    "extractedRoots": 8,
+    "generatedBeforeBudget": 196,
+    "evaluatedCandidates": 128,
+    "budgetWithheld": 68,
+    "validatedForArjuna": 115,
+    "maxPerTokenObserved": 25
+  },
+  "scope": "deterministic local defensive regression; no external target traffic"
+}
+{
+  "status": "PASS",
+  "transition": {
+    "firstSight": "KRISHNA_UNKNOWN",
+    "replay": "ARJUNA_KNOWN"
+  },
+  "learning": {
+    "learnedRoots": 1,
+    "generatedBeforeBudget": 9,
+    "evaluatedCandidates": 9,
+    "validatedForPromotion": 8,
+    "validationCoverage": 0.8888888888888888,
+    "maxPerTokenObserved": 9,
+    "perTokenCap": 48,
+    "perIncidentCap": 128,
+    "budgetWithheld": 0
+  },
+  "promotedMutationReuse": true,
+  "scope": "deterministic local defensive contract; no external target traffic; not a production zero-day claim"
+}
+{
+  "status": "PASS",
+  "mutationBudget": {
+    "perToken": 48,
+    "perIncident": 128
+  },
+  "firstIncident": {
+    "rootsAdded": 3,
+    "mutationCandidates": 81,
+    "validatedMutations": 71
+  },
+  "exactReplay": {
+    "rootsAdded": 0,
+    "canonicalDuplicatesSuppressed": 3
+  },
+  "caseVariantReplay": {
+    "rootsAdded": 0,
+    "canonicalDuplicatesSuppressed": 3
+  },
+  "distinctAttack": {
+    "rootsAdded": 4,
+    "mutationCandidates": 57,
+    "validatedMutations": 50
+  },
+  "totalReviewedRoots": 7,
+  "scope": "deterministic local defensive memory-evolution regression; no external target traffic"
+}
+{
+  "status": "PASS",
+  "trustedMemory": {
+    "reviewedRoots": 3,
+    "validatedMutations": 69,
+    "trustedEntries": 72,
+    "bloomSizeBytes": 1024,
+    "bloomSetBits": 284,
+    "bloomBitLoad": 0.03466796875,
+    "estimatedBloomMaybeRate": 0.0000014444868270402367,
+    "source": "reviewed roots + independently validated Arjuna-eligible mutations only"
+  },
+  "mutationValidation": {
+    "candidates": 80,
+    "validated": 70,
+    "rejectedEvidenceRecords": 10,
+    "coverage": 0.875
+  },
+  "readinessField": "87.5% validated mutation coverage (local defensive evidence)",
+  "scope": "deterministic local defensive trusted-memory regression; no external target traffic"
+}
+{
+  "status": "PASS",
+  "mutationBudget": {
+    "perToken": 48,
+    "perIncident": 128
+  },
+  "stores": {
+    "knownAttackStore": 3,
+    "validatedMutationStore": 41
+  },
+  "bloom": {
+    "knownAttackBytes": 1024,
+    "validatedMutationBytes": 1024,
+    "stressPatternsPerStore": 2000,
+    "stressKnownAttackBytes": 1024,
+    "stressValidatedMutationBytes": 1024
+  },
+  "arjunaAccess": {
+    "knownAttackStore": "known_attack_store",
+    "validatedMutationStore": "validated_mutation_store"
+  },
+  "scope": "deterministic local defensive memory regression; exact metadata stores remain authoritative; no external target traffic"
+}
+[SUDARSHANA CORE] 🔒 SCOPED LOCKDOWN ENGAGED on ip:192.0.2.220 (Time Budget: 1s)
+[SUDARSHANA CORE] 🛡️ AUTONOMOUS RECOVERY COMPLETE for ip:192.0.2.220 in 255ms (Confidence: 98%) — Scoped Lockdown Safely Lifted!
+{
+  "status": "PASS",
+  "exercise": "KRISHNA_DEFENCE_LOCAL_WAR_EXERCISE",
+  "wavesPassed": 5,
+  "wavesTotal": 5,
+  "receipts": [
+    {
+      "wave": "W0_CIVILIAN_TRAFFIC",
+      "total": 10,
+      "danger": 0,
+      "observedDangerRate": 0,
+      "status": "PASS"
+    },
+    {
+      "wave": "W1_ARJUNA_KNOWN_PRESSURE",
+      "total": 10,
+      "blocked": 10,
+      "blockRate": 1,
+      "routedUnknown": 0,
+      "arjunaAuthority": 10,
+      "status": "PASS"
+    },
+    {
+      "wave": "W2_KRISHNA_UNKNOWN_PRESSURE",
+      "total": 5,
+      "routedToKrishna": 5,
+      "routeRate": 1,
+      "status": "PASS"
+    },
+    {
+      "wave": "W3_KRISHNA_EVOLVE_TO_ARJUNA",
+      "firstSight": "KRISHNA_UNKNOWN",
+      "reviewedRoots": 1,
+      "mutationCandidates": 9,
+      "validatedMutations": 9,
+      "promotedMutationEntries": 5,
+      "validationCoverage": 1,
+      "perRootCap": 48,
+      "perIncidentCap": 128,
+      "originalReplayStore": "known_attack_store",
+      "mutationReplayStore": "validated_mutation_store",
+      "knownBloomBytes": 1024,
+      "mutationBloomBytes": 1024,
+      "status": "PASS"
+    },
+    {
+      "wave": "W4_SUDARSHANA_CONFIRMED_ESCAPE",
+      "offender": "documentation-range IP",
+      "lockStatus": "AUTO_RECOVERED",
+      "unrelatedClientLocked": false,
+      "recoveryPendingObserved": true,
+      "releasedAfterValidatedStudy": true,
+      "ledgerIntegrity": true,
+      "status": "PASS"
+    }
+  ],
+  "finalMemory": {
+    "knownExactEntries": 1,
+    "validatedMutationExactEntries": 5,
+    "knownBloomBytes": 1024,
+    "mutationBloomBytes": 1024
+  },
+  "claimBoundary": "owned/local deterministic defensive exercise only; no external target traffic; unseen-to-system fixtures are not production zero-day proof"
+}
+{
+  "checks": [
+    {
+      "name": "Legitimate request reaches protected app",
+      "status": 200,
+      "upstream_receipts": 1,
+      "passed": true
+    },
+    {
+      "name": "Unauthenticated management denied",
+      "status": 401,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Fabricated prediction mitigation retired",
+      "status": 410,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Signed scoped policy prevents upstream delivery",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Unrelated client stays available",
+      "status": 200,
+      "upstream_receipts": 1,
+      "passed": true
+    },
+    {
+      "name": "Forwarded header cannot evade scoped policy",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Invalid signature does not lift containment",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Stale signed revoke rejected",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Emergency signed revoke restores delivery",
+      "status": 200,
+      "upstream_receipts": 1,
+      "passed": true
+    },
+    {
+      "name": "Short TTL policy initially blocks",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    },
+    {
+      "name": "Expired policy no longer blocks",
+      "status": 200,
+      "upstream_receipts": 1,
+      "passed": true
+    },
+    {
+      "name": "Known SQL injection is denied by detection engine",
+      "status": 403,
+      "upstream_receipts": 0,
+      "passed": true
+    }
+  ],
+  "passed": 12,
+  "upstream_receipts": [
+    {
+      "path": "/baseline",
+      "time": 1789893476.8220315
+    },
+    {
+      "path": "/other-client",
+      "time": 1789893477.1333563
+    },
+    {
+      "path": "/recovered",
+      "time": 1789893478.0438082
+    },
+    {
+      "path": "/ttl-expired",
+      "time": 1789893479.3499386
+    }
+  ],
+  "scope": "Loopback HTTP proxy enforcement; operator-signed policies and known-payload detection",
+  "garuda_forecast_trigger_tested": false,
+  "unknown_attack_generalisation_tested": false,
+  "production_effectiveness_proven": false
+}
+test_manifest_cannot_be_overwritten (garuda_v3.tests.test_v11.V11EvidenceTests.test_manifest_cannot_be_overwritten) ... ok
+test_reused_source_rejected (garuda_v3.tests.test_v11.V11EvidenceTests.test_reused_source_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+
+krishna-smoke.log
+[Krishna Defence] Starting Garuda V15 engine on 8090 + integrated Ultron console on 8091...
+[Krishna Defence] ENGINE HEALTHY: http://127.0.0.1:8090
+[Krishna Defence] ULTRON CONSOLE HEALTHY: http://127.0.0.1:8091

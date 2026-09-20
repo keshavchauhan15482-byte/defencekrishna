@@ -103,7 +103,10 @@ class V48Runtime:
         score = fused_score(evidence, self.meta['weights'])
         return {'state_scaled': pred, 'score': score,
                 'alert': (score >= self.meta['threshold']) & self.meta['state_gate_passed'],
-                'components': evidence, 'automatic_containment': False,
+                'components': evidence,
+                'transfer_feature_contributions': (flat * a['logistic_coef']).reshape(len(X), HISTORY, len(feature_names)).sum(axis=1),
+                'transition_feature_energy': np.mean(delta * delta, axis=1),
+                'automatic_containment': False,
                 'score_kind': 'benign_tail_evidence'}
 
 
