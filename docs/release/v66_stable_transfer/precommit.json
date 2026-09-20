@@ -1,0 +1,55 @@
+{
+  "protocol": "V66 precommit before any Fuzzers reserve scoring",
+  "created_from_commit": "d7b7706664c132522a4b5e29ec62a6c3084cf466",
+  "diagnostic_used_for_engineering": {
+    "family": "worms",
+    "v65_mean_recall": 0.6825396825396824,
+    "v65_seed_recall": {
+      "42": 1.0,
+      "43": 1.0,
+      "44": 0.047619047619047616
+    },
+    "interpretation": "V65 exposed severe seed instability. Worms is development diagnostic from V66 onward and is not a V66 reserve claim."
+  },
+  "fresh_reserve": {
+    "family": "fuzzers",
+    "campaign_cutoff": 1424257500,
+    "support_from_v64_support_only_freeze": {
+      "train": 10412,
+      "calibration": 3521,
+      "policy": 3579,
+      "positive": 20,
+      "negative": 1067
+    },
+    "selection_basis": "latest still-unscored support-qualified family in the V64 support-only candidate list after excluding Analysis (already development-scored), Worms (V65 inspected), Backdoor aliases (contaminated/development), and choosing the later eligible campaign ahead of Shellcode",
+    "reserve_scores_seen_before_this_precommit": false,
+    "reserve_metrics_used_to_choose_model_or_fusion": false
+  },
+  "stability_change": {
+    "nonlinear_transfer": "average probabilities from a fixed three-member ExtraTrees ensemble rather than tying ExtraTrees random_state to the outer world-model seed",
+    "extra_trees_random_states": [20260920, 20260921, 20260922],
+    "trees_per_member": 320,
+    "max_features": "sqrt",
+    "min_samples_leaf": 2,
+    "class_weight": "balanced",
+    "outer_world_model_seeds": [42, 43, 44],
+    "reason": "reduce algorithmic seed variance without looking at Fuzzers outcomes"
+  },
+  "selection_contract": {
+    "development_families": ["backdoor", "analysis"],
+    "fusion_candidates": "existing fixed V55 coarse simplex",
+    "policy_budgets": [0.001, 0.0025, 0.005, 0.01],
+    "selection_data": "development campaigns only; Fuzzers blocked from fit/calibration/policy/fusion selection",
+    "gate": {
+      "recall_min": 0.80,
+      "fpr_max": 0.01
+    }
+  },
+  "reporting_contract": {
+    "do_not_hide_per_seed_results": true,
+    "report_exact_confusion_counts": true,
+    "report_wilson_95_intervals": true,
+    "headline_100_percent_point_estimate_as_perfect_model": false,
+    "conservative_view": "minimum per-seed Wilson lower 95% recall bound and maximum per-seed Wilson upper 95% FPR bound"
+  }
+}
