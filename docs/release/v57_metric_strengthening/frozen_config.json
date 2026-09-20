@@ -1,0 +1,49 @@
+{
+  "protocol": "V57 rich deterministic temporal transfer + pair-held-out development selection",
+  "weights": {
+    "known_attack_transfer": 0.0,
+    "future_state_novelty": 0.0,
+    "predicted_delta_novelty": 0.25,
+    "transition_energy": 0.25,
+    "history_state_novelty": 0.0,
+    "rich_extra_transfer": 0.5,
+    "rich_hist_gradient_transfer": 0.0
+  },
+  "policy_budget": 0.005,
+  "selection_candidate": "predicted_delta_novelty25_transition_energy25_rich_extra_transfer50",
+  "selection_objective": [12, 18, 0.2747346072186837, 0.014861995753715499, 0.7705177740042081, -0.008784773060029283],
+  "development_fpr_margin": 0.0075,
+  "development_families": [
+    "tampering",
+    "lateral movement",
+    "weaponization",
+    "exfiltration",
+    "reconnaissance"
+  ],
+  "reserve_families": ["exploitation", "c&c"],
+  "reserve_metrics_used_for_selection": false,
+  "reserve_blocked_during_selection": true,
+  "internal_temporal_model_seed": 20260920,
+  "rich_feature_contract": "history-only temporal summaries; no family labels as inputs",
+  "authoritative_run": 35519276049,
+  "evaluated_head": "c8d0e1807256f1ce186a2fd1699cbc70caa0ad0c",
+  "artifact_sha256": "79656e1e2aadb52bb6ae6ace41d2d8d7cf9c10c4184ba8f83d234b540f39f74f",
+  "verified_joint_metrics": {
+    "exploitation": {
+      "recall_mean": 1.0,
+      "recall_sd": 0.0,
+      "fpr_mean": 0.007320644216691069,
+      "precision_mean": 0.9507389162561576,
+      "f1_mean": 0.9747474747474746,
+      "reference_gate_passed_all_seeds": true
+    },
+    "c&c": {
+      "recall_mean": 1.0,
+      "recall_sd": 0.0,
+      "fpr_mean": 0.007320644216691069,
+      "precision_mean": 0.9489795918367347,
+      "f1_mean": 0.9738219895287958,
+      "reference_gate_passed_all_seeds": true
+    }
+  }
+}
