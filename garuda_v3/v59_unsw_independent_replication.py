@@ -1,7 +1,7 @@
 """V59 independent-dataset replication on UNSW-NB15.
 
 The V55 fusion recipe and benign-tail policy budget are frozen from X-IIoTID and
-are not selected on UNSW outcomes.  Dataset-specific state and nonlinear transfer
+are not selected on UNSW outcomes. Dataset-specific state and nonlinear transfer
 models are fitted only on UNSW development traffic with the requested UNSW reserve
 families excluded from fit/calibration/policy data, then the frozen fusion is evaluated.
 
@@ -66,7 +66,6 @@ def read_feature_names(path: Path, expected_cols: int) -> list[str]:
     candidates = []
     for col in raw.columns:
         vals = raw[col].dropna().astype(str).str.strip().tolist()
-        # Remove a possible header cell such as Name/Feature.
         vals = [v for v in vals if norm(v) not in {"name", "feature", "featurename"}]
         if len(vals) >= expected_cols:
             candidates.append(vals[:expected_cols])
@@ -88,12 +87,16 @@ def load_unsw_raw(root: Path) -> tuple[pd.DataFrame, list[dict]]:
         raise RuntimeError("UNSW feature-definition CSV not found")
     names = read_feature_names(feature_files[0], expected_cols)
     mapping = {norm(c): c for c in names}
-    wanted_keys = {
+
+    # `rate` is not present in every raw UNSW shard schema. It is optional because
+    # packet rate can be derived deterministically from packet count / duration.
+    required_keys = {
         "srcip", "sport", "dsport", "dur", "sbytes", "dbytes", "spkts", "dpkts",
-        "rate", "stime", "attackcat", "label",
+        "stime", "attackcat", "label",
     }
-    wanted = [c for c in names if norm(c) in wanted_keys]
-    missing = wanted_keys - {norm(c) for c in wanted}
+    optional_keys = {"rate"}
+    wanted = [c for c in names if norm(c) in (required_keys | optional_keys)]
+    missing = required_keys - {norm(c) for c in wanted}
     if missing:
         raise RuntimeError(f"UNSW common-schema source columns missing: {sorted(missing)}")
     frames = []
@@ -101,7 +104,12 @@ def load_unsw_raw(root: Path) -> tuple[pd.DataFrame, list[dict]]:
     for shard in shards:
         frame = pd.read_csv(shard, header=None, names=names, usecols=wanted, low_memory=False)
         frames.append(frame)
-        audit.append({"path": shard.name, "rows": int(len(frame)), "sha256": sha256(shard)})
+        audit.append({
+            "path": shard.name,
+            "rows": int(len(frame)),
+            "sha256": sha256(shard),
+            "rate_column_present": "rate" in {norm(c) for c in frame.columns},
+        })
     return pd.concat(frames, ignore_index=True), audit
 
 
@@ -121,7 +129,7 @@ def adapt_unsw(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series, pd.Series]:
     stime = col("stime")
     attack_cat = col("attack_cat", "attackcat")
     label = col("label")
-    required = [src, sport, dport, dur, sbytes, dbytes, spkts, dpkts, rate, stime, attack_cat, label]
+    required = [src, sport, dport, dur, sbytes, dbytes, spkts, dpkts, stime, attack_cat, label]
     if any(x is None for x in required):
         raise RuntimeError(f"UNSW adapter columns unresolved: {m}")
 
@@ -137,9 +145,13 @@ def adapt_unsw(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series, pd.Series]:
     out["Des_pkts"] = pd.to_numeric(df[dpkts], errors="coerce")
     out["total_bytes"] = out["Scr_bytes"] + out["Des_bytes"]
     out["total_packet"] = out["Scr_pkts"] + out["Des_pkts"]
-    raw_rate = pd.to_numeric(df[rate], errors="coerce")
     safe_dur = out["Duration"].abs().clip(lower=1e-6)
-    out["paket_rate"] = raw_rate.where(np.isfinite(raw_rate), out["total_packet"] / safe_dur)
+    derived_packet_rate = out["total_packet"] / safe_dur
+    if rate is not None:
+        raw_rate = pd.to_numeric(df[rate], errors="coerce")
+        out["paket_rate"] = raw_rate.where(np.isfinite(raw_rate), derived_packet_rate)
+    else:
+        out["paket_rate"] = derived_packet_rate
     out["byte_rate"] = out["total_bytes"] / safe_dur
     safe_pkts = out["total_packet"].replace(0, np.nan)
     safe_bytes = out["total_bytes"].replace(0, np.nan)
