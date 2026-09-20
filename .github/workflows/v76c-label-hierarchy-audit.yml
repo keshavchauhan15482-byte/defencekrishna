@@ -1,0 +1,54 @@
+name: V76c X-IIoTID label hierarchy audit
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - '.github/workflows/v76c-label-hierarchy-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install audit dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+      - name: Download and audit X-IIoTID labels
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          from garuda_v3.v47_unseen_family import detect_label_hierarchy, norm
+
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={norm(c) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(matches)
+          df=pd.read_csv(matches[0],low_memory=False)
+          mapping={norm(c):c for c in df.columns}
+          _,_,binary_col,family_col,profiles=detect_label_hierarchy(df)
+          out={'rows':len(df),'binary_detected':binary_col,'family_detected':family_col,'profiles':profiles,'classes':{}}
+          for key in ('class1','class2','class3'):
+              col=mapping[key]
+              counts=df[col].astype(str).str.strip().value_counts(dropna=False)
+              out['classes'][col]={'unique':int(counts.size),'top_values':{str(k):int(v) for k,v in counts.head(60).items()}}
+          c2=mapping['class2']; c3=mapping['class3']
+          pairs=df[[c2,c3]].astype(str).apply(lambda s:s.str.strip())
+          pair_counts=pairs.value_counts().head(120)
+          out['class2_class3_pairs']=[{'class2':str(idx[0]),'class3':str(idx[1]),'rows':int(v)} for idx,v in pair_counts.items()]
+          print(json.dumps(out,indent=2))
+          PY
