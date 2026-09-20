@@ -92,7 +92,7 @@ def tail_evidence(calibration_values, values):
     return -np.log10(np.maximum(p, 1e-12))
 
 
-def logistic_transfer_score(X, target, split, seed):
+def logistic_transfer_score(X, target, split, seed, *, return_runtime=False):
     """Known-family history scorer; held-out family is absent from split['train']."""
     tr = np.where(split["train"])[0]
     if len(tr) < 50 or len(np.unique(target[tr])) < 2:
@@ -113,7 +113,8 @@ def logistic_transfer_score(X, target, split, seed):
         solver="liblinear",
     )
     model.fit(z[tr], target[tr])
-    return model.predict_proba(z)[:, 1]
+    scores = model.predict_proba(z)[:, 1]
+    return (scores, {"model": model, "scaler": scaler, "median": med}) if return_runtime else scores
 
 
 def raw_components(world, sequences, split, seed):
@@ -144,10 +145,11 @@ def raw_components(world, sequences, split, seed):
     history_novelty = anomaly_score(last_state[:, None, :], c_hist[None, :], s_hist[None, :])
 
     # 5. Known-family transfer: discriminative history score with held-out family removed.
-    logistic = logistic_transfer_score(sequences["X"], sequences["y"], split, seed)
+    logistic = logistic_transfer_score(sequences["X"], sequences["y"], split, seed, return_runtime=True)
     if logistic is None:
         return None
 
+    logistic, logistic_runtime = logistic
     raw = {
         "known_attack_transfer": logistic,
         "future_state_novelty": future_novelty,
@@ -159,6 +161,8 @@ def raw_components(world, sequences, split, seed):
     for name, values in raw.items():
         evidence[name] = tail_evidence(values[cal_benign], values)
     return {
+        "runtime_logistic": logistic_runtime,
+        "runtime_references": {"future": (c_future, s_future), "delta": (c_delta, s_delta), "history": (c_hist, s_hist)},
         "raw": raw,
         "evidence": evidence,
         "cal_benign": cal_benign,
@@ -273,8 +277,11 @@ def choose_fusion(cache):
     return winner, candidates
 
 
-def prepare_fold(sequences, time_masks, family, seed, epochs):
+def prepare_fold(sequences, time_masks, family, seed, epochs, fitting_exclusion=None):
     split = leave_one_family_split(sequences, time_masks, family)
+    if fitting_exclusion is not None:
+        for key in ("train", "calibration", "policy"):
+            split[key] = time_masks[key] & ~fitting_exclusion
     world = train_world_model(
         sequences["X"], sequences["future"], split["train"], split["calibration"], seed, epochs=epochs
     )
@@ -297,16 +304,24 @@ def family_support(sequences, time_masks, family):
     }
 
 
-def evaluate_reserve_family(sequences, time_masks, family, seeds, epochs, config):
+def evaluate_reserve_family(sequences, time_masks, family, seeds, epochs, config, *, export_dir=None, feature_names=None, fitting_exclusion=None):
     rows = {}
     for seed in seeds:
-        fold = prepare_fold(sequences, time_masks, family, seed, epochs)
+        fold = prepare_fold(sequences, time_masks, family, seed, epochs, fitting_exclusion=fitting_exclusion)
         if fold is None:
             rows[str(seed)] = {"status": "insufficient_benign_reference"}
             continue
         score = fused_score(fold["components"]["evidence"], config["weights"])
         policy = fold["components"]["policy_benign"]
         threshold = fpr_threshold(score[policy], config["policy_budget"])
+        if export_dir is not None:
+            from .v48_runtime import export_fold, V48Runtime
+            destination = Path(export_dir) / f"{norm(family)}_seed{seed}"
+            export_fold(destination, fold, config, threshold, feature_names)
+            reloaded = V48Runtime(destination).predict(sequences["X"], feature_names)
+            np.testing.assert_allclose(reloaded["state_scaled"], fold["world"]["pred"], atol=1e-6)
+            np.testing.assert_allclose(reloaded["score"], score, atol=1e-12)
+            np.testing.assert_array_equal(reloaded["alert"], (score >= threshold) & fold["world"]["state_gate_passed"])
         ids = np.where(fold["split"]["test_eval"])[0]
         y = fold["split"]["test_positive"][ids].astype(int)
         metrics = binary_metrics(y, score[ids], threshold)
@@ -357,8 +372,8 @@ def evaluate_reserve_family(sequences, time_masks, family, seeds, epochs, config
         "fpr": mean_sd(("fused_alert", "test", "fpr")),
         "precision": mean_sd(("fused_alert", "test", "precision")),
         "f1": mean_sd(("fused_alert", "test", "f1")),
-        "state_gate_passed_all_seeds": bool(evaluated and all(r["state"]["state_gate_passed"] for r in evaluated)),
-        "unseen_gate_passed_all_seeds": bool(evaluated and all(
+        "state_gate_passed_all_seeds": bool(len(evaluated) == len(set(seeds)) and len(set(seeds)) >= 3 and all(r["state"]["state_gate_passed"] for r in evaluated)),
+        "unseen_gate_passed_all_seeds": bool(len(evaluated) == len(set(seeds)) and len(set(seeds)) >= 3 and all(
             r["state"]["state_gate_passed"] and
             r["fused_alert"]["test"].get("fpr") is not None and r["fused_alert"]["test"]["fpr"] <= FPR_BUDGET and
             r["fused_alert"]["test"].get("recall") is not None and r["fused_alert"]["test"]["recall"] >= 0.80

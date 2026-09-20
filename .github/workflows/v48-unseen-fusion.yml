@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'garuda_v3/v48_unseen_fusion.py'
+      - 'garuda_v3/v48_runtime.py'
+      - 'garuda_v3/tests/test_v48_runtime.py'
       - 'garuda_v3/v48_strict_runner.py'
       - 'garuda_v3/tests/test_v48_unseen_fusion.py'
       - '.github/workflows/v48-unseen-fusion.yml'
@@ -35,7 +37,7 @@ jobs:
       - name: Compile and run V47/V48 leakage tests
         run: |
           python -m compileall -q garuda_v3/v47_unseen_family.py garuda_v3/v47_leave_one_family.py garuda_v3/v48_unseen_fusion.py garuda_v3/v48_strict_runner.py
-          python -m unittest garuda_v3.tests.test_v47_unseen_family garuda_v3.tests.test_v47_claim_boundary garuda_v3.tests.test_v48_unseen_fusion -v
+          python -m unittest garuda_v3.tests.test_v47_unseen_family garuda_v3.tests.test_v47_claim_boundary garuda_v3.tests.test_v48_unseen_fusion garuda_v3.tests.test_v48_runtime -v
       - name: Download public X-IIoTID source
         run: |
           mkdir -p datasets/v48
@@ -70,7 +72,8 @@ jobs:
             --epochs 12 \
             --min-positive 20 \
             --min-negative 50 \
-            --max-reserve-families 4
+            --max-reserve-families 4 \
+            --export-runtime
       - name: Print frozen configuration and reserve summary
         run: |
           python - <<'PY'
@@ -90,4 +93,4 @@ jobs:
           name: v48-frozen-unseen-fusion-evidence
           if-no-files-found: error
           retention-days: 14
-          path: garuda_v3/artifacts/v48/*.json
+          path: garuda_v3/artifacts/v48/

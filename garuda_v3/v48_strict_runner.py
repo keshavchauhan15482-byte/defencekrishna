@@ -114,6 +114,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--csv", required=True)
     p.add_argument("--output", required=True)
+    p.add_argument("--export-runtime", action="store_true", help="Export every reserve fold and require reload parity")
     p.add_argument("--epochs", type=int, default=12)
     p.add_argument("--seeds", nargs="+", type=int, default=list(SEEDS))
     p.add_argument("--min-positive", type=int, default=20)
@@ -256,7 +257,8 @@ def main():
     for fam in reserve:
         print(f"V48 STRICT RESERVE family={fam} config_sha256={frozen['config_sha256']}", flush=True)
         result = evaluate_reserve_family(
-            sequences, time_masks, fam, tuple(args.seeds), args.epochs, frozen
+            sequences, time_masks, fam, tuple(args.seeds), args.epochs, frozen,
+            export_dir=out / "runtime" if args.export_runtime else None, feature_names=state_features
         )
         report["reserve_results"][fam] = result
         (out / f"reserve_{norm(fam)}.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")

@@ -289,6 +289,20 @@ def fit_transform_state(train_x, train_future, arrays):
     return [transform(a) for a in arrays], med.tolist(), scaler
 
 
+def build_world_model(features):
+    import torch.nn as nn
+    class World(nn.Module):
+        def __init__(self, features):
+            super().__init__()
+            self.rnn = nn.LSTM(features, 32, batch_first=True)
+            self.head = nn.Sequential(nn.Linear(32, 64), nn.ReLU(), nn.Linear(64, HORIZON * features))
+        def forward(self, x):
+            _, (h, _) = self.rnn(x)
+            return self.head(h[-1]).reshape(len(x), HORIZON, x.shape[-1])
+
+    return World(features)
+
+
 def train_world_model(X, future, train_mask, val_mask, seed, epochs=18):
     import torch
     import torch.nn as nn
@@ -301,16 +315,7 @@ def train_world_model(X, future, train_mask, val_mask, seed, epochs=18):
     transformed, med, scaler = fit_transform_state(X[tr], future[tr], [X, future])
     Xs, Fs = transformed
 
-    class World(nn.Module):
-        def __init__(self, features):
-            super().__init__()
-            self.rnn = nn.LSTM(features, 32, batch_first=True)
-            self.head = nn.Sequential(nn.Linear(32, 64), nn.ReLU(), nn.Linear(64, HORIZON * features))
-        def forward(self, x):
-            _, (h, _) = self.rnn(x)
-            return self.head(h[-1]).reshape(len(x), HORIZON, x.shape[-1])
-
-    model = World(X.shape[-1])
+    model = build_world_model(X.shape[-1])
     opt = torch.optim.Adam(model.parameters(), lr=0.003)
     loss_fn = nn.MSELoss()
     xtr = torch.tensor(Xs[tr]); ftr = torch.tensor(Fs[tr])
@@ -343,6 +348,7 @@ def train_world_model(X, future, train_mask, val_mask, seed, epochs=18):
         "pred": pred, "future_scaled": Fs, "persistence": persistence,
         "validation_mse": val_model_mse, "validation_persistence_mse": val_persistence_mse,
         "state_gate_passed": bool(val_model_mse < val_persistence_mse), "imputer_median": med,
+        "runtime_model": model, "runtime_scaler": scaler,
     }
 
 
