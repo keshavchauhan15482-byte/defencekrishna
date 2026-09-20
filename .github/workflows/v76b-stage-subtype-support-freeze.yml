@@ -1,0 +1,80 @@
+name: V76b bounded stage subtype freeze
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v76b_stage_subtype_support_freeze.py'
+      - '.github/workflows/v76b-stage-subtype-support-freeze.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  subtype-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+      - name: Compile V76b
+        run: python -m compileall -q garuda_v3/v76_stage_subtype_support_freeze.py garuda_v3/v76b_stage_subtype_support_freeze.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v76b
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v76b/XIIoTID.csv'))
+          PY
+      - name: Freeze reserve subtypes using support only
+        run: |
+          mkdir -p garuda_v3/artifacts/v76b_stage_subtype_freeze
+          python -m garuda_v3.v76b_stage_subtype_support_freeze \
+            --csv datasets/v76b/XIIoTID.csv \
+            --output garuda_v3/artifacts/v76b_stage_subtype_freeze/support_freeze.json
+      - name: Verify no-model freeze contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v76b_stage_subtype_freeze/support_freeze.json').read_text())
+          assert d['selection_used_model_metrics'] is False
+          assert d['model_scored_reserve_before_freeze'] is False
+          assert d['combination_search_bound'] <= 243
+          assert len(d['selected_reserve_subtype_by_stage']) == 5
+          assert all(v >= d['minimum_reserve_per_stage'] for v in d['reserve_stage_support'].values())
+          assert all(v >= d['minimum_development_per_stage'] for v in d['development_stage_support_after_all_reserves'].values())
+          print(json.dumps({
+            'dataset_sha256':d['dataset_sha256'],
+            'selected_reserve_subtype_by_stage':d['selected_reserve_subtype_by_stage'],
+            'reserve_stage_support':d['reserve_stage_support'],
+            'development_stage_support_after_all_reserves':d['development_stage_support_after_all_reserves'],
+          },indent=2))
+          PY
+      - name: Upload V76b freeze
+        uses: actions/upload-artifact@v4
+        with:
+          name: v76b-stage-subtype-support-freeze
+          path: garuda_v3/artifacts/v76b_stage_subtype_freeze/support_freeze.json
+          if-no-files-found: error
+          retention-days: 30
