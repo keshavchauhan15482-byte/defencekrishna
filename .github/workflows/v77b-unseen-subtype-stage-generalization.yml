@@ -1,0 +1,121 @@
+name: V77b honest unseen subtype stage generalization
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v76d_stage_subtype_generalization_freeze.py'
+      - 'garuda_v3/v77b_unseen_subtype_stage_generalization.py'
+      - '.github/workflows/v77b-unseen-subtype-stage-generalization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v77b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V76d and V77b
+        run: python -m compileall -q garuda_v3/v76d_stage_subtype_generalization_freeze.py garuda_v3/v77b_unseen_subtype_stage_generalization.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v77b
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v77b/XIIoTID.csv'))
+          PY
+      - name: Freeze reserve fine subtypes using support only
+        run: |
+          mkdir -p garuda_v3/artifacts/v77b_unseen_subtype_stage
+          python -m garuda_v3.v76d_stage_subtype_generalization_freeze \
+            --csv datasets/v77b/XIIoTID.csv \
+            --output garuda_v3/artifacts/v77b_unseen_subtype_stage/freeze.json
+      - name: Seal freeze before model scoring
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v77b_unseen_subtype_stage/freeze.json')
+          d=json.loads(p.read_text())
+          assert d['selection_used_model_metrics'] is False
+          assert d['model_scored_reserve_before_freeze'] is False
+          assert d['selection_uses_clean_onset_support'] is False
+          assert d['verified_label_hierarchy']=={'binary':'class3','lifecycle':'class2','fine_subtype':'class1'}
+          assert all(v>=d['minimum_reserve_per_stage'] for v in d['reserve_stage_support'].values())
+          assert all(v>=d['minimum_development_per_stage'] for v in d['development_stage_support_after_all_reserves'].values())
+          print('FREEZE_SHA256',hashlib.sha256(p.read_bytes()).hexdigest())
+          print(json.dumps({
+            'selected':d['selected_reserve_subtype_by_stage'],
+            'reserve_support':d['reserve_stage_support'],
+            'clean_onset_diagnostic':d['reserve_clean_onset_support_diagnostic'],
+            'history_exposed_diagnostic':d['reserve_history_exposed_support_diagnostic'],
+            'development_support':d['development_stage_support_after_all_reserves']
+          },indent=2))
+          PY
+      - name: Run V77b three-seed benchmark
+        run: |
+          python -m garuda_v3.v77b_unseen_subtype_stage_generalization \
+            --csv datasets/v77b/XIIoTID.csv \
+            --freeze garuda_v3/artifacts/v77b_unseen_subtype_stage/freeze.json \
+            --output garuda_v3/artifacts/v77b_unseen_subtype_stage/results \
+            --seeds 42 43 44 \
+            --epochs 18
+      - name: Verify honest claim and leakage contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v77b_unseen_subtype_stage/results/summary.json').read_text())
+          c=d['leakage_contract']
+          assert c['reserve_selection_used_model_metrics'] is False
+          assert c['reserve_subtypes_seen_by_world_model_fit'] is False
+          assert c['reserve_subtypes_seen_by_world_validation'] is False
+          assert c['reserve_subtypes_seen_by_stage_mapper_fit'] is False
+          assert c['attack_labels_are_world_model_inputs'] is False
+          assert c['test_used_for_blend_selection'] is False
+          assert c['test_used_for_mapper_fit'] is False
+          assert c['source_local_overlap_embargo_applied'] is True
+          assert c['test_history_may_contain_held_out_subtype'] is True
+          assert c['clean_onset_test_claim'] is False
+          assert c['pre_compromise_claim'] is False
+          assert len(d['seeds'])==3
+          print(json.dumps({
+            'selected':d['selected_reserve_subtype_by_stage'],
+            'split':d['split'],
+            'history_exposure':d['test_history_exposure_diagnostic'],
+            'per_stage':d['per_stage_summary'],
+            'summary':d['summary']
+          },indent=2))
+          PY
+      - name: Upload V77b evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v77b-unseen-subtype-stage-evidence
+          path: garuda_v3/artifacts/v77b_unseen_subtype_stage/**/*.json
+          if-no-files-found: error
+          retention-days: 30
