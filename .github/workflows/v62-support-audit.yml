@@ -1,0 +1,53 @@
+name: V62 UNSW support-only audit
+
+on:
+  push:
+    branches: [fix/v57-metric-strengthening]
+    paths:
+      - 'garuda_v3/v62_support_audit.py'
+      - '.github/workflows/v62-support-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  support-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install audit dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+      - name: Compile audit
+        run: python -m compileall -q garuda_v3/v62_support_audit.py
+      - name: Download UNSW-NB15
+        run: |
+          mkdir -p datasets/v62audit
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v62audit/root.txt').write_text(str(root))
+          PY
+      - name: Run support-only audit
+        run: |
+          ROOT=$(cat datasets/v62audit/root.txt)
+          python -m garuda_v3.v62_support_audit \
+            --dataset-root "$ROOT" \
+            --output garuda_v3/artifacts/v62_support_audit.json
+      - name: Upload support audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: v62-support-audit
+          retention-days: 14
+          if-no-files-found: error
+          path: garuda_v3/artifacts/v62_support_audit.json
