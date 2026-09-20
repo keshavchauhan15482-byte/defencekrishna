@@ -1,0 +1,78 @@
+name: V63 conservative UNSW audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/v57-metric-strengthening
+    paths:
+      - 'garuda_v3/v63_unsw_conservative_audit.py'
+      - '.github/workflows/v63-unsw-conservative-audit.yml'
+
+jobs:
+  conservative-audit:
+    runs-on: ubuntu-24.04
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V63
+        run: python -m compileall -q garuda_v3/v63_unsw_conservative_audit.py
+      - name: Download UNSW-NB15
+        run: |
+          mkdir -p datasets/v63
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v63/root.txt').write_text(str(root))
+          print(root)
+          for p in sorted(root.rglob('UNSW-NB15_[1-4].csv')):
+              print(p.name, p.stat().st_size)
+          PY
+      - name: Run conservative unseen-family episode audit
+        run: |
+          ROOT=$(cat datasets/v63/root.txt)
+          python -m garuda_v3.v63_unsw_conservative_audit \
+            --dataset-root "$ROOT" \
+            --frozen-config docs/release/v57_metric_strengthening/frozen_config.json \
+            --output garuda_v3/artifacts/v63_unsw_conservative \
+            --seeds 42 43 44 \
+            --epochs 18 \
+            --max-audits 4
+      - name: Verify audit contract and print conservative result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v63_unsw_conservative/summary.json')
+          d=json.loads(p.read_text())
+          assert d['fusion_reused_without_selection'] is True
+          assert d['unsw_metrics_used_for_fusion_selection'] is False
+          assert d['episode_selection_uses_model_metrics'] is False
+          assert len(d['results']) >= 1
+          for r in d['results']:
+              for seed,row in r['seeds'].items():
+                  m=row['all_future_test']
+                  assert {'tp','fp','tn','fn'} <= set(m)
+                  assert 'recall_wilson95' in m and 'fpr_wilson95' in m
+          print(json.dumps(d['summary'], indent=2))
+          PY
+      - name: Upload V63 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v63-unsw-conservative-evidence
+          path: garuda_v3/artifacts/v63_unsw_conservative/*.json
+          if-no-files-found: warn
+          retention-days: 14
