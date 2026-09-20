@@ -1,0 +1,90 @@
+name: V66b stable transfer Fuzzers retry
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/v66-stable-transfer
+    paths:
+      - 'garuda_v3/v66b_stable_transfer_fuzzers_retry.py'
+      - '.github/workflows/v66b-stable-transfer-fuzzers-retry.yml'
+
+jobs:
+  stable-fuzzers-retry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V66b
+        run: python -m compileall -q garuda_v3/v66_stable_transfer_fuzzers.py garuda_v3/v66b_stable_transfer_fuzzers_retry.py
+      - name: Verify reserve remains precommitted and unscored by failed V66 attempt
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('docs/release/v66_stable_transfer/precommit.json')
+          d=json.loads(p.read_text())
+          assert d['fresh_reserve']['family']=='fuzzers'
+          assert d['fresh_reserve']['campaign_cutoff']==1424257500
+          assert d['fresh_reserve']['reserve_scores_seen_before_this_precommit'] is False
+          print(json.dumps(d['fresh_reserve'], indent=2))
+          PY
+      - name: Download UNSW-NB15
+        run: |
+          mkdir -p datasets/v66b
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v66b/root.txt').write_text(str(root))
+          print(root)
+          PY
+      - name: Run precommitted V66b benchmark
+        run: |
+          ROOT=$(cat datasets/v66b/root.txt)
+          python -m garuda_v3.v66b_stable_transfer_fuzzers_retry \
+            --dataset-root "$ROOT" \
+            --output garuda_v3/artifacts/v66b_fuzzers \
+            --seeds 42 43 44 \
+            --epochs 18
+      - name: Verify leakage, confusion and interval contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v66b_fuzzers/summary.json').read_text())
+          f=json.loads(Path('garuda_v3/artifacts/v66b_fuzzers/frozen_config.json').read_text())
+          assert f['fresh_reserve_family']=='fuzzers'
+          assert f['reserve_metrics_used_for_selection'] is False
+          assert d['fresh_reserve']['campaign_cutoff']==1424257500
+          for seed,row in d['fresh_reserve']['seeds'].items():
+              assert {'tp','fp','tn','fn'} <= set(row['confusion'])
+              assert 'recall_wilson95' in row['test']
+              assert 'fpr_wilson95' in row['test']
+          print(json.dumps({
+              'development_families':f.get('development_families'),
+              'fusion':{k:f.get(k) for k in ('selection_candidate','weights','policy_budget')},
+              'summary':d['fresh_reserve']['summary'],
+              'seeds':{s:{'confusion':r['confusion'],'test':r['test']} for s,r in d['fresh_reserve']['seeds'].items()},
+          }, indent=2))
+          PY
+      - name: Upload V66b evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v66b-stable-transfer-fuzzers-evidence
+          path: garuda_v3/artifacts/v66b_fuzzers/*.json
+          if-no-files-found: warn
+          retention-days: 30
