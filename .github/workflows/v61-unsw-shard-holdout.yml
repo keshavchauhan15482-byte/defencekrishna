@@ -1,0 +1,82 @@
+name: V61 UNSW shard holdout replication
+
+on:
+  push:
+    branches: [fix/v57-metric-strengthening]
+    paths:
+      - 'garuda_v3/v61_unsw_shard_holdout.py'
+      - 'garuda_v3/v60_residual_state_forecasting.py'
+      - 'garuda_v3/v59_unsw_independent_replication.py'
+      - 'garuda_v3/v55_nonlinear_joint_generalization.py'
+      - 'garuda_v3/v48_unseen_fusion.py'
+      - 'garuda_v3/v47_unseen_family.py'
+      - 'docs/release/v55_joint_generalization/frozen_config.json'
+      - '.github/workflows/v61-unsw-shard-holdout.yml'
+  workflow_dispatch:
+
+jobs:
+  shard-holdout:
+    runs-on: ubuntu-24.04
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V61
+        run: python -m compileall -q garuda_v3/v61_unsw_shard_holdout.py
+      - name: Download UNSW-NB15
+        run: |
+          mkdir -p datasets/v61
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v61/root.txt').write_text(str(root))
+          print(root)
+          for p in sorted(root.rglob('UNSW-NB15_[1-4].csv')):
+              print(p.name, p.stat().st_size)
+          PY
+      - name: Run independent shard holdout
+        run: |
+          ROOT=$(cat datasets/v61/root.txt)
+          python -m garuda_v3.v61_unsw_shard_holdout \
+            --dataset-root "$ROOT" \
+            --frozen-config docs/release/v55_joint_generalization/frozen_config.json \
+            --output garuda_v3/artifacts/v61_unsw_shard4 \
+            --reserve-families exploits dos \
+            --seeds 42 43 44 \
+            --epochs 18
+      - name: Verify audit contract and print result
+        run: |
+          python - <<'PY'
+          import json
+          p='garuda_v3/artifacts/v61_unsw_shard4/summary.json'
+          d=json.load(open(p))
+          assert d['fusion_reused_without_selection'] is True
+          assert d['unsw_model_metrics_used_for_fusion_selection'] is False
+          assert d['reserve_selection_uses_model_metrics'] is False
+          assert d['reserve_blocked_from_dev'] is True
+          assert d['partition']=={'train':1,'calibration':2,'policy':3,'test':4}
+          print(json.dumps({
+              'reserve':d['reserve_families'],
+              'mode':d['reserve_selection_mode'],
+              'support':d['evaluation']['support'],
+              'summary':{k:v['summary'] for k,v in d['evaluation']['families'].items()},
+          }, indent=2))
+          PY
+      - name: Upload V61 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v61-unsw-shard-holdout-evidence
+          path: garuda_v3/artifacts/v61_unsw_shard4/*.json
+          retention-days: 14
+          if-no-files-found: error
