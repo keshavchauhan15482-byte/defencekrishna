@@ -1,0 +1,44 @@
+{
+  "protocol_version": "V92.0",
+  "created_before_toniot_file_access": true,
+  "external_dataset": {
+    "name": "ToN-IoT Network Dataset",
+    "upstream": "UNSW Canberra Cyber Range / ToN-IoT",
+    "kaggle_dataset": "arnobbhowmik/ton-iot-network-dataset",
+    "expected_file": "train_test_network.csv",
+    "public_schema_source_only": true,
+    "public_schema_fields_used": [
+      "duration", "src_bytes", "dst_bytes", "src_pkts", "dst_pkts", "proto", "label", "type"
+    ]
+  },
+  "development_sources": [
+    "UNSW-NB15",
+    "IoT-23 first-test source after immutable failure preservation",
+    "RT-IoT2022 after immutable V91 first-test preservation"
+  ],
+  "external_source_used_for_fit": false,
+  "external_source_used_for_feature_selection": false,
+  "external_source_used_for_model_selection": false,
+  "external_source_used_for_threshold_selection": false,
+  "external_metrics_used_for_any_selection": false,
+  "first_external_result_is_immutable": true,
+  "fpr_budget": 0.01,
+  "recall_gate": 0.80,
+  "feature_views": {
+    "portable8": [
+      "log_total_bytes", "log_total_packets", "response_byte_ratio", "response_packet_ratio",
+      "tcp_flag", "udp_flag", "icmp_flag", "log_bytes_per_packet"
+    ],
+    "portable11": [
+      "log_total_bytes", "log_total_packets", "log_duration", "response_byte_ratio",
+      "response_packet_ratio", "tcp_flag", "udp_flag", "icmp_flag", "log_bytes_per_packet",
+      "log_packets_per_second", "log_bytes_per_second"
+    ]
+  },
+  "candidate_models": ["logistic", "histgb"],
+  "candidate_selection": "development-only source-balanced temporal validation; maximize worst-source F1 subject to <=1% FPR on every supported development source, then worst-source recall, then mean F1",
+  "final_fit": "refit selected feature view/model on development fit partitions only; choose one fixed threshold from development calibration partitions only under <=1% FPR on every supported development source",
+  "development_sampling": "deterministic per-source per-class cap independent of scores",
+  "test_row_filtering_after_prediction": false,
+  "claim_boundary": "First untouched ToN-IoT external one-shot transfer after domain hardening on previously exposed development sources. Public cyber-range traffic, not organic production traffic. A pass supports cross-domain binary attack-transfer evidence only; it does not prove attacker-stage accuracy, zero-day semantics, verified lead time to compromise, or autonomous containment safety."
+}
