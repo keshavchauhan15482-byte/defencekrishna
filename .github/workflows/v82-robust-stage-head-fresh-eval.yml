@@ -1,0 +1,116 @@
+name: V82 robust stage head fresh evaluation
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v82_robust_stage_head_fresh_eval.py'
+      - '.github/workflows/v82-robust-stage-head-fresh-eval.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v82:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V81 and V82
+        run: python -m compileall -q garuda_v3/v81_remaining_fresh_subtype_freeze.py garuda_v3/v82_robust_stage_head_fresh_eval.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v82
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v82/XIIoTID.csv'))
+          PY
+      - name: Reproduce and seal V81 support-only freeze before scoring
+        run: |
+          mkdir -p garuda_v3/artifacts/v82_robust_stage_head
+          python -m garuda_v3.v81_remaining_fresh_subtype_freeze \
+            --csv datasets/v82/XIIoTID.csv \
+            --output garuda_v3/artifacts/v82_robust_stage_head/v81_freeze.json
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v82_robust_stage_head/v81_freeze.json')
+          d=json.loads(p.read_text())
+          digest=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert digest=='820aa7de8925d3d0812e1df3753c9f4a2c7da0f5d45efd3d16456b33e3e7d75f', digest
+          assert d['selection_used_model_metrics'] is False
+          assert d['model_training_or_scoring_performed'] is False
+          assert d['selected_reserve_subtype_by_stage']=={
+            'Reconnaissance':'generic scanning',
+            'Lateral Movement':'tcp relay'
+          }
+          assert d['reserve_stage_support']=={'Reconnaissance':45,'Lateral Movement':479}
+          print('SEALED_V81_SHA256',digest)
+          PY
+      - name: Run V82 development-selected architecture then one-shot fresh score
+        run: |
+          python -m garuda_v3.v82_robust_stage_head_fresh_eval \
+            --csv datasets/v82/XIIoTID.csv \
+            --freeze garuda_v3/artifacts/v82_robust_stage_head/v81_freeze.json \
+            --output garuda_v3/artifacts/v82_robust_stage_head/results \
+            --epochs 18
+      - name: Verify V82 leakage and finite evidence
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v82_robust_stage_head/results/summary.json').read_text())
+          c=d['leakage_contract']
+          assert c['v81_selection_used_model_metrics'] is False
+          assert c['v81_subtypes_seen_by_world_model_fit'] is False
+          assert c['v81_subtypes_seen_by_world_validation'] is False
+          assert c['v81_subtypes_seen_by_stage_mapper_fit'] is False
+          assert c['fresh_v81_metrics_used_for_gamma_selection'] is False
+          assert c['fresh_v81_metrics_used_for_head_selection'] is False
+          assert c['attack_labels_are_world_model_inputs'] is False
+          assert c['clean_onset_claim'] is False
+          assert c['pre_compromise_claim'] is False
+          assert d['architecture_selection']['fresh_v81_metrics_used_for_selection'] is False
+          for stage,row in d['per_stage_summary'].items():
+              for key in ['recall','f1']:
+                  val=row[key]
+                  if val is not None: assert math.isfinite(val),(stage,key,val)
+          print(json.dumps({
+            'winner':d['architecture_selection']['winner'],
+            'gamma':d['architecture_selection']['gamma_winner'],
+            'per_stage':d['per_stage_summary'],
+            'macro_f1':d['fresh_stage_metrics']['macro_f1_supported_classes'],
+            'macro_recall':d['fresh_stage_metrics']['macro_recall_supported_classes'],
+            'state_mse_improvement_vs_persistence':d['fresh_reserve_state_mse_improvement_vs_persistence']
+          },indent=2))
+          PY
+      - name: Upload V82 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v82-robust-stage-head-fresh-evidence
+          path: garuda_v3/artifacts/v82_robust_stage_head/**/*.json
+          if-no-files-found: error
+          retention-days: 30
