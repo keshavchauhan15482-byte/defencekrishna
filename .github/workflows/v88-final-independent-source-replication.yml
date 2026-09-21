@@ -1,0 +1,115 @@
+name: V88 Final Independent-Source Replication
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - '.github/workflows/v88-final-independent-source-replication.yml'
+      - 'docs/release/v88_independent_source_protocol.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v88-independent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Verify frozen protocol before scoring
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('docs/release/v88_independent_source_protocol.json')
+          d=json.loads(p.read_text())
+          assert d['protocol_version']=='V88.0'
+          assert d['test_tuning_allowed'] is False
+          assert d['test_metrics_used_for_model_or_episode_selection'] is False
+          assert d['seeds']==[42,43,44]
+          assert d['epochs']==18
+          print('protocol_sha256', hashlib.sha256(p.read_bytes()).hexdigest())
+          print(json.dumps(d, indent=2))
+          PY
+      - name: Compile independent benchmark
+        run: python -m compileall -q garuda_v3/v67_same_input_baseline.py
+      - name: Download UNSW-NB15 raw traffic
+        run: |
+          mkdir -p datasets/v88
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v88/root.txt').write_text(str(root))
+          shards=sorted(root.rglob('UNSW-NB15_[1-4].csv'))
+          if len(shards)!=4:
+              raise RuntimeError(f'Expected four raw shards, got {shards}')
+          for p in shards:
+              print(p.name,p.stat().st_size)
+          PY
+      - name: Run frozen independent-source benchmark
+        run: |
+          ROOT=$(cat datasets/v88/root.txt)
+          python -m garuda_v3.v67_same_input_baseline \
+            --dataset-root "$ROOT" \
+            --frozen-config docs/release/v57_metric_strengthening/frozen_config.json \
+            --output garuda_v3/artifacts/v88_independent_source \
+            --seeds 42 43 44 \
+            --epochs 18 \
+            --max-audits 2
+      - name: Verify leakage contract and emit final independent numbers
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v88_independent_source/summary.json')
+          d=json.loads(p.read_text())
+          c=d['fairness_contract']
+          assert c['same_observed_history_source'] is True
+          assert c['future_or_test_features_in_lr'] is False
+          assert c['family_identity_in_lr'] is False
+          assert c['lr_threshold_uses_test'] is False
+          assert c['garuda_fusion_uses_unsw_test'] is False
+          assert c['episode_selection_uses_model_metrics'] is False
+          assert len(d['dataset_shards'])==4
+          assert len(d['results'])>=2
+          out={
+            'claim_boundary':'independent-source replication; not fresh zero-day or production traffic',
+            'dataset':d['dataset'],
+            'dataset_shards':d['dataset_shards'],
+            'frozen_config_sha256':d['frozen_config_sha256'],
+            'summary':d['summary'],
+            'families':[
+              {
+                'family':r['family'],
+                'episode':r['episode'],
+                'support':r['support'],
+                'logistic':r['logistic_regression']['metric'],
+                'garuda_macro':r['garuda_macro']
+              } for r in d['results']
+            ]
+          }
+          Path('garuda_v3/artifacts/v88_independent_source/final_independent_numbers.json').write_text(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          print('evidence_sha256', hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - name: Upload V88 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v88-final-independent-source-evidence
+          path: garuda_v3/artifacts/v88_independent_source/*.json
+          if-no-files-found: error
+          retention-days: 30
