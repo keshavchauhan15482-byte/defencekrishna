@@ -1,0 +1,165 @@
+name: V92 ToN-IoT External One-Shot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v92_toniot_external_freeze.json'
+      - 'garuda_v3/v92_toniot_external_one_shot.py'
+      - 'garuda_v3/v92_toniot_external_one_shot_fixed.py'
+      - '.github/workflows/v92-toniot-external-one-shot.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  v92:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4' 'joblib<2'
+      - name: Compile sealed benchmark
+        run: |
+          python -m compileall -q \
+            garuda_v3/v92_toniot_external_one_shot.py \
+            garuda_v3/v92_toniot_external_one_shot_fixed.py
+      - name: Verify V92 external freeze before any ToN-IoT download
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('garuda_v3/v92_toniot_external_freeze.json')
+          d=json.loads(p.read_text())
+          assert d['protocol_version']=='V92.0'
+          assert d['created_before_toniot_file_access'] is True
+          assert d['external_dataset']['kaggle_dataset']=='arnobbhowmik/ton-iot-network-dataset'
+          for k in ('external_source_used_for_fit','external_source_used_for_feature_selection',
+                    'external_source_used_for_model_selection','external_source_used_for_threshold_selection',
+                    'external_metrics_used_for_any_selection'):
+              assert d[k] is False,(k,d[k])
+          print('v92_freeze_sha256',hashlib.sha256(p.read_bytes()).hexdigest())
+          print(json.dumps(d,indent=2))
+          PY
+      - name: Download exposed development sources only
+        run: |
+          mkdir -p datasets/v92
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          import pandas as pd, kagglehub
+
+          # UNSW-NB15 development corpus.
+          unsw=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          if len(list(unsw.rglob('UNSW-NB15_[1-4].csv')))!=4:
+              raise RuntimeError('UNSW four raw shards not found')
+          Path('datasets/v92/unsw_root.txt').write_text(str(unsw))
+
+          # The two already-exposed IoT-23 captures from the immutable first-test freeze.
+          f=json.loads(Path('garuda_v3/v88_iot23_external_freeze.json').read_text())
+          for key,name in [('malicious_capture','iot23_malicious.labeled'),('benign_capture','iot23_benign.labeled')]:
+              url=f[key]['zeek_labeled_url']; dest=Path('datasets/v92')/name
+              subprocess.run(['curl','--fail','--location','--retry','4','--retry-delay','2','--output',str(dest),url],check=True)
+              print(name,dest.stat().st_size)
+
+          # RT-IoT2022 is now an exposed development source after its immutable V91 first result.
+          rtroot=Path(kagglehub.dataset_download('joebeachcapital/real-time-internet-of-things-rt-iot2022'))
+          hits=[]
+          for p in rtroot.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              if any('attack' in str(c).lower() and 'type' in str(c).lower() for c in cols): hits.append(p)
+          if len(hits)!=1: raise RuntimeError(f'Expected exactly one RT-IoT2022 CSV, got {hits}')
+          Path('datasets/v92/rtiot_path.txt').write_text(str(hits[0]))
+          print('rtiot_dev',hits[0].name,hits[0].stat().st_size)
+          PY
+      - name: Select and seal model using development sources only
+        run: |
+          ROOT=$(cat datasets/v92/unsw_root.txt)
+          RT=$(cat datasets/v92/rtiot_path.txt)
+          python -m garuda_v3.v92_toniot_external_one_shot_fixed prepare \
+            --unsw-root "$ROOT" \
+            --iot23-malicious datasets/v92/iot23_malicious.labeled \
+            --iot23-benign datasets/v92/iot23_benign.labeled \
+            --iot23-freeze garuda_v3/v88_iot23_external_freeze.json \
+            --rtiot "$RT" \
+            --freeze garuda_v3/v92_toniot_external_freeze.json \
+            --bundle garuda_v3/artifacts/v92_toniot_pretest
+      - name: Verify pretest bundle exists before external source access
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/v92_toniot_pretest')
+          p=root/'pretest_model_selection.json'; m=root/'selected_model.joblib'
+          d=json.loads(p.read_text())
+          assert d['external_source_opened'] is False
+          assert d['external_metrics_used_for_selection'] is False
+          assert d['model_sha256']==hashlib.sha256(m.read_bytes()).hexdigest()
+          assert d['selected']['meets_all_development_1pct_fpr'] is True
+          print('pretest_manifest_sha256',hashlib.sha256(p.read_bytes()).hexdigest())
+          print('selected_model_sha256',hashlib.sha256(m.read_bytes()).hexdigest())
+          print(json.dumps(d['selected'],indent=2))
+          PY
+      - name: FIRST ACCESS — download frozen ToN-IoT external source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('arnobbhowmik/ton-iot-network-dataset'))
+          hits=[p for p in root.rglob('*.csv') if p.name.lower()=='train_test_network.csv']
+          if len(hits)!=1: raise RuntimeError(f'Expected exactly train_test_network.csv, got {hits}')
+          Path('datasets/v92/toniot_path.txt').write_text(str(hits[0]))
+          print('first_external_file_access_path',hits[0].name,'bytes',hits[0].stat().st_size)
+          PY
+      - name: One-shot score ToN-IoT without refit or threshold changes
+        run: |
+          TEST=$(cat datasets/v92/toniot_path.txt)
+          python -m garuda_v3.v92_toniot_external_one_shot_fixed score \
+            --freeze garuda_v3/v92_toniot_external_freeze.json \
+            --bundle garuda_v3/artifacts/v92_toniot_pretest \
+            --toniot "$TEST" \
+            --output garuda_v3/artifacts/v92_toniot_external
+      - name: Verify no-test-tuning contract and emit first real result
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v92_toniot_external/summary.json')
+          d=json.loads(p.read_text())
+          c=d['no_test_tuning_contract']
+          assert all(c.values()),c
+          assert d['external_test_file_sha256']
+          assert d['external_metrics']['positives']>0
+          assert d['external_metrics']['negatives']>0
+          print(json.dumps({
+              'selected_model':d['selected_model'],
+              'external_metrics':d['external_metrics'],
+              'external_gate':d['external_gate'],
+              'per_type':d['per_type'],
+              'freeze_sha256':d['freeze_sha256'],
+              'pretest_model_selection_sha256':d['pretest_model_selection_sha256'],
+              'model_sha256':d['model_sha256'],
+              'external_test_file_sha256':d['external_test_file_sha256'],
+          },indent=2))
+          print('v92_evidence_sha256',hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - name: Upload V92 sealed evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v92-toniot-external-one-shot-evidence
+          path: |
+            garuda_v3/artifacts/v92_toniot_pretest/pretest_model_selection.json
+            garuda_v3/artifacts/v92_toniot_external/summary.json
+          retention-days: 30
+          if-no-files-found: error
