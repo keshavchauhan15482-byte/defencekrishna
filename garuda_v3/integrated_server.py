@@ -17,29 +17,50 @@ from urllib.parse import urlsplit
 from .bundle_manifest import bundle_public_metadata, resolve_active_bundle
 from .response import ResponseCoordinator
 from .server import App, Handler, Server
+from .ui_contract import harden_ui_asset
 from .v15_bridge import V15EvidenceBridge
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class IntegratedHandler(Handler):
-    """Serve the extra UI assets used by the reference-matched homepage."""
+    """Serve integrated UI assets with V94 fail-closed claim hardening."""
 
     EXTRA_STATIC = {
         '/pixel.css': ('pixel.css', 'text/css'),
         '/reference.css': ('reference.css', 'text/css'),
-        '/reference-live.js': ('reference-live.js', 'application/javascript'),
     }
+    V94_SCRIPT_ASSETS = {
+        '/app.js': 'app.js',
+        '/reference-live.js': 'reference-live.js',
+    }
+
+    def _static_request_allowed(self):
+        host = self.headers.get('Host', '')
+        if host not in self.server.allowed_hosts:
+            self.respond(403, {'error': 'Unexpected host'})
+            return False
+        origin = self.headers.get('Origin')
+        if origin and origin != 'http://' + host:
+            self.respond(403, {'error': 'Cross-origin request denied'})
+            return False
+        return True
 
     def handle_request(self):
         url = urlsplit(self.path)
+        if self.command == 'GET' and url.path in self.V94_SCRIPT_ASSETS:
+            if not self._static_request_allowed():
+                return None
+            name = self.V94_SCRIPT_ASSETS[url.path]
+            try:
+                source = (Path(__file__).parent / 'ui' / name).read_text(encoding='utf-8')
+                source = harden_ui_asset(name, source)
+            except (OSError, RuntimeError, UnicodeError):
+                return self.respond(503, {'error': 'Integrated UI safety contract unavailable; stale claim surface not served'})
+            return self.respond(200, source.encode('utf-8'), 'application/javascript')
         if self.command == 'GET' and url.path in self.EXTRA_STATIC:
-            host = self.headers.get('Host', '')
-            if host not in self.server.allowed_hosts:
-                return self.respond(403, {'error': 'Unexpected host'})
-            origin = self.headers.get('Origin')
-            if origin and origin != 'http://' + host:
-                return self.respond(403, {'error': 'Cross-origin request denied'})
+            if not self._static_request_allowed():
+                return None
             name, mime = self.EXTRA_STATIC[url.path]
             return self.respond(200, (Path(__file__).parent / 'ui' / name).read_bytes(), mime)
         return super().handle_request()
