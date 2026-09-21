@@ -1,18 +1,16 @@
 """Serve the legacy Ultron console on localhost:8091 with a same-origin Garuda bridge.
 
 The legacy visualisation is intentionally kept intact. This server injects a small
-integration layer that routes the console to the authenticated Garuda V15 runtime
-on localhost:8090 without exposing local bearer tokens to the browser.
+integration layer that routes the console to the authenticated Garuda runtime on
+localhost:8090 without exposing local bearer tokens to the browser.
 
-Network-lab scenarios are recorded/synthetic telemetry exercises. Attack names are
-scenario metadata; Garuda risk/alert values are model outputs. Sudarshana remains
-subject to the runtime's real authorization and enforcement gates.
+The replay/upload artifact directory is resolved from the integrity-pinned active bundle
+manifest. A missing or modified pinned file stops startup rather than silently serving a
+stale model bundle.
 """
 from __future__ import annotations
 
 import json
-from .upload_inference import analyze, MAX_BYTES
-from .dashboard_lab import LAB
 import os
 import time
 import urllib.error
@@ -21,17 +19,18 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
+from .bundle_manifest import bundle_public_metadata, resolve_active_bundle
+from .dashboard_lab import LAB
+from .upload_inference import MAX_BYTES, analyze
+
 ROOT = Path(__file__).resolve().parents[1]
 UI = Path(__file__).resolve().parent / "ui"
 CONSOLE = ROOT / "console.html"
 RUNTIME = ROOT / "garuda_v3" / "runtime"
-ARTIFACTS = ROOT / "garuda_v3" / "artifacts" / "residual_run"
+ARTIFACTS = resolve_active_bundle(ROOT)
+BUNDLE_METADATA = bundle_public_metadata(ROOT)
 ENGINE = "http://127.0.0.1:8090"
 
-# The scenario label is operator/demo metadata, not a class emitted by the model.
-# time_shift changes only absolute timestamps, never the graph values or spacing;
-# this gives reviewed-memory exercises distinct fingerprints without altering the
-# Garuda model input features or its forecast score.
 SCENARIOS = {
     "syn_flood": {"label": "SYN Flood", "mode": "known", "time_shift": 1010, "family": "volumetric"},
     "port_scan": {"label": "Port Scan", "mode": "known", "time_shift": 2020, "family": "reconnaissance"},
@@ -93,9 +92,6 @@ def _variant_payload(key: str, nonce: int = 0) -> dict:
 
     payload = _read_replay("alert_replay.json")
     base_shift = int(scenario["time_shift"])
-    # Unknown runs receive a small fresh integer timestamp shift so a previously
-    # reviewed fingerprint cannot silently turn an unknown demonstration into an
-    # Arjuna match. Contiguous 10-second spacing remains exactly unchanged.
     fresh_shift = 0 if scenario["mode"] == "known" else int(nonce % 997) + 1
     total_shift = base_shift + fresh_shift
     payload["times"] = [float(t) + total_shift for t in payload.get("times", [])]
@@ -123,8 +119,6 @@ def _simulate(key: str) -> dict:
             "forecast": forecast,
         }
 
-    # Known routes are deterministic so an operator-reviewed exact fingerprint
-    # can be replayed through Arjuna. Unknown routes receive a fresh fingerprint.
     nonce = 0 if scenario["mode"] == "known" else time.time_ns()
     payload = _variant_payload(key, nonce)
     first = _forecast(payload)
@@ -169,7 +163,7 @@ def _inject_console() -> bytes:
 
 
 class LegacyConsoleHandler(BaseHTTPRequestHandler):
-    server_version = "GarudaLegacyConsole/1"
+    server_version = "GarudaLegacyConsole/2"
 
     def log_message(self, fmt: str, *args) -> None:
         pass
@@ -208,7 +202,7 @@ class LegacyConsoleHandler(BaseHTTPRequestHandler):
             if url.path == "/console-integrated.css":
                 return self._send(200, (UI / "console-integrated.css").read_bytes(), "text/css")
             if url.path == "/health":
-                return self._json(200, {"status": "alive", "engine": ENGINE})
+                return self._json(200, {"status": "alive", "engine": ENGINE, "runtime_bundle": BUNDLE_METADATA})
             if url.path == "/bridge/status":
                 return self._json(200, _engine_json("/api/status"))
             if url.path == "/bridge/response":
@@ -270,8 +264,8 @@ def main() -> None:
     port = int(os.environ.get("GARUDA_LEGACY_PORT", "8091"))
     server = LegacyConsoleServer(("127.0.0.1", port), LegacyConsoleHandler)
     print(
-        f"Garuda integrated legacy console: http://127.0.0.1:{port} — engine {ENGINE}. "
-        "Network lab only; Sudarshana follows runtime authorization gates.",
+        f"Garuda integrated console: http://127.0.0.1:{port} — engine {ENGINE}; "
+        f"bundle {BUNDLE_METADATA.get('bundle_id')}. Network lab only; Sudarshana follows runtime authorization gates.",
         flush=True,
     )
     try:
