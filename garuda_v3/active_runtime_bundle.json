@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "validated-runtime-input",
+  "bundle_id": "residual-run-v15-integrated",
+  "model_lineage": "directed_graphsage_lstm_autoregressive",
+  "artifact_directory": "garuda_v3/artifacts/residual_run",
+  "claim_scope": "Existing integrated runtime checkpoint. Directory integrity is pinned here; ForecastService separately verifies the model SHA-256 from metrics.json. This manifest does not upgrade the model to V89 progression evidence.",
+  "files": {
+    "alert_replay.json": "e8c195740aee9837439edcc21b3883d25538ca90",
+    "gnn_lstm.npz": "c1e411859042c10818ea46bedda8b483d5c9d717",
+    "gnn_lstm_test_predictions.npz": "8a783e74943323a3e35aa47ac7d9adfbbd3c9cfe",
+    "host_replay.json": "de6ff3cabee92780a924540ef04ad0f3e1ebbfd9",
+    "logistic_regression.npz": "1b85d23ab90495d60e948e17fb0544e06c6a4853",
+    "lstm.npz": "b7115bfe39efbd0d32619fbe40bacf8e0cf9690d",
+    "lstm_test_predictions.npz": "6a8075b36028989c4bcad33137cea9fcf6bc5a7e",
+    "metrics.json": "b299b5664f090305a610fb037a0ab9442d838834",
+    "replay.json": "8eafc29abd09181c649b14b7bff818598848f564"
+  }
+}
