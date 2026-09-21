@@ -3,7 +3,9 @@
 This measures the checkpoint actually loaded by the localhost inference service. It does
 not pretend that offline V70/V88/V89 experimental models are drop-in compatible with the
 10-second graph schema. Numbers are measured in-process on the GitHub Actions CPU and
-reported separately for forecast-only and explanation-enabled inference.
+reported separately for forecast-only and explanation-enabled inference. Replay payloads
+that target a different graph mode/schema are reported as skipped rather than weakening
+or crashing the compatible-runtime benchmark.
 """
 from __future__ import annotations
 
@@ -12,7 +14,6 @@ import hashlib
 import json
 import platform
 import resource
-import statistics
 import time
 from pathlib import Path
 
@@ -74,12 +75,24 @@ def main():
     init_seconds = time.perf_counter() - t0
 
     scenarios = []
+    skipped = []
     for name in ("replay.json", "alert_replay.json", "host_replay.json"):
         path = folder / name
         if not path.exists():
+            skipped.append({"scenario": name, "reason": "replay_file_missing"})
             continue
         payload = json.loads(path.read_text())
-        service.validate(payload)
+        try:
+            service.validate(payload)
+        except ValueError as exc:
+            skipped.append({
+                "scenario": name,
+                "payload_bytes": int(path.stat().st_size),
+                "payload_mode": payload.get("mode"),
+                "runtime_mode": service.meta.get("mode"),
+                "reason": str(exc),
+            })
+            continue
         active = int(np.asarray(payload["mask"], dtype=float)[-1].sum())
         row = {
             "scenario": name,
@@ -94,7 +107,6 @@ def main():
     if not scenarios:
         raise RuntimeError("No validated replay payloads available")
 
-    # Linux reports ru_maxrss in KiB. GitHub Actions uses Linux for this workflow.
     max_rss_mib = float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) / 1024.0
     report = {
         "protocol": "V90 live-compatible in-process runtime performance benchmark",
@@ -114,6 +126,7 @@ def main():
             "processor": platform.processor(),
         },
         "scenarios": scenarios,
+        "skipped_replays": skipped,
         "measurement_contract": {
             "timer": "time.perf_counter",
             "forecast_only_excludes_explanation": True,
@@ -121,6 +134,7 @@ def main():
             "single_threaded_sequential_requests": True,
             "http_transport_overhead_included": False,
             "warmup_used": True,
+            "incompatible_graph_modes_are_skipped_not_coerced": True,
         },
     }
     (out / "summary.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
@@ -129,6 +143,7 @@ def main():
         "initialization_ms": report["service_initialization_ms"],
         "max_rss_mib": max_rss_mib,
         "scenarios": scenarios,
+        "skipped_replays": skipped,
     }, indent=2), flush=True)
 
 
