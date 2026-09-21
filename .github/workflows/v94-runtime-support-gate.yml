@@ -21,7 +21,7 @@ permissions:
 jobs:
   runtime-support-safety:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       OPENBLAS_NUM_THREADS: '1'
       OMP_NUM_THREADS: '1'
@@ -42,6 +42,8 @@ jobs:
             garuda_v3.tests.test_response \
             garuda_v3.tests.test_v15_system_integration \
             garuda_v3.tests.test_v94_runtime_support -v
+      - name: Full Garuda Python regression
+        run: python -m unittest discover -s garuda_v3/tests -v
       - name: Verify pinned bundle remains explicit
         run: |
           python - <<'PY'
