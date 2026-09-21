@@ -1,0 +1,66 @@
+name: V93 Runtime Node Scaling
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v93_runtime_node_scaling.py'
+      - '.github/workflows/v93-runtime-node-scaling.yml'
+      - 'garuda_v3/bundle_manifest.py'
+      - 'garuda_v3/active_runtime_bundle.json'
+
+permissions:
+  contents: read
+
+jobs:
+  node-scaling:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Compile V93
+        run: python -m compileall -q garuda_v3/v93_runtime_node_scaling.py
+      - name: Run node scaling benchmark
+        run: |
+          python -m garuda_v3.v93_runtime_node_scaling \
+            --output garuda_v3/artifacts/v93_runtime_node_scaling \
+            --forecast-repeats 120 \
+            --explain-repeats 30
+      - name: Verify scaling contract
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v93_runtime_node_scaling/summary.json').read_text())
+          assert d['expanded_nodes_are_synthetic_for_load_only'] is True
+          assert d['source_replay_is_recorded'] is True
+          assert d['synthetic_clones_are_disconnected'] is True
+          assert d['max_nodes']==32
+          counts=[r['active_nodes'] for r in d['rows']]
+          assert counts==[4,8,12,16,24,32],counts
+          for row in d['rows']:
+              assert row['validated'] is True
+              assert row['forecast_horizon_steps']>0
+              for mode in ('forecast_only','with_gradient_x_input_explanation'):
+                  for k in ('mean_ms','p50_ms','p95_ms','p99_ms','single_thread_throughput_per_second_from_mean'):
+                      assert math.isfinite(float(row[mode][k])) and float(row[mode][k])>0
+          print(json.dumps({'max_nodes':d['max_nodes'],'rows':d['rows'],'rss_mib':d['max_process_rss_mib']},indent=2))
+          PY
+      - name: Upload V93 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v93-runtime-node-scaling-evidence
+          path: garuda_v3/artifacts/v93_runtime_node_scaling/summary.json
+          if-no-files-found: error
+          retention-days: 30
