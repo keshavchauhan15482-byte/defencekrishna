@@ -1,0 +1,98 @@
+name: V92 Corrected Attack-Step Lead Time
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v92_corrected_attack_step_leadtime.py'
+      - '.github/workflows/v92-corrected-attack-step-leadtime.yml'
+      - 'datasets/multisource/recovered/attack_info_axile.csv'
+      - 'datasets/multisource/recovered/attack_info_axile_provenance.json'
+
+permissions:
+  contents: read
+
+jobs:
+  corrected-leadtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V92
+        run: python -m compileall -q garuda_v3/v92_corrected_attack_step_leadtime.py
+      - name: Unit-check prediction issue timestamp
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from garuda_v3.v92_corrected_attack_step_leadtime import prediction_issue_epochs
+          got=prediction_issue_epochs(np.asarray([100,110,120]))
+          assert got.tolist()==[110.0,120.0,130.0],got
+          print('history-window-end timestamp contract: PASS')
+          PY
+      - name: Fetch hash-verified CICAPT network captures
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v92 \
+            --ids cicapt_network \
+            --extract
+      - name: Run corrected attack-step onset audit
+        run: |
+          mkdir -p garuda_v3/artifacts/v92_corrected_attack_step_leadtime
+          python -m garuda_v3.v92_corrected_attack_step_leadtime \
+            --phase1 datasets/v92/1stPhase-timed-Merged.pcap \
+            --phase2 datasets/v92/2ndPhase-timed-MergedV2.pcap \
+            --timeline datasets/multisource/recovered/attack_info_axile.csv \
+            --timeline-provenance datasets/multisource/recovered/attack_info_axile_provenance.json \
+            --packet-limit 3000000 \
+            --seeds 42 43 44 \
+            --epochs 18 \
+            --output garuda_v3/artifacts/v92_corrected_attack_step_leadtime/summary.json
+      - name: Verify corrected timing and claim boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v92_corrected_attack_step_leadtime/summary.json').read_text())
+          c=d['leakage_contract']
+          assert d['publisher_verified'] is False
+          assert d['prediction_issue_time_definition']=='sequence_cutoff_epoch + WINDOW_SECONDS'
+          assert c['prediction_timestamp_uses_history_window_end'] is True
+          assert c['legacy_history_bucket_start_used_for_claim'] is False
+          assert c['phase2_used_for_training'] is False
+          assert c['phase2_used_for_threshold_selection'] is False
+          assert c['timeline_events_used_for_threshold_selection'] is False
+          assert c['alert_score_uses_observed_future_ground_truth'] is False
+          assert len(d['seeds'])==3
+          assert 'ATTACK-STEP ONSET' in d['claim_boundary']
+          assert 'NOT verified successful-compromise lead time' in d['claim_boundary']
+          print(json.dumps(d['summary'],indent=2))
+          for seed,row in d['seeds'].items():
+              print(seed,json.dumps({
+                  'phase2_alert_rate':row['phase2_alert_rate'],
+                  'event_warning_recall':row['event_warning_recall'],
+                  'recall_wilson95':row['event_warning_recall_wilson95'],
+                  'lead_seconds':row['lead_seconds'],
+                  'legacy_diagnostic':row['legacy_window_start_diagnostic'],
+              },indent=2))
+          PY
+      - name: Upload V92 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v92-corrected-attack-step-leadtime-evidence
+          path: garuda_v3/artifacts/v92_corrected_attack_step_leadtime/*.json
+          if-no-files-found: error
+          retention-days: 30
