@@ -1,0 +1,55 @@
+name: V94 runtime support gate
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/support_gate.py'
+      - 'garuda_v3/inference.py'
+      - 'garuda_v3/response.py'
+      - 'garuda_v3/integrated_server.py'
+      - 'garuda_v3/tests/test_support_gate.py'
+      - 'garuda_v3/tests/test_response.py'
+      - 'garuda_v3/tests/test_v15_system_integration.py'
+      - 'garuda_v3/tests/test_v94_runtime_support.py'
+      - '.github/workflows/v94-runtime-support-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-support-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Garuda dependencies
+        run: python -m pip install -r garuda_v3/requirements.txt
+      - name: Compile changed runtime modules
+        run: python -m compileall -q garuda_v3/support_gate.py garuda_v3/inference.py garuda_v3/response.py garuda_v3/integrated_server.py garuda_v3/tests/test_v94_runtime_support.py
+      - name: V94 focused safety regression
+        run: |
+          python -m unittest \
+            garuda_v3.tests.test_support_gate \
+            garuda_v3.tests.test_response \
+            garuda_v3.tests.test_v15_system_integration \
+            garuda_v3.tests.test_v94_runtime_support -v
+      - name: Verify pinned bundle remains explicit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('garuda_v3/active_runtime_bundle.json')
+          m=json.loads(p.read_text())
+          assert m['status']=='validated-runtime-input'
+          assert 'support_gate.json' not in m['files'], 'If a support gate is added, pin its digest and update V94 expectation/tests.'
+          print('Pinned bundle has no support gate: V94 must remain SHADOW_UNRESOLVED for autonomous forecast response.')
+          PY
