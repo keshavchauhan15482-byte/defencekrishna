@@ -1,0 +1,127 @@
+name: V89 Support-Correct Progression Hazard
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/v67-ps9plus-evidence
+    paths:
+      - 'garuda_v3/v89_support_correct_hazard.py'
+      - '.github/workflows/v89-support-correct-hazard.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  v89:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V89
+        run: |
+          python -m compileall -q \
+            garuda_v3/v81_remaining_fresh_subtype_freeze.py \
+            garuda_v3/v86_multihorizon_progression.py \
+            garuda_v3/v87_monotonic_progression_hazard.py \
+            garuda_v3/v89_support_correct_hazard.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v89
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v89/XIIoTID.csv'))
+          PY
+      - name: Reproduce immutable V81 freeze
+        run: |
+          mkdir -p garuda_v3/artifacts/v89_support_correct_hazard
+          python -m garuda_v3.v81_remaining_fresh_subtype_freeze \
+            --csv datasets/v89/XIIoTID.csv \
+            --output garuda_v3/artifacts/v89_support_correct_hazard/v81_freeze.json
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v89_support_correct_hazard/v81_freeze.json')
+          digest=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert digest=='820aa7de8925d3d0812e1df3753c9f4a2c7da0f5d45efd3d16456b33e3e7d75f',digest
+          PY
+      - name: Run V89 support-correct hazard evaluation
+        run: |
+          python -m garuda_v3.v89_support_correct_hazard \
+            --csv datasets/v89/XIIoTID.csv \
+            --freeze garuda_v3/artifacts/v89_support_correct_hazard/v81_freeze.json \
+            --output garuda_v3/artifacts/v89_support_correct_hazard/results \
+            --epochs 18
+      - name: Verify V89 mixed-negative and leakage contract
+        run: |
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v89_support_correct_hazard/results/summary.json').read_text())
+          c=d['leakage_contract']; g=d['release_gate']; w=d['architecture_selection']['winner']
+          assert c['reserve_metrics_used_for_world_selection'] is False
+          assert c['reserve_metrics_used_for_hazard_architecture_selection'] is False
+          assert c['reserve_subtypes_seen_by_world_fit_or_validation'] is False
+          assert c['attack_labels_are_world_model_inputs'] is False
+          assert c['future_observed_state_used_at_inference'] is False
+          assert c['development_calibration_contains_real_negatives'] is True
+          assert c['alpha_zero_allowed_to_win'] is False
+          assert c['reused_exposed_reserve_labeled_fresh'] is False
+          assert c['pre_compromise_claim'] is False
+          assert d['architecture_selection']['selection_uses_exposed_reserve_metrics'] is False
+          assert float(w['future_weight_alpha']) > 0.0
+          assert int(w['minimum_calibration_negatives']) >= 100
+          assert int(w['minimum_calibration_positives']) >= 20
+          assert float(w['maximum_calibration_fpr']) <= 0.010000000001
+          assert g['mixed_negative_calibration_contract_passed'] is True
+          assert g['learned_future_contribution_required'] is True
+          assert g['learned_future_contribution_used'] is True
+          assert g['fresh_claim_allowed'] is False
+          for row in w['folds']:
+              assert int(row['calibration']['negatives']) >= 100
+              assert int(row['calibration']['positives']) >= 20
+              assert float(row['calibration']['fpr']) <= 0.010000000001
+          for row in d['hazard_heads']['development_calibration']:
+              assert int(row['negatives']) >= 100
+              assert int(row['positives']) >= 20
+              assert float(row['fpr']) <= 0.010000000001
+          for v in [d['state_task']['forecast_mse'],d['state_task']['persistence_mse']]:
+              assert math.isfinite(float(v)),v
+          print(json.dumps({
+              'winner': w,
+              'alpha0_baseline': d['architecture_selection']['alpha0_development_baseline'],
+              'state_task': d['state_task'],
+              'learned_exposed': d['exposed_diagnostic']['learned_future'],
+              'persistence_exposed': d['exposed_diagnostic']['persistence_future'],
+              'release_gate': g,
+          },indent=2))
+          PY
+      - name: Upload V89 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v89-support-correct-progression-hazard-evidence
+          path: garuda_v3/artifacts/v89_support_correct_hazard/**/*.json
+          if-no-files-found: error
+          retention-days: 30
