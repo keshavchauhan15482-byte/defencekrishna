@@ -1,0 +1,49 @@
+{
+  "protocol": "V88 independent external real-traffic attack/benign freeze",
+  "frozen_on": "2026-09-21",
+  "dataset": "IoT-23 v2 (Stratosphere Laboratory / CTU Prague)",
+  "claim_boundary": "Independent external captured-IoT-traffic evaluation. No IoT-23 sample, label, scaler statistic, decision threshold, hyperparameter, feature-selection decision, or model-selection metric may be used for fitting or tuning. This is controlled/lab IoT traffic with real malware and real IoT devices, not production-enterprise traffic.",
+  "selection_uses_test_metrics": false,
+  "fit_on_iot23": false,
+  "malicious_capture": {
+    "scenario": "CTU-IoT-Malware-Capture-34-1",
+    "malware": "Mirai",
+    "device": "Raspberry Pi IoT device",
+    "host_ip": "192.168.1.195",
+    "duration_hours": 24.0,
+    "packet_count_official": 233865,
+    "pcap_size_mb_official": 121,
+    "zeek_labeled_file": "2018-12-21-15-50-14-192.168.1.195-zeek-conn-log.labeled",
+    "zeek_labeled_url": "https://mcfp.felk.cvut.cz/publicDatasets/IoT-23-Dataset-v2/CTU-IoT-Malware-Capture-34-1/2018-12-21-15-50-14-192.168.1.195-zeek-conn-log.labeled",
+    "metadata_url": "https://mcfp.felk.cvut.cz/publicDatasets/IoT-23-Dataset-v2/CTU-IoT-Malware-Capture-34-1/"
+  },
+  "benign_capture": {
+    "scenario": "CTU-Honeypot-Capture-5-1",
+    "device": "Amazon Echo Dot",
+    "host_ip": "192.168.2.3",
+    "duration_hours": 5.48,
+    "packet_count_official": 398312,
+    "pcap_size_mb_official": 364,
+    "zeek_labeled_file": "2018-09-21-11-40-22-192.168.2.3-zeek-conn-log.labeled",
+    "zeek_labeled_url": "https://mcfp.felk.cvut.cz/publicDatasets/IoT-23-Dataset-v2/CTU-Honeypot-Capture-5-1/2018-09-21-11-40-22-192.168.2.3-zeek-conn-log.labeled",
+    "metadata_url": "https://mcfp.felk.cvut.cz/publicDatasets/IoT-23-Dataset-v2/CTU-Honeypot-Capture-5-1/"
+  },
+  "precommit": {
+    "malicious_reason": "Single manageable 24-hour Mirai capture with official raw PCAP provenance and expert-labeled Zeek flows, fixed before scoring.",
+    "benign_reason": "Single real-hardware benign IoT capture with official expert-labeled Zeek flows, fixed before scoring to make false-positive rate measurable.",
+    "metric_visibility_before_freeze": false,
+    "allowed_after_freeze": [
+      "download and hash frozen files",
+      "deterministic schema adaptation",
+      "one-shot inference with a model/scaler/threshold frozen without IoT-23",
+      "compute recall, FPR, precision, F1, PR-AUC/AUROC where defined, and per-label support"
+    ],
+    "forbidden_after_freeze": [
+      "fit or refit on IoT-23",
+      "select a threshold from IoT-23 labels",
+      "select model or hyperparameters from IoT-23 metrics",
+      "switch captures after seeing results",
+      "call controlled IoT-23 traffic production-enterprise traffic"
+    ]
+  }
+}
