@@ -8,10 +8,14 @@ on:
       - 'garuda_v3/inference.py'
       - 'garuda_v3/response.py'
       - 'garuda_v3/integrated_server.py'
+      - 'garuda_v3/ui_contract.py'
+      - 'garuda_v3/ui/app.js'
+      - 'garuda_v3/ui/reference-live.js'
       - 'garuda_v3/tests/test_support_gate.py'
       - 'garuda_v3/tests/test_response.py'
       - 'garuda_v3/tests/test_v15_system_integration.py'
       - 'garuda_v3/tests/test_v94_runtime_support.py'
+      - 'garuda_v3/tests/test_v94_ui_claims.py'
       - '.github/workflows/v94-runtime-support-gate.yml'
   workflow_dispatch:
 
@@ -36,14 +40,15 @@ jobs:
       - name: Install broad-regression research dependency
         run: python -m pip install 'pandas>=2.2,<3'
       - name: Compile changed runtime modules
-        run: python -m compileall -q garuda_v3/support_gate.py garuda_v3/inference.py garuda_v3/response.py garuda_v3/integrated_server.py garuda_v3/tests/test_v94_runtime_support.py
+        run: python -m compileall -q garuda_v3/support_gate.py garuda_v3/inference.py garuda_v3/response.py garuda_v3/integrated_server.py garuda_v3/ui_contract.py garuda_v3/tests/test_v94_runtime_support.py garuda_v3/tests/test_v94_ui_claims.py
       - name: V94 focused safety regression
         run: |
           python -m unittest \
             garuda_v3.tests.test_support_gate \
             garuda_v3.tests.test_response \
             garuda_v3.tests.test_v15_system_integration \
-            garuda_v3.tests.test_v94_runtime_support -v
+            garuda_v3.tests.test_v94_runtime_support \
+            garuda_v3.tests.test_v94_ui_claims -v
       - name: Full Garuda Python regression
         run: python -m unittest discover -s garuda_v3/tests -v
       - name: Verify pinned bundle remains explicit
