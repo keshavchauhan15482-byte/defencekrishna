@@ -6,7 +6,7 @@ from .data import SCHEMA,FEATURES
 from .model import GraphWorldModel
 from .autograd import Tensor
 from .stage_hints import infer_stage_hint
-from .support_gate import score as support_score
+from .support_gate import decision as support_decision
 from .calibration import apply as apply_calibration
 
 class ForecastService:
@@ -42,16 +42,18 @@ class ForecastService:
         times=np.asarray(payload['times'],dtype=np.float64)
         if times.shape!=(h,) or not np.isfinite(times).all() or np.any(np.diff(times)!=self.meta['window_seconds']):raise ValueError('History must be ordered contiguous closed windows')
         return x[None],a[None],m[None],times
-    def predict(self,payload,explain=True):
+    def predict(self,payload,explain=True,allow_unsupported_advisory=False):
         x,a,m,times=self.validate(payload)
-        if self.support_gate and support_score(self.support_gate,x,m)[0]>self.support_gate['threshold']:
+        runtime_support=support_decision(self.support_gate,x,m)
+        if self.support_gate is not None and not runtime_support['supported'] and not allow_unsupported_advisory:
             raise ValueError('Traffic is outside the model training support; prediction withheld. This is unknown, not benign or blocked.')
         if x[:,:,:,FEATURES.index('packet_features_present')].max()>0 and not self.meta['packet_features_trained']:
             raise ValueError('Packet-derived graphs parsed, but this checkpoint was trained on CSV flows; retrain on packet telemetry before inference')
+        advisory_abstention=bool(allow_unsupported_advisory and not runtime_support['supported'])
         mu,sd,r,stage=self.model.forward(x,a,m,self.meta['horizon'],return_stages=True)
         stage_timeline=[];predicted_stages=[]
         stage_status='Not identifiable from Bot/Benign supervision; no probability-to-stage shortcut'
-        if stage is not None and self.meta.get('stage_supervised'):
+        if stage is not None and self.meta.get('stage_supervised') and not advisory_abstention:
             names=self.meta.get('stage_names',[]);thresholds=self.meta.get('stage_thresholds',[])
             supported=self.meta.get('stage_validation_supported',[])
             if len(names)!=self.model.stage_count or len(thresholds)!=len(names) or len(supported)!=len(names):
@@ -61,6 +63,8 @@ class ForecastService:
                     stages=[dict(stage=name,probability=float(probs[j]),threshold=thresholds[j]) for j,name in enumerate(names) if supported[j]]))
             predicted_stages=[name for j,name in enumerate(names) if supported[j] and bool((stage.data[0,:,j]>=thresholds[j]).any())]
             stage_status='Supervised multi-label MITRE tactic forecasts; only tactics with train/validation class support shown. Tactics are not a mandatory sequence; inspect held-out stage metrics.'
+        elif advisory_abstention:
+            stage_status='Unresolved: runtime input support is not validated for autonomous or stage-specific interpretation.'
         probabilities=apply_calibration(r.data[0],self.meta.get('risk_calibration',{'status':'disabled'}))
         attribution=[];node_importance=[]
         if explain:
@@ -75,18 +79,24 @@ class ForecastService:
             node_score=np.abs(contribution).sum(axis=(0,1,3)); names=payload.get('node_names',[])
             node_importance=sorted([dict(node=names[i] if i<len(names) else f'node:{i}',importance=float(node_score[i])) for i in range(len(node_score)) if m[0,-1,i]],key=lambda z:z['importance'],reverse=True)[:6]
         low=np.clip(mu.data[0]-1.96*sd.data[0],0,1);high=np.clip(mu.data[0]+1.96*sd.data[0],0,1)
+        alert=bool(probabilities.max()>=self.meta.get('alert_threshold',self.meta['threshold']))
+        if advisory_abstention:
+            stage_hint=dict(method='runtime_support_abstention',ml_trained=False,validated=False,title='Unresolved',tactic=None,technique=None,
+                confidence=None,rule='Stage hint withheld because runtime support is unresolved or outside the validation-fitted cutoff.',evidence=[],
+                caveat='Advisory risk/state outputs may still be displayed; no stage or autonomous-response claim is authorised.')
+        else:
+            stage_hint=infer_stage_hint(payload,alert)
         return dict(model='directed_graphsage_lstm_autoregressive',model_sha256=self.model_hash,
             data_source=payload.get('data_source','submitted_observed_graphs'),graph_mode=self.meta['mode'],
             target=self.meta['target'],validation_scope=self.meta['validation_scope'],
             cutoff_epoch_seconds=float(times[-1]+self.meta['window_seconds']),
             trajectory=[dict(horizon_seconds=(i+1)*self.meta['window_seconds'],malicious_flow_probability=float(p),
                 state_mean=mu.data[0,i].tolist(),state_interval_low=low[i].tolist(),state_interval_high=high[i].tolist()) for i,p in enumerate(probabilities)],
-            threshold=self.meta.get('alert_threshold',self.meta['threshold']),
-            alert=bool(probabilities.max()>=self.meta.get('alert_threshold',self.meta['threshold'])),
+            threshold=self.meta.get('alert_threshold',self.meta['threshold']),alert=alert,
             alert_policy_status=self.meta.get('alert_policy_status','legacy last-horizon threshold'),
             predicted_attack_stage=', '.join(predicted_stages) if predicted_stages else None,stage_status=stage_status,
-            stage_hint=infer_stage_hint(payload,bool(probabilities.max()>=self.meta.get('alert_threshold',self.meta['threshold']))),
-            stage_trajectory=stage_timeline,
+            stage_hint=stage_hint,stage_trajectory=stage_timeline,runtime_support=runtime_support,
+            operating_mode='SHADOW_UNRESOLVED' if advisory_abstention else 'SUPPORTED_RUNTIME',
             explanation=dict(method='gradient_x_input',baseline='zero normalized features',feature_attributions=attribution,node_importance=node_importance,
                 limitation='local sensitivity of this prediction; not causal proof or exact Shapley values'),
             uncertainty='diagonal Gaussian state intervals; empirical coverage is in benchmark, not a guarantee',
