@@ -1,0 +1,17 @@
+{
+  "protocol_version": "V88.0",
+  "purpose": "Independent-source real network-traffic attack replication for the final SIH evidence pack",
+  "dataset": "UNSW-NB15 raw four-shard flow corpus",
+  "dataset_source": "mrwellsdavid/unsw-nb15 via KaggleHub; underlying UNSW-NB15 cyber-range traffic",
+  "evaluation_script": "garuda_v3/v67_same_input_baseline.py",
+  "frozen_garuda_config": "docs/release/v57_metric_strengthening/frozen_config.json",
+  "seeds": [42, 43, 44],
+  "epochs": 18,
+  "max_audits": 2,
+  "family_episode_selection": "timestamp-and-support-only before model scoring",
+  "threshold_policy": "same frozen Garuda false-positive budget; LR threshold from clean policy negatives only",
+  "test_tuning_allowed": false,
+  "test_metrics_used_for_model_or_episode_selection": false,
+  "reported_metrics": ["recall", "fpr", "precision", "f1", "tp", "fp", "tn", "fn", "wilson95"],
+  "claim_boundary": "Independent-source public cyber-range replication. UNSW has been used previously in project research, so this run is a reproducibility/independent-source benchmark, not a fresh zero-day, production-traffic, or verified pre-compromise claim."
+}
