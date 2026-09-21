@@ -1,0 +1,51 @@
+{
+  "protocol": "V89 first external IoT-23 result record",
+  "actions_run_id": 35564369719,
+  "actions_job_id": 106223169263,
+  "tested_commit": "a041f7288e81426bb7e4f1d6371fffadac700955",
+  "freeze_sha256": "f05aaa5aadf7276e38b2bca4f9d6d0a776c9b1532234df5b477312694f6dff14",
+  "pretest_model_selection_sha256": "42f00562f03245a71d9da60d35138d1de9a967a19c433eda006537fedc1a6b56",
+  "test_pair": {
+    "attack": "IoT-23 v2 CTU-IoT-Malware-Capture-34-1 / Mirai / host 192.168.1.195",
+    "benign": "IoT-23 v2 CTU-Honeypot-Capture-5-1 / Amazon Echo Dot / host 192.168.2.3"
+  },
+  "pretest_unsw_only_selection": {
+    "model": "histgb",
+    "validation_support": 4037,
+    "validation_positives": 792,
+    "validation_negatives": 3245,
+    "threshold": 0.012863236627407593,
+    "recall": 0.9987373737373737,
+    "fpr": 0.008320493066255779,
+    "precision": 0.9669926650366748,
+    "f1": 0.9826086956521738,
+    "pr_auc": 0.9996582386345362,
+    "roc_auc": 0.999896499665375
+  },
+  "external_real_measured_metrics": {
+    "attack_recall_on_explicit_malicious_host_minutes": 0.6945169712793734,
+    "benign_false_positive_rate_on_echo_host_minutes": 0.5797101449275363,
+    "benign_false_alert_windows": 80,
+    "benign_window_count": 138,
+    "malicious_window_count": 766,
+    "pooled_precision": 0.869281045751634,
+    "pooled_f1": 0.7721335268505078,
+    "pooled_pr_auc": 0.7885142914642312,
+    "pooled_roc_auc": 0.47558841336511903
+  },
+  "per_malicious_detailed_label": {
+    "C&C": {"support_windows": 763, "detected_windows": 529, "recall": 0.6933158584534731},
+    "PartOfAHorizontalPortScan": {"support_windows": 3, "detected_windows": 3, "recall": 1.0},
+    "DDoS": {"support_windows": 4, "detected_windows": 4, "recall": 1.0}
+  },
+  "integrity_notes": {
+    "iot23_used_for_training": false,
+    "iot23_used_for_model_or_threshold_selection": false,
+    "capture_pair_changed_after_result": false,
+    "workflow_scoring_step_completed_successfully": true,
+    "workflow_final_status": "failure",
+    "workflow_failure_reason": "post-score verifier incorrectly asserted all(no_test_tuning_contract.values()); capture_switched_after_results is correctly false, which made that assertion false. No model/threshold/test metric computation failed.",
+    "rerun_after_metric_exposure_used_as_independent_claim": false
+  },
+  "conclusion": "The first independent cross-domain transfer did not meet the project gate: recall was below 80% and benign FPR was far above 1%. This result is retained, not tuned away."
+}
