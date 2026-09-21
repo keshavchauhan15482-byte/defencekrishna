@@ -2,6 +2,10 @@ import re
 from html.parser import HTMLParser
 from pathlib import Path
 
+import pytest
+
+from garuda_v3.ui_contract import harden_ui_asset
+
 ROOT = Path(__file__).resolve().parents[2]
 UI = ROOT / "garuda_v3" / "ui"
 
@@ -62,3 +66,29 @@ def test_secondary_pages_exist_and_use_shared_design():
         assert 'href="/style.css"' in page
         assert 'class="siteHeader"' in page
         assert 'class="subHero sectionShell"' in page
+
+
+def test_v94_secondary_console_abstains_instead_of_showing_heuristic_stage():
+    raw = (UI / "app.js").read_text(encoding="utf-8")
+    hardened = harden_ui_asset("app.js", raw)
+    assert "Heuristic-based, not ML-trained." not in hardened
+    assert "runtime_support" in hardened
+    assert "UNRESOLVED / INSUFFICIENT EVIDENCE" in hardened
+    assert "SHADOW_UNRESOLVED" in hardened
+    assert "advisory only" in hardened
+
+
+def test_v94_homepage_exposes_shadow_advisory_when_support_gate_is_missing():
+    raw = (UI / "reference-live.js").read_text(encoding="utf-8")
+    hardened = harden_ui_asset("reference-live.js", raw)
+    assert "runtime_support_gate" in hardened
+    assert "SHADOW / ADVISORY" in hardened
+    assert "runtime_support?.supported===true" in hardened
+    assert "UNRESOLVED" in hardened
+
+
+def test_v94_ui_contract_fails_closed_on_marker_drift():
+    with pytest.raises(RuntimeError, match="V94 UI contract marker missing"):
+        harden_ui_asset("app.js", "console.log('changed UI');")
+    with pytest.raises(RuntimeError, match="V94 UI contract marker missing"):
+        harden_ui_asset("reference-live.js", "console.log('changed homepage');")
