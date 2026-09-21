@@ -6,6 +6,7 @@ on:
     branches: [feat/v67-ps9plus-evidence]
     paths:
       - 'garuda_v3/v89_iot23_external_one_shot.py'
+      - 'garuda_v3/v89_iot23_external_one_shot_fixed.py'
       - 'garuda_v3/v88_iot23_external_freeze.json'
       - '.github/workflows/v89-iot23-external-one-shot.yml'
 
@@ -29,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
       - name: Compile benchmark
-        run: python -m compileall -q garuda_v3/v59_unsw_independent_replication.py garuda_v3/v89_iot23_external_one_shot.py
+        run: python -m compileall -q garuda_v3/v59_unsw_independent_replication.py garuda_v3/v89_iot23_external_one_shot.py garuda_v3/v89_iot23_external_one_shot_fixed.py
       - name: Verify external precommit contract
         run: |
           python - <<'PY'
@@ -72,7 +73,7 @@ jobs:
       - name: Run one-shot external benchmark
         run: |
           ROOT=$(cat datasets/v89/unsw_root.txt)
-          python -m garuda_v3.v89_iot23_external_one_shot \
+          python -m garuda_v3.v89_iot23_external_one_shot_fixed \
             --unsw-root "$ROOT" \
             --freeze garuda_v3/v88_iot23_external_freeze.json \
             --malicious datasets/v89/mirai_34_1.labeled \
