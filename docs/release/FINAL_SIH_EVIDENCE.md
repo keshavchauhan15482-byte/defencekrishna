@@ -8,7 +8,7 @@ This file is the judge-facing source of truth for the current SIH evidence pack.
 
 On the V70 CICAPT-IIoT2024 Phase-2 state-forecasting experiment, the learned forecaster achieved **27.489% lower state MSE than the persistence baseline across three seeds**. This is a state-forecasting result, not an attack-classification accuracy number.
 
-A later X-IIoTID state-forecasting diagnostic (V86) independently showed **10.7876% lower state MSE than persistence** (0.44053 vs 0.49380). The two improvements are separate experiments and must not be averaged or combined.
+A later X-IIoTID state-forecasting diagnostic independently showed **10.7876% lower state MSE than persistence** (0.44053 vs 0.49380). The two improvements are separate experiments and must not be averaged or combined.
 
 ### 2. Independent-source attack replication with low false alarms
 
@@ -38,9 +38,13 @@ V90 measured the checkpoint actually compatible with the localhost graph runtime
 
 This is an in-process lab benchmark, not an HTTP/network/customer SLA. Authoritative run: `35564831357`. See `docs/release/v90_runtime_performance/RESULTS.md`.
 
-### 4. Runtime bundle selection is fail-closed
+### 4. Runtime selection and unsupported-input response fail closed
 
-The current localhost runtime resolves its compatible checkpoint through `garuda_v3/bundle_manifest.py` and `garuda_v3/active_runtime_bundle.json`. Schema/mode/checkpoint identity are validated, and incompatible research artifacts are not silently substituted for the live graph runtime. Offline research evidence and deployable runtime compatibility are intentionally separated.
+The localhost runtime resolves its compatible checkpoint through `garuda_v3/bundle_manifest.py` and `garuda_v3/active_runtime_bundle.json`; schema/mode/checkpoint identity are validated and incompatible research artifacts are not silently substituted.
+
+V94 extends that boundary to runtime input support. The currently pinned bundle does **not** contain an integrity-pinned validation-fitted `support_gate.json`, so the integrated runtime reports `UNVERIFIED_RUNTIME_SUPPORT` / `SHADOW_UNRESOLVED`. It may display advisory state/risk output, but stage-specific interpretation and forecast-driven autonomous Arjuna/Krishna/Sudarshana actions are suppressed. A future compatible bundle may enable supported decisions only after a validation-fitted support gate is integrity-pinned.
+
+V94 is a safety/abstention mechanism, **not an attack detector and not a claim that out-of-support traffic is malicious**. Final V94 CI run `35567112947` passed **21 focused safety tests** and **188 full Garuda Python tests** (`OK`, 3 optional-dependency skips), including the pinned-bundle fail-closed assertion.
 
 ## External-domain stress tests — preserved failures
 
@@ -54,32 +58,62 @@ These results increase evidence integrity but **do not support a universal cross
 
 The ToN-IoT first-test result is immutable and has source SHA256 `26ddc513552de36de6428b2e578efaed2b57504c716dfba847cc0109a64e1974`. See `docs/release/v92_toniot_first_test/RESULTS.md`.
 
-**Engineering consequence:** unseen telemetry domains must enter shadow/abstain/domain-validation mode rather than receiving an unsupported universal-detection guarantee.
+**Engineering consequence:** unseen telemetry domains must enter shadow/abstain/domain-validation mode rather than receiving an unsupported universal-detection guarantee. V94 enforces that conservative response policy in the integrated runtime when support is unresolved.
 
 ## Attacker progression / lifecycle stage status
 
-The project has multiple honest diagnostics (V82–V87), but the current evidence does **not** justify a release claim of robust unseen-subtype attacker-stage prediction:
+The project has multiple honest diagnostics (V82–V89.1), but the current evidence does **not** justify a release claim of robust unseen-subtype attacker-stage prediction.
+
+Earlier diagnostics:
 
 - V86 learned-future multi-horizon progression macro-F1: **0.4912**
 - matched persistence macro-F1: **0.5399**
 - V86 development subtype viability: FAIL
 - V87 selected alpha=0 and therefore did not prove learned-future contribution; its subtype fold FPR setup also lacked meaningful negative controls.
 
-V89/V89.1 was introduced specifically to correct this by using cumulative future-risk/progression targets, real negative controls, disjoint calibration/threshold/evaluation slices, a ≤1% development FPR budget, and observed-only/persistence/Garuda-future ablations. Until that controlled gate produces an approved result, the UI must use **Unresolved / Insufficient evidence** where stage support is not validated.
+V89.1 corrected the evaluation protocol with real negative controls, disjoint calibration/threshold/evaluation slices, a ≤1% development FPR budget, and observed-only/persistence/Garuda-future ablations. Authoritative run `35565758743` completed successfully and selected `garuda_future_alpha_1.00` without using the exposed reserve for selection.
 
-## Pre-compromise / lead-time status
+V89.1 controlled subtype-CV result:
 
-Do **not** claim verified pre-compromise prediction yet. Historical clean-history evidence was sparse and included a missed future-positive case. Any timing result without a verified successful-compromise timestamp must be described as **lead to labelled attack onset**, not lead to compromise.
+- Minimum subtype recall: **0.00%**
+- Mean subtype recall: **26.7018%**
+- Maximum evaluation FPR: **0.9079%**
+- Mean evaluation F1: **0.2674**
+- Mean evaluation PR-AUC: **0.5195**
+- Minimum real-negative controls in a fold: **6,168**
+- 80%-recall / 1%-FPR development gate: **FAIL**
+- Both tested Lateral Movement leave-subtype-out folds: **0% recall**
+
+The controlled three-way supported-target ablation did show a small learned-future gain: mean supported F1 **0.999009** vs **0.998016** for both observed-only and persistence-future, and mean supported recall **0.998020** vs **0.996040** for persistence-future. This does **not** override the failed subtype-robustness gate. The exposed X-IIoTID reserve is diagnostic only and `fresh_claim_allowed=false`; therefore `eligible_for_progression_release_claim=false` remains authoritative.
+
+Where stage/subtype support is not validated, the UI/runtime must use **Unresolved / Insufficient evidence** rather than presenting a confident MITRE-stage claim.
+
+## Attack-onset lead-time status
+
+V93 corrected the timing audit so the issue timestamp is the **end of the final observed history window**, and attack onsets are deduplicated by exact timestamp. Authoritative run: `35566012885`.
+
+Across seeds 42/43/44:
+
+- Mean labelled attack-onset event recall: **22.6667%**
+- Mean Phase-2 alert rate: **0.3660%**
+- Detected-case median leads by seed: **287 s / 303 s / 303 s**
+- Mean of those per-seed detected-case medians: **297.67 s**
+- Detected cases per seed: **6 / 5 / 5**
+- Bootstrap/interval claim: **withheld** because the minimum detected-case support (5) was below the required 10 cases per seed.
+
+This is **lead to labelled attack-step onset**, not verified lead to compromise. The audit explicitly records `verified_compromise_ground_truth=false`, `pre_compromise_claim=false`, and `automatic_containment_claim=false`.
+
+Do **not** claim verified pre-compromise prediction yet. A defensible pre-compromise claim still requires verified successful-compromise timestamps and adequate case support.
 
 ## SIH-safe product statement
 
-> Garuda AI is a network world-model prototype that forecasts future network state from traffic telemetry, converts predicted trajectories into risk/progression evidence, and connects that evidence to layered response controls. The project has demonstrated state-forecasting gains over persistence, a high-recall/low-FPR independent-source UNSW replication, and millisecond-scale compatible runtime inference. Cross-domain stress tests also show that universal portability is not yet solved, so unsupported domains are treated as validation/shadow-mode cases rather than silently overclaimed.
+> Garuda AI is a network world-model prototype that forecasts future network state from traffic telemetry, converts predicted trajectories into risk/progression evidence, and connects that evidence to layered response controls. The project has demonstrated state-forecasting gains over persistence, a high-recall/low-FPR independent-source UNSW replication, millisecond-scale compatible runtime inference, corrected labelled-attack-onset warning evidence, and a fail-closed runtime support policy. Cross-domain stress tests and controlled subtype evaluation also show that universal portability and robust unseen-subtype stage prediction are not yet solved, so unsupported inputs remain advisory/shadow-mode rather than silently overclaimed.
 
 ## Defense architecture wording
 
-- **Arjuna:** policy/enforcement path for validated known-attack detections.
-- **Krishna:** research/adaptation path for unfamiliar or unsupported patterns; stores evidence and supports controlled model evolution.
-- **Sudarshana:** scoped lockdown/data-protection response for explicitly authorized breach conditions; not presented as autonomous enterprise enforcement without customer validation.
+- **Arjuna:** policy/enforcement path for validated known/reviewed attack evidence; V94 suppresses forecast-driven autonomous action when runtime support is unresolved.
+- **Krishna:** research/adaptation and unknown-threat triage path; stores evidence and supports controlled model evolution, but unknown forecasts remain shadow-only unless both support and evidence gates approve autonomy.
+- **Sudarshana:** scoped signed lockdown/data-protection response for explicitly authorized conditions; not presented as autonomous enterprise enforcement without customer validation.
 
 ## Claims that are not approved
 
@@ -87,12 +121,14 @@ Do not put these in the final PPT, video, website headline, or judge answer:
 
 - “100% accurate” or “works on every network.”
 - “Universal zero-day detector.”
+- “V94 detects unknown attacks/OOD traffic.”
 - “Verified pre-compromise prediction” without verified compromise timestamps.
 - “MITRE stage prediction validated” for unsupported stages/subtypes.
+- “Robust unseen-subtype progression is solved.”
 - “Enterprise-ready autonomous blocking.”
-- A blended metric that combines V70 27.489% and V86 10.788% state-MSE gains.
+- A blended metric that combines V70 27.489% and later ~10.788% state-MSE gains.
 - Any retuned IoT-23, RT-IoT2022, or ToN-IoT score presented as a fresh first test.
 
 ## Submission positioning
 
-For SIH, the strongest defensible differentiation is the **forecast-first architecture + low-FPR independent-source evidence + measured real-time runtime + layered response + explicit uncertainty/evidence governance**. The remaining research gap is cross-domain portability and fully validated attacker progression, not whether the prototype has meaningful forecasting or operational evidence.
+For SIH, the strongest defensible differentiation is the **forecast-first architecture + low-FPR independent-source evidence + measured real-time runtime + corrected attack-onset timing evidence + layered response + explicit uncertainty/evidence governance + fail-closed support handling**. The main remaining research gates are cross-domain portability, robust unseen-subtype progression, and verified compromise-timestamp lead-time evidence—not whether the prototype has meaningful forecasting or operational evidence.
