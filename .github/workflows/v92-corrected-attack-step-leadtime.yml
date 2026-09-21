@@ -6,9 +6,11 @@ on:
     branches: [feat/v67-ps9plus-evidence]
     paths:
       - 'garuda_v3/v92_corrected_attack_step_leadtime.py'
+      - 'garuda_v3/tests/test_v92_corrected_leadtime.py'
       - '.github/workflows/v92-corrected-attack-step-leadtime.yml'
       - 'datasets/multisource/recovered/attack_info_axile.csv'
       - 'datasets/multisource/recovered/attack_info_axile_provenance.json'
+      - 'datasets/multisource/catalogue.json'
 
 permissions:
   contents: read
@@ -32,16 +34,9 @@ jobs:
           python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7'
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
       - name: Compile V92
-        run: python -m compileall -q garuda_v3/v92_corrected_attack_step_leadtime.py
-      - name: Unit-check prediction issue timestamp
-        run: |
-          python - <<'PY'
-          import numpy as np
-          from garuda_v3.v92_corrected_attack_step_leadtime import prediction_issue_epochs
-          got=prediction_issue_epochs(np.asarray([100,110,120]))
-          assert got.tolist()==[110.0,120.0,130.0],got
-          print('history-window-end timestamp contract: PASS')
-          PY
+        run: python -m compileall -q garuda_v3/v92_corrected_attack_step_leadtime.py garuda_v3/tests/test_v92_corrected_leadtime.py
+      - name: Test corrected timing contract
+        run: python -m unittest garuda_v3.tests.test_v92_corrected_leadtime -v
       - name: Fetch hash-verified CICAPT network captures
         run: |
           python -m garuda_v3.public_data_fetch \
@@ -57,36 +52,46 @@ jobs:
             --phase2 datasets/v92/2ndPhase-timed-MergedV2.pcap \
             --timeline datasets/multisource/recovered/attack_info_axile.csv \
             --timeline-provenance datasets/multisource/recovered/attack_info_axile_provenance.json \
+            --catalogue datasets/multisource/catalogue.json \
             --packet-limit 3000000 \
             --seeds 42 43 44 \
             --epochs 18 \
             --output garuda_v3/artifacts/v92_corrected_attack_step_leadtime/summary.json
-      - name: Verify corrected timing and claim boundary
+      - name: Verify corrected timing, provenance, and claim boundary
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           d=json.loads(Path('garuda_v3/artifacts/v92_corrected_attack_step_leadtime/summary.json').read_text())
           c=d['leakage_contract']
+          t=d['timing_contract']
+          assert d['protocol_version']=='V92-history-end-attack-step-onset-v1'
           assert d['publisher_verified'] is False
-          assert d['prediction_issue_time_definition']=='sequence_cutoff_epoch + WINDOW_SECONDS'
-          assert c['prediction_timestamp_uses_history_window_end'] is True
-          assert c['legacy_history_bucket_start_used_for_claim'] is False
+          assert d['compromise_claim_allowed'] is False
+          assert d['incident_level_claim_allowed'] is False
+          assert t['prediction_issue_epoch']=='cutoff_bucket_start + window_seconds'
+          assert t['legacy_timestamp_inflation_seconds']==10
+          assert t['late_or_at_onset_alert_counts_as_early'] is False
+          assert d['raw_timeline_rows_evaluated'] >= d['exact_timestamp_onset_groups_evaluated'] >= 5
           assert c['phase2_used_for_training'] is False
+          assert c['phase2_used_for_normalization'] is False
+          assert c['phase2_used_for_blend_selection'] is False
           assert c['phase2_used_for_threshold_selection'] is False
           assert c['timeline_events_used_for_threshold_selection'] is False
           assert c['alert_score_uses_observed_future_ground_truth'] is False
           assert len(d['seeds'])==3
           assert 'ATTACK-STEP ONSET' in d['claim_boundary']
           assert 'NOT verified successful-compromise lead time' in d['claim_boundary']
+          members=d['capture_source_contract']['members']
+          assert members['1stPhase-timed-Merged.pcap']['sha256']
+          assert members['2ndPhase-timed-MergedV2.pcap']['sha256']
           print(json.dumps(d['summary'],indent=2))
           for seed,row in d['seeds'].items():
               print(seed,json.dumps({
                   'phase2_alert_rate':row['phase2_alert_rate'],
-                  'event_warning_recall':row['event_warning_recall'],
-                  'recall_wilson95':row['event_warning_recall_wilson95'],
+                  'onset_group_warning_recall':row['onset_group_warning_recall'],
                   'lead_seconds':row['lead_seconds'],
-                  'legacy_diagnostic':row['legacy_window_start_diagnostic'],
+                  'legacy_diagnostic':row['legacy_timestamp_diagnostic_only'],
               },indent=2))
           PY
       - name: Upload V92 evidence
