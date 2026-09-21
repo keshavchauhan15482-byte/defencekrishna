@@ -1,0 +1,112 @@
+name: V89 IoT-23 External One-Shot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v89_iot23_external_one_shot.py'
+      - 'garuda_v3/v88_iot23_external_freeze.json'
+      - '.github/workflows/v89-iot23-external-one-shot.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  v89-external:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+      - name: Compile benchmark
+        run: python -m compileall -q garuda_v3/v59_unsw_independent_replication.py garuda_v3/v89_iot23_external_one_shot.py
+      - name: Verify external precommit contract
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path('garuda_v3/v88_iot23_external_freeze.json')
+          d=json.loads(p.read_text())
+          assert d['selection_uses_test_metrics'] is False
+          assert d['fit_on_iot23'] is False
+          assert d['malicious_capture']['scenario']=='CTU-IoT-Malware-Capture-34-1'
+          assert d['benign_capture']['scenario']=='CTU-Honeypot-Capture-5-1'
+          assert d['malicious_capture']['host_ip']=='192.168.1.195'
+          assert d['benign_capture']['host_ip']=='192.168.2.3'
+          print('freeze_sha256',hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - name: Download UNSW-NB15 development corpus
+        run: |
+          mkdir -p datasets/v89
+          python - <<'PY'
+          from pathlib import Path
+          import kagglehub
+          root=Path(kagglehub.dataset_download('mrwellsdavid/unsw-nb15'))
+          Path('datasets/v89/unsw_root.txt').write_text(str(root))
+          shards=sorted(root.rglob('UNSW-NB15_[1-4].csv'))
+          if len(shards)!=4: raise RuntimeError(f'Expected 4 UNSW shards, got {shards}')
+          for p in shards: print(p.name,p.stat().st_size)
+          PY
+      - name: Download exactly frozen IoT-23 labeled flows
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          f=json.loads(Path('garuda_v3/v88_iot23_external_freeze.json').read_text())
+          for key,name in [('malicious_capture','mirai_34_1.labeled'),('benign_capture','echo_5_1.labeled')]:
+              url=f[key]['zeek_labeled_url']
+              dest=Path('datasets/v89')/name
+              subprocess.run(['curl','--fail','--location','--retry','4','--retry-delay','2','--output',str(dest),url],check=True)
+              print(name,dest.stat().st_size,url)
+          PY
+      - name: Run one-shot external benchmark
+        run: |
+          ROOT=$(cat datasets/v89/unsw_root.txt)
+          python -m garuda_v3.v89_iot23_external_one_shot \
+            --unsw-root "$ROOT" \
+            --freeze garuda_v3/v88_iot23_external_freeze.json \
+            --malicious datasets/v89/mirai_34_1.labeled \
+            --benign datasets/v89/echo_5_1.labeled \
+            --output garuda_v3/artifacts/v89_iot23_external
+      - name: Verify no-test-tuning contract and print real numbers
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v89_iot23_external/summary.json')
+          d=json.loads(p.read_text())
+          assert d['selection_uses_iot23_metrics'] is False
+          assert d['fit_on_iot23'] is False
+          c=d['no_test_tuning_contract']
+          assert all(c.values())
+          assert d['external_sources']['malicious']['scenario']=='CTU-IoT-Malware-Capture-34-1'
+          assert d['external_sources']['benign']['scenario']=='CTU-Honeypot-Capture-5-1'
+          print(json.dumps({
+            'selected_model':d['selected_model'],
+            'external_metrics':d['external_metrics'],
+            'per_malicious_detailed_label':d['per_malicious_detailed_label'],
+            'source_hashes':{
+              'malicious':d['external_sources']['malicious']['sha256'],
+              'benign':d['external_sources']['benign']['sha256']
+            },
+            'pretest_model_selection_sha256':d['pretest_model_selection_sha256']
+          },indent=2))
+          print('evidence_sha256',hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - name: Upload external evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v89-iot23-external-one-shot-evidence
+          path: garuda_v3/artifacts/v89_iot23_external/*.json
+          retention-days: 30
+          if-no-files-found: error
