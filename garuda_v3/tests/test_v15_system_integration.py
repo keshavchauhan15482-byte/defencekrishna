@@ -56,6 +56,8 @@ class V15SystemIntegrationTests(unittest.TestCase):
         self.assertIn('v15', status)
         self.assertFalse(status['v15']['autonomous_unknown_containment_approved'])
         self.assertFalse(status['response']['unknown_forecast_autonomous_containment_approved'])
+        self.assertFalse(status['runtime_support_gate']['present'])
+        self.assertEqual(status['runtime_support_gate']['missing_gate_mode'], 'SHADOW_UNRESOLVED')
 
     def test_dashboard_surfaces_v15_evidence_and_limits(self):
         source = UI_APP.read_text()
@@ -70,23 +72,28 @@ class V15SystemIntegrationTests(unittest.TestCase):
         self.assertIn('krishna_system', out)
         self.assertEqual(out['defence_signal']['route'], 'krishna')
         self.assertFalse(out['defence_signal']['unknown_forecast_autonomous_containment_approved'])
+        self.assertEqual(out['runtime_support']['status'], 'UNVERIFIED_RUNTIME_SUPPORT')
+        self.assertEqual(out['operating_mode'], 'SHADOW_UNRESOLVED')
 
     def test_armed_unknown_forecast_stays_shadow_with_current_v15_evidence(self):
         self.app.response.arm('198.51.100.2')
         out = self.app.forecast(self.graph)
         self.assertTrue(out['alert'])
         self.assertFalse(out['automatic_containment'])
-        self.assertEqual(out['defence_signal']['sudarshana'], 'standby_unapproved_forecast')
+        self.assertEqual(out['defence_signal']['sudarshana'], 'standby_support_unresolved')
+        self.assertFalse(out['defence_signal']['autonomous_action_permitted'])
         self.assertEqual(self.app.policy.active(), [])
 
-    def test_reviewed_arjuna_memory_can_use_existing_scoped_lab_enforcement(self):
+    def test_reviewed_arjuna_memory_is_also_support_gated_in_v94(self):
         first = self.app.forecast(self.graph)['defence_signal']
         self.app.response.approve(first['id'], 'Reviewed lab replay', 'Operator inspected recorded evidence and approved exact snapshot')
         self.app.response.arm('198.51.100.2')
         out = self.app.forecast(self.graph)
         self.assertEqual(out['defence_signal']['route'], 'arjuna')
-        self.assertTrue(out['automatic_containment'])
-        self.assertEqual(out['defence_signal']['target'], '198.51.100.2')
+        self.assertFalse(out['automatic_containment'])
+        self.assertEqual(out['defence_signal']['sudarshana'], 'standby_support_unresolved')
+        self.assertFalse(out['defence_signal']['autonomous_action_permitted'])
+        self.assertEqual(self.app.policy.active(), [])
 
 
 if __name__ == '__main__':
