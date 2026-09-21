@@ -1,0 +1,99 @@
+name: V90 Progression Clean Negative Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v90_progression_clean_negative_gate.py'
+      - '.github/workflows/v90-progression-clean-negative-gate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  v90:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V90
+        run: python -m compileall -q garuda_v3/v87_monotonic_progression_hazard.py garuda_v3/v90_progression_clean_negative_gate.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v90
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v90/XIIoTID.csv'))
+          PY
+      - name: Reproduce immutable V81 freeze
+        run: |
+          mkdir -p garuda_v3/artifacts/v90_progression_clean_negative
+          python -m garuda_v3.v81_remaining_fresh_subtype_freeze \
+            --csv datasets/v90/XIIoTID.csv \
+            --output garuda_v3/artifacts/v90_progression_clean_negative/v81_freeze.json
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v90_progression_clean_negative/v81_freeze.json')
+          digest=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert digest=='820aa7de8925d3d0812e1df3753c9f4a2c7da0f5d45efd3d16456b33e3e7d75f',digest
+          PY
+      - name: Run V90 clean-negative progression gate
+        run: |
+          python -m garuda_v3.v90_progression_clean_negative_gate \
+            --csv datasets/v90/XIIoTID.csv \
+            --freeze garuda_v3/artifacts/v90_progression_clean_negative/v81_freeze.json \
+            --output garuda_v3/artifacts/v90_progression_clean_negative/results \
+            --epochs 18
+      - name: Verify meaningful FPR and leakage contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v90_progression_clean_negative/results/summary.json').read_text())
+          w=d['architecture_selection']['winner']
+          assert d['methodology_fix']['exposed_reserve_used_for_selection'] is False
+          assert d['leakage_contract']['reserve_metrics_used_for_hazard_architecture_selection'] is False
+          assert d['leakage_contract']['clean_negative_calibration_fix'] is True
+          assert w['meaningful_fpr_denominator'] is True,w
+          assert w['minimum_calibration_negatives'] >= 100,w
+          for f in w['folds']:
+              assert f['calibration']['negatives'] >= 100,f
+              assert f['calibration']['fpr'] <= 0.01 + 1e-12,f
+          print(json.dumps({
+            'winner':w,
+            'state_task':d['state_task'],
+            'exposed_diagnostic':d['exposed_diagnostic'],
+            'release_gate':d['release_gate']
+          },indent=2))
+          PY
+      - name: Upload V90 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v90-progression-clean-negative-evidence
+          path: garuda_v3/artifacts/v90_progression_clean_negative/**/*.json
+          if-no-files-found: error
+          retention-days: 30
