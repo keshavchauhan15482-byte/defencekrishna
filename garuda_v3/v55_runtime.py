@@ -247,17 +247,24 @@ class V55Runtime:
         self.model.eval()
 
     def predict(self, X, feature_names, window_seconds=60):
+        # Keep the caller's original precision for the nonlinear ExtraTrees head.
+        # V55 training computed temporal_history_features from the original sequence
+        # matrix (float64 in the research pipeline). Casting the whole input to
+        # float32 here changes a few split decisions near tree thresholds and breaks
+        # exact score/alert parity. The world-model path still uses float32 exactly
+        # as before.
+        raw_X = np.asarray(X)
         if list(feature_names) != self.meta["feature_names"] or int(window_seconds) != 60:
             raise ValueError("V55 requires exact ordered minute-state features")
 
-        X = np.asarray(X, dtype=np.float32)
         if (
-            X.ndim != 3
-            or X.shape[1:] != (HISTORY, len(feature_names))
-            or not len(X)
+            raw_X.ndim != 3
+            or raw_X.shape[1:] != (HISTORY, len(feature_names))
+            or not len(raw_X)
         ):
             raise ValueError("Invalid V55 history shape")
 
+        X = np.asarray(raw_X, dtype=np.float32)
         arrays = self.a
         scaled = X.copy()
         bad = ~np.isfinite(scaled)
@@ -285,7 +292,7 @@ class V55Runtime:
             "transition_energy": np.mean(delta * delta, axis=(1, 2)),
             "nonlinear_temporal_transfer": _forest_predict_proba(
                 arrays,
-                temporal_history_features(X),
+                temporal_history_features(raw_X),
             ),
         }
         evidence = {
