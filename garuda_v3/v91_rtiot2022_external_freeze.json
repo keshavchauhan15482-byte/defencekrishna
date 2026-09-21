@@ -1,0 +1,38 @@
+{
+  "protocol": "V91 sealed second-source RT-IoT2022 external evaluation",
+  "frozen_on": "2026-09-21",
+  "dataset": "RT-IoT2022",
+  "distribution": "Kaggle mirror joebeachcapital/real-time-internet-of-things-rt-iot2022",
+  "source_provenance": "RT-IoT2022 real-time IoT infrastructure; bidirectional network flow features derived from captured traffic; simulated attack scenarios against IoT infrastructure.",
+  "selection_uses_test_metrics": false,
+  "fit_on_rtiot2022": false,
+  "test_scope": "entire RT_IOT2022.csv file discovered by required Attack_type column; no row subsampling based on labels or predictions",
+  "normal_label_rule_frozen_before_scoring": {
+    "normal_patterns": ["MQTT", "Thing_speak", "Wipro_bulb_Dataset"],
+    "normalization": "lowercase alphanumeric only; mqtt/thing_speak/wipro_bulb variants accepted",
+    "all_other documented Attack_type values": "attack"
+  },
+  "model_contract": {
+    "training_source": "UNSW-NB15 raw shards 1-3",
+    "selection_source": "UNSW-NB15 raw shard 4 only",
+    "threshold_rule": "lowest deterministic threshold meeting <=1% empirical benign FPR on UNSW validation",
+    "portable_features_only": [
+      "log_total_bytes",
+      "log_total_packets",
+      "response_byte_ratio",
+      "response_packet_ratio",
+      "tcp_flag",
+      "udp_flag",
+      "icmp_flag",
+      "log_bytes_per_packet"
+    ],
+    "excluded_for_domain_portability": ["IP address", "source port", "destination port", "timestamps", "dataset-specific attack signatures"]
+  },
+  "forbidden_after_freeze": [
+    "fit/refit on RT-IoT2022",
+    "choose feature set/model/hyperparameters/threshold from RT-IoT2022 metrics",
+    "remove hard RT-IoT2022 attack or benign classes after seeing results",
+    "relabel controlled testbed traffic as production-enterprise traffic"
+  ],
+  "claim_boundary": "Independent second-source captured IoT/attack traffic benchmark. Controlled testbed evidence, not production-enterprise validation, not MITRE-stage validation, and not verified pre-compromise forecasting."
+}
