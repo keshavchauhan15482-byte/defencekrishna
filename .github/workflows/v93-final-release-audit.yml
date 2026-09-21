@@ -1,0 +1,70 @@
+name: V93 Final SIH Release Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v93_final_release_audit.py'
+      - '.github/workflows/v93-final-release-audit.yml'
+      - 'RELEASE_EVIDENCE.md'
+      - 'docs/release/FINAL_SIH_EVIDENCE.md'
+      - 'docs/release/v88_final_independent_source/RESULTS.md'
+      - 'docs/release/v90_runtime_performance/RESULTS.md'
+      - 'docs/release/v92_toniot_first_test/RESULTS.md'
+      - 'garuda_v3/v92_toniot_first_test_result_record.json'
+      - 'garuda_v3/active_runtime_bundle.json'
+      - 'garuda_v3/bundle_manifest.py'
+      - 'garuda_v3/inference.py'
+
+permissions:
+  contents: read
+
+jobs:
+  release-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependencies
+        run: python -m pip install 'numpy<2.1'
+      - name: Compile release audit
+        run: python -m compileall -q garuda_v3/v93_final_release_audit.py garuda_v3/inference.py garuda_v3/bundle_manifest.py
+      - name: Run final evidence and runtime integrity audit
+        run: |
+          mkdir -p garuda_v3/artifacts/v93_release_audit
+          python -m garuda_v3.v93_final_release_audit \
+            --output garuda_v3/artifacts/v93_release_audit/summary.json
+      - name: Run Garuda regression suite
+        run: python -m unittest discover -s garuda_v3/tests -v
+      - name: Verify audit contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v93_release_audit/summary.json').read_text())
+          assert d['accuracy_benchmark'] is False
+          assert d['immutable_external_failure_preserved'] is True
+          assert d['authoritative_numbers_consistent'] is True
+          assert d['runtime_bundle_resolved_fail_closed'] is True
+          assert d['claim_boundary_checks_passed'] is True
+          assert d['active_bundle']['automatic_containment'] is False
+          assert d['active_bundle']['measured_compromise_lead_time_seconds'] is None
+          assert d['active_bundle']['explanation_method']=='gradient_x_input'
+          print(json.dumps(d,indent=2))
+          PY
+      - name: Upload final release audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: v93-final-sih-release-audit
+          path: garuda_v3/artifacts/v93_release_audit/summary.json
+          retention-days: 30
+          if-no-files-found: error
