@@ -1,0 +1,78 @@
+name: V91 Runtime Bundle Integrity
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/v67-ps9plus-evidence
+    paths:
+      - 'garuda_v3/bundle_manifest.py'
+      - 'garuda_v3/active_runtime_bundle.json'
+      - 'garuda_v3/integrated_server.py'
+      - 'garuda_v3/legacy_console.py'
+      - 'garuda_v3/tests/test_bundle_manifest.py'
+      - '.github/workflows/v91-runtime-bundle-integrity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-integrity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Compile runtime bundle path
+        run: |
+          python -m compileall -q \
+            garuda_v3/bundle_manifest.py \
+            garuda_v3/inference.py \
+            garuda_v3/integrated_server.py \
+            garuda_v3/legacy_console.py \
+            garuda_v3/tests/test_bundle_manifest.py
+      - name: Fail-closed bundle unit tests
+        run: python -m unittest garuda_v3.tests.test_bundle_manifest -v
+      - name: Verify checked-in active bundle and checkpoint
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from garuda_v3.bundle_manifest import bundle_public_metadata, resolve_active_bundle
+          from garuda_v3.inference import ForecastService
+
+          root=Path('.').resolve()
+          bundle=resolve_active_bundle(root)
+          service=ForecastService(bundle)
+          meta=bundle_public_metadata(root)
+          assert meta['bundle_id']=='residual-run-v15-integrated'
+          assert service.model_hash=='8db8fa90ffdf87cd0f94a5ed752f1e484b6b7d507e745ffd4fa3c9a9ea51bc67'
+          print(json.dumps({
+              'bundle':meta,
+              'resolved_directory':str(bundle.relative_to(root)),
+              'checkpoint_sha256':service.model_hash,
+              'runtime_model':service.meta.get('model'),
+          },indent=2))
+          PY
+      - name: Verify research artifact override is opt-in
+        run: |
+          python - <<'PY'
+          import os
+          from garuda_v3.integrated_server import _select_artifacts
+          try:
+              _select_artifacts('garuda_v3/artifacts/residual_run')
+          except RuntimeError as exc:
+              assert 'disabled' in str(exc)
+          else:
+              raise AssertionError('artifact override unexpectedly enabled')
+          os.environ['GARUDA_ALLOW_ARTIFACT_OVERRIDE']='1'
+          path,meta=_select_artifacts('garuda_v3/artifacts/residual_run')
+          assert meta['override_active'] is True
+          assert path.name=='residual_run'
+          print('override gate: PASS')
+          PY
