@@ -1,0 +1,91 @@
+name: V85b stage specialist ensemble
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v85b_stage_specialist_ensemble.py'
+      - '.github/workflows/v85b-stage-specialist-ensemble.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v85b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile benchmark
+        run: python -m compileall -q garuda_v3/v85_stage_specialist_ensemble.py garuda_v3/v85b_stage_specialist_ensemble.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v85b
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v85b/XIIoTID.csv'))
+          PY
+      - name: Reproduce immutable V81 freeze
+        run: |
+          mkdir -p garuda_v3/artifacts/v85b_stage_specialist
+          python -m garuda_v3.v81_remaining_fresh_subtype_freeze --csv datasets/v85b/XIIoTID.csv --output garuda_v3/artifacts/v85b_stage_specialist/v81_freeze.json
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v85b_stage_specialist/v81_freeze.json')
+          d=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert d=='820aa7de8925d3d0812e1df3753c9f4a2c7da0f5d45efd3d16456b33e3e7d75f',d
+          print(d)
+          PY
+      - name: Run specialist diagnostic
+        run: |
+          python -m garuda_v3.v85b_stage_specialist_ensemble \
+            --csv datasets/v85b/XIIoTID.csv \
+            --freeze garuda_v3/artifacts/v85b_stage_specialist/v81_freeze.json \
+            --output garuda_v3/artifacts/v85b_stage_specialist/results \
+            --epochs 18
+      - name: Verify evidence contract
+        run: |
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v85b_stage_specialist/results/summary.json').read_text())
+          c=d['leakage_contract']
+          for k in ('reserve_metrics_used_for_world_gamma_selection','reserve_metrics_used_for_specialist_selection','reserve_metrics_used_for_threshold_selection','reserve_subtypes_seen_by_world_fit_or_validation','reserve_subtypes_seen_by_stage_mapper_fit','attack_labels_are_world_model_inputs','reused_exposed_reserve_labeled_fresh','pre_compromise_claim'):
+              assert c[k] is False,(k,c[k])
+          assert c['chronological_negative_audit_used'] is True
+          assert d['release_gate']['fresh_claim_allowed'] is False
+          for v in (d['state_task']['forecast_mse'],d['state_task']['persistence_mse'],d['stage_task_exposed_diagnostic']['learned_forecast']['macro_f1_supported_classes'],d['stage_task_exposed_diagnostic']['persistence_state']['macro_f1_supported_classes']):
+              assert math.isfinite(float(v))
+          print(json.dumps({'specialists':d['architecture_selection']['specialist_winners'],'state_task':d['state_task'],'stage_task':d['stage_task_exposed_diagnostic'],'release_gate':d['release_gate']},indent=2))
+          PY
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v85b-stage-specialist-ensemble-evidence
+          path: garuda_v3/artifacts/v85b_stage_specialist/**/*.json
+          if-no-files-found: error
+          retention-days: 30
