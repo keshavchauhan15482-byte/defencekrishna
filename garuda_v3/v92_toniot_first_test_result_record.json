@@ -15,8 +15,12 @@
     "distribution": "Kaggle arnobbhowmik/ton-iot-network-dataset version 1",
     "file": "train_test_network.csv",
     "file_bytes": 29902775,
-    "file_sha256": null,
-    "file_sha256_status": "not printed because the post-score verifier failed before emitting provenance; a provenance-only hash run is permitted but no model refit, threshold change, row filtering, or rescoring may alter this record"
+    "file_sha256": "26ddc513552de36de6428b2e578efaed2b57504c716dfba847cc0109a64e1974",
+    "provenance_only_workflow_run_id": 35565601662,
+    "provenance_only_job_id": 106226674346,
+    "provenance_artifact_id": 10623377732,
+    "provenance_artifact_zip_sha256": "323c8577d63ff3fcbb2cf47e2a8891e141041eab7995ec403ba87bf08a45f3cf",
+    "provenance_scope": "The provenance run loaded no model and performed no prediction, thresholding, tuning, or score-based row selection."
   },
   "external_metrics": {
     "support": 211043,
