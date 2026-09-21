@@ -1,0 +1,119 @@
+name: V85 transition-aware stage robustness
+
+on:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v85_transition_aware_stage.py'
+      - '.github/workflows/v85-transition-aware-stage.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v85:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile V85 benchmark
+        run: |
+          python -m compileall -q \
+            garuda_v3/v81_remaining_fresh_subtype_freeze.py \
+            garuda_v3/v84_stage_progression_robustness.py \
+            garuda_v3/v85_transition_aware_stage.py
+      - name: Download X-IIoTID
+        run: |
+          mkdir -p datasets/v85
+          python - <<'PY'
+          import shutil
+          from pathlib import Path
+          import pandas as pd, kagglehub
+          root=Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches=[]
+          for p in root.rglob('*.csv'):
+              try: cols=pd.read_csv(p,nrows=0).columns
+              except Exception: continue
+              n={''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1','class2','class3'}<=n: matches.append(p)
+          if len(matches)!=1: raise RuntimeError(f'Expected one X-IIoTID source, got {matches}')
+          shutil.copyfile(matches[0],Path('datasets/v85/XIIoTID.csv'))
+          PY
+      - name: Reproduce immutable V81 freeze
+        run: |
+          mkdir -p garuda_v3/artifacts/v85_transition_stage
+          python -m garuda_v3.v81_remaining_fresh_subtype_freeze \
+            --csv datasets/v85/XIIoTID.csv \
+            --output garuda_v3/artifacts/v85_transition_stage/v81_freeze.json
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/v85_transition_stage/v81_freeze.json')
+          digest=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert digest=='820aa7de8925d3d0812e1df3753c9f4a2c7da0f5d45efd3d16456b33e3e7d75f',digest
+          print('V81_FREEZE_SHA256',digest)
+          PY
+      - name: Run V85 transition-aware diagnostic
+        run: |
+          python -m garuda_v3.v85_transition_aware_stage \
+            --csv datasets/v85/XIIoTID.csv \
+            --freeze garuda_v3/artifacts/v85_transition_stage/v81_freeze.json \
+            --output garuda_v3/artifacts/v85_transition_stage/results \
+            --epochs 18
+      - name: Verify leakage and evidence contract
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v85_transition_stage/results/summary.json').read_text())
+          c=d['leakage_contract']
+          assert c['reserve_metrics_used_for_world_gamma_selection'] is False
+          assert c['reserve_metrics_used_for_stage_alpha_selection'] is False
+          assert c['reserve_metrics_used_for_transition_beta_selection'] is False
+          assert c['reserve_metrics_used_for_head_or_view_selection'] is False
+          assert c['reserve_metrics_used_for_temperature_selection'] is False
+          assert c['reserve_subtypes_seen_by_world_fit_or_validation'] is False
+          assert c['reserve_subtypes_seen_by_stage_mapper_fit'] is False
+          assert c['attack_labels_are_world_model_inputs'] is False
+          assert c['current_stage_labels_used_at_inference'] is False
+          assert c['reused_exposed_reserve_labeled_fresh'] is False
+          assert c['pre_compromise_claim'] is False
+          assert d['architecture_selection']['selection_uses_exposed_reserve_metrics'] is False
+          assert d['release_gate']['fresh_claim_allowed'] is False
+          for v in [
+              d['state_task']['forecast_mse'],
+              d['state_task']['persistence_mse'],
+              d['stage_task_exposed_diagnostic']['learned_forecast']['macro_f1_supported_classes'],
+              d['stage_task_exposed_diagnostic']['persistence_state']['macro_f1_supported_classes'],
+              d['stage_task_exposed_diagnostic']['probability_quality_learned']['multiclass_brier'],
+              d['stage_task_exposed_diagnostic']['probability_quality_learned']['ece_10bin'],
+          ]: assert math.isfinite(float(v)),v
+          print(json.dumps({
+              'winner':d['architecture_selection']['winner'],
+              'state_task':d['state_task'],
+              'stage_macro_f1':d['stage_task_exposed_diagnostic']['learned_forecast']['macro_f1_supported_classes'],
+              'persistence_macro_f1':d['stage_task_exposed_diagnostic']['persistence_state']['macro_f1_supported_classes'],
+              'probability_quality':d['stage_task_exposed_diagnostic']['probability_quality_learned'],
+              'release_gate':d['release_gate'],
+          },indent=2))
+          PY
+      - name: Upload V85 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v85-transition-aware-stage-evidence
+          path: garuda_v3/artifacts/v85_transition_stage/**/*.json
+          if-no-files-found: error
+          retention-days: 30
