@@ -1,0 +1,80 @@
+name: V92 ToN-IoT Provenance Only
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/v67-ps9plus-evidence]
+    paths:
+      - 'garuda_v3/v92_toniot_first_test_result_record.json'
+      - '.github/workflows/v92-toniot-provenance-only.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  provenance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install provenance dependencies
+        run: python -m pip install 'pandas<2.3' 'kagglehub<0.4'
+      - name: Verify immutable first-test record
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/v92_toniot_first_test_result_record.json').read_text())
+          assert d['authoritative_workflow_run_id']==35565341184
+          assert d['external_gate']['passed'] is False
+          assert d['external_metrics']['tp']==691
+          assert d['external_metrics']['fn']==160352
+          assert d['external_metrics']['fp']==18944
+          assert d['external_metrics']['tn']==31056
+          print('immutable result verified')
+          PY
+      - name: Download exact source for provenance only
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          import kagglehub,pandas as pd
+          root=Path(kagglehub.dataset_download('arnobbhowmik/ton-iot-network-dataset'))
+          hits=[p for p in root.rglob('*.csv') if p.name.lower()=='train_test_network.csv']
+          if len(hits)!=1: raise RuntimeError(f'Expected one train_test_network.csv, got {hits}')
+          p=hits[0]
+          h=hashlib.sha256()
+          with p.open('rb') as f:
+              for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+          df=pd.read_csv(p,usecols=lambda c: str(c).strip().lower() in {'label','type'},low_memory=False)
+          cols={str(c).strip().lower():c for c in df.columns}
+          if 'label' not in cols: raise RuntimeError(f'label missing: {list(df.columns)}')
+          y=pd.to_numeric(df[cols['label']],errors='coerce').fillna(0).astype(int).clip(0,1)
+          out={
+            'dataset':'ToN-IoT Network Dataset',
+            'distribution':'Kaggle arnobbhowmik/ton-iot-network-dataset version 1',
+            'file':p.name,
+            'bytes':p.stat().st_size,
+            'sha256':h.hexdigest(),
+            'rows':int(len(y)),
+            'positives':int(y.sum()),
+            'negatives':int((y==0).sum()),
+            'operation_scope':'provenance-only: no model loading, no prediction, no thresholding, no row selection based on scores'
+          }
+          if 'type' in cols:
+              out['type_counts']={str(k):int(v) for k,v in df[cols['type']].astype(str).value_counts().to_dict().items()}
+          q=Path('garuda_v3/artifacts/v92_toniot_provenance.json')
+          q.parent.mkdir(parents=True,exist_ok=True)
+          q.write_text(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          PY
+      - name: Upload provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: v92-toniot-provenance-only
+          path: garuda_v3/artifacts/v92_toniot_provenance.json
+          retention-days: 30
+          if-no-files-found: error
