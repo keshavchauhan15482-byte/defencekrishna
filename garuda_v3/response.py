@@ -54,6 +54,9 @@ class ResponseCoordinator:
                      enforcement_confirmation='pending_proxy_observation')
     def observe(self,forecast,graph):
         fingerprint=hashlib.sha256(json.dumps({k:graph[k] for k in ('x','adj','mask','times')},sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+        support=forecast.get('runtime_support') or {}
+        support_enforced=bool(support.get('enforcement_active',False))
+        support_permits=not support_enforced or bool(support.get('autonomous_action_permitted',False))
         with self.policy.lock:
             match=self.policy.db.execute('SELECT attack_type FROM threat_memory WHERE fingerprint=?',(fingerprint,)).fetchone()
             alert=bool(forecast['alert']);route='arjuna' if match else 'krishna' if alert else 'garuda'
@@ -63,8 +66,13 @@ class ResponseCoordinator:
                 forecast_alert=alert,source=forecast.get('data_source'),model_sha256=forecast['model_sha256'],
                 review_status='approved_match' if match else 'pending' if alert else 'not_requested',
                 features=forecast.get('explanation',{}).get('feature_attributions',[])[:5],sudarshana='standby',
-                unknown_forecast_autonomous_containment_approved=self.unknown_auto_approved)
-            if match:
+                unknown_forecast_autonomous_containment_approved=self.unknown_auto_approved,
+                runtime_support_status=support.get('status','LEGACY_NOT_ENFORCED'),runtime_support_enforced=support_enforced,
+                autonomous_action_permitted=bool(support_permits and (bool(match) or (alert and self.unknown_auto_approved))))
+            if not support_permits:
+                event['sudarshana']='standby_support_unresolved'
+                event['containment_gate']='V94 runtime support gate is fail-closed: advisory forecast only; autonomous Arjuna/Krishna/Sudarshana action suppressed.'
+            elif match:
                 # Arjuna exact reviewed memory is separate from unknown-forecast authority.
                 self._contain(event)
             elif alert and self.unknown_auto_approved:
@@ -72,7 +80,7 @@ class ResponseCoordinator:
             elif alert:
                 event['sudarshana']='standby_unapproved_forecast'
                 event['containment_gate']='Garuda forecast remains shadow-only until evidence gate approves autonomous unknown containment'
-            self.policy.event('defence_signal',dict(id=event['id'],route=route,fingerprint=fingerprint,sudarshana=event['sudarshana']))
+            self.policy.event('defence_signal',dict(id=event['id'],route=route,fingerprint=fingerprint,sudarshana=event['sudarshana'],runtime_support_status=event['runtime_support_status']))
             self._save(event)
             return event
     def approve(self,event_id,attack_type,evidence):
