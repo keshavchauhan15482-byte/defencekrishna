@@ -1,0 +1,65 @@
+{
+  "record_type": "immutable_first_external_result",
+  "protocol": "V92 first untouched ToN-IoT external one-shot transfer",
+  "authoritative_workflow_run_id": 35565341184,
+  "authoritative_job_id": 106225927963,
+  "workflow_head_sha": "e117257a69c571e10ff84f8bc5b9636848fb9882",
+  "freeze_sha256": "2705c9fa983c2965caf668d3a410f171fadf814dea11feecccb5c1afc9e8bd39",
+  "pretest_model_selection_sha256": "51e5cc583035a2d1d165568570021fef49ef88f87a4da9120e0ccd1bdd6e30b5",
+  "selected_model_sha256": "f6de446f2efde495fffacbe93d4935e2cdd32b3b50ced632bc9f21b53066ba31",
+  "selected_feature_view": "portable8",
+  "selected_model": "histgb",
+  "fixed_threshold": 0.9800361930626691,
+  "external_source": {
+    "dataset": "ToN-IoT Network Dataset",
+    "distribution": "Kaggle arnobbhowmik/ton-iot-network-dataset version 1",
+    "file": "train_test_network.csv",
+    "file_bytes": 29902775,
+    "file_sha256": null,
+    "file_sha256_status": "not printed because the post-score verifier failed before emitting provenance; a provenance-only hash run is permitted but no model refit, threshold change, row filtering, or rescoring may alter this record"
+  },
+  "external_metrics": {
+    "support": 211043,
+    "positives": 161043,
+    "negatives": 50000,
+    "tp": 691,
+    "fn": 160352,
+    "fp": 18944,
+    "tn": 31056,
+    "threshold": 0.9800361930626691,
+    "recall": 0.004290779481256559,
+    "fpr": 0.37888,
+    "precision": 0.035192258721670484,
+    "f1": 0.007648966669987492,
+    "pr_auc": 0.6807695331238012,
+    "roc_auc": 0.3284143307688009
+  },
+  "external_gate": {
+    "recall_at_least_80pct": false,
+    "fpr_at_most_1pct": false,
+    "passed": false
+  },
+  "per_type": {
+    "backdoor": {"support": 20000, "recall_if_attack": 0.00025},
+    "ddos": {"support": 20000, "recall_if_attack": 0.00035},
+    "dos": {"support": 20000, "recall_if_attack": 0.00015},
+    "injection": {"support": 20000, "recall_if_attack": 0.0006},
+    "mitm": {"support": 1043, "recall_if_attack": 0.02588686481303931},
+    "normal": {"support": 50000, "fpr_if_benign": 0.37888},
+    "password": {"support": 20000, "recall_if_attack": 0.03145},
+    "ransomware": {"support": 20000, "recall_if_attack": 0.0},
+    "scanning": {"support": 20000, "recall_if_attack": 0.0003},
+    "xss": {"support": 20000, "recall_if_attack": 0.0001}
+  },
+  "no_test_tuning_contract": {
+    "freeze_committed_before_test_access": true,
+    "pretest_model_manifest_written_before_test_read": true,
+    "test_metrics_used_for_features": false,
+    "test_metrics_used_for_model_selection": false,
+    "test_metrics_used_for_threshold_selection": false,
+    "test_rows_removed_after_predictions": false,
+    "model_refit_after_test_read": false
+  },
+  "workflow_verifier_note": "The score command completed. The following verifier failed only because it asserted all(contract.values()), although several no-test-use contract fields are intentionally false. This verifier bug does not change the first-test metrics above.",
+  "claim_boundary": "This is a genuine first untouched cross-domain public cyber-range transfer failure. It must not be retuned and relabeled as fresh. ToN-IoT may only become an exposed development source after this immutable result is preserved."
+}
