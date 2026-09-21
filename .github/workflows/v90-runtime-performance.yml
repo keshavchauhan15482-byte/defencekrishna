@@ -1,0 +1,68 @@
+name: V90 Live Runtime Performance
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/v67-ps9plus-evidence
+    paths:
+      - 'garuda_v3/v90_runtime_performance.py'
+      - '.github/workflows/v90-runtime-performance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  v90:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Compile V90
+        run: python -m compileall -q garuda_v3/v90_runtime_performance.py garuda_v3/inference.py
+      - name: Run live-compatible runtime benchmark
+        run: |
+          python -m garuda_v3.v90_runtime_performance \
+            --artifacts garuda_v3/artifacts/residual_run \
+            --output garuda_v3/artifacts/v90_runtime_performance \
+            --forecast-repeats 300 \
+            --explain-repeats 60
+      - name: Verify measured output
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v90_runtime_performance/summary.json').read_text())
+          assert d['measurement_contract']['forecast_only_excludes_explanation'] is True
+          assert d['measurement_contract']['http_transport_overhead_included'] is False
+          assert len(d['scenarios']) >= 1
+          for s in d['scenarios']:
+              for mode in ('forecast_only','with_gradient_x_input_explanation'):
+                  m=s[mode]
+                  assert m['n'] >= 50
+                  for k in ('mean_ms','p50_ms','p95_ms','p99_ms','single_thread_throughput_per_second_from_mean'):
+                      assert math.isfinite(float(m[k])) and float(m[k]) > 0,(s['scenario'],mode,k,m[k])
+          print(json.dumps({
+              'checkpoint_sha256':d['checkpoint_sha256'],
+              'service_initialization_ms':d['service_initialization_ms'],
+              'max_process_rss_mib_after_benchmark':d['max_process_rss_mib_after_benchmark'],
+              'scenarios':d['scenarios'],
+          },indent=2))
+          PY
+      - name: Upload V90 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v90-live-runtime-performance-evidence
+          path: garuda_v3/artifacts/v90_runtime_performance/summary.json
+          if-no-files-found: error
+          retention-days: 30
