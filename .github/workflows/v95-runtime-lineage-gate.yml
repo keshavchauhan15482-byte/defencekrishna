@@ -1,0 +1,48 @@
+name: V95 runtime lineage evidence gate
+
+on:
+  push:
+    branches:
+      - feat/v67-ps9plus-evidence
+    paths:
+      - 'garuda_v3/v95_runtime_lineage_gate.py'
+      - 'garuda_v3/tests/test_v95_runtime_lineage_gate.py'
+      - 'garuda_v3/artifacts/certification/v95/runtime_lineage_manifest.json'
+      - 'garuda_v3/active_runtime_bundle.json'
+      - 'garuda_v3/artifacts/residual_run/metrics.json'
+      - 'garuda_v3/artifacts/residual_run/support_gate.json'
+      - '.github/workflows/v95-runtime-lineage-gate.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-lineage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run V95 verifier tests
+        run: python -m unittest garuda_v3.tests.test_v95_runtime_lineage_gate
+      - name: Materialize real V95 status
+        run: |
+          python -m garuda_v3.v95_runtime_lineage_gate --output garuda_v3/artifacts/certification/v95/runtime_lineage_report.json
+          cat garuda_v3/artifacts/certification/v95/runtime_lineage_report.json
+      - name: Enforce fail-closed runtime contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path('garuda_v3/artifacts/certification/v95/runtime_lineage_report.json').read_text())
+          if report['status'] not in {'PASS', 'SHADOW_UNRESOLVED'}:
+              raise SystemExit(f"Unexpected V95 status: {report['status']}")
+          if report['status'] == 'SHADOW_UNRESOLVED' and report['certified_for_autonomous_forecast_response']:
+              raise SystemExit('Fail-closed contract violated: unresolved evidence cannot certify autonomous response')
+          print('V95 status:', report['status'])
+          print('Reasons:', *report['reasons'], sep='\n- ')
+          PY
+      - name: Upload V95 audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: v95-runtime-lineage-report
+          path: garuda_v3/artifacts/certification/v95/runtime_lineage_report.json
