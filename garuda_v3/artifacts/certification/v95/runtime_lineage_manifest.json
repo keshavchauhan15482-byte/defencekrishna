@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "status": "SHADOW_UNRESOLVED",
+  "runtime_bundle_manifest": "garuda_v3/active_runtime_bundle.json",
+  "metrics": "garuda_v3/artifacts/residual_run/metrics.json",
+  "verified_evidence": {
+    "active_runtime_bundle_id": "residual-run-v15-integrated",
+    "active_runtime_model_lineage": "directed_graphsage_lstm_autoregressive",
+    "metrics_git_blob_sha1_pinned_by_active_bundle": "b299b5664f090305a610fb037a0ab9442d838834",
+    "ordered_split_counts_interpreted_as_train_validation_test": {
+      "train": 456,
+      "validation": 158,
+      "test": 160
+    },
+    "evaluation_scope": "development_reused_holdout",
+    "metrics_selection_statement": "validation loss checkpoint; validation F1 thresholds; test not used for checkpoint selection",
+    "support_gate_algorithm_source": "garuda_v3/support_gate.py",
+    "support_gate_algorithm_contract": "center/scale computed from train_x; threshold is validation support-score 99th percentile"
+  },
+  "split_identities": null,
+  "fit_provenance": {
+    "support_statistics_fit_splits": null,
+    "support_threshold_selection_splits": null,
+    "support_gate_artifact": null
+  },
+  "missing_for_pass": [
+    "Concrete identities for all 456 train, 158 validation and 160 test examples, with pairwise-disjoint proof",
+    "Artifact-backed proof that the fitted runtime support statistics used train only",
+    "Artifact-backed proof that the fitted runtime support threshold used validation only",
+    "Integrity-pinned garuda_v3/artifacts/residual_run/support_gate.json in active_runtime_bundle.json",
+    "Explicit fitted-artifact provenance proving test and replay were excluded from support fitting/calibration"
+  ],
+  "claim_boundary": "This manifest deliberately preserves SHADOW_UNRESOLVED. Code-level fitting logic is not treated as proof that a fitted gate was produced for the active runtime. The existing 456/158/160 evaluation is development_reused_holdout, not a fresh untouched external claim."
+}
