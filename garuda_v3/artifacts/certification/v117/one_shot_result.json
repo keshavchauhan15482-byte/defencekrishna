@@ -1,0 +1,90 @@
+{
+  "schema_version": "v117.1",
+  "status": "FAIL",
+  "gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "requires_raw_model_mse_strictly_less_than_raw_persistence_mse": true,
+    "requires_raw_improvement_strictly_greater_than_zero": true,
+    "total_sequences_gate_passed": true,
+    "support_gate_passed": true,
+    "persistence_gate_passed": false,
+    "positive_improvement_gate_passed": false,
+    "all_gates_passed": false
+  },
+  "dataset": {
+    "name": "Kitsune Network Attack",
+    "scenario": "Mirai botnet demo capture",
+    "publisher_repository": "ymirsky/Kitsune-py",
+    "publisher_commit_sha": "7c8ea51e89268d9a20399dca4bf32d663e638eb4",
+    "archive_sha256": "c753fa53fa1f252df27ca493f6ad59d98529bb28f25f049571b92a58daa9ddd6",
+    "pcap_member": "mirai.pcap",
+    "pcap_sha256": "da69165a7b47353de854e82b3e8c88741383bf94099db2aeaac35d27c7c921fe",
+    "pcap_bytes": 62859800,
+    "labels_accessed": false
+  },
+  "frozen_runtime": {
+    "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "support_gate_sha256": "8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "raw_schema": "garuda-observed-graph-v46-ps-complete",
+    "model_schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
+    "feature_count": 34,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "max_nodes": 32,
+    "adapter_mode": "V112 tolerant packet decoder -> 34-feature PS-complete graph -> V116 history-relative transform"
+  },
+  "capture_processing": {
+    "decoded_ipv4_packets": 197701,
+    "packet_limit": 2000000,
+    "observed_windows": 714,
+    "contiguous_sequences": 703,
+    "first_window_epoch": 1540446380,
+    "last_window_epoch": 1540453510,
+    "cutoff_timestamps_sha256": "d9922b4b76e490c44b3ba9ec9de8f396d1ae6a5890806ff67bac5fb85003b927",
+    "packet_features_present_mean_on_observed_nodes": 1.0,
+    "parser_audit": {
+      "decoded_ipv4": 197701,
+      "full_tcp": 51152,
+      "full_udp": 102938,
+      "degraded_short_ip_options": 0,
+      "degraded_short_tcp": 0,
+      "degraded_short_udp": 0,
+      "nonfirst_fragment": 0,
+      "other_protocol": 43611,
+      "skipped_truncated_ethernet": 0,
+      "skipped_truncated_vlan": 0,
+      "skipped_truncated_ipv4_header": 0,
+      "non_ipv4": 566436
+    }
+  },
+  "state_forecasting": {
+    "metric": "raw reconstructed pooled-state MSE",
+    "model_mse": 0.005483680263342732,
+    "persistence_mse": 0.0037248451810134703,
+    "improvement_vs_persistence": -0.47219011713413295,
+    "beats_persistence": false
+  },
+  "runtime_support": {
+    "method": "max robust standardized history-summary deviation",
+    "threshold": 29.1337654691185,
+    "supported_sequences": 671,
+    "total_sequences": 703,
+    "supported_fraction": 0.9544807965860598,
+    "median_score": 23.95833188202229,
+    "max_score": 82.5892943722597,
+    "interpretation": "training-support diagnostic only; outside support is not attack/OOD detection"
+  },
+  "one_shot_integrity": {
+    "runs_allowed_for_claim": 1,
+    "retrained_on_external": false,
+    "transform_fit_on_external": false,
+    "support_fit_on_external": false,
+    "threshold_fit_on_external": false,
+    "labels_accessed": false,
+    "rerun_for_claim_improvement": false
+  },
+  "claim_boundary": "Fresh publisher-independent external state-transition forecasting only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is made."
+}
