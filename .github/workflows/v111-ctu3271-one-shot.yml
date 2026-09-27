@@ -1,0 +1,91 @@
+name: V111 CTU 327-1 frozen one-shot
+
+on:
+  push:
+    branches: [feat/v111-ctu3271-fresh-one-shot]
+    paths:
+      - 'garuda_v3/v111_ctu3271_one_shot.py'
+      - '.github/workflows/v111-ctu3271-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify armed immutable preregistration
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v111/preregistration.json').read_text())
+          a=json.loads(Path('garuda_v3/artifacts/certification/v111/acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED'
+          assert p['evaluation_permitted'] is True
+          assert a['status']=='HASH_FROZEN_NO_DECODE'
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          assert p['external_holdout']['sha256']==a['sha256']=='cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3'
+          assert p['external_holdout']['bytes']==a['bytes']==206480954
+          assert not Path('garuda_v3/artifacts/certification/v111/one_shot_result.json').exists()
+          PY
+      - name: Download exact hash-frozen capture
+        run: |
+          mkdir -p /tmp/v111
+          URL='https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-1/capture_win11.pcap'
+          curl --fail --location --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 1200 "$URL" -o /tmp/v111/capture_win11.pcap
+          echo 'cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3  /tmp/v111/capture_win11.pcap' | sha256sum -c -
+      - name: Run frozen one-shot exactly once
+        run: |
+          python -m garuda_v3.v111_ctu3271_one_shot \
+            --pcap /tmp/v111/capture_win11.pcap \
+            --model garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v108/support_gate.json \
+            --prereg garuda_v3/artifacts/certification/v111/preregistration.json \
+            --acquisition garuda_v3/artifacts/certification/v111/acquisition_manifest.json \
+            --output garuda_v3/artifacts/certification/v111/one_shot_result.json
+      - name: Record immutable PASS or FAIL result
+        if: success()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v111/one_shot_result.json').read_text())
+          assert r['schema_version']=='v111.1'
+          assert r['status'] in {'PASS','FAIL'}
+          assert r['dataset']['sha256']=='cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3'
+          assert r['one_shot_integrity']['rerun_for_claim_improvement'] is False
+          print(json.dumps({'status':r['status'],'state_forecasting':r['state_forecasting'],'runtime_support':r['runtime_support'],'gate':r['gate']},indent=2))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v111/one_shot_result.json
+          git commit -m 'evidence(v111): record immutable CTU 327-1 one-shot result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload immutable evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v111-ctu3271-one-shot-evidence
+          path: |
+            garuda_v3/artifacts/certification/v111/selection_freeze.json
+            garuda_v3/artifacts/certification/v111/acquisition_manifest.json
+            garuda_v3/artifacts/certification/v111/preregistration.json
+            garuda_v3/artifacts/certification/v111/one_shot_result.json
+          if-no-files-found: warn
+          retention-days: 30
