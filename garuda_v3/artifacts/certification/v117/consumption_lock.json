@@ -1,0 +1,12 @@
+{
+  "schema_version": "v117-lock.1",
+  "status": "CONSUMED_FOR_SINGLE_CLAIM_RUN",
+  "packet_decode_had_occurred_before_lock": false,
+  "model_inference_had_occurred_before_lock": false,
+  "result_improving_rerun_permitted": false,
+  "capture_sha256": "da69165a7b47353de854e82b3e8c88741383bf94099db2aeaac35d27c7c921fe",
+  "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+  "support_gate_sha256": "8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5",
+  "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+  "runner_git_blob_sha1": "5a1db6aa62a19a60fec3380a068a29ecc9413c10"
+}
