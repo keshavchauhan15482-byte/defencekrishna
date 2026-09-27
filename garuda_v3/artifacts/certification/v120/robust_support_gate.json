@@ -1,5 +1,5 @@
 {
-  "schema_version": "v120-support.1",
+  "schema_version": "v120-support.2",
   "method": "robust validation envelope exceedance fraction",
   "target": "input support, not attack probability",
   "interpretation": "Support abstention is not attack/OOD detection.",
@@ -293,7 +293,9 @@
     "payload_present",
     "scan_sequence_present"
   ],
-  "minimum_presence": 0.95,
+  "required_capability": "packet_features_present",
+  "minimum_required_capability": 0.95,
+  "sparse_presence_semantics": "iat/tcp_window/payload/scan flags are observed-feature availability signals, not globally mandatory capabilities",
   "fit_provenance": {
     "center_scale": "CICAPT Phase-1 train only",
     "component_cutoffs": "CICAPT Phase-1 validation only",

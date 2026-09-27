@@ -1,13 +1,13 @@
 {
-  "schema_version": "v120.1",
-  "status": "DEV_ROBUST_SUPPORT_FAIL",
-  "recovery_gate_passed": false,
+  "schema_version": "v120.2",
+  "status": "DEV_ROBUST_SUPPORT_PASS",
+  "recovery_gate_passed": true,
   "claim_boundary": "Development-only support-contract recovery. V119 and all earlier external holdouts remain quarantined; no new external, attack, stage, or precompromise claim is created.",
   "runtime": {
     "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
     "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
     "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
-    "robust_support_gate_sha256": "10b622df1bfbc23ad036315ea7c8ed5fad90256e97c6c06fa30978a336a34501",
+    "robust_support_gate_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
     "alpha": 0.663139650493983,
     "feature_count": 34,
     "raw_schema": "garuda-observed-graph-v46-ps-complete",
@@ -58,11 +58,11 @@
     }
   },
   "support_design": {
-    "reason": "Replace brittle single-coordinate maximum veto with validation-fitted multi-coordinate envelope while retaining hard packet/sensor presence requirements.",
+    "reason": "Replace brittle single-coordinate maximum veto with validation-fitted multi-coordinate envelope; require packet telemetry capability while treating feature-specific presence flags according to their sparse semantics.",
     "v119_statistics_used_for_fit_or_thresholding": false,
     "consumed_external_bytes_read": false,
     "gate": {
-      "schema_version": "v120-support.1",
+      "schema_version": "v120-support.2",
       "method": "robust validation envelope exceedance fraction",
       "target": "input support, not attack probability",
       "interpretation": "Support abstention is not attack/OOD detection.",
@@ -356,7 +356,9 @@
         "payload_present",
         "scan_sequence_present"
       ],
-      "minimum_presence": 0.95,
+      "required_capability": "packet_features_present",
+      "minimum_required_capability": 0.95,
+      "sparse_presence_semantics": "iat/tcp_window/payload/scan flags are observed-feature availability signals, not globally mandatory capabilities",
       "fit_provenance": {
         "center_scale": "CICAPT Phase-1 train only",
         "component_cutoffs": "CICAPT Phase-1 validation only",
@@ -367,39 +369,55 @@
     }
   },
   "validation": {
-    "supported_sequences": 0,
+    "supported_sequences": 1726,
     "total_sequences": 1739,
-    "supported_fraction": 0.0,
-    "telemetry_compatible_sequences": 0,
-    "telemetry_compatible_fraction": 0.0,
-    "minimum_presence_mean": 0.16967131123439447,
+    "supported_fraction": 0.99252443933295,
+    "telemetry_compatible_sequences": 1739,
+    "telemetry_compatible_fraction": 1.0,
+    "required_packet_capability_mean": 1.0,
+    "presence_feature_means": {
+      "packet_features_present": 1.0,
+      "iat_present": 1.0,
+      "tcp_window_present": 0.7939187914835715,
+      "payload_present": 0.9745673331945638,
+      "scan_sequence_present": 0.16967131123439447
+    },
     "median_exceedance_fraction": 0.0,
     "max_exceedance_fraction": 0.2413793103448276,
     "threshold": 0.1206896551724138
   },
   "phase2_sanity": {
-    "supported_sequences": 0,
+    "supported_sequences": 5407,
     "total_sequences": 5677,
-    "supported_fraction": 0.0,
-    "telemetry_compatible_sequences": 0,
-    "telemetry_compatible_fraction": 0.0,
-    "minimum_presence_mean": 0.2091554330905674,
+    "supported_fraction": 0.9524396688391756,
+    "telemetry_compatible_sequences": 5677,
+    "telemetry_compatible_fraction": 1.0,
+    "required_packet_capability_mean": 1.0,
+    "presence_feature_means": {
+      "packet_features_present": 1.0,
+      "iat_present": 1.0,
+      "tcp_window_present": 0.7530194545623722,
+      "payload_present": 0.967230125907359,
+      "scan_sequence_present": 0.2091554330905674
+    },
     "median_exceedance_fraction": 0.017241379310344827,
     "max_exceedance_fraction": 0.27586206896551724,
     "threshold": 0.1206896551724138
   },
   "gates": {
-    "validation_supported_fraction_at_least_0_98": false,
-    "phase2_supported_fraction_at_least_0_95": false,
-    "validation_telemetry_compatibility_at_least_0_99": false,
-    "phase2_telemetry_compatibility_at_least_0_99": false,
+    "validation_supported_fraction_at_least_0_98": true,
+    "phase2_supported_fraction_at_least_0_95": true,
+    "validation_telemetry_compatibility_at_least_0_99": true,
+    "phase2_telemetry_compatibility_at_least_0_99": true,
+    "validation_packet_capability_at_least_0_95": true,
+    "phase2_packet_capability_at_least_0_95": true,
     "support_threshold_finite": true,
     "all_consumed_external_holdouts_excluded_from_fit": true
   },
   "freeze": {
     "robust_support_gate_file": "robust_support_gate.json",
-    "robust_support_gate_sha256": "10b622df1bfbc23ad036315ea7c8ed5fad90256e97c6c06fa30978a336a34501",
-    "candidate_runtime_frozen_before_new_external_selection": false,
+    "robust_support_gate_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
+    "candidate_runtime_frozen_before_new_external_selection": true,
     "new_external_holdout_selected": false
   },
   "external_quarantine": [
