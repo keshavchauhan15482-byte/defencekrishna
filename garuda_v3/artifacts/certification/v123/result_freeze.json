@@ -1,0 +1,10 @@
+{
+  "schema_version": "v123-freeze.1",
+  "status": "IMMUTABLE_EXTERNAL_PASS_RECORDED",
+  "one_shot_result_commit": "f6c9fd8a5c72e9b8c787810cda2b15747b62360e",
+  "one_shot_result_file": "garuda_v3/artifacts/certification/v123/one_shot_result.json",
+  "result_status": "PASS",
+  "rerun_for_claim_improvement_permitted": false,
+  "workflow_rerun_disabled_after_result": true,
+  "claim_boundary": "Publisher-independent external state-transition forecasting only; no attack recall/FPR, MITRE-stage, or successful-compromise warning claim."
+}
