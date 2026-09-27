@@ -1,0 +1,155 @@
+name: V119 AI4CYBER frozen one-shot
+
+on:
+  push:
+    branches: [feat/v119-ai4cyber-one-shot]
+    paths:
+      - '.github/workflows/v119-ai4cyber-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install runtime dependency
+        run: python -m pip install --quiet numpy
+      - name: Verify frozen preregistration and evaluator identity
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v119/preregistration.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED'
+          assert p['evaluation_permitted'] is True
+          assert p['acquisition']['packet_decode_permitted'] is True
+          assert p['acquisition']['model_inference_permitted'] is True
+          reg=p['registered_candidate']
+          blob=subprocess.check_output(['git','hash-object',reg['evaluator_file']],text=True).strip()
+          assert blob==reg['evaluator_git_blob_sha1'], (blob,reg['evaluator_git_blob_sha1'])
+          assert not Path('garuda_v3/artifacts/certification/v119/one_shot_result.json').exists()
+          print('V119 frozen prereg/evaluator identity: PASS')
+          PY
+      - name: Reacquire exact frozen archive without packet decode
+        run: |
+          python - <<'PY'
+          import hashlib, json, urllib.request, zipfile
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v119')
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          e=p['external_holdout']
+          archive=Path('/tmp/v119-ai4cyber.zip')
+          req=urllib.request.Request(e['source_url'],headers={'User-Agent':'Mozilla/5.0 Garuda-V119/1.0'})
+          with urllib.request.urlopen(req,timeout=120) as src, archive.open('wb') as dst:
+              while True:
+                  block=src.read(1024*1024)
+                  if not block: break
+                  dst.write(block)
+          data=archive.read_bytes()
+          assert len(data)==int(e['archive_bytes'])
+          assert hashlib.md5(data).hexdigest()==e['archive_md5']==e['archive_expected_md5']
+          assert hashlib.sha256(data).hexdigest()==e['archive_sha256']==a['archive_sha256']
+          with zipfile.ZipFile(archive) as z:
+              info=z.getinfo(e['pcap_member'])
+              assert int(info.file_size)==int(e['pcap_bytes'])
+          print('Exact frozen archive/member metadata reacquired; no packet decode performed')
+          PY
+      - name: Commit irreversible pre-decode one-shot lock
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v119')
+          if (root/'one_shot_lock.json').exists():
+              raise SystemExit('V119 one-shot lock already exists; rerun forbidden')
+          p=json.loads((root/'preregistration.json').read_text())
+          lock={
+              'schema_version':'v119-lock.1',
+              'status':'CONSUMED_PRE_DECODE_LOCK',
+              'github_run_id':os.environ.get('GITHUB_RUN_ID'),
+              'github_run_attempt':os.environ.get('GITHUB_RUN_ATTEMPT'),
+              'workflow_head_sha':os.environ.get('GITHUB_SHA'),
+              'archive_sha256':p['external_holdout']['archive_sha256'],
+              'pcap_member':p['external_holdout']['pcap_member'],
+              'pcap_sha256':p['external_holdout']['pcap_sha256'],
+              'packet_decode_performed_before_lock':False,
+              'model_inference_performed_before_lock':False,
+              'rerun_for_claim_improvement_permitted':False
+          }
+          (root/'one_shot_lock.json').write_text(json.dumps(lock,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v119/one_shot_lock.json
+          git commit -m 'evidence(v119): consume AI4CYBER holdout before packet decode'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Extract exact selected PCAP after lock
+        run: |
+          python - <<'PY'
+          import hashlib, json, zipfile
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v119')
+          p=json.loads((root/'preregistration.json').read_text())
+          e=p['external_holdout']
+          out=Path('/tmp/v119-selected.pcapng')
+          h=hashlib.sha256(); total=0
+          with zipfile.ZipFile('/tmp/v119-ai4cyber.zip') as z, z.open(e['pcap_member']) as src, out.open('wb') as dst:
+              while True:
+                  block=src.read(1024*1024)
+                  if not block: break
+                  dst.write(block); h.update(block); total+=len(block)
+          assert total==int(e['pcap_bytes'])
+          assert h.hexdigest()==e['pcap_sha256']
+          print('Selected frozen PCAP extracted after irreversible lock')
+          PY
+      - name: Run exactly one frozen external evaluation
+        run: |
+          python -m garuda_v3.v119_ai4cyber_one_shot \
+            --pcap /tmp/v119-selected.pcapng \
+            --model garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v116/support_gate.json \
+            --relative-transform garuda_v3/artifacts/certification/v116/relative_transform.json \
+            --calibration garuda_v3/artifacts/certification/v118/innovation_calibration.json \
+            --prereg garuda_v3/artifacts/certification/v119/preregistration.json \
+            --acquisition garuda_v3/artifacts/certification/v119/acquisition_manifest.json \
+            --output garuda_v3/artifacts/certification/v119/one_shot_result.json
+      - name: Verify immutable result contract
+        run: |
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v119/one_shot_result.json').read_text())
+          assert r['status'] in ('PASS','FAIL')
+          assert r['dataset']['labels_accessed'] is False
+          i=r['one_shot_integrity']
+          assert i['runs_allowed_for_claim']==1
+          assert i['retrained_on_external'] is False
+          assert i['transform_fit_on_external'] is False
+          assert i['support_fit_on_external'] is False
+          assert i['threshold_fit_on_external'] is False
+          assert i['calibration_fit_on_external'] is False
+          assert i['rerun_for_claim_improvement'] is False
+          s=r['state_forecasting']
+          assert all(math.isfinite(float(s[k])) for k in ('base_model_mse','persistence_mse','calibrated_model_mse','calibrated_improvement_vs_persistence'))
+          print('V119 immutable result:',r['status'],json.dumps(s,sort_keys=True))
+          PY
+      - name: Record immutable one-shot result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v119/one_shot_result.json
+          git commit -m 'evidence(v119): record AI4CYBER calibrated one-shot result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v119-ai4cyber-one-shot-evidence
+          path: garuda_v3/artifacts/certification/v119/
