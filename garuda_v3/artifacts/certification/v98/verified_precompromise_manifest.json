@@ -1,9 +1,23 @@
 {
-  "schema_version": "v98.1",
+  "schema_version": "v98.2",
   "declared_status": "SHADOW_UNRESOLVED",
   "campaign_id": null,
   "warning_event": null,
   "compromise_event": null,
+  "lead_time_seconds": null,
+  "validator": {
+    "path": "garuda_v3/v107_precompromise_evidence_validator.py",
+    "ci_workflow": ".github/workflows/v107-integrity-contracts.yml",
+    "ci_run_id": 36311990772,
+    "ci_conclusion": "success",
+    "fail_closed": true,
+    "rejects_attack_or_stage_onset_as_successful_compromise": true,
+    "rejects_synthetic_or_fixture_certification_evidence": true,
+    "requires_timezone_aware_timestamps": true,
+    "requires_positive_lead_time": true,
+    "requires_campaign_disjointness": true,
+    "requires_raw_event_sha256_pins": true
+  },
   "provenance": {
     "identity_proof_complete": false,
     "evidence_campaign_ids": [],
@@ -12,7 +26,8 @@
     "calibration_campaign_ids": [],
     "development_reused_campaign_ids": []
   },
-  "claim_boundary": "No successful-compromise lead-time claim is certified until V98 has an integrity-pinned model warning, an objective successful-compromise event for the same campaign, positive lead time, and complete campaign-disjointness provenance.",
+  "real_evidence_present": false,
+  "claim_boundary": "The V98 validation machinery is implemented and CI-verified, but no successful-compromise lead-time claim is certified until a real disjoint campaign supplies a model-emitted warning and an objective successful-compromise event satisfying this contract.",
   "legacy_evidence_excluded": {
     "v93_attack_step_lead_time_seconds": 297.67,
     "accepted_as_successful_compromise_evidence": false,
@@ -20,15 +35,14 @@
   },
   "repository_audit": {
     "successful_compromise_artifact_found": false,
-    "establishes_compromise_artifact_found": false,
-    "audit_conclusion": "The active branch does not currently contain a paired objective successful-compromise event and model-warning event that satisfies the V98 contract."
+    "paired_model_warning_artifact_found": false,
+    "audit_conclusion": "No currently checked-in paired real warning + objective successful-compromise event satisfies V98. The validator is ready to certify one when such campaign evidence is acquired."
   },
   "required_for_pass": [
-    "Select one explicitly identified evidence campaign and prove its identity is disjoint from train, validation, calibration, and development-reused campaign identities.",
-    "Record an actual model-emitted warning event with a timezone-aware timestamp and emitted_by_model=true.",
-    "Record an objective successful-compromise event for the same campaign with a timezone-aware timestamp and establishes_successful_compromise=true.",
-    "Integrity-pin both raw JSON event artifacts by SHA-256.",
-    "Verify that successful_compromise_timestamp - model_warning_timestamp is strictly greater than zero.",
-    "Keep the certified claim scoped only to the exact campaign represented by those artifacts."
+    "Use one explicitly identified real evidence campaign whose identity is disjoint from train, validation, calibration, and development-reused campaign identities.",
+    "Record an actual model-emitted warning JSON with campaign_id, event_id, timezone-aware timestamp, emitted_by_model=true, and model_identity.sha256.",
+    "Record an objective successful-compromise JSON for the same campaign with campaign_id, event_id, timezone-aware timestamp, establishes_successful_compromise=true, and a non-empty objective_basis.",
+    "Provide campaign provenance with identity_proof_complete=true and no overlap with prior fitting/reuse identities.",
+    "Run garuda_v3/v107_precompromise_evidence_validator.py and freeze the resulting PASS manifest plus all raw SHA-256 identities."
   ]
 }
