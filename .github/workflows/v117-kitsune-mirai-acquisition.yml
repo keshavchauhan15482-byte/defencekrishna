@@ -1,0 +1,104 @@
+name: V117 Kitsune Mirai acquisition freeze
+
+on:
+  push:
+    branches: [feat/v117-kitsune-mirai-one-shot]
+    paths:
+      - '.github/workflows/v117-kitsune-mirai-acquisition.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  acquire-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and hash-freeze upstream archive without packet decode
+        run: |
+          python - <<'PY'
+          import hashlib, json, urllib.request, zipfile
+          from pathlib import Path
+
+          root=Path('garuda_v3/artifacts/certification/v117')
+          prereg_path=root/'preregistration.json'
+          p=json.loads(prereg_path.read_text())
+          assert p['status']=='SOURCE_SELECTED_HASH_PENDING'
+          assert p['acquisition']['packet_decode_permitted'] is False
+          assert p['acquisition']['model_inference_permitted'] is False
+          e=p['external_holdout']
+          archive=Path('/tmp/v117-mirai.zip')
+          urllib.request.urlretrieve(e['source_url'], archive)
+          data=archive.read_bytes()
+          assert len(data)==int(e['archive_expected_bytes']), (len(data),e['archive_expected_bytes'])
+          git_blob=hashlib.sha1(f'blob {len(data)}\0'.encode()+data).hexdigest()
+          assert git_blob==e['archive_git_blob_sha1'], (git_blob,e['archive_git_blob_sha1'])
+          archive_sha=hashlib.sha256(data).hexdigest()
+
+          with zipfile.ZipFile(archive) as z:
+              members=[i for i in z.infolist() if not i.is_dir()]
+              pcaps=[i for i in members if i.filename.lower().endswith(('.pcap','.pcapng'))]
+              if len(pcaps)!=1:
+                  raise SystemExit(f'Expected exactly one PCAP/PCAPNG member, got {[i.filename for i in pcaps]}')
+              info=pcaps[0]
+              h=hashlib.sha256(); total=0
+              with z.open(info) as src:
+                  while True:
+                      block=src.read(1024*1024)
+                      if not block: break
+                      h.update(block); total+=len(block)
+              pcap_sha=h.hexdigest()
+              listing=[{'name':i.filename,'uncompressed_bytes':i.file_size,'compressed_bytes':i.compress_size,'crc32':f'{i.CRC:08x}'} for i in members]
+
+          manifest={
+              'schema_version':'v117-acquisition.1',
+              'status':'HASH_FROZEN_NO_PACKET_DECODE',
+              'source_url':e['source_url'],
+              'publisher_commit_sha':e['publisher_commit_sha'],
+              'archive_git_blob_sha1':git_blob,
+              'archive_bytes':len(data),
+              'archive_sha256':archive_sha,
+              'members':listing,
+              'selected_pcap_member':info.filename,
+              'selected_pcap_uncompressed_bytes':total,
+              'selected_pcap_sha256':pcap_sha,
+              'packet_records_decoded':False,
+              'model_inference_performed':False,
+              'labels_accessed':False
+          }
+          (root/'acquisition_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          e['archive_sha256']=archive_sha
+          e['pcap_member']=info.filename
+          e['pcap_sha256']=pcap_sha
+          p['status']='HASH_FROZEN_ONE_SHOT_ARMED'
+          p['acquisition']['packet_decode_permitted']=True
+          p['acquisition']['model_inference_permitted']=True
+          p['evaluation_permitted']=True
+          prereg_path.write_text(json.dumps(p,indent=2)+'\n')
+          print(json.dumps({'archive_sha256':archive_sha,'pcap_member':info.filename,'pcap_sha256':pcap_sha,'pcap_bytes':total},indent=2))
+          PY
+      - name: Verify acquisition-only evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v117')
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED'
+          assert p['external_holdout']['archive_sha256']==a['archive_sha256']
+          assert p['external_holdout']['pcap_sha256']==a['selected_pcap_sha256']
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          assert a['labels_accessed'] is False
+          print('V117 acquisition-only freeze: PASS')
+          PY
+      - name: Record immutable acquisition freeze
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v117/preregistration.json garuda_v3/artifacts/certification/v117/acquisition_manifest.json
+          git commit -m 'evidence(v117): freeze Kitsune Mirai archive and PCAP hashes'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
