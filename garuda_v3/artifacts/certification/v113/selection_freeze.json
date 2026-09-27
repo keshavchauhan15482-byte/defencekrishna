@@ -1,0 +1,62 @@
+{
+  "schema_version": "v113-selection.1",
+  "status": "SELECTED_BEFORE_ACQUISITION",
+  "selected_after_v112_merge_commit": "94c791c0d4750c2fbc26abe4b652f53423e6591a",
+  "claim_boundary": "Single fresh external state-transition forecasting test only. This does not certify attack recall/FPR, MITRE stages, or warning before successful compromise.",
+  "external_holdout": {
+    "publisher": "Stratosphere Laboratory Malware Capture Facility Project",
+    "dataset": "CTU-Malware-Capture-Botnet-111-1",
+    "capture": "2015-03-09_capture-win10.pcap",
+    "publisher_probable_name": "Unknown",
+    "source_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-111-1/2015-03-09_capture-win10.pcap",
+    "publisher_index_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-111-1/",
+    "labels_required_or_accessed_for_scoring": false,
+    "repo_history_audit": {
+      "exact_dataset_name_code_search_matches_before_selection": 0,
+      "exact_capture_name_code_search_matches_before_selection": 0,
+      "selection_occurred_after_v112_candidate_freeze": true,
+      "selection_occurred_before_capture_acquisition": true,
+      "selection_occurred_before_packet_decode": true,
+      "selection_occurred_before_model_inference": true
+    }
+  },
+  "registered_candidate": {
+    "model_file": "garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz",
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_file": "garuda_v3/artifacts/certification/v108/support_gate.json",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "adapter_contract_file": "garuda_v3/artifacts/certification/v112/adapter_contract.json",
+    "adapter_contract_sha256": "2c48468ed2e608377c226137bb432ee85efb27cfcb4ba7052f893816976e2e8c",
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34,
+    "architecture": "gnn_lstm",
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual",
+    "packet_parser_mode": "allow_truncated=True"
+  },
+  "one_shot_gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "pass_requires_model_mse_strictly_less_than_persistence_mse": true,
+    "pass_requires_improvement_vs_persistence_strictly_greater_than": 0.0,
+    "unsupported_or_incompatible_is_not_pass": true,
+    "result_improving_rerun_permitted": false
+  },
+  "consumed_external_quarantine": [
+    "HIKARI-2021/V99",
+    "MAWI-200601011400/V102",
+    "CTU-IDSEVAL-6/V104",
+    "USTC-TFC2016-Miuref/V106",
+    "CTU-Malware-Capture-Botnet-327-1/V111"
+  ],
+  "acquisition_policy": {
+    "first_acquisition_may_compute_file_size_md5_sha256_only": true,
+    "packet_decode_during_acquisition": false,
+    "model_inference_during_acquisition": false,
+    "capture_hash_must_be_frozen_before_scoring": true
+  }
+}
