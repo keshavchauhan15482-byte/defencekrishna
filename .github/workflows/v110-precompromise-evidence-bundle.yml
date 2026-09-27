@@ -1,0 +1,43 @@
+name: V110 precompromise evidence bundle
+
+on:
+  push:
+    branches: [feat/v110-precompromise-evidence-bundle]
+    paths:
+      - 'garuda_v3/v110_precompromise_evidence_bundle.py'
+      - 'garuda_v3/tests/test_v110_precompromise_evidence_bundle.py'
+      - 'garuda_v3/artifacts/certification/v98/verified_precompromise_manifest.json'
+      - '.github/workflows/v110-precompromise-evidence-bundle.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run strict bundler tests
+        run: |
+          python -m unittest garuda_v3.tests.test_v107_precompromise_validator garuda_v3.tests.test_v110_precompromise_evidence_bundle -v
+      - name: Verify release boundary remains fail-closed
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/certification/v98/verified_precompromise_manifest.json').read_text())
+          assert d['schema_version']=='v98.3'
+          assert d['declared_status']=='SHADOW_UNRESOLVED'
+          assert d['engineering_gate']=='PASS'
+          assert d['evidence_gate']=='UNRESOLVED'
+          assert d['evidence_bundler']['status']=='READY_NO_RELEASE_EVENTS'
+          assert d['campaign_id'] is None
+          assert d['warning_event'] is None
+          assert d['compromise_event'] is None
+          assert d['repository_audit']['successful_compromise_artifact_found'] is False
+          print('V110 engineering gate PASS; real precompromise evidence remains fail-closed')
+          PY
