@@ -1,0 +1,137 @@
+name: V119 MTA FormBook frozen one-shot
+
+on:
+  push:
+    branches: [feat/v119-mta-formbook-one-shot]
+    paths:
+      - 'garuda_v3/v119_mta_formbook_one_shot.py'
+      - 'garuda_v3/artifacts/certification/v119/preregistration.json'
+      - '.github/workflows/v119-mta-formbook-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify frozen preregistration and evaluator syntax
+        run: |
+          set -euo pipefail
+          python -m py_compile garuda_v3/v119_mta_formbook_one_shot.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v119/preregistration.json').read_text())
+          a=json.loads(Path('garuda_v3/artifacts/certification/v119/acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED' and p['evaluation_permitted'] is True
+          assert a['status']=='HASH_FROZEN_NO_PACKET_DECODE'
+          assert a['packet_records_decoded'] is False and a['model_inference_performed'] is False
+          assert a['labels_accessed'] is False
+          assert not Path('garuda_v3/artifacts/certification/v119/one_shot_result.json').exists()
+          print('V119 frozen preregistration: PASS')
+          PY
+      - name: Reacquire exact frozen bytes without packet decode
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v119
+          URL='https://www.malware-traffic-analysis.net/2026/08/09/2026-08-09-traffic-analysis-exercise.pcap.zip'
+          curl -L --fail --retry 3 --retry-delay 2 "$URL" -o /tmp/v119/capture.zip
+          test "$(stat -c%s /tmp/v119/capture.zip)" -eq 12792967
+          echo '676bf6b5f269a8da49e8da6b6dcb3aed0ca2629f99005dc39f4b887ad9bee822  /tmp/v119/capture.zip' | sha256sum -c -
+          unzip -P infected_20260809 -p /tmp/v119/capture.zip '2026-08-09-traffic-analysis-exercise.pcap' > /tmp/v119/capture.pcap
+          test "$(stat -c%s /tmp/v119/capture.pcap)" -eq 16007378
+          echo '0ea6b597732a9ce6af9a7e3adff4512c9a91b4bce27184c8fdeb746f05cce170  /tmp/v119/capture.pcap' | sha256sum -c -
+      - name: Commit irreversible pre-decode one-shot lock
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          out=Path('garuda_v3/artifacts/certification/v119/execution_lock.json')
+          if out.exists(): raise SystemExit('execution lock already exists')
+          evaluator=Path('garuda_v3/v119_mta_formbook_one_shot.py').read_bytes()
+          prereg=Path('garuda_v3/artifacts/certification/v119/preregistration.json').read_bytes()
+          lock={
+            'schema_version':'v119-execution-lock.1',
+            'status':'IRREVERSIBLE_PRE_DECODE_LOCK',
+            'archive_sha256':'676bf6b5f269a8da49e8da6b6dcb3aed0ca2629f99005dc39f4b887ad9bee822',
+            'pcap_sha256':'0ea6b597732a9ce6af9a7e3adff4512c9a91b4bce27184c8fdeb746f05cce170',
+            'base_model_sha256':'1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c',
+            'support_gate_sha256':'8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5',
+            'relative_transform_sha256':'6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643',
+            'innovation_calibration_sha256':'c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701',
+            'evaluator_sha256':hashlib.sha256(evaluator).hexdigest(),
+            'preregistration_sha256':hashlib.sha256(prereg).hexdigest(),
+            'packet_records_decoded_before_lock':False,
+            'model_inference_performed_before_lock':False,
+            'runs_allowed_for_claim':1,
+            'rerun_for_claim_improvement':False
+          }
+          out.write_text(json.dumps(lock,indent=2)+'\n')
+          print(json.dumps(lock,indent=2))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v119/execution_lock.json
+          git commit -m 'evidence(v119): lock one-shot before packet decode'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Run exactly one frozen external evaluation
+        run: |
+          set -euo pipefail
+          python -m garuda_v3.v119_mta_formbook_one_shot \
+            --pcap /tmp/v119/capture.pcap \
+            --model garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v116/support_gate.json \
+            --relative-transform garuda_v3/artifacts/certification/v116/relative_transform.json \
+            --calibration garuda_v3/artifacts/certification/v118/innovation_calibration.json \
+            --prereg garuda_v3/artifacts/certification/v119/preregistration.json \
+            --acquisition garuda_v3/artifacts/certification/v119/acquisition_manifest.json \
+            --execution-lock garuda_v3/artifacts/certification/v119/execution_lock.json \
+            --output garuda_v3/artifacts/certification/v119/one_shot_result.json
+      - name: Verify immutable result contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v119/one_shot_result.json').read_text())
+          assert r['schema_version']=='v119.1'
+          assert r['status'] in {'PASS','FAIL'}
+          assert r['dataset']['labels_accessed'] is False
+          assert r['one_shot_integrity']['runs_allowed_for_claim']==1
+          assert r['one_shot_integrity']['model_inference_performed_once'] is True
+          assert r['one_shot_integrity']['retrained_on_external'] is False
+          assert r['one_shot_integrity']['calibration_fit_on_external'] is False
+          assert r['one_shot_integrity']['rerun_for_claim_improvement'] is False
+          if r['status']=='PASS': assert all(r['gate'][k] for k in ['total_sequences_gate_passed','support_gate_passed','persistence_gate_passed','positive_improvement_gate_passed','finite_metrics_gate_passed','all_gates_passed'])
+          else: assert r['gate']['all_gates_passed'] is False
+          print(json.dumps({'status':r['status'],'forecasting':r['state_forecasting'],'support':r['runtime_support'],'gate':r['gate']},indent=2))
+          PY
+      - name: Record immutable one-shot result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v119/one_shot_result.json
+          git commit -m 'evidence(v119): record MTA FormBook frozen one-shot result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v119-mta-formbook-one-shot-evidence
+          path: garuda_v3/artifacts/certification/v119/*
+          if-no-files-found: error
+          retention-days: 30
