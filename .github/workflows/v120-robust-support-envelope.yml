@@ -1,0 +1,101 @@
+name: V120 robust support envelope
+
+on:
+  push:
+    branches: [feat/v120-robust-support-envelope]
+    paths:
+      - 'garuda_v3/v120_robust_support_envelope.py'
+      - '.github/workflows/v120-robust-support-envelope.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  develop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify support-envelope unit contract
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from garuda_v3.v120_robust_support_envelope import fit_gate, decisions
+          rng=np.random.default_rng(120)
+          x=rng.normal(0,.2,size=(256,8,4,34)).astype(np.float32)
+          m=np.ones((256,8,4),dtype=np.float32)
+          x[...,29:]=1.0
+          g=fit_gate(x[:128],m[:128],x[128:],m[128:])
+          s,p,t,d=decisions(g,x[128:],m[128:])
+          assert len(s)==128 and d.dtype==bool
+          assert t.all() and (p[:,0]>=.95).all()
+          assert g['schema_version']=='v120-support.2'
+          assert g['fit_provenance']['all_consumed_external_holdouts_excluded_from_fit'] is True
+          print('V120 support envelope unit contract: PASS')
+          PY
+      - name: Fetch hash-pinned CICAPT development captures
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v120 \
+            --ids cicapt_network \
+            --extract
+      - name: Fit and evaluate development-only robust support gate
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v120
+          python -m garuda_v3.v120_robust_support_envelope \
+            --phase1 datasets/v120/1stPhase-timed-Merged.pcap \
+            --phase2 datasets/v120/2ndPhase-timed-MergedV2.pcap \
+            --model garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz \
+            --relative-transform garuda_v3/artifacts/certification/v116/relative_transform.json \
+            --calibration garuda_v3/artifacts/certification/v118/innovation_calibration.json \
+            --output-dir garuda_v3/artifacts/certification/v120 \
+            --packet-limit 2000000
+      - name: Verify fail-closed evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v120/summary.json').read_text())
+          assert r['schema_version']=='v120.2'
+          assert r['status'] in {'DEV_ROBUST_SUPPORT_PASS','DEV_ROBUST_SUPPORT_FAIL'}
+          assert r['support_design']['v119_statistics_used_for_fit_or_thresholding'] is False
+          assert r['support_design']['consumed_external_bytes_read'] is False
+          assert r['support_design']['gate']['fit_provenance']['phase2_excluded_from_fit'] is True
+          assert r['support_design']['gate']['fit_provenance']['all_consumed_external_holdouts_excluded_from_fit'] is True
+          assert r['freeze']['new_external_holdout_selected'] is False
+          if r['status']=='DEV_ROBUST_SUPPORT_PASS':
+              assert r['recovery_gate_passed'] is True
+              assert r['freeze']['candidate_runtime_frozen_before_new_external_selection'] is True
+              assert all(r['gates'].values())
+          else:
+              assert r['recovery_gate_passed'] is False
+              assert r['freeze']['candidate_runtime_frozen_before_new_external_selection'] is False
+          print(json.dumps({'status':r['status'],'validation':r['validation'],'phase2':r['phase2_sanity'],'gates':r['gates'],'freeze':r['freeze']},indent=2))
+          PY
+      - name: Record immutable V120 development evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v120
+          git commit -m 'evidence(v120): record robust support-envelope development result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v120-robust-support-evidence
+          path: garuda_v3/artifacts/certification/v120/*
+          if-no-files-found: error
+          retention-days: 30
