@@ -1,6 +1,6 @@
 {
   "schema_version": "v102-prereg.1",
-  "status": "HASH_FROZEN_ONE_SHOT_REGISTERED",
+  "status": "HASH_PINNED_EVALUATION_PERMITTED",
   "evaluation_permitted": true,
   "registered_before_external_model_evaluation": true,
   "registered_candidate": {
