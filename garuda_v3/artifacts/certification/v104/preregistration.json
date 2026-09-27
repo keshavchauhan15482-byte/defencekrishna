@@ -1,5 +1,5 @@
 {
-  "schema_version": "v104-prereg.1",
+  "schema_version": "v104-prereg.2",
   "status": "ACQUISITION_ONLY_HASH_PENDING",
   "evaluation_permitted": false,
   "registered_before_external_packet_decode": true,
@@ -33,16 +33,19 @@
     "official_archive_md5": "bb4476af2b9d4b8ce875dda88a0cca7b",
     "publisher_archive_size_mb": 38.4,
     "publisher_logical_capture_count": 6,
-    "archive_pcap_member_count": 12,
+    "archive_pcap_member_count": 6,
     "publisher_packet_count": 1106116,
     "publisher_description": "six logical capture scenarios: one benign user, two malware, and three port scans",
     "archive_member_count_observation": {
-      "source": "first acquisition attempt ZIP central-directory metadata only",
+      "source": "metadata-only ZIP central-directory inspection before any member extraction or packet decode",
       "packet_bytes_extracted": false,
       "packet_records_decoded": false,
       "model_inference_performed": false,
-      "observed_pcap_members": 12,
-      "policy_after_metadata_observation": "include all 12 PCAP members; no member selection or dropping is permitted"
+      "initial_pcap_suffix_matches": 12,
+      "appledouble_sidecars_with_pcap_suffix": 6,
+      "real_pcap_members": 6,
+      "correction_basis": "ZIP member path/basename semantics only: __MACOSX/.../._*.pcap are AppleDouble packaging sidecars, not packet captures",
+      "policy_after_metadata_correction": "include all six real publisher PCAP payload members; no real PCAP selection or dropping is permitted"
     },
     "archive_sha256": null,
     "pcap_entries": null,
@@ -65,7 +68,8 @@
       "verify official archive MD5",
       "compute archive SHA-256",
       "inspect ZIP central-directory metadata only",
-      "record all 12 sorted PCAP member names, compressed/uncompressed byte counts, and CRC values"
+      "record all six sorted real PCAP member names, compressed/uncompressed byte counts, and CRC values",
+      "record known macOS packaging sidecars separately without extracting their bytes"
     ],
     "forbidden_before_hash_pin": [
       "extract PCAP packet bytes",
@@ -77,13 +81,13 @@
       "change model weights",
       "change support threshold",
       "change adapter mapping based on external traffic",
-      "select or drop archive members based on external traffic"
+      "select or drop any real PCAP member based on external traffic"
     ]
   },
   "one_shot_rules_after_hash_pin": {
     "runs_allowed": 1,
-    "evaluation_unit": "all 12 PCAP members in the registered archive, representing all six logical scenarios; no cherry-picking",
-    "primary_gate": "aggregate element-weighted state forecast MSE across all compatible registered PCAP members must be lower than aggregate persistence MSE",
+    "evaluation_unit": "all six real PCAP payload members in the registered archive, representing all six publisher logical scenarios; no cherry-picking",
+    "primary_gate": "aggregate element-weighted state forecast MSE across all six registered real PCAP members must be lower than aggregate persistence MSE",
     "per_member_metrics_reported": true,
     "all_compatible_members_included": true,
     "retuning_after_result": false,
@@ -94,5 +98,5 @@
     "mitre_stage_claim": false,
     "successful_compromise_warning_claim": false
   },
-  "claim_boundary": "V104 is preregistered only for fresh external state-transition forecasting. A first metadata-only acquisition observed 12 PCAP archive members before any extraction or packet decode; policy is now frozen to include all 12."
+  "claim_boundary": "V104 is preregistered only for fresh external state-transition forecasting. Before any member extraction or packet decode, metadata-only inspection corrected suffix-only counting from 12 .pcap-like names to six real PCAP payloads plus six AppleDouble .pcap sidecars. All six real PCAPs remain mandatory for the one-shot."
 }

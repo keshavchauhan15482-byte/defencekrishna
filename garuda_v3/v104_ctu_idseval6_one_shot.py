@@ -1,9 +1,9 @@
 """V104 frozen one-shot CTU-IDSEVAL-6 state-transition evaluation.
 
-All registered PCAP members must be accounted for and evaluable. No labels, Zeek logs,
-or capture selection are used. The unchanged V101 model/support gate and frozen V103
-tolerant packet adapter are evaluated against persistence over all members, with the
-primary MSE aggregated by predicted state elements.
+All registered real PCAP payload members must be accounted for and evaluable. No labels,
+Zeek logs, or capture selection are used. The unchanged V101 model/support gate and
+frozen V103 tolerant packet adapter are evaluated against persistence over all members,
+with the primary MSE aggregated by predicted state elements.
 """
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ import argparse
 import hashlib
 import json
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Dict, Iterable, List
 
 import numpy as np
@@ -30,7 +30,7 @@ MODEL_SHA256 = '30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79
 SUPPORT_SHA256 = '2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3'
 ADAPTER_SHA256 = '65052c50704ad371ff7ad84fec6b74c7530d546a7916722c96a255b9b7c93841'
 PCAP_READER_SHA256 = '91c978b54c5ca32fb9e30cde75e8abe7e7c9fc24655f49ea40291762feddab71'
-EXPECTED_MEMBERS = 12
+EXPECTED_MEMBERS = 6
 MAX_PACKETS_PER_MEMBER = 2_000_000
 
 
@@ -174,6 +174,10 @@ def main() -> int:
     frozen_entries = prereg['external_holdout']['pcap_entries']
     if len(frozen_entries) != EXPECTED_MEMBERS or frozen_entries != acq['pcap_entries']:
         raise V104ContractError('Registered PCAP entry manifest mismatch')
+    for row in frozen_entries:
+        member_path = PurePosixPath(row['filename'])
+        if '__MACOSX' in member_path.parts or member_path.name.startswith('._'):
+            raise V104ContractError(f'Packaging sidecar cannot be a registered PCAP payload: {row["filename"]}')
     expected_names = [Path(r['filename']).name for r in frozen_entries]
     if len(set(expected_names)) != EXPECTED_MEMBERS:
         raise V104ContractError('Registered archive contains duplicate PCAP basenames')
@@ -216,7 +220,7 @@ def main() -> int:
     result = {
         'schema_version': 'v104.1',
         'status': 'PASS' if passed else 'FAIL',
-        'gate': 'element-weighted aggregate frozen-model state MSE across all 12 registered PCAP members must be lower than aggregate persistence MSE',
+        'gate': 'element-weighted aggregate frozen-model state MSE across all six registered real PCAP members must be lower than aggregate persistence MSE',
         'dataset': {
             'name': 'CTU-IDSEVAL-6', 'version': 'v1', 'zenodo_record': '21027042',
             'doi': '10.5281/zenodo.21027042',
