@@ -1,6 +1,6 @@
 {
   "schema_version": "v117-prereg.1",
-  "status": "SOURCE_SELECTED_HASH_PENDING",
+  "status": "HASH_FROZEN_ONE_SHOT_ARMED",
   "selected_after_v116_merge_commit": "c21618189984c7f7429131943f5960028432edde",
   "claim_boundary": "V117 is a single fresh publisher-independent external state-transition forecasting test only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is created.",
   "external_holdout": {
@@ -12,9 +12,9 @@
     "archive_git_blob_sha1": "154aebb8647f5db66f454ff20d148cd12cddbaf7",
     "archive_expected_bytes": 7824919,
     "source_url": "https://raw.githubusercontent.com/ymirsky/Kitsune-py/7c8ea51e89268d9a20399dca4bf32d663e638eb4/mirai.zip",
-    "archive_sha256": null,
-    "pcap_member": null,
-    "pcap_sha256": null,
+    "archive_sha256": "c753fa53fa1f252df27ca493f6ad59d98529bb28f25f049571b92a58daa9ddd6",
+    "pcap_member": "mirai.pcap",
+    "pcap_sha256": "da69165a7b47353de854e82b3e8c88741383bf94099db2aeaac35d27c7c921fe",
     "labels_required_or_accessed": false,
     "selection_basis": "Original Kitsune authors publish this Mirai network capture as their demo input; source/publisher family is distinct from prior MCFP/CTU, CICAPT, USTC, HIKARI and MAWI external attempts.",
     "repo_history_audit": {
@@ -64,8 +64,8 @@
   },
   "acquisition": {
     "archive_and_member_hash_freeze_required_before_decode": true,
-    "packet_decode_permitted": false,
-    "model_inference_permitted": false
+    "packet_decode_permitted": true,
+    "model_inference_permitted": true
   },
-  "evaluation_permitted": false
+  "evaluation_permitted": true
 }
