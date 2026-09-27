@@ -10,6 +10,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: v123-zeroswarm-one-shot
+  cancel-in-progress: false
+
 jobs:
   one-shot:
     runs-on: ubuntu-latest
@@ -27,7 +31,7 @@ jobs:
           cache: pip
       - name: Install runtime dependency
         run: python -m pip install 'numpy<2.1'
-      - name: Verify frozen preregistration and evaluator identity
+      - name: Verify frozen preregistration evaluator and persisted pre-decode lock
         run: |
           python - <<'PY'
           import json, subprocess
@@ -35,15 +39,24 @@ jobs:
           root=Path('garuda_v3/artifacts/certification/v123')
           p=json.loads((root/'preregistration.json').read_text())
           a=json.loads((root/'acquisition_manifest.json').read_text())
+          lock=json.loads((root/'execution_lock.json').read_text())
           assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED' and p['evaluation_permitted'] is True
           assert a['status']=='HASH_FROZEN_NO_PACKET_DECODE' and a['file_count']==4
           assert a['packet_records_decoded'] is False and a['model_inference_performed'] is False and a['labels_accessed'] is False
+          assert lock['status']=='IRREVERSIBLE_PRE_DECODE_LOCK'
+          assert lock['packet_records_decoded_before_lock'] is False
+          assert lock['model_inference_performed_before_lock'] is False
+          assert lock['runs_allowed_for_claim_after_lock']==1
           reg=p['registered_candidate']
           blob=subprocess.check_output(['git','hash-object',reg['evaluator_file']],text=True).strip()
-          assert blob==reg['evaluator_git_blob_sha1'],(blob,reg['evaluator_git_blob_sha1'])
-          assert not (root/'execution_lock.json').exists()
+          assert blob==reg['evaluator_git_blob_sha1']==lock['evaluator_git_blob_sha1']
+          assert lock['model_sha256']==reg['model_sha256']
+          assert lock['relative_transform_sha256']==reg['relative_transform_sha256']
+          assert lock['innovation_calibration_sha256']==reg['innovation_calibration_sha256']
+          assert lock['semantic_support_contract_sha256']==reg['semantic_support_contract_sha256']
+          assert lock['robust_behavior_gate_sha256']==reg['robust_behavior_gate_sha256']
           assert not (root/'one_shot_result.json').exists()
-          print('V123 frozen prereg/evaluator identity: PASS')
+          print('V123 persisted pre-decode lock + frozen evaluator identity: PASS')
           PY
       - name: Reacquire exact four frozen PCAPs without packet decode
         run: |
@@ -52,6 +65,8 @@ jobs:
           from pathlib import Path
           root=Path('garuda_v3/artifacts/certification/v123')
           a=json.loads((root/'acquisition_manifest.json').read_text())
+          lock=json.loads((root/'execution_lock.json').read_text())
+          assert [x['sha256'] for x in a['files']]==lock['pcap_sha256s']
           outdir=Path('/tmp/v123-zeroswarm'); outdir.mkdir(parents=True,exist_ok=True)
           for f in a['files']:
               out=outdir/f['name']
@@ -63,32 +78,9 @@ jobs:
                       if not b: break
                       dst.write(b);hmd5.update(b);hsha.update(b);total+=len(b)
               assert total==int(f['bytes']) and hmd5.hexdigest()==f['md5'] and hsha.hexdigest()==f['sha256'],f['name']
-          print('Exact four frozen PCAPs reacquired; no packet decode performed')
+          print('Exact four frozen PCAPs reacquired; first packet decode still not performed')
           PY
-      - name: Commit irreversible pre-decode one-shot lock
-        run: |
-          python - <<'PY'
-          import json,os
-          from pathlib import Path
-          root=Path('garuda_v3/artifacts/certification/v123')
-          if (root/'execution_lock.json').exists(): raise SystemExit('V123 lock already exists; rerun forbidden')
-          p=json.loads((root/'preregistration.json').read_text()); a=json.loads((root/'acquisition_manifest.json').read_text()); reg=p['registered_candidate']
-          lock={
-            'schema_version':'v123-lock.1','status':'IRREVERSIBLE_PRE_DECODE_LOCK',
-            'github_run_id':os.environ.get('GITHUB_RUN_ID'),'github_run_attempt':os.environ.get('GITHUB_RUN_ATTEMPT'),'workflow_head_sha':os.environ.get('GITHUB_SHA'),
-            'model_sha256':reg['model_sha256'],'relative_transform_sha256':reg['relative_transform_sha256'],'innovation_calibration_sha256':reg['innovation_calibration_sha256'],
-            'semantic_support_contract_sha256':reg['semantic_support_contract_sha256'],'robust_behavior_gate_sha256':reg['robust_behavior_gate_sha256'],
-            'evaluator_git_blob_sha1':reg['evaluator_git_blob_sha1'],'pcap_sha256s':[x['sha256'] for x in a['files']],
-            'packet_records_decoded_before_lock':False,'model_inference_performed_before_lock':False,'rerun_for_claim_improvement_permitted':False
-          }
-          (root/'execution_lock.json').write_text(json.dumps(lock,indent=2)+'\n')
-          PY
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add garuda_v3/artifacts/certification/v123/execution_lock.json
-          git commit -m 'evidence(v123): consume ZeroSWARM holdout before packet decode'
-          git push origin "HEAD:${GITHUB_REF_NAME}"
-      - name: Run exactly one frozen aggregate external evaluation
+      - name: Run first and only frozen aggregate external evaluation
         run: |
           python -m garuda_v3.v123_zeroswarm_one_shot \
             --pcap-dir /tmp/v123-zeroswarm \
