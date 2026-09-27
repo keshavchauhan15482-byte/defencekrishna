@@ -92,6 +92,8 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin "${GITHUB_REF_NAME}"
+          git rebase "origin/${GITHUB_REF_NAME}"
           git add -f garuda_v3/artifacts/certification/v111/warning_policy.json
           if git diff --cached --quiet; then
             echo 'warning policy already frozen'
