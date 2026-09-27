@@ -1,0 +1,146 @@
+{
+  "schema_version": "v124-five-stage.1",
+  "status": "FAIL",
+  "proxy_mapping_used": false,
+  "stages": [
+    "Reconnaissance",
+    "Initial Access",
+    "Lateral Movement",
+    "Command and Control",
+    "Exfiltration"
+  ],
+  "network_features": [
+    "duration",
+    "missed_bytes",
+    "orig_bytes",
+    "orig_ip_bytes",
+    "orig_pkts",
+    "resp_bytes",
+    "resp_ip_bytes",
+    "resp_pkts",
+    "src_port_zeek",
+    "dest_port_zeek",
+    "proto_tcp",
+    "proto_udp",
+    "service_http",
+    "service_ftp",
+    "service_smb"
+  ],
+  "source": {
+    "Reconnaissance": {
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Reconnaissance/part-00000-ae3fd4d9-9aba-4c1d-968c-88755355ee78-c000.csv",
+      "rows": 5289,
+      "sha256": "d9cbb3d5b5bcd49a82db5449bb66acaf66498f1ad1ce674050efd2b64fb6c88a",
+      "train": 3173,
+      "validation": 1058,
+      "test": 1058
+    },
+    "Initial Access": {
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Initial_Access/part-00000-e6022464-fb77-4508-a850-006424f5de8a-c000.csv",
+      "rows": 37,
+      "sha256": "2ef33d747abac789898e4884a6ffcfc4f0c649153d74d889a2bae869a9916d4a",
+      "train": 22,
+      "validation": 7,
+      "test": 8
+    },
+    "Lateral Movement": {
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Lateral_Movement/part-00000-0d012414-989a-4b0f-937d-36b02cacf398-c000.csv",
+      "rows": 29,
+      "sha256": "917da2e8e041aac84c8a21d63442783b9f4f5ee303bdc1032aa011ea12d695f4",
+      "train": 17,
+      "validation": 6,
+      "test": 6
+    },
+    "Command and Control": {
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall22/csv/Command_and_Control/part-00000-c365ae06-4940-4fb1-b261-3a9ed9970961-c000.csv",
+      "rows": 17,
+      "sha256": "c8f1f83cad6ec09306e1e33f406bd63b70386654f4e18283ae1c4f175af89ad2",
+      "train": 10,
+      "validation": 3,
+      "test": 4
+    },
+    "Exfiltration": {
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/csv/Exfiltration/part-00000-6a530c25-0f6b-46a1-ba16-c6b658ef75e8-c000.csv",
+      "rows": 23,
+      "sha256": "b485153727b8a630582838eebf75c924cb0b49476b69de1b728b85d4371827f0",
+      "train": 13,
+      "validation": 5,
+      "test": 5
+    }
+  },
+  "selection": {
+    "split": "per-class chronological 60/20/20",
+    "validation_candidates": [
+      {
+        "name": "extra_trees",
+        "macro_recall": 0.7388873886038347,
+        "accuracy": 0.9759036144578314
+      },
+      {
+        "name": "logistic",
+        "macro_recall": 0.7066162570888469,
+        "accuracy": 0.5393883225208527
+      }
+    ],
+    "winner": "extra_trees"
+  },
+  "test": {
+    "accuracy": 0.9861239592969473,
+    "macro_recall": 0.6740548204158789,
+    "per_stage": {
+      "Reconnaissance": {
+        "support": 1058,
+        "tp": 1053,
+        "fp": 10,
+        "fn": 5,
+        "precision": 0.9905926622765757,
+        "recall": 0.995274102079395,
+        "f1": 0.9929278642149929
+      },
+      "Initial Access": {
+        "support": 8,
+        "tp": 3,
+        "fp": 0,
+        "fn": 5,
+        "precision": 1.0,
+        "recall": 0.375,
+        "f1": 0.5454545454545454
+      },
+      "Lateral Movement": {
+        "support": 6,
+        "tp": 3,
+        "fp": 2,
+        "fn": 3,
+        "precision": 0.6,
+        "recall": 0.5,
+        "f1": 0.5454545454545454
+      },
+      "Command and Control": {
+        "support": 4,
+        "tp": 2,
+        "fp": 1,
+        "fn": 2,
+        "precision": 0.6666666666666666,
+        "recall": 0.5,
+        "f1": 0.5714285714285715
+      },
+      "Exfiltration": {
+        "support": 5,
+        "tp": 5,
+        "fp": 2,
+        "fn": 0,
+        "precision": 0.7142857142857143,
+        "recall": 1.0,
+        "f1": 0.8333333333333333
+      }
+    }
+  },
+  "gates": {
+    "all_exact_native_labels_no_proxy": true,
+    "all_stage_source_rows_at_least_10": true,
+    "all_stage_test_support_at_least_2": true,
+    "test_macro_recall_at_least_0_60": true,
+    "each_stage_recall_at_least_0_40": false
+  },
+  "claim_boundary": "Exact publisher-native five-stage network-record classifier evidence. This certifies the five requested stage labels without proxy mapping; it does not by itself claim successful-compromise lead time."
+}
