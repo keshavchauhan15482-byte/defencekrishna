@@ -37,7 +37,7 @@ jobs:
           python -m compileall -q garuda_v3/v102_mawi_one_shot.py
           python -m pytest -q garuda_v3/tests/test_v102_mawi_one_shot.py
 
-      - name: Pin acquisition hashes into preregistration before packet decode
+      - name: Verify committed hash-pinned preregistration before packet decode
         run: |
           test ! -e garuda_v3/artifacts/certification/v102/evaluation_lock.json
           test ! -e garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json
@@ -49,39 +49,33 @@ jobs:
           d=json.loads(prereg_path.read_text())
           a=json.loads(acquisition_path.read_text())
           assert d['schema_version']=='v102-prereg.1'
-          assert d['status']=='ACQUISITION_ONLY_HASH_PENDING'
-          assert d['evaluation_permitted'] is False
+          assert d['status']=='HASH_PINNED_EVALUATION_PERMITTED'
+          assert d['evaluation_permitted'] is True
           assert a['status']=='HASH_ACQUIRED_MODEL_NOT_RUN'
           assert a['evaluation_performed'] is False
           assert a['packet_records_decoded'] is False
+          assert a['graph_windows_constructed'] is False
+          assert a['support_scoring_performed'] is False
           assert a['model_inference_performed'] is False
-          assert len(a['compressed_sha256'])==64
-          assert len(a['decompressed_sha256'])==64
+          assert d['external_holdout']['compressed_sha256']==a['compressed_sha256']
+          assert d['external_holdout']['decompressed_sha256']==a['decompressed_sha256']
+          assert d['external_holdout']['compressed_bytes']==a['compressed_bytes']
+          assert d['external_holdout']['decompressed_bytes']==a['decompressed_bytes']
           assert a['pcap_global_header']['snaplen']==d['external_holdout']['publisher_caplen_bytes']==96
-          assert a['pcap_global_header']['linktype'] in (1,101)
-          d['status']='HASH_PINNED_EVALUATION_PERMITTED'
-          d['evaluation_permitted']=True
-          d['external_holdout']['compressed_sha256']=a['compressed_sha256']
-          d['external_holdout']['decompressed_sha256']=a['decompressed_sha256']
-          d['hash_pin_provenance']={
-              'acquisition_manifest':'garuda_v3/artifacts/certification/v102/acquisition_manifest.json',
-              'packet_records_decoded_before_pin':False,
-              'model_inference_before_pin':False,
-              'adapter_policy':'precommitted snaplen-safe classic-PCAP header decoder in garuda_v3/v102_mawi_one_shot.py',
-          }
-          prereg_path.write_text(json.dumps(d, indent=2, sort_keys=True)+'\n')
-          print(json.dumps({'compressed_sha256':a['compressed_sha256'],'decompressed_sha256':a['decompressed_sha256']}, indent=2))
+          assert a['pcap_global_header']['linktype']==d['external_holdout']['pcap_contract']['linktype']==1
+          assert d['snaplen_adapter_policy']['frozen_before_packet_decode'] is True
+          assert d['snaplen_adapter_policy']['feature_mapping_retuned_on_mawi'] is False
+          print(json.dumps({
+              'compressed_sha256':a['compressed_sha256'],
+              'decompressed_sha256':a['decompressed_sha256'],
+              'status':d['status'],
+          }, indent=2))
           PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add garuda_v3/artifacts/certification/v102/preregistration.json
-          git commit -m "evidence(v102): pin MAWI hashes before external inference"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Download and verify exact hash-pinned MAWI object
         run: |
           mkdir -p datasets/v102
-          curl -L --fail --retry 4 --retry-delay 5 \
+          curl -L --fail --retry 4 --retry-all-errors --retry-delay 5 --connect-timeout 30 \
             --output datasets/v102/200601011400.dump.gz \
             'https://mawi.nezu.wide.ad.jp/mawi/samplepoint-B/2006/200601011400.dump.gz'
           python - <<'PY'
@@ -104,6 +98,8 @@ jobs:
 
       - name: Consume one-shot and commit lock before model inference
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           python - <<'PY'
           import json, os
           from pathlib import Path
@@ -113,6 +109,7 @@ jobs:
           p=json.loads((root/'preregistration.json').read_text())
           a=json.loads((root/'acquisition_manifest.json').read_text())
           assert p['status']=='HASH_PINNED_EVALUATION_PERMITTED'
+          assert p['external_holdout']['decompressed_sha256']==a['decompressed_sha256']
           lock={
               'schema_version':'v102-lock.1',
               'status':'ONE_SHOT_CONSUMED_BEFORE_INFERENCE',
@@ -127,7 +124,7 @@ jobs:
           }
           (root/'evaluation_lock.json').write_text(json.dumps(lock,indent=2,sort_keys=True)+'\n')
           PY
-          git add garuda_v3/artifacts/certification/v102/evaluation_lock.json
+          git add -f garuda_v3/artifacts/certification/v102/evaluation_lock.json
           git commit -m "evidence(v102): consume MAWI one-shot before inference"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
@@ -170,7 +167,7 @@ jobs:
 
       - name: Record immutable one-shot result
         run: |
-          git add garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json
+          git add -f garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json
           git commit -m "evidence(v102): record first frozen MAWI external one-shot"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
