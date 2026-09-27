@@ -1,0 +1,37 @@
+{
+  "schema_version": "v122-semantic-support.1",
+  "status": "FROZEN",
+  "hard_support_definition": {
+    "raw_graph_values_finite": true,
+    "relative_model_input_values_finite": true,
+    "mask_finite_and_bounded_0_1": true,
+    "each_history_window_has_at_least_one_observed_node": true,
+    "presence_flags_finite_and_bounded_0_1": true,
+    "required_packet_capability": "packet_features_present",
+    "minimum_required_packet_capability": 0.95
+  },
+  "behavior_shift_diagnostic": {
+    "source": "V120 robust validation envelope",
+    "gate_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
+    "hard_veto": false,
+    "attack_or_ood_label": false,
+    "purpose": "Report distribution shift without conflating it with input-contract incompatibility."
+  },
+  "frozen_runtime": {
+    "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+    "robust_behavior_gate_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
+    "alpha": 0.663139650493983,
+    "raw_schema": "garuda-observed-graph-v46-ps-complete",
+    "model_schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
+    "feature_count": 34
+  },
+  "provenance": {
+    "semantic_thresholds_fixed_by_schema_capability_not_external_statistics": true,
+    "v121_bytes_read": false,
+    "v121_metrics_used_for_fit_or_thresholding": false,
+    "all_consumed_external_holdouts_excluded": true,
+    "new_external_holdout_selected": false
+  }
+}
