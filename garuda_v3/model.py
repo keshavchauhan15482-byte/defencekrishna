@@ -9,7 +9,8 @@ from .autograd import Tensor, concat
 from .data import FEATURES, SCHEMA
 
 PS_COMPLETE_SCHEMA = 'garuda-observed-graph-v46-ps-complete'
-SUPPORTED_SCHEMAS = {SCHEMA, PS_COMPLETE_SCHEMA}
+RELATIVE_PS_COMPLETE_SCHEMA = 'garuda-observed-graph-v46-ps-complete-relative-v1'
+SUPPORTED_SCHEMAS = {SCHEMA, PS_COMPLETE_SCHEMA, RELATIVE_PS_COMPLETE_SCHEMA}
 
 class GraphWorldModel:
     def __init__(self, architecture='gnn_lstm', feature_dim=len(FEATURES), graph_dim=12, hidden=16, seed=42,
@@ -78,35 +79,20 @@ class GraphWorldModel:
             risk=(h@self.params['risk']+self.params['risk_b']).sigmoid()
             means.append(current.reshape(b,1,self.f));sigmas.append(sigma.reshape(b,1,self.f));risks.append(risk.reshape(b,1))
         outputs=(concat(means,1),concat(sigmas,1),concat(risks,1))
-        return outputs+(concat(stages,1) if stages else None,) if return_stages else outputs
-    def save(self,path,metadata):
-        path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
-        np.savez_compressed(path,**{k:v.data for k,v in self.params.items()},metadata=json.dumps(metadata),config=json.dumps(self.config),schema=self.schema)
+        if return_stages:
+            if not self.stage_count: raise ValueError('stage head disabled')
+            return outputs+(concat(stages,1),)
+        return outputs
+    def save(self,path,metadata=None):
+        path=Path(path); path.parent.mkdir(parents=True,exist_ok=True)
+        arrays={k:v.data for k,v in self.params.items()}; arrays['__config__']=np.array(json.dumps(self.config))
+        arrays['__metadata__']=np.array(json.dumps(metadata or {}));np.savez(path,**arrays)
     @classmethod
     def load(cls,path):
-        with np.load(path,allow_pickle=False) as z:
-            checkpoint_schema=str(z['schema'])
-            if checkpoint_schema not in SUPPORTED_SCHEMAS: raise ValueError('Checkpoint schema mismatch')
-            config=json.loads(str(z['config']))
-            config.setdefault('schema', checkpoint_schema)
-            if config['schema'] != checkpoint_schema: raise ValueError('Checkpoint config/schema mismatch')
-            model=cls(**config)
-            for k,p in model.params.items():
-                if z[k].shape!=p.data.shape or not np.isfinite(z[k]).all(): raise ValueError('Invalid checkpoint parameter')
-                p.data=z[k].copy()
-            metadata=json.loads(str(z['metadata']))
-        return model,metadata
-
-def loss(model,x,adj,mask,future,labels,stage_labels=None,positive_weight=1.):
-    mean,sigma,risk,stages=model.forward(x,adj,mask,horizon=labels.shape[1],return_stages=True)
-    nll=(((mean-future)/sigma).power(2)*.5+sigma.log()).mean()
-    risk=.000001+.999998*risk
-    known=(labels>=0).astype(np.float32);target=np.maximum(labels,0)
-    bce=-((positive_weight*target*risk.log()+(1-target)*(1-risk).log())*known).sum()/max(float(known.sum()),1)
-    objective=bce+.15*nll if model.decoder=='absolute' else bce+10*(mean-future).power(2).mean()+.01*nll
-    if stage_labels is not None:
-        if stages is None: raise ValueError('Stage labels require a stage head')
-        known=(stage_labels>=0).astype(np.float32); target=np.maximum(stage_labels,0)
-        prob=.000001+.999998*stages
-        objective=objective-.5*((target*prob.log()+(1-target)*(1-prob).log())*known).sum()/max(float(known.sum()),1)
-    return objective
+        z=np.load(path,allow_pickle=False);config=json.loads(str(z['__config__']))
+        metadata=json.loads(str(z['__metadata__'])) if '__metadata__' in z.files else {}
+        obj=cls(**config)
+        for k in obj.params:
+            if k not in z.files: raise ValueError(f'Missing weight: {k}')
+            obj.params[k].data=np.asarray(z[k])
+        return obj,metadata
