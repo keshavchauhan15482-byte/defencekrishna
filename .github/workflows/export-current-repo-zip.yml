@@ -1,0 +1,24 @@
+name: Export current repo ZIP
+on:
+  push:
+    branches: [tmp/export-current-repo-zip]
+    paths:
+      - '.github/workflows/export-current-repo-zip.yml'
+  workflow_dispatch:
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: b5419e6bcfe11e27b6431d1fcae0178de134bc45
+          fetch-depth: 0
+      - name: Create exact source ZIP
+        run: |
+          git archive --format=zip --prefix=defencekrishna-v125/ -o defencekrishna-v125-b5419e6.zip b5419e6bcfe11e27b6431d1fcae0178de134bc45
+          sha256sum defencekrishna-v125-b5419e6.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: defencekrishna-v125-b5419e6
+          path: defencekrishna-v125-b5419e6.zip
+          retention-days: 7
