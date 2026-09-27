@@ -1,0 +1,12 @@
+{
+  "adapter_contract_sha256": "870e7894378e687c542f286eabccf367c10d4d41dbebe7551b4ce95df2c65ac8",
+  "capture_sha256": "6d0925f42db3a296ba84976e908f256f14efd39db6ae318f58d8e343bcabf199",
+  "github_run_id": "36308007599",
+  "github_sha_before_lock": "805b095f4575e1134d8e39c42f96cfe83adfe893",
+  "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+  "rerun_for_claim_improvement_permitted": false,
+  "result_observed_before_lock": false,
+  "schema_version": "v102-lock.1",
+  "status": "ONE_SHOT_CONSUMED_BEFORE_INFERENCE",
+  "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3"
+}
