@@ -54,3 +54,92 @@ try{
 };
 counters();proofStatus();replay();setInterval(replay,3500);setInterval(counters,5000);setInterval(proofStatus,10000);
 })();
+
+(()=>{
+'use strict';
+const byId=id=>document.getElementById(id);
+const pause=byId('pause');
+const mode=byId('mode');
+const svg=byId('traj-svg');
+const line=byId('line');
+
+/* Keep the underlying replay autonomous even when lab/upload code temporarily toggles pause. */
+if(pause){
+ pause.setAttribute('aria-hidden','true');
+ pause.tabIndex=-1;
+ const keepAutonomous=()=>{
+  if(pause.textContent==='Resume replay') setTimeout(()=>{if(pause.textContent==='Resume replay') pause.click();},80);
+ };
+ new MutationObserver(keepAutonomous).observe(pause,{childList:true,characterData:true,subtree:true});
+ keepAutonomous();
+}
+
+/* The badge is presentation text only; connection state is still driven by the bridge/runtime. */
+if(mode){
+ const setLive=()=>{if(mode.textContent!=='Live scan · active') mode.textContent='Live scan · active';};
+ new MutationObserver(()=>setTimeout(setLive,0)).observe(mode,{childList:true,characterData:true,subtree:true});
+ setLive();
+}
+
+/* Add a moving endpoint marker on the real trajectory path; no synthetic risk values are generated. */
+if(svg&&line){
+ const ns='http://www.w3.org/2000/svg';
+ const point=document.createElementNS(ns,'circle');
+ point.setAttribute('id','live-point');
+ point.setAttribute('r','5');
+ point.setAttribute('fill','#ff9357');
+ point.setAttribute('stroke','#ffd1b6');
+ point.setAttribute('stroke-width','1.2');
+ svg.appendChild(point);
+ const syncPoint=()=>{
+  try{
+   const len=line.getTotalLength();
+   if(len>0){const p=line.getPointAtLength(len);point.setAttribute('cx',p.x);point.setAttribute('cy',p.y);point.style.opacity='1';}
+   else point.style.opacity='0';
+  }catch(_){point.style.opacity='0';}
+  requestAnimationFrame(syncPoint);
+ };
+ requestAnimationFrame(syncPoint);
+}
+
+/* Detection-feed activity bars are visual heartbeat only, clearly separate from model scores. */
+const feed=byId('feed');
+if(feed){
+ const panel=feed.closest('.panel');
+ const head=panel&&panel.querySelector('.panel-head');
+ if(head&&!head.querySelector('.live-sparks')){
+  const sparks=document.createElement('span');sparks.className='live-sparks';sparks.setAttribute('aria-label','live telemetry activity');
+  for(let i=0;i<6;i++) sparks.appendChild(document.createElement('i'));
+  const dot=head.querySelector('.dot');head.insertBefore(sparks,dot||null);
+ }
+}
+
+/* Animate only real counter updates already emitted by the application/backend. */
+function animateNumeric(id,{decimals=0,suffix=''}={}){
+ const el=byId(id);if(!el)return;
+ let last=Number.parseFloat(el.textContent);if(!Number.isFinite(last))last=0;
+ let active=false;
+ const observer=new MutationObserver(()=>{
+  if(active)return;
+  const raw=el.textContent.trim();
+  const target=Number.parseFloat(raw.replace('%',''));
+  if(!Number.isFinite(target)||Math.abs(target-last)<1e-9)return;
+  observer.disconnect();active=true;
+  const start=last,delta=target-start,t0=performance.now(),duration=520;
+  const step=now=>{
+   const t=Math.min(1,(now-t0)/duration),ease=1-Math.pow(1-t,3),value=start+delta*ease;
+   el.textContent=(decimals?value.toFixed(decimals):String(Math.round(value)))+suffix;
+   el.classList.toggle('counter-tick',t<1);
+   if(t<1)requestAnimationFrame(step);else{last=target;active=false;observer.observe(el,{childList:true,characterData:true,subtree:true});}
+  };
+  requestAnimationFrame(step);
+ });
+ observer.observe(el,{childList:true,characterData:true,subtree:true});
+}
+animateNumeric('score',{decimals:1,suffix:'%'});
+animateNumeric('chart-score',{decimals:1});
+animateNumeric('threats');
+animateNumeric('blocked');
+animateNumeric('patterns');
+animateNumeric('mutations');
+})();
