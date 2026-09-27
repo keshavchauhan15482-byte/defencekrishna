@@ -1,0 +1,47 @@
+{
+  "schema_version": "v111-postmortem.1",
+  "status": "POSTMORTEM_ONLY_NO_SCORING",
+  "claim_boundary": "No model forward pass, persistence metric, support score, threshold fitting, adapter change, or result-improving rerun is performed.",
+  "global_header": {
+    "first24_hex": "d4c3b2a1020004000000000000000000ffff000001000000",
+    "classic": true,
+    "linktype": 1,
+    "snaplen": 65535,
+    "major": 2,
+    "minor": 4
+  },
+  "frozen_runtime_preflight": {
+    "capture_bytes_match": true,
+    "capture_sha256_match": true,
+    "model_sha256_match": true,
+    "support_gate_sha256_match": true,
+    "model_contract": {
+      "architecture": "gnn_lstm",
+      "decoder": "residual",
+      "schema": "garuda-observed-graph-v46-ps-complete",
+      "feature_count": 34,
+      "history": 8,
+      "horizon": 4,
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32,
+      "packet_features_trained": true,
+      "ps_complete_features_trained": true,
+      "feature_order_match": true
+    },
+    "frozen_runtime_preflight_passed": true
+  },
+  "strict_parser": {
+    "decoded_ipv4_before_failure": 0,
+    "first_timestamp": null,
+    "last_timestamp": null,
+    "error": {
+      "type": "ValueError",
+      "message": "Truncated Ethernet frame"
+    },
+    "completed_without_error": false
+  },
+  "model_inference_performed": false,
+  "state_metric_computed": false,
+  "support_metric_computed": false
+}
