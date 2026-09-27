@@ -1,0 +1,208 @@
+name: V111 CTU Botnet 327-2 frozen external one-shot
+
+on:
+  push:
+    branches: [feat/v111-ctu3272-fresh-one-shot]
+    paths:
+      - '.github/workflows/v111-ctu3272-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v111-ctu3272-one-shot
+  cancel-in-progress: false
+
+jobs:
+  frozen-one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install runtime and verify all frozen contracts
+        run: |
+          python -m pip install 'numpy<2.1'
+          python -m compileall -q garuda_v3/v111_ctu3272_one_shot.py
+          test ! -e garuda_v3/artifacts/certification/v111/evaluation_lock.json
+          test ! -e garuda_v3/artifacts/certification/v111/one_shot_result.json
+          python - <<'PY'
+          import hashlib,json,subprocess
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v111')
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          w=json.loads((root/'warning_policy.json').read_text())
+          assert p['schema_version']=='v111-prereg.2'
+          assert p['status']=='HASH_AND_POLICY_FROZEN_ONE_SHOT_ARMED'
+          assert p['acquisition']['one_shot_lock_required_before_packet_decode'] is True
+          assert p['acquisition']['evaluation_permitted'] is True
+          assert a['status']=='HASH_FROZEN_MODEL_NOT_RUN'
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          assert w['status']=='DEV_ONLY_WARNING_POLICY_FROZEN'
+          def sha256(path):
+              h=hashlib.sha256()
+              with open(path,'rb') as f:
+                  for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+              return h.hexdigest()
+          assert sha256(p['registered_candidate']['model_file'])==p['registered_candidate']['model_sha256']
+          assert sha256(p['registered_candidate']['support_gate_file'])==p['registered_candidate']['support_gate_sha256']
+          assert sha256(p['prediction_warning_policy']['artifact'])==p['prediction_warning_policy']['artifact_sha256']
+          assert subprocess.check_output(['git','hash-object','garuda_v3/pcap_reader.py'],text=True).strip()==p['registered_candidate']['pcap_reader_git_blob_sha1']
+          assert subprocess.check_output(['git','hash-object',p['frozen_evaluator']['file']],text=True).strip()==p['frozen_evaluator']['git_blob_sha1']
+          assert p['external_holdout']['publisher_metadata']['packet_clock_alignment_policy']['declared_before_external_packet_decode'] is True
+          print('V111 candidate, policy, evaluator, parser and alignment policy frozen before external decode')
+          PY
+
+      - name: Download and verify exact registered PCAP bytes
+        run: |
+          mkdir -p datasets/v111
+          curl -L --fail --retry 4 --retry-all-errors --retry-delay 4 --connect-timeout 30 \
+            -o datasets/v111/2018-03-27_win3.capture1.pcap \
+            'https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-2/2018-03-27_win3.capture1.pcap'
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v111')
+          p=json.loads((root/'preregistration.json').read_text())
+          f=Path('datasets/v111/2018-03-27_win3.capture1.pcap')
+          def h(name):
+              x=hashlib.new(name)
+              with f.open('rb') as z:
+                  for b in iter(lambda:z.read(1024*1024),b''): x.update(b)
+              return x.hexdigest()
+          assert f.stat().st_size==p['external_holdout']['pcap_bytes']==69890363
+          assert h('sha256')==p['external_holdout']['pcap_sha256']
+          assert h('md5')==p['external_holdout']['pcap_md5']
+          print('Exact V111 PCAP identity verified; packet records still not decoded')
+          PY
+
+      - name: Consume one-shot before first packet decode
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v111')
+          assert not (root/'evaluation_lock.json').exists()
+          assert not (root/'one_shot_result.json').exists()
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          lock={
+            'schema_version':'v111-lock.1',
+            'status':'ONE_SHOT_CONSUMED_BEFORE_PACKET_DECODE',
+            'github_run_id':os.environ.get('GITHUB_RUN_ID'),
+            'github_sha_before_lock':os.environ.get('GITHUB_SHA'),
+            'dataset':p['external_holdout']['dataset'],
+            'capture_sha256':a['sha256'],
+            'model_sha256':p['registered_candidate']['model_sha256'],
+            'support_gate_sha256':p['registered_candidate']['support_gate_sha256'],
+            'warning_policy_sha256':p['prediction_warning_policy']['artifact_sha256'],
+            'evaluator_git_blob_sha1':p['frozen_evaluator']['git_blob_sha1'],
+            'pcap_reader_git_blob_sha1':p['registered_candidate']['pcap_reader_git_blob_sha1'],
+            'packet_records_decoded_before_lock':False,
+            'graph_windows_constructed_before_lock':False,
+            'model_inference_before_lock':False,
+            'external_labels_accessed_before_lock':False,
+            'rerun_for_claim_improvement_permitted':False,
+          }
+          (root/'evaluation_lock.json').write_text(json.dumps(lock,indent=2,sort_keys=True)+'\n')
+          PY
+          git add -f garuda_v3/artifacts/certification/v111/evaluation_lock.json
+          git commit -m 'evidence(v111): consume CTU 327-2 one-shot before packet decode'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Execute single frozen external evaluation
+        run: |
+          python - <<'PY'
+          import json,subprocess,sys
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v111')
+          output=root/'one_shot_result.json'
+          cmd=[
+            sys.executable,'-m','garuda_v3.v111_ctu3272_one_shot',
+            '--pcap','datasets/v111/2018-03-27_win3.capture1.pcap',
+            '--model','garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz',
+            '--support-gate','garuda_v3/artifacts/certification/v108/support_gate.json',
+            '--warning-policy',str(root/'warning_policy.json'),
+            '--prereg',str(root/'preregistration.json'),
+            '--acquisition',str(root/'acquisition_manifest.json'),
+            '--output',str(output),
+          ]
+          proc=subprocess.run(cmd,text=True,capture_output=True)
+          if proc.stdout: print(proc.stdout)
+          if proc.stderr: print(proc.stderr,file=sys.stderr)
+          if proc.returncode != 0:
+              assert not output.exists(), 'evaluator failed after writing unexpected result'
+              p=json.loads((root/'preregistration.json').read_text())
+              lock=json.loads((root/'evaluation_lock.json').read_text())
+              report={
+                'schema_version':'v111.1',
+                'status':'INCOMPATIBLE',
+                'performance_gate_evaluated':False,
+                'external_holdout_consumed':True,
+                'rerun_permitted_for_claim_improvement':False,
+                'dataset':{'name':p['external_holdout']['dataset'],'capture':p['external_holdout']['capture'],'pcap_sha256':p['external_holdout']['pcap_sha256'],'external_labels_accessed':False},
+                'frozen_runtime':{'model_sha256':p['registered_candidate']['model_sha256'],'support_gate_sha256':p['registered_candidate']['support_gate_sha256'],'warning_policy_sha256':p['prediction_warning_policy']['artifact_sha256'],'evaluator_git_blob_sha1':p['frozen_evaluator']['git_blob_sha1']},
+                'one_shot_lock':lock,
+                'failure':{'return_code':proc.returncode,'stderr_tail':proc.stderr[-5000:]},
+                'claim_boundary':'Consumed fresh external compatibility result only; no state-forecast generalisation, five-stage, or exact successful-compromise warning claim is made.'
+              }
+              output.write_text(json.dumps(report,indent=2,sort_keys=True,allow_nan=False)+'\n')
+          PY
+
+      - name: Verify immutable result boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v111')
+          d=json.loads((root/'one_shot_result.json').read_text())
+          lock=json.loads((root/'evaluation_lock.json').read_text())
+          assert d['schema_version']=='v111.1'
+          assert d['status'] in {'PASS','FAIL','INCOMPATIBLE'}
+          assert lock['status']=='ONE_SHOT_CONSUMED_BEFORE_PACKET_DECODE'
+          if d['status'] in {'PASS','FAIL'}:
+              assert d['capture_audit']['contiguous_sequences']>=32
+              assert d['dataset']['external_labels_accessed'] is False
+              assert d['state_forecasting']['beats_persistence']==(d['status']=='PASS')
+              assert d['primary_gate']['support_required_for_forecast_pass'] is False
+              assert d['one_shot_integrity']['warning_threshold_fit_on_external'] is False
+              assert d['preinfection_boundary_audit']['successful_compromise_timestamp_certified'] is False
+          else:
+              assert d['performance_gate_evaluated'] is False
+              assert d['external_holdout_consumed'] is True
+              assert d['rerun_permitted_for_claim_improvement'] is False
+          print(json.dumps(d,indent=2))
+          PY
+
+      - name: Record immutable V111 result
+        run: |
+          git add -f garuda_v3/artifacts/certification/v111/one_shot_result.json
+          git commit -m 'evidence(v111): record first frozen CTU 327-2 one-shot'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Upload V111 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v111-ctu3272-one-shot-evidence
+          path: |
+            garuda_v3/artifacts/certification/v111/preregistration.json
+            garuda_v3/artifacts/certification/v111/acquisition_manifest.json
+            garuda_v3/artifacts/certification/v111/warning_policy.json
+            garuda_v3/artifacts/certification/v111/evaluation_lock.json
+            garuda_v3/artifacts/certification/v111/one_shot_result.json
+          if-no-files-found: error
+          retention-days: 30
