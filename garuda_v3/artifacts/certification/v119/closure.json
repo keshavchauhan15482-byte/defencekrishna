@@ -1,0 +1,46 @@
+{
+  "schema_version": "v119-closure.1",
+  "status": "INSUFFICIENT_TEMPORAL_COVERAGE_AFTER_CONSUMPTION",
+  "claim_passed": false,
+  "performance_result_available": false,
+  "github_run_id": 36316248771,
+  "github_job_id": 108611394409,
+  "pre_decode_lock_commit": "a838bbd2a3f4a108079067d462c16866e1960f2c",
+  "external_holdout": {
+    "dataset": "AI4CYBER UC3 Cyberattack Network Packet Captures",
+    "doi": "10.5281/zenodo.15649231",
+    "archive_sha256": "b72eb23dc13c7ace01eb0eee72ded940a4e0eb22a48d3b79bce914f065633646",
+    "selected_pcap_member": "FIDS/From Wireshark/cyberattack manual.pcapng",
+    "selected_pcap_bytes": 119557196,
+    "selected_pcap_sha256": "08d7c6c3d5d66ec96bc279b3169b1a02b7810ea80c7f253fb49ce61ff893bfce",
+    "selection_rule": "largest uncompressed PCAP/PCAPNG member by archive metadata; lexicographic tie break",
+    "labels_accessed": false
+  },
+  "execution_boundary": {
+    "archive_and_member_hashes_verified_before_decode": true,
+    "irreversible_lock_committed_before_extraction": true,
+    "packet_decode_started_after_lock": true,
+    "packet_decode_reached_temporal_window_construction": true,
+    "observed_10s_windows_before_abort": 25,
+    "model_forward_performed": false,
+    "support_scoring_performed": false,
+    "forecast_mse_computed": false,
+    "persistence_mse_computed": false
+  },
+  "failure": {
+    "exception_type": "garuda_v3.v101_packet_graph_recovery.RecoveryContractError",
+    "message": "Too few observed windows: 25",
+    "location": "garuda_v3.v112_tolerant_ps_complete_runtime.tolerant_packet_service_graphs",
+    "interpretation": "The preregistered metadata-only member selection produced insufficient temporal coverage for the frozen history/horizon contract. This is not a forecasting-performance FAIL and cannot be converted into a PASS by selecting another archive member after consumption."
+  },
+  "integrity": {
+    "holdout_consumed": true,
+    "rerun_for_claim_improvement_permitted": false,
+    "alternate_member_selection_permitted": false,
+    "external_used_for_training": false,
+    "external_used_for_transform_fit": false,
+    "external_used_for_support_fit": false,
+    "external_used_for_calibration_fit": false
+  },
+  "claim_boundary": "V119 creates no fresh external generalisation PASS. The V116+V118 runtime remains development-frozen; AI4CYBER/V119 is quarantined after this compatibility/coverage abort."
+}
