@@ -1,0 +1,34 @@
+{
+  "schema_version": "v98.1",
+  "declared_status": "SHADOW_UNRESOLVED",
+  "campaign_id": null,
+  "warning_event": null,
+  "compromise_event": null,
+  "provenance": {
+    "identity_proof_complete": false,
+    "evidence_campaign_ids": [],
+    "train_campaign_ids": [],
+    "validation_campaign_ids": [],
+    "calibration_campaign_ids": [],
+    "development_reused_campaign_ids": []
+  },
+  "claim_boundary": "No successful-compromise lead-time claim is certified until V98 has an integrity-pinned model warning, an objective successful-compromise event for the same campaign, positive lead time, and complete campaign-disjointness provenance.",
+  "legacy_evidence_excluded": {
+    "v93_attack_step_lead_time_seconds": 297.67,
+    "accepted_as_successful_compromise_evidence": false,
+    "reason": "V93 measures lead time to an attack-step/onset boundary. An attack-step/onset timestamp is not an objective successful-compromise timestamp."
+  },
+  "repository_audit": {
+    "successful_compromise_artifact_found": false,
+    "establishes_compromise_artifact_found": false,
+    "audit_conclusion": "The active branch does not currently contain a paired objective successful-compromise event and model-warning event that satisfies the V98 contract."
+  },
+  "required_for_pass": [
+    "Select one explicitly identified evidence campaign and prove its identity is disjoint from train, validation, calibration, and development-reused campaign identities.",
+    "Record an actual model-emitted warning event with a timezone-aware timestamp and emitted_by_model=true.",
+    "Record an objective successful-compromise event for the same campaign with a timezone-aware timestamp and establishes_successful_compromise=true.",
+    "Integrity-pin both raw JSON event artifacts by SHA-256.",
+    "Verify that successful_compromise_timestamp - model_warning_timestamp is strictly greater than zero.",
+    "Keep the certified claim scoped only to the exact campaign represented by those artifacts."
+  ]
+}
