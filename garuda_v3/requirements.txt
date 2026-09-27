@@ -1,4 +1,8 @@
 # Tested CPU reference runtime: Python 3.12.14
 numpy==2.3.5
-# Training and evaluation only; serving needs NumPy + Python standard library.
+# Training and evaluation dependencies.
 scikit-learn==1.8.0
+pandas==2.3.3
+pytest==8.4.2
+# Serving itself remains NumPy + Python standard library; pandas/pytest are
+# required by the committed research/evaluation and full-regression suite.

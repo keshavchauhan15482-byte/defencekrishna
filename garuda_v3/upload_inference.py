@@ -42,7 +42,10 @@ def analyze(raw, kind, artifacts):
                        node_names=data["metadata"]["node_names"][end-1])
         payload.update({k:data[k][start:end].tolist() for k in ("x","adj","mask")})
         try:
-            forecasts.append(service.predict(payload))
+            # Offline upload review is explicitly advisory.  Out-of-support
+            # histories may be displayed with SHADOW_UNRESOLVED status, but
+            # they cannot authorise stage claims or automatic containment.
+            forecasts.append(service.predict(payload, allow_unsupported_advisory=True))
         except ValueError as exc:
             withheld.append(dict(end_window=end, reason=str(exc)))
     return dict(status="forecast_available" if forecasts else "insufficient_evidence",

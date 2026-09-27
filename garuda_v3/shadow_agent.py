@@ -35,8 +35,11 @@ class ShadowAgent:
    after=path.stat()
    if (stat.st_size,stat.st_mtime_ns)!=(after.st_size,after.st_mtime_ns):raise ValueError('Capture changed during processing')
    payload=dict(schema=SCHEMA,mode=meta['mode'],window_seconds=meta['window_seconds'],x=d['x'][-h:].tolist(),adj=d['adj'][-h:].tolist(),mask=d['mask'][-h:].tolist(),times=d['times'][-h:].tolist(),node_names=d['metadata']['node_names'][-1],data_source='on_premise_completed_capture')
-   f=self.service.predict(payload,explain=False)
-   result.update(status='forecast',score=max(t['malicious_flow_probability'] for t in f['trajectory'])*100,trajectory=f['trajectory'],cutoff_epoch_seconds=f['cutoff_epoch_seconds'],alert=f['alert'],model_release_status='research_only',scope='Last contiguous history in completed capture; not continuous packet interception')
+   # Shadow collection may display unsupported-domain forecasts as advisory;
+   # ForecastService still marks them SHADOW_UNRESOLVED and never authorises
+   # autonomous containment or stage-specific interpretation.
+   f=self.service.predict(payload,explain=False,allow_unsupported_advisory=True)
+   result.update(status='forecast',score=max(t['malicious_flow_probability'] for t in f['trajectory'])*100,trajectory=f['trajectory'],cutoff_epoch_seconds=f['cutoff_epoch_seconds'],alert=f['alert'],operating_mode=f['operating_mode'],runtime_support=f['runtime_support'],model_release_status='research_only',scope='Last contiguous history in completed capture; not continuous packet interception')
   except (ValueError,KeyError,TypeError) as e:result.update(status='withheld',reason=str(e))
   with self.db:
    self.db.execute('DELETE FROM observations WHERE created < ?',(time.time()-self.days*86400,))
