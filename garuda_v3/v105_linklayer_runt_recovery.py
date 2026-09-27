@@ -31,6 +31,8 @@ HIKARI_MD5 = '900deec66e058801a377fd81c5fc805e'
 MAWI_SHA256 = '6d0925f42db3a296ba84976e908f256f14efd39db6ae318f58d8e343bcabf199'
 CTU_IDSEVAL6_ARCHIVE_SHA256 = 'fa1da03ac3797f70747c62b89f12cc31305cc260f74162c6b8060aeb2e74c518'
 CONSUMED_TOKENS = ('hikari', 'mawi', 'ctu-idseval-6', 'idseval6')
+METRIC_EQ_RTOL = 1e-6
+METRIC_EQ_ATOL = 1e-10
 
 
 class V105ContractError(RuntimeError):
@@ -87,9 +89,21 @@ def evaluate_state(model, arrays) -> dict:
     }
 
 
-def same_metric_block(a: dict, b: dict, tol: float = 1e-12) -> bool:
+def same_metric_block(
+    a: dict,
+    b: dict,
+    *,
+    rtol: float = METRIC_EQ_RTOL,
+    atol: float = METRIC_EQ_ATOL,
+) -> bool:
+    """Numerical reproducibility gate, not a model-performance tolerance.
+
+    V105 reuses the exact frozen model/data contract. Tiny BLAS/NumPy floating-point
+    differences across hosted runners are accepted only at a fixed 1e-6 relative and
+    1e-10 absolute tolerance; the boolean persistence verdict must still match exactly.
+    """
     for key in ('model_mse', 'persistence_mse', 'improvement_vs_persistence'):
-        if not np.isclose(float(a[key]), float(b[key]), rtol=0.0, atol=tol):
+        if not np.isclose(float(a[key]), float(b[key]), rtol=rtol, atol=atol):
             return False
     return bool(a['beats_persistence']) == bool(b['beats_persistence'])
 
@@ -272,6 +286,11 @@ def main() -> int:
             'phase2_sanity': phase2_metrics,
             'v101_reference_selected_candidate': v101['selected_candidate'],
             'v103_metric_equivalence': metric_equivalence,
+            'metric_equivalence_tolerance': {
+                'rtol': METRIC_EQ_RTOL,
+                'atol': METRIC_EQ_ATOL,
+                'purpose': 'hosted-runner floating-point reproducibility only; not a model-performance margin',
+            },
         },
         'runtime_support': {
             'threshold': float(gate['threshold']),
@@ -285,7 +304,7 @@ def main() -> int:
         'recovery_checks': {
             'strict_default_preserved_by_unit_tests': True,
             'synthetic_l2_runt_skip_semantics_required_by_unit_tests': True,
-            'development_metrics_match_v103': bool(all(metric_equivalence.values())),
+            'development_metrics_match_v103_with_fixed_numeric_tolerance': bool(all(metric_equivalence.values())),
             'development_depends_on_l2_runt_skips': not no_dev_runt_dependency,
         },
         'freeze': {
