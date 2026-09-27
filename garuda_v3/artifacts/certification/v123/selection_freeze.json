@@ -1,0 +1,44 @@
+{
+  "schema_version": "v123-selection.1",
+  "status": "SOURCE_SELECTED_BEFORE_PACKET_DOWNLOAD",
+  "selected_at_utc": "2026-09-27T12:02:00Z",
+  "dataset": "Modbus Normal and Malicious Network Traffic",
+  "publisher": "Centre for Research and Technology Hellas / Zero-SWARM",
+  "repository": "Zenodo",
+  "record_id": 15082260,
+  "doi": "10.5281/zenodo.15082260",
+  "source_page": "https://zenodo.org/records/15082260",
+  "selection_rule": "Use every PCAP published in this record as one aggregate external holdout; no capture may be dropped or selected after packet/model inspection.",
+  "expected_files": [
+    {"name": "[Zero-SWARM] Flooding Attack_v1.pcap", "md5": "a970eda097645d24ec3b9eb24de858b2"},
+    {"name": "[Zero-SWARM] Nmap_v1.pcap", "md5": "62bddfe28a2170b669a649fd04c9a6c9"},
+    {"name": "ZeroSWARM Normal data_v2.pcap", "md5": "eee8b87e62c482fd574b6e78d32cb12b"},
+    {"name": "ZeroSWARM Normal data_v2b.pcap", "md5": "9f8235fcdbfcacb32e7a70db14fc6c74"}
+  ],
+  "history_audit": {
+    "active_tree_searched_for": ["ZeroSWARM", "15082260", "Modbus"],
+    "prior_trace_found": false,
+    "consumed_external_overlap_found": false
+  },
+  "integrity_boundary": {
+    "packet_bytes_downloaded_before_selection": false,
+    "packet_records_decoded_before_selection": false,
+    "model_inference_before_selection": false,
+    "labels_accessed": false,
+    "external_statistics_used_for_runtime_design": false
+  },
+  "registered_runtime": {
+    "base_model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+    "behavior_envelope_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
+    "semantic_support_contract_sha256": "2b248bdb0c9504598d8feecb5a09bdcb322db605872839c684f235c938fec564",
+    "alpha": 0.663139650493983,
+    "feature_count": 34,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "max_nodes": 32
+  },
+  "claim_boundary": "Fresh publisher-independent external state-transition forecasting only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim."
+}
