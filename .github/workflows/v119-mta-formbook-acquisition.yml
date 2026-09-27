@@ -29,7 +29,7 @@ jobs:
         run: |
           set -euo pipefail
           MEMBER='2026-08-09-traffic-analysis-exercise.pcap'
-          unzip -P infected -p /tmp/v119/capture.zip "$MEMBER" > /tmp/v119/capture.pcap
+          unzip -P infected_20260809 -p /tmp/v119/capture.zip "$MEMBER" > /tmp/v119/capture.pcap
           test -s /tmp/v119/capture.pcap
           sha256sum /tmp/v119/capture.pcap | tee /tmp/v119/pcap.sha256
           ARCHIVE_SHA=$(cut -d' ' -f1 /tmp/v119/archive.sha256)
@@ -51,6 +51,7 @@ jobs:
             'packet_records_decoded':False,
             'model_inference_performed':False,
             'labels_accessed':False,
+            'zip_password_scheme':'infected_YYYYMMDD',
             'zip_password_used_for_access_only':True
           }
           Path('garuda_v3/artifacts/certification/v119/acquisition_manifest.json').write_text(json.dumps(out,indent=2)+'\n')
