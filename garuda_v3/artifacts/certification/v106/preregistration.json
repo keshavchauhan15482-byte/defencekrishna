@@ -7,12 +7,21 @@
     "dataset": "USTC-TFC2016",
     "capture": "Malware/Miuref.pcap",
     "publisher_repository": "davidyslu/USTC-TFC2016",
+    "publisher_branch": "master",
+    "publisher_commit_sha": "4bc9683b996f582c3843815b68da8e4dce9c7e1e",
+    "publisher_tree_sha": "fba77dcee81c1a6046eaf2f4de64c13ed4a3a1f8",
     "source_url": "https://raw.githubusercontent.com/davidyslu/USTC-TFC2016/master/Malware/Miuref.pcap",
     "expected_bytes": 17196739,
-    "publisher_git_blob_sha1": "7a69acdb1b90f99e8f50377dc0970405de6a4b2f",
+    "publisher_git_blob_sha1": "070174d3486e74f04fccdc96504e6f4c60bf8333",
     "sha256": null,
     "md5": null,
     "labels_required_or_accessed": false,
+    "metadata_correction_before_decode": {
+      "previous_unverified_blob_sha1": "7a69acdb1b90f99e8f50377dc0970405de6a4b2f",
+      "corrected_from_authoritative_master_tree": true,
+      "packet_decode_had_occurred": false,
+      "model_inference_had_occurred": false
+    },
     "repo_history_audit": {
       "miuref_match_found_before_selection": false,
       "ustc_tfc2016_match_found_before_selection": false,
