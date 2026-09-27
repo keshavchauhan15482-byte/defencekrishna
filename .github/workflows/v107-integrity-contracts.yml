@@ -6,6 +6,8 @@ on:
     paths:
       - 'garuda_v3/v107_precompromise_evidence_validator.py'
       - 'garuda_v3/tests/test_v107_precompromise_evidence_validator.py'
+      - 'garuda_v3/v107_stage_certification_validator.py'
+      - 'garuda_v3/tests/test_v107_stage_certification_validator.py'
       - '.github/workflows/v107-integrity-contracts.yml'
   workflow_dispatch:
 
@@ -24,7 +26,13 @@ jobs:
           cache: pip
       - name: Install test runtime
         run: python -m pip install 'numpy<2.1' pytest
-      - name: Compile and test fail-closed V98 validator
+      - name: Compile fail-closed evidence validators
         run: |
-          python -m compileall -q garuda_v3/v107_precompromise_evidence_validator.py
-          python -m pytest -q garuda_v3/tests/test_v107_precompromise_evidence_validator.py
+          python -m compileall -q \
+            garuda_v3/v107_precompromise_evidence_validator.py \
+            garuda_v3/v107_stage_certification_validator.py
+      - name: Test V97 and V98 integrity contracts
+        run: |
+          python -m pytest -q \
+            garuda_v3/tests/test_v107_precompromise_evidence_validator.py \
+            garuda_v3/tests/test_v107_stage_certification_validator.py
