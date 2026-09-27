@@ -1,0 +1,1 @@
+Freeze a standards-compliant truncated-PCAP parser using specification/synthetic/non-MAWI development evidence, then select a different untouched external holdout and run exactly once.
