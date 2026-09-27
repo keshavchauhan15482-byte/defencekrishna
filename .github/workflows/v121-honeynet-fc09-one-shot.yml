@@ -1,0 +1,162 @@
+name: V121 Honeynet FC09 frozen one-shot
+
+on:
+  push:
+    branches: [feat/v121-honeynet-fc09-one-shot]
+    paths:
+      - 'garuda_v3/v121_honeynet_fc09_one_shot.py'
+      - 'garuda_v3/artifacts/certification/v121/preregistration.json'
+      - '.github/workflows/v121-honeynet-fc09-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify frozen preregistration and evaluator syntax
+        run: |
+          set -euo pipefail
+          python -m py_compile garuda_v3/v121_honeynet_fc09_one_shot.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v121/preregistration.json').read_text())
+          a=json.loads(Path('garuda_v3/artifacts/certification/v121/acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED' and p['evaluation_permitted'] is True
+          assert a['status']=='HASH_FROZEN_NO_PACKET_DECODE'
+          assert a['packet_records_decoded'] is False and a['model_inference_performed'] is False
+          assert a['labels_accessed'] is False
+          assert not Path('garuda_v3/artifacts/certification/v121/one_shot_result.json').exists()
+          print('V121 frozen preregistration: PASS')
+          PY
+      - name: Reacquire exact frozen bytes without packet decode
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v121/extracted /tmp/v121/nested
+          URL='https://media.githubusercontent.com/media/honeynet/forensic_challenges/master/zip_files/challenges/fc09.zip'
+          curl -L --fail --retry 4 --retry-delay 3 "$URL" -o /tmp/v121/fc09.zip
+          test "$(stat -c%s /tmp/v121/fc09.zip)" -eq 60646083
+          echo '90938c45d4309f9af0ef29cd308e4d201be905998b98778511a04c3bebd81cc3  /tmp/v121/fc09.zip' | sha256sum -c -
+          echo 'a64f9e0f51f2f31c3f9e437ab835040c2b644aff  /tmp/v121/fc09.zip' | sha1sum -c -
+          PASSWORD='84443a1b5f4a4d91d88342d149dc5f10ad0e1fe0f9f9b4a63f6d66f05ac47b27'
+          unzip -P "$PASSWORD" -o /tmp/v121/fc09.zip -d /tmp/v121/extracted >/tmp/v121/unzip.log
+          PCAP=$(find /tmp/v121/extracted -type f -name 'traffic.pcap' -print -quit || true)
+          if [ -z "$PCAP" ]; then
+            NESTED_TAR=$(find /tmp/v121/extracted -type f -name 'fc9files-final.tar.gz' -print -quit)
+            echo 'dbc378ce1807a4a2459f882b13b4224d0db8fbc7  '"$NESTED_TAR" | sha1sum -c -
+            tar -xzf "$NESTED_TAR" -C /tmp/v121/nested
+            PCAP=$(find /tmp/v121/nested -type f -name 'traffic.pcap' -print -quit)
+          fi
+          cp "$PCAP" /tmp/v121/traffic.pcap
+          test "$(stat -c%s /tmp/v121/traffic.pcap)" -eq 10207674
+          echo '712ee23b7b43e12e4e94945e4e1d9ad60b85ee48d3adf78fb9b4ae49dbb262e1  /tmp/v121/traffic.pcap' | sha256sum -c -
+          echo 'fcf291916d552c9cea2905dc8d1816b141d5bbc8  /tmp/v121/traffic.pcap' | sha1sum -c -
+      - name: Commit irreversible pre-decode one-shot lock
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          out=Path('garuda_v3/artifacts/certification/v121/execution_lock.json')
+          if out.exists(): raise SystemExit('V121 execution lock already exists')
+          evaluator=Path('garuda_v3/v121_honeynet_fc09_one_shot.py').read_bytes()
+          prereg=Path('garuda_v3/artifacts/certification/v121/preregistration.json').read_bytes()
+          lock={
+            'schema_version':'v121-execution-lock.1',
+            'status':'IRREVERSIBLE_PRE_DECODE_LOCK',
+            'archive_sha256':'90938c45d4309f9af0ef29cd308e4d201be905998b98778511a04c3bebd81cc3',
+            'pcap_sha256':'712ee23b7b43e12e4e94945e4e1d9ad60b85ee48d3adf78fb9b4ae49dbb262e1',
+            'base_model_sha256':'1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c',
+            'relative_transform_sha256':'6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643',
+            'innovation_calibration_sha256':'c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701',
+            'robust_support_gate_sha256':'3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4',
+            'evaluator_sha256':hashlib.sha256(evaluator).hexdigest(),
+            'preregistration_sha256':hashlib.sha256(prereg).hexdigest(),
+            'packet_records_decoded_before_lock':False,
+            'model_inference_performed_before_lock':False,
+            'runs_allowed_for_claim':1,
+            'rerun_for_claim_improvement':False
+          }
+          out.write_text(json.dumps(lock,indent=2)+'\n')
+          print(json.dumps(lock,indent=2))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v121/execution_lock.json
+          git commit -m 'evidence(v121): lock one-shot before packet decode'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Verify locked evaluator and preregistration identities
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          lock=json.loads(Path('garuda_v3/artifacts/certification/v121/execution_lock.json').read_text())
+          assert hashlib.sha256(Path('garuda_v3/v121_honeynet_fc09_one_shot.py').read_bytes()).hexdigest()==lock['evaluator_sha256']
+          assert hashlib.sha256(Path('garuda_v3/artifacts/certification/v121/preregistration.json').read_bytes()).hexdigest()==lock['preregistration_sha256']
+          print('V121 evaluator/prereg lock identity: PASS')
+          PY
+      - name: Run exactly one frozen external evaluation
+        run: |
+          set -euo pipefail
+          python -m garuda_v3.v121_honeynet_fc09_one_shot \
+            --pcap /tmp/v121/traffic.pcap \
+            --model garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz \
+            --relative-transform garuda_v3/artifacts/certification/v116/relative_transform.json \
+            --calibration garuda_v3/artifacts/certification/v118/innovation_calibration.json \
+            --robust-support-gate garuda_v3/artifacts/certification/v120/robust_support_gate.json \
+            --prereg garuda_v3/artifacts/certification/v121/preregistration.json \
+            --acquisition garuda_v3/artifacts/certification/v121/acquisition_manifest.json \
+            --execution-lock garuda_v3/artifacts/certification/v121/execution_lock.json \
+            --output garuda_v3/artifacts/certification/v121/one_shot_result.json
+      - name: Verify immutable result contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v121/one_shot_result.json').read_text())
+          assert r['schema_version']=='v121.1'
+          assert r['status'] in {'PASS','FAIL'}
+          assert r['dataset']['labels_accessed'] is False
+          assert r['one_shot_integrity']['runs_allowed_for_claim']==1
+          assert r['one_shot_integrity']['model_inference_performed_once'] is True
+          assert r['one_shot_integrity']['retrained_on_external'] is False
+          assert r['one_shot_integrity']['calibration_fit_on_external'] is False
+          assert r['one_shot_integrity']['support_fit_on_external'] is False
+          assert r['one_shot_integrity']['rerun_for_claim_improvement'] is False
+          if r['status']=='PASS':
+              assert r['gate']['all_gates_passed'] is True
+              assert all(r['gate'][k] for k in ['total_sequences_gate_passed','support_gate_passed','persistence_gate_passed','positive_improvement_gate_passed','finite_metrics_gate_passed'])
+          else:
+              assert r['gate']['all_gates_passed'] is False
+          print(json.dumps({'status':r['status'],'forecasting':r['state_forecasting'],'support':r['runtime_support'],'gate':r['gate']},indent=2))
+          PY
+      - name: Record immutable one-shot result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v121/one_shot_result.json
+          git commit -m 'evidence(v121): record Honeynet FC09 frozen one-shot result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v121-honeynet-fc09-one-shot-evidence
+          path: garuda_v3/artifacts/certification/v121/*
+          if-no-files-found: error
+          retention-days: 30
