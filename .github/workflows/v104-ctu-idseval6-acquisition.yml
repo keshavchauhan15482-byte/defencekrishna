@@ -5,12 +5,17 @@ on:
     branches: [feat/v104-ctu-idseval6-preregister]
     paths:
       - 'garuda_v3/v104_ctu_idseval6_acquire.py'
+      - 'garuda_v3/tests/test_v104_ctu_idseval6_acquire.py'
       - 'garuda_v3/artifacts/certification/v104/preregistration.json'
       - '.github/workflows/v104-ctu-idseval6-acquisition.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: v104-ctu-idseval6-acquisition
+  cancel-in-progress: false
 
 jobs:
   acquisition-only:
@@ -23,8 +28,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Verify fail-closed preregistration and pre-frozen evaluator
+      - name: Verify metadata-only acquisition contracts
         run: |
+          python -m compileall -q garuda_v3/v104_ctu_idseval6_acquire.py
+          python -m unittest discover -s garuda_v3/tests -p 'test_v104_ctu_idseval6_acquire.py' -v
           python - <<'PY'
           import json
           from pathlib import Path
@@ -71,6 +78,7 @@ jobs:
           import json
           from pathlib import Path
           d=json.loads(Path('garuda_v3/artifacts/certification/v104/acquisition_manifest.json').read_text())
+          assert d['schema_version']=='v104-acquisition.2'
           assert d['status']=='HASH_AND_ENTRY_METADATA_FROZEN_MODEL_NOT_RUN'
           assert d['evaluation_performed'] is False
           assert d['archive_extracted'] is False
@@ -83,6 +91,9 @@ jobs:
           assert d['publisher_logical_capture_count']==6
           assert d['pcap_entry_count']==12
           assert len(d['pcap_entries'])==12
+          assert d['ignored_packaging_metadata_count']>=1
+          assert all(x['filename'].startswith('__MACOSX/') for x in d['ignored_packaging_metadata_entries'])
+          assert 'no PCAP selection/drop permitted' in d['member_policy']
           print(json.dumps(d, indent=2, sort_keys=True))
           PY
 
@@ -90,6 +101,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --ff-only origin "${GITHUB_REF_NAME}"
           git add garuda_v3/artifacts/certification/v104/acquisition_manifest.json
           git commit -m "evidence(v104): freeze CTU-IDSEVAL-6 archive identity"
           git push origin "HEAD:${GITHUB_REF_NAME}"
