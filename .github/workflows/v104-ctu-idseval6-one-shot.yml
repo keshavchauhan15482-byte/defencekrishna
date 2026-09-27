@@ -1,0 +1,254 @@
+name: V104 CTU-IDSEVAL-6 frozen external one-shot
+
+on:
+  push:
+    branches: [feat/v104-ctu-idseval6-preregister]
+    paths:
+      - '.github/workflows/v104-ctu-idseval6-one-shot.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v104-ctu-idseval6-one-shot
+  cancel-in-progress: false
+
+jobs:
+  frozen-one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      OPENBLAS_NUM_THREADS: 1
+      OMP_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
+      PYTHONHASHSEED: 0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install runtime and verify frozen contracts
+        run: |
+          python -m pip install 'numpy<2.1'
+          python -m compileall -q garuda_v3/v104_ctu_idseval6_one_shot.py
+          test ! -e garuda_v3/artifacts/certification/v104/evaluation_lock.json
+          test ! -e garuda_v3/artifacts/certification/v104/one_shot_result.json
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v104')
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          assert p['schema_version']=='v104-prereg.3'
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_REGISTERED'
+          assert p['evaluation_permitted'] is True
+          assert p['one_shot_rules']['runs_allowed']==1
+          assert p['one_shot_rules']['consume_lock_required_before_member_extraction'] is True
+          assert p['external_holdout']['archive_pcap_member_count']==6
+          assert len(p['external_holdout']['pcap_entries'])==6
+          assert p['external_holdout']['pcap_entries']==a['pcap_entries']
+          assert a['schema_version']=='v104-acquisition.3'
+          assert a['archive_extracted'] is False
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          assert a['labels_accessed'] is False
+          def sha256(path):
+              h=hashlib.sha256()
+              with open(path,'rb') as f:
+                  for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+              return h.hexdigest()
+          assert sha256(p['registered_candidate']['model_file'])==p['registered_candidate']['model_sha256']
+          assert sha256(p['registered_candidate']['support_gate_file'])==p['registered_candidate']['support_gate_sha256']
+          assert sha256('garuda_v3/pcap_reader.py')==p['registered_candidate']['pcap_reader_sha256']
+          evaluator=p['frozen_evaluator']['file']
+          blob=subprocess.check_output(['git','hash-object',evaluator], text=True).strip()
+          assert blob==p['frozen_evaluator']['git_blob_sha1']
+          acq_blob=subprocess.check_output(['git','hash-object',str(root/'acquisition_manifest.json')], text=True).strip()
+          assert acq_blob==p['acquisition_evidence']['manifest_git_blob_sha1']
+          print('V104 runtime, evaluator, acquisition, and six-member manifest are frozen')
+          PY
+
+      - name: Download and verify exact frozen archive
+        run: |
+          mkdir -p datasets/v104
+          curl -L --fail --retry 4 --retry-all-errors --retry-delay 5 --connect-timeout 30 \
+            --output datasets/v104/pcap.zip \
+            'https://zenodo.org/records/21027042/files/pcap.zip?download=1'
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v104/preregistration.json').read_text())
+          archive=Path('datasets/v104/pcap.zip')
+          def h(name):
+              x=hashlib.new(name)
+              with archive.open('rb') as f:
+                  for b in iter(lambda:f.read(1024*1024),b''): x.update(b)
+              return x.hexdigest()
+          assert h('md5')==p['external_holdout']['official_archive_md5']
+          assert h('sha256')==p['external_holdout']['archive_sha256']
+          assert archive.stat().st_size==p['external_holdout']['archive_bytes']
+          print('Exact V104 archive identity verified; no member extracted yet')
+          PY
+
+      - name: Consume one-shot before member extraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v104')
+          assert not (root/'evaluation_lock.json').exists()
+          assert not (root/'one_shot_result.json').exists()
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          lock={
+              'schema_version':'v104-lock.1',
+              'status':'ONE_SHOT_CONSUMED_BEFORE_MEMBER_EXTRACTION',
+              'github_run_id':os.environ.get('GITHUB_RUN_ID'),
+              'github_sha_before_lock':os.environ.get('GITHUB_SHA'),
+              'dataset':'CTU-IDSEVAL-6',
+              'archive_sha256':a['archive_sha256'],
+              'registered_real_pcap_members':6,
+              'model_sha256':p['registered_candidate']['model_sha256'],
+              'support_gate_sha256':p['registered_candidate']['support_gate_sha256'],
+              'adapter_contract_sha256':p['registered_candidate']['adapter_contract_sha256'],
+              'pcap_reader_sha256':p['registered_candidate']['pcap_reader_sha256'],
+              'evaluator_git_blob_sha1':p['frozen_evaluator']['git_blob_sha1'],
+              'packet_members_extracted_before_lock':False,
+              'packet_records_decoded_before_lock':False,
+              'model_inference_before_lock':False,
+              'rerun_for_claim_improvement_permitted':False,
+          }
+          (root/'evaluation_lock.json').write_text(json.dumps(lock,indent=2,sort_keys=True)+'\n')
+          PY
+          git add -f garuda_v3/artifacts/certification/v104/evaluation_lock.json
+          git commit -m "evidence(v104): consume CTU-IDSEVAL-6 one-shot before extraction"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Extract exactly the six frozen real PCAP payloads
+        run: |
+          python - <<'PY'
+          import json, shutil, zipfile
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v104')
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          lock=json.loads((root/'evaluation_lock.json').read_text())
+          assert lock['status']=='ONE_SHOT_CONSUMED_BEFORE_MEMBER_EXTRACTION'
+          rows=p['external_holdout']['pcap_entries']
+          assert rows==a['pcap_entries'] and len(rows)==6
+          out=Path('datasets/v104/pcaps'); out.mkdir(parents=True, exist_ok=False)
+          with zipfile.ZipFile('datasets/v104/pcap.zip','r') as zf:
+              for row in rows:
+                  info=zf.getinfo(row['filename'])
+                  assert int(info.compress_size)==row['compressed_bytes']
+                  assert int(info.file_size)==row['uncompressed_bytes']
+                  assert f'{info.CRC:08x}'==row['crc32_hex']
+                  target=out/Path(row['filename']).name
+                  with zf.open(info,'r') as src, target.open('wb') as dst:
+                      shutil.copyfileobj(src,dst,1024*1024)
+                  assert target.stat().st_size==row['uncompressed_bytes']
+          actual=sorted(x.name for x in out.iterdir() if x.is_file())
+          expected=sorted(Path(x['filename']).name for x in rows)
+          assert actual==expected and len(actual)==6
+          print('Extracted exactly six frozen real PCAP members; no labels or sidecars extracted')
+          PY
+
+      - name: Execute the single frozen external evaluation
+        run: |
+          python - <<'PY'
+          import json, os, subprocess, sys
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v104')
+          output=root/'one_shot_result.json'
+          cmd=[
+              sys.executable,'-m','garuda_v3.v104_ctu_idseval6_one_shot',
+              '--pcap-dir','datasets/v104/pcaps',
+              '--model','garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz',
+              '--support-gate','garuda_v3/artifacts/certification/v101/support_gate.json',
+              '--prereg',str(root/'preregistration.json'),
+              '--acquisition',str(root/'acquisition_manifest.json'),
+              '--output',str(output),
+          ]
+          proc=subprocess.run(cmd,text=True,capture_output=True)
+          if proc.stdout: print(proc.stdout)
+          if proc.stderr: print(proc.stderr,file=sys.stderr)
+          if proc.returncode != 0:
+              assert not output.exists(), 'Evaluator failed after writing an unexpected result file'
+              p=json.loads((root/'preregistration.json').read_text())
+              a=json.loads((root/'acquisition_manifest.json').read_text())
+              lock=json.loads((root/'evaluation_lock.json').read_text())
+              report={
+                  'schema_version':'v104.2',
+                  'status':'INCOMPATIBLE',
+                  'performance_gate_evaluated':False,
+                  'external_holdout_consumed':True,
+                  'rerun_permitted_for_claim_improvement':False,
+                  'dataset':{
+                      'name':'CTU-IDSEVAL-6','version':'v1','zenodo_record':'21027042',
+                      'archive_md5':a['archive_md5'],'archive_sha256':a['archive_sha256'],
+                      'registered_pcap_member_count':6,'labels_accessed':False,
+                  },
+                  'frozen_runtime':{
+                      'model_sha256':p['registered_candidate']['model_sha256'],
+                      'support_gate_sha256':p['registered_candidate']['support_gate_sha256'],
+                      'adapter_contract_sha256':p['registered_candidate']['adapter_contract_sha256'],
+                      'pcap_reader_sha256':p['registered_candidate']['pcap_reader_sha256'],
+                      'evaluator_git_blob_sha1':p['frozen_evaluator']['git_blob_sha1'],
+                  },
+                  'one_shot_lock':lock,
+                  'failure':{
+                      'return_code':proc.returncode,
+                      'stderr_tail':proc.stderr[-4000:],
+                  },
+                  'claim_boundary':'Consumed fresh external compatibility result only. No state-forecast generalisation, attack recall/FPR, MITRE-stage, or successful-compromise warning claim is made.',
+              }
+              output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
+          PY
+
+      - name: Verify immutable result boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v104')
+          d=json.loads((root/'one_shot_result.json').read_text())
+          lock=json.loads((root/'evaluation_lock.json').read_text())
+          assert d['schema_version']=='v104.2'
+          assert d['status'] in {'PASS','FAIL','INCOMPATIBLE'}
+          assert lock['status']=='ONE_SHOT_CONSUMED_BEFORE_MEMBER_EXTRACTION'
+          if d['status'] in {'PASS','FAIL'}:
+              assert d['dataset']['registered_pcap_member_count']==6
+              assert d['dataset']['labels_accessed'] is False
+              assert d['member_accounting']['registered_members']==6
+              assert d['member_accounting']['evaluated_members']==6
+              assert d['member_accounting']['members_dropped']==0
+              assert d['aggregate_state_forecasting']['beats_persistence']==(d['status']=='PASS')
+          else:
+              assert d['performance_gate_evaluated'] is False
+              assert d['external_holdout_consumed'] is True
+              assert d['rerun_permitted_for_claim_improvement'] is False
+          print(json.dumps(d,indent=2))
+          PY
+
+      - name: Record immutable V104 result
+        run: |
+          git add -f garuda_v3/artifacts/certification/v104/one_shot_result.json
+          git commit -m "evidence(v104): record first frozen CTU-IDSEVAL-6 one-shot"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Upload V104 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v104-ctu-idseval6-one-shot-evidence
+          path: |
+            garuda_v3/artifacts/certification/v104/preregistration.json
+            garuda_v3/artifacts/certification/v104/acquisition_manifest.json
+            garuda_v3/artifacts/certification/v104/evaluation_lock.json
+            garuda_v3/artifacts/certification/v104/one_shot_result.json
+          if-no-files-found: error
+          retention-days: 30
