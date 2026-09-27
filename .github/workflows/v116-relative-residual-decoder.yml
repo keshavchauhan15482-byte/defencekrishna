@@ -1,0 +1,95 @@
+name: V116 clamp-free relative residual recovery
+
+on:
+  push:
+    branches: [feat/v116-relative-residual-decoder]
+    paths:
+      - 'garuda_v3/model.py'
+      - 'garuda_v3/v116_relative_residual_recovery.py'
+      - '.github/workflows/v116-relative-residual-decoder.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  develop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify decoder contract
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from garuda_v3.model import GraphWorldModel, RELATIVE_PS_COMPLETE_SCHEMA
+          m=GraphWorldModel(architecture='gnn_lstm',feature_dim=34,decoder='relative_residual',schema=RELATIVE_PS_COMPLETE_SCHEMA,seed=1)
+          x=np.full((2,8,3,34),-0.5,dtype=np.float32)
+          a=np.zeros((2,8,3,3),dtype=np.float32)
+          mask=np.ones((2,8,3),dtype=np.float32)
+          mean,_,_=m.forward(x,a,mask,4)
+          assert float(mean.data.min()) < 0.0, 'relative decoder must not clamp negative coordinates'
+          try:
+              GraphWorldModel(feature_dim=34,decoder='relative_residual',schema='garuda-observed-graph-v46-ps-complete')
+          except ValueError:
+              pass
+          else:
+              raise AssertionError('relative_residual must require relative schema')
+          print('relative_residual decoder contract: PASS')
+          PY
+      - name: Fetch hash-pinned CICAPT development captures
+        run: |
+          python -m garuda_v3.public_data_fetch --catalogue datasets/multisource/catalogue.json --root datasets/v116 --ids cicapt_network --extract
+      - name: Train three-seed V116 candidate
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v116
+          python -m garuda_v3.v116_relative_residual_recovery --phase1 datasets/v116/1stPhase-timed-Merged.pcap --phase2 datasets/v116/2ndPhase-timed-MergedV2.pcap --output-dir garuda_v3/artifacts/certification/v116 --packet-limit 2000000 --seeds 42 43 44 --epochs 8 --batch-size 64
+      - name: Verify fail-closed evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v116/summary.json').read_text())
+          assert r['schema_version']=='v116.1'
+          assert r['status'] in {'DEV_RELATIVE_RESIDUAL_PASS','DEV_RELATIVE_RESIDUAL_FAIL'}
+          assert r['selection']['phase2_used_for_selection'] is False
+          assert r['selection']['external_used_for_selection'] is False
+          assert r['development_sources']['consumed_external_packets_used'] is False
+          assert r['support_gate']['fit_provenance']['all_consumed_external_holdouts_excluded_from_fit'] is True
+          assert r['representation']['contract']['decoder']=='relative_residual'
+          assert r['representation']['contract']['future_information_used'] is False
+          assert r['representation']['contract']['external_statistics_used'] is False
+          assert r['freeze']['new_external_holdout_selected'] is False
+          if r['status']=='DEV_RELATIVE_RESIDUAL_PASS':
+              assert r['recovery_gate_passed'] is True
+              assert all(r['gates'].values())
+              assert r['freeze']['candidate_frozen_before_new_external_selection'] is True
+          else:
+              assert r['recovery_gate_passed'] is False
+              assert r['freeze']['candidate_frozen_before_new_external_selection'] is False
+          print(json.dumps({'status':r['status'],'selected':r['selected_candidate'],'support':r['support_gate']['phase2_supported_fraction'],'gates':r['gates']},indent=2))
+          PY
+      - name: Record immutable V116 evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v116
+          git commit -m 'evidence(v116): record relative residual development result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v116-relative-residual-evidence
+          path: garuda_v3/artifacts/certification/v116/*
+          if-no-files-found: error
+          retention-days: 30
