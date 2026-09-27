@@ -1,0 +1,1 @@
+V102 evidence is immutable. The MAWI capture is consumed. The observed parser incompatibility may inform postmortem diagnosis but must not be used to retry MAWI or to present V102 as a forecasting PASS/FAIL. Any parser changes belong to a new development version and require a different untouched external holdout.
