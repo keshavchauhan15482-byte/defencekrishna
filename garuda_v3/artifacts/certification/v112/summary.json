@@ -1,0 +1,131 @@
+{
+  "schema_version": "v112.1",
+  "status": "DEV_TOLERANT_PS_COMPLETE_PASS",
+  "recovery_gate_passed": true,
+  "claim_boundary": "Development-only tolerant adapter recovery for the frozen V108 34-feature model. V111 and all earlier external holdouts are quarantined and unused. No fresh external claim is created.",
+  "frozen_runtime": {
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "model_changed": false,
+    "support_gate_changed": false,
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34
+  },
+  "adapter": {
+    "policy": {
+      "schema_version": "v112-adapter.1",
+      "base_schema": "garuda-observed-graph-v46-ps-complete",
+      "feature_count": 34,
+      "strict_default_unchanged": true,
+      "future_external_mode": "allow_truncated=True",
+      "linklayer_runt_semantics": "skip+audit; fabricate no network fields",
+      "short_transport_semantics": "degrade only to trustworthy IP-level telemetry",
+      "payload_bytes_fabricated": false,
+      "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+      "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+      "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+      "consumed_external_quarantine": [
+        "HIKARI-2021/V99",
+        "MAWI/V102",
+        "CTU-IDSEVAL-6/V104",
+        "USTC-TFC2016-Miuref/V106",
+        "CTU-Malware-Capture-Botnet-327-1/V111"
+      ]
+    },
+    "adapter_contract_sha256": "f7d28ef7ead71ac0defbf7c0e429d93920c102a47d3e44fe665dc5ea1bd0f000",
+    "selected_without_consumed_external_fitting": true
+  },
+  "development_sources": {
+    "dataset": "CICAPT-IIoT2024",
+    "phase1": {
+      "capture": "1stPhase-timed-Merged.pcap",
+      "sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+      "decoded_packets": 2000000,
+      "parser_audit": {
+        "decoded_ipv4": 2000000,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "full_tcp": 1905694,
+        "full_udp": 94172,
+        "non_ipv4": 21940,
+        "nonfirst_fragment": 0,
+        "other_protocol": 134,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "skipped_truncated_vlan": 0
+      }
+    },
+    "phase2": {
+      "capture": "2ndPhase-timed-MergedV2.pcap",
+      "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+      "decoded_packets": 2000000,
+      "parser_audit": {
+        "decoded_ipv4": 2000000,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "full_tcp": 1872776,
+        "full_udp": 126738,
+        "non_ipv4": 14481,
+        "nonfirst_fragment": 0,
+        "other_protocol": 486,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "skipped_truncated_vlan": 0
+      },
+      "used_for_selection": false
+    },
+    "consumed_external_packets_used": false
+  },
+  "packet_features_present_mean": {
+    "phase1_train": 1.0,
+    "phase1_validation": 1.0,
+    "phase2_sanity": 1.0
+  },
+  "state_forecasting": {
+    "phase1_validation": {
+      "model_mse": 0.015398346818983555,
+      "persistence_mse": 0.020817944779992104,
+      "improvement_vs_persistence": 0.2603329972427088,
+      "beats_persistence": true
+    },
+    "phase2_sanity": {
+      "model_mse": 0.023915784433484077,
+      "persistence_mse": 0.031055666506290436,
+      "improvement_vs_persistence": 0.22990593588967573,
+      "beats_persistence": true
+    },
+    "matches_v108_frozen_reference": {
+      "phase1_validation": true,
+      "phase2_sanity": true
+    }
+  },
+  "runtime_support": {
+    "threshold": 8.80609323395997,
+    "phase2_supported_sequences": 5673,
+    "phase2_total_sequences": 5677,
+    "phase2_supported_fraction": 0.9992954025013211,
+    "support_gate_refit": false
+  },
+  "freeze": {
+    "adapter_contract_sha256": "f7d28ef7ead71ac0defbf7c0e429d93920c102a47d3e44fe665dc5ea1bd0f000",
+    "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+    "candidate_model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "new_external_holdout_selected": false
+  },
+  "quarantine": {
+    "v111_used_for_fitting": false,
+    "v111_rerun_allowed": false,
+    "future_external_must_be_different_capture": true
+  },
+  "next_gate": "After V112 is frozen and merged, select a genuinely different untouched external capture and evaluate exactly once without retuning.",
+  "reference_equivalence_policy": {
+    "metric": "model_mse and persistence_mse",
+    "maximum_relative_drift": 0.01,
+    "fit_scope": "hash-pinned CICAPT development only",
+    "consumed_external_used_to_choose_tolerance": false,
+    "rationale": "Tolerant malformed-record accounting may alter the exact decoded-record boundary; require sub-1% MSE stability while preserving frozen model/support and persistence superiority."
+  }
+}
