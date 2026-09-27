@@ -1,0 +1,79 @@
+{
+  "schema_version": "v97.1",
+  "candidate_id": "v97-stage-packet-evidence-shadow",
+  "declared_status": "SHADOW_UNRESOLVED",
+  "claim_boundary": "This candidate is an evidence-integrity checkpoint for supervised five-stage MITRE output plus packet-origin telemetry. It does not certify fresh external generalisation or warning before successful compromise.",
+  "required_stages": [
+    "reconnaissance",
+    "initial_access",
+    "lateral_movement",
+    "command_and_control",
+    "exfiltration"
+  ],
+  "stage_evidence": {
+    "label_source": "publisher_timeline_unvalidated",
+    "unknown_label_policy": "masked",
+    "provenance": {
+      "training_sources": [
+        "development"
+      ],
+      "validation_sources": [
+        "development_validation"
+      ],
+      "calibration_sources": [],
+      "evaluation_sources": [
+        "v81_fresh_reserve"
+      ]
+    },
+    "metrics": {},
+    "artifact": null,
+    "notes": [
+      "V69 explicitly states that publisher stage labels are network_stage_validated=false and therefore cannot support a supervised network-stage release claim by alignment alone.",
+      "V82 trains a five-class stage mapper but its current one-shot fresh reserve evaluates only Reconnaissance and Lateral Movement subtypes; Exploitation is documented there as an Initial Access proxy.",
+      "Until native or independently network-validated labels and complete five-stage metrics are frozen into a hash-pinned artifact, this gate must remain unresolved."
+    ]
+  },
+  "packet_evidence": {
+    "origin": "pcapng",
+    "source_capture_sha256": null,
+    "world_model_consumes_packet_features": false,
+    "supported_features": {
+      "ttl_variance": false,
+      "tcp_window": false,
+      "fragmentation": false,
+      "payload_distribution": false,
+      "port_scan_patterns": false,
+      "retransmission": false
+    },
+    "artifact": null,
+    "notes": [
+      "V68 code audits real PCAP/PCAPNG packet telemetry and includes the SIH packet feature schema.",
+      "V70 code consumes the combined flow+packet state vector in a residual LSTM transition benchmark.",
+      "No checked-in hash-pinned V68/V70 execution artifact and source capture SHA-256 were found in the current certification tree, so code capability is not upgraded to runtime evidence here."
+    ]
+  },
+  "observed_repository_evidence": {
+    "v68_packet_contract": {
+      "path": "garuda_v3/v68_cicapt_packet_contract.py",
+      "git_blob_sha1": "2e5a73554c2e0a51dc145368678c8eec344d4874"
+    },
+    "v69_stage_alignment": {
+      "path": "garuda_v3/v69_cicapt_stage_alignment_audit.py",
+      "git_blob_sha1": "1a225ae3f052ce2da6f56c67885f86cf9133521f"
+    },
+    "v70_packet_world_model": {
+      "path": "garuda_v3/v70_cicapt_packet_world_model.py",
+      "git_blob_sha1": "ef2b54725dc1a9b975c34beeb8b763610551c78b"
+    },
+    "v82_stage_head": {
+      "path": "garuda_v3/v82_robust_stage_head_fresh_eval.py",
+      "git_blob_sha1": "0a537cd8b3ab6eda845d00f4cf2da6dd0077849b"
+    }
+  },
+  "known_gaps_for_pass": [
+    "hash-pinned native or independently network-validated five-stage supervision artifact",
+    "precision/recall/F1/FPR/support for all five required stages from that supervised evaluation",
+    "hash-pinned packet extraction/evaluation artifact tied to a real capture SHA-256",
+    "artifact-backed proof that the evaluated candidate world model consumed the packet feature representation"
+  ]
+}
