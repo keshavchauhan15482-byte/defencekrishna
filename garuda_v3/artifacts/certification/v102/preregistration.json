@@ -1,7 +1,7 @@
 {
   "schema_version": "v102-prereg.1",
-  "status": "ACQUISITION_ONLY_HASH_PENDING",
-  "evaluation_permitted": false,
+  "status": "HASH_PINNED_EVALUATION_PERMITTED",
+  "evaluation_permitted": true,
   "registered_before_external_model_evaluation": true,
   "registered_candidate": {
     "model_file": "garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz",
@@ -33,8 +33,17 @@
     "publisher_packet_count": 6587564,
     "publisher_caplen_bytes": 96,
     "publisher_compressed_size_mb": 184.23,
-    "compressed_sha256": null,
-    "decompressed_sha256": null,
+    "compressed_bytes": 193177875,
+    "decompressed_bytes": 466955908,
+    "compressed_sha256": "c3a4d0459c3d44570d33e67aa4d8533e3695a1eef1aaa4b443af4f23e2368737",
+    "decompressed_sha256": "6d0925f42db3a296ba84976e908f256f14efd39db6ae318f58d8e343bcabf199",
+    "pcap_contract": {
+      "version": "2.4",
+      "endianness": "little",
+      "timestamp_resolution": "microseconds",
+      "snaplen": 96,
+      "linktype": 1
+    },
     "freshness_audit": {
       "repository_search_terms": ["mawi", "samplepoint-B"],
       "prior_repository_use_found": false,
@@ -57,7 +66,8 @@
       "change model weights",
       "change support threshold",
       "change feature mapping based on observed traffic"
-    ]
+    ],
+    "completed_before_evaluation": true
   },
   "one_shot_rules_after_hash_pin": {
     "runs_allowed": 1,
@@ -69,5 +79,12 @@
     "mitre_stage_claim": false,
     "successful_compromise_warning_claim": false
   },
-  "claim_boundary": "V102 is preregistered only for fresh external state-transition forecasting. Acquisition/hash freezing occurs before any packet-record decode or model inference."
+  "snaplen_adapter_policy": {
+    "frozen_before_packet_decode": true,
+    "required_network_and_transport_headers_must_be_captured": true,
+    "payload_length_source": "IPv4 total-length minus captured header lengths",
+    "fabricated_payload_bytes": false,
+    "feature_mapping_retuned_on_mawi": false
+  },
+  "claim_boundary": "V102 is preregistered only for one fresh external state-transition forecasting evaluation. Source hashes, V101 runtime hashes, and the snaplen adapter policy were frozen before any MAWI packet-record decoding or model inference."
 }
