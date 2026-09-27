@@ -1,0 +1,112 @@
+name: V121 Honeynet FC09 acquisition freeze
+
+on:
+  push:
+    branches: [feat/v121-honeynet-fc09-one-shot]
+    paths:
+      - 'garuda_v3/artifacts/certification/v121/selection_freeze.json'
+      - '.github/workflows/v121-honeynet-fc09-acquisition.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  acquire-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download exact official Honeynet LFS archive
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v121/extracted garuda_v3/artifacts/certification/v121
+          URL='https://media.githubusercontent.com/media/honeynet/forensic_challenges/master/zip_files/challenges/fc09.zip'
+          curl -L --fail --retry 4 --retry-delay 3 "$URL" -o /tmp/v121/fc09.zip
+          test "$(stat -c%s /tmp/v121/fc09.zip)" -eq 60646083
+          echo '90938c45d4309f9af0ef29cd308e4d201be905998b98778511a04c3bebd81cc3  /tmp/v121/fc09.zip' | sha256sum -c -
+          echo 'a64f9e0f51f2f31c3f9e437ab835040c2b644aff  /tmp/v121/fc09.zip' | sha1sum -c -
+          unzip -l /tmp/v121/fc09.zip | tee /tmp/v121/zip_listing.txt
+      - name: Extract selected challenge bundle without packet decode
+        run: |
+          set -euo pipefail
+          PASSWORD='84443a1b5f4a4d91d88342d149dc5f10ad0e1fe0f9f9b4a63f6d66f05ac47b27'
+          unzip -P "$PASSWORD" -o /tmp/v121/fc09.zip -d /tmp/v121/extracted >/tmp/v121/unzip.log
+          PCAP=$(find /tmp/v121/extracted -type f -name 'traffic.pcap' -print -quit || true)
+          NESTED_TAR=''
+          if [ -z "$PCAP" ]; then
+            NESTED_TAR=$(find /tmp/v121/extracted -type f -name 'fc9files-final.tar.gz' -print -quit || true)
+            if [ -z "$NESTED_TAR" ]; then
+              echo 'Neither traffic.pcap nor fc9files-final.tar.gz found' >&2
+              find /tmp/v121/extracted -maxdepth 4 -type f -printf '%p %s\n' >&2
+              exit 1
+            fi
+            echo 'dbc378ce1807a4a2459f882b13b4224d0db8fbc7  '"$NESTED_TAR" | sha1sum -c -
+            mkdir -p /tmp/v121/nested
+            tar -xzf "$NESTED_TAR" -C /tmp/v121/nested
+            PCAP=$(find /tmp/v121/nested -type f -name 'traffic.pcap' -print -quit || true)
+          fi
+          test -n "$PCAP" -a -s "$PCAP"
+          cp "$PCAP" /tmp/v121/traffic.pcap
+          sha256sum /tmp/v121/traffic.pcap | tee /tmp/v121/pcap.sha256
+          sha1sum /tmp/v121/traffic.pcap | tee /tmp/v121/pcap.sha1
+          echo -n "$NESTED_TAR" >/tmp/v121/nested_tar_path.txt
+      - name: Write hash-only acquisition manifest
+        run: |
+          set -euo pipefail
+          ARCHIVE_SHA256=$(sha256sum /tmp/v121/fc09.zip | cut -d' ' -f1)
+          ARCHIVE_SHA1=$(sha1sum /tmp/v121/fc09.zip | cut -d' ' -f1)
+          PCAP_SHA256=$(sha256sum /tmp/v121/traffic.pcap | cut -d' ' -f1)
+          PCAP_SHA1=$(sha1sum /tmp/v121/traffic.pcap | cut -d' ' -f1)
+          PCAP_BYTES=$(stat -c%s /tmp/v121/traffic.pcap)
+          NESTED_TAR=$(cat /tmp/v121/nested_tar_path.txt)
+          python - <<PY
+          import json
+          from pathlib import Path
+          out={
+            'schema_version':'v121-acquisition.1',
+            'status':'HASH_FROZEN_NO_PACKET_DECODE',
+            'source_url':'https://media.githubusercontent.com/media/honeynet/forensic_challenges/master/zip_files/challenges/fc09.zip',
+            'archive_bytes':60646083,
+            'archive_sha256':'$ARCHIVE_SHA256',
+            'archive_sha1':'$ARCHIVE_SHA1',
+            'archive_lfs_sha256_verified':True,
+            'archive_published_sha1_verified':True,
+            'nested_original_tar_present':bool('$NESTED_TAR'),
+            'nested_original_tar_published_sha1':'dbc378ce1807a4a2459f882b13b4224d0db8fbc7' if '$NESTED_TAR' else None,
+            'selected_pcap_member_basename':'traffic.pcap',
+            'selected_pcap_bytes':int('$PCAP_BYTES'),
+            'selected_pcap_sha256':'$PCAP_SHA256',
+            'selected_pcap_sha1':'$PCAP_SHA1',
+            'packet_records_decoded':False,
+            'model_inference_performed':False,
+            'labels_accessed':False
+          }
+          Path('garuda_v3/artifacts/certification/v121/acquisition_manifest.json').write_text(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          PY
+      - name: Verify acquisition-only evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('garuda_v3/artifacts/certification/v121/selection_freeze.json').read_text())
+          a=json.loads(Path('garuda_v3/artifacts/certification/v121/acquisition_manifest.json').read_text())
+          assert s['status']=='SELECTED_BEFORE_DOWNLOAD'
+          assert a['status']=='HASH_FROZEN_NO_PACKET_DECODE'
+          assert a['archive_bytes']==s['external_holdout']['archive_expected_bytes']
+          assert a['archive_sha256']==s['external_holdout']['archive_lfs_sha256']
+          assert a['archive_sha1']==s['external_holdout']['archive_published_sha1']
+          assert a['selected_pcap_bytes']>0 and len(a['selected_pcap_sha256'])==64
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          assert a['labels_accessed'] is False
+          print('V121 acquisition-only freeze: PASS')
+          PY
+      - name: Record immutable acquisition freeze
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v121/acquisition_manifest.json
+          git commit -m 'evidence(v121): freeze Honeynet FC09 archive and PCAP hashes'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
