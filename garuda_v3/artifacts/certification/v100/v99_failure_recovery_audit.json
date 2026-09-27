@@ -1,0 +1,70 @@
+{
+  "schema_version": "v100.1",
+  "status": "RECOVERY_REQUIRED",
+  "source_result": {
+    "schema_version": "v99.1",
+    "status": "FAIL",
+    "dataset": "HIKARI-2021",
+    "capture": "Monday_2022-04-11_0622_BRUTEFORCE_XML_150s.pcap",
+    "capture_sha256": "139e14e922b25f3ceadce6c1d6a26209317d42d49bb02d66dec27b757194306f",
+    "consumed_external_holdout": true,
+    "rerun_permitted_for_claim_improvement": false
+  },
+  "state_forecasting": {
+    "model_mse": 0.008811726234853268,
+    "persistence_mse": 0.00862865149974823,
+    "improvement_vs_persistence": -0.02121707373514616,
+    "gate_passed": false
+  },
+  "support_diagnosis": {
+    "training_sources_packet_features": [
+      false,
+      false
+    ],
+    "frozen_checkpoint_packet_features_trained": false,
+    "external_packet_features_present_mean": 1.0,
+    "packet_features_present_feature_index": 18,
+    "train_support_center": 0.0,
+    "train_support_scale": 0.019999999552965164,
+    "packet_presence_standardized_deviation": 50.00000111758712,
+    "support_threshold": 7.741913966130682,
+    "recorded_supported_sequences": 0,
+    "recorded_total_sequences": 1070,
+    "recorded_median_support_score": 50.00000111758712,
+    "recorded_max_support_score": 50.00000111758712,
+    "packet_availability_shift_alone_exceeds_support_threshold": true,
+    "packet_availability_shift_matches_recorded_median_score": true,
+    "interpretation": "The frozen model was trained on sources marked packet_features=false, while the V99 raw-PCAP adapter presented packet_features_present=1 on observed nodes. Under the max-standardized-deviation support gate, this single availability feature is sufficient to force the HIKARI histories outside training support. This is a feature-contract/generalisation diagnosis, not attack or OOD detection, and it does not erase the failed persistence comparison."
+  },
+  "other_open_evidence_gates": {
+    "v97_stage_packet_evidence": "SHADOW_UNRESOLVED",
+    "v98_verified_precompromise": "SHADOW_UNRESOLVED"
+  },
+  "holdout_quarantine": {
+    "dataset": "HIKARI-2021",
+    "capture_sha256": "139e14e922b25f3ceadce6c1d6a26209317d42d49bb02d66dec27b757194306f",
+    "prohibited_for_future_claim_fitting": [
+      "model training or fine-tuning",
+      "normalization fitting",
+      "risk-threshold fitting",
+      "support center/scale fitting",
+      "support-threshold selection",
+      "adapter/feature mapping selection",
+      "checkpoint or hyperparameter selection"
+    ],
+    "note": "The recorded HIKARI capture may be retained for postmortem analysis, but any candidate changed after observing V99 needs a different untouched external holdout for a fresh generalisation claim."
+  },
+  "recovery_contract": {
+    "before_next_external_one_shot": [
+      "Build and hash-pin packet-compatible development/training evidence without using HIKARI for fitting.",
+      "Fit support center/scale on training only and support threshold on validation only.",
+      "Demonstrate the frozen candidate beats persistence on its non-external development validation protocol.",
+      "Freeze model, adapter contract, normalization, support gate, thresholds, and their hashes before external observation.",
+      "Select and preregister a genuinely untouched external dataset/campaign that was not used to design the post-V99 candidate.",
+      "Run that external holdout once and record PASS/FAIL without retuning or rerunning for a better metric."
+    ],
+    "precompromise_gate": "V98 remains separate: a verified pre-compromise claim still requires an objective successful-compromise timestamp paired with an earlier model-emitted warning for the same provenance-disjoint campaign.",
+    "stage_packet_gate": "V97 remains separate: five-stage supervised evidence and artifact-backed packet-feature consumption are not certified by V99/V100."
+  },
+  "claim_boundary": "V100 certifies only the integrity-preserving diagnosis and recovery constraints for the already-consumed V99 external run. It does not convert V99 to PASS and does not certify fresh external generalisation, five-stage MITRE accuracy, attack recall/FPR, or warning before successful compromise."
+}
