@@ -1,0 +1,65 @@
+name: V125 untouched native Initial Access replication
+on:
+  push:
+    branches: [feat/v125-initial-access-native-replication]
+    paths:
+      - 'garuda_v3/v125_initial_access_replication.py'
+      - '.github/workflows/v125-initial-access-replication.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  replicate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - name: Install dependencies
+        run: python -m pip install 'numpy<2.1' scikit-learn
+      - name: Verify preregistration precedes metrics
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v125/preregistration.json').read_text())
+          assert p['status']=='SOURCE_SELECTED_BEFORE_METRICS'
+          assert p['gate_is_unchanged'] is True
+          assert p['replication_gate']['minimum_initial_access_recall']==0.40
+          assert p['fresh_test_source']['selected_before_download'] is True
+          assert p['fresh_test_source']['used_in_v124_training_or_test'] is False
+          print('V125 preregistration: PASS')
+          PY
+      - name: Run one untouched native Initial Access replication
+        run: |
+          python -m garuda_v3.v125_initial_access_replication \
+            --prereg garuda_v3/artifacts/certification/v125/preregistration.json \
+            --base-result garuda_v3/artifacts/certification/v124/five_stage_result.json \
+            --output garuda_v3/artifacts/certification/v125/replication_result.json
+      - name: Verify immutable evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v125/replication_result.json').read_text())
+          assert r['schema_version']=='v125-ia-replication.1'
+          assert r['proxy_mapping_used'] is False
+          assert r['base_v124_status']=='FAIL_IMMUTABLE'
+          assert r['training_reconstruction']['fresh_test_used_for_fit'] is False
+          assert r['training_reconstruction']['fresh_test_used_for_selection'] is False
+          assert r['training_reconstruction']['retuned_on_fresh_test'] is False
+          print(json.dumps({'status':r['status'],'composite':r['composite_five_stage_evidence_status'],'fresh_source':r['fresh_source'],'replication':r['replication']},indent=2))
+          PY
+      - name: Record immutable V125 result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v125/replication_result.json
+          git commit -m 'evidence(v125): record untouched Initial Access replication'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v125-initial-access-replication
+          path: garuda_v3/artifacts/certification/v125/*
+          retention-days: 30
