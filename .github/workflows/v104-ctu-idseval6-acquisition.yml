@@ -1,0 +1,94 @@
+name: V104 CTU-IDSEVAL-6 acquisition freeze
+
+on:
+  push:
+    branches: [feat/v104-ctu-idseval6-preregister]
+    paths:
+      - 'garuda_v3/v104_ctu_idseval6_acquire.py'
+      - 'garuda_v3/artifacts/certification/v104/preregistration.json'
+      - '.github/workflows/v104-ctu-idseval6-acquisition.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  acquisition-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify fail-closed preregistration
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/certification/v104/preregistration.json').read_text())
+          assert d['schema_version']=='v104-prereg.1'
+          assert d['status']=='ACQUISITION_ONLY_HASH_PENDING'
+          assert d['evaluation_permitted'] is False
+          assert d['external_holdout']['dataset']=='CTU-IDSEVAL-6'
+          assert d['external_holdout']['zenodo_record']=='21027042'
+          assert d['external_holdout']['official_archive_md5']=='bb4476af2b9d4b8ce875dda88a0cca7b'
+          assert d['external_holdout']['archive_sha256'] is None
+          assert d['external_holdout']['pcap_entries'] is None
+          assert d['external_holdout']['freshness_audit']['prior_repository_use_found'] is False
+          assert d['registered_candidate']['source_commit']=='72c1eaf0f79754a3d8c5454b574ea201d3f9e68c'
+          assert d['registered_candidate']['adapter_contract_sha256']=='65052c50704ad371ff7ad84fec6b74c7530d546a7916722c96a255b9b7c93841'
+          print('V104 acquisition is fail-closed')
+          PY
+
+      - name: Download exact registered pcap.zip
+        run: |
+          mkdir -p datasets/v104
+          curl -L --fail --retry 4 --retry-all-errors --retry-delay 5 --connect-timeout 30 \
+            --output datasets/v104/pcap.zip \
+            'https://zenodo.org/records/21027042/files/pcap.zip?download=1'
+          test -s datasets/v104/pcap.zip
+
+      - name: Freeze archive identity and ZIP metadata only
+        run: |
+          python -m garuda_v3.v104_ctu_idseval6_acquire \
+            --prereg garuda_v3/artifacts/certification/v104/preregistration.json \
+            --archive datasets/v104/pcap.zip \
+            --output garuda_v3/artifacts/certification/v104/acquisition_manifest.json
+
+      - name: Verify no external packet observation occurred
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/certification/v104/acquisition_manifest.json').read_text())
+          assert d['status']=='HASH_AND_ENTRY_METADATA_FROZEN_MODEL_NOT_RUN'
+          assert d['evaluation_performed'] is False
+          assert d['archive_extracted'] is False
+          assert d['packet_records_decoded'] is False
+          assert d['model_inference_performed'] is False
+          assert d['support_scoring_performed'] is False
+          assert d['labels_accessed'] is False
+          assert d['archive_md5']=='bb4476af2b9d4b8ce875dda88a0cca7b'
+          assert len(d['archive_sha256'])==64
+          assert d['pcap_entry_count']==6
+          print(json.dumps(d, indent=2, sort_keys=True))
+          PY
+
+      - name: Record acquisition manifest only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add garuda_v3/artifacts/certification/v104/acquisition_manifest.json
+          git commit -m "evidence(v104): freeze CTU-IDSEVAL-6 archive identity"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Upload acquisition manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: v104-ctu-idseval6-acquisition
+          path: garuda_v3/artifacts/certification/v104/acquisition_manifest.json
+          if-no-files-found: error
+          retention-days: 30
