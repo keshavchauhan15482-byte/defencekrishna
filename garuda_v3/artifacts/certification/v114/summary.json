@@ -1,0 +1,428 @@
+{
+  "schema_version": "v114.1",
+  "status": "DEV_MULTIDOMAIN_PASS",
+  "recovery_gate_passed": true,
+  "claim_boundary": "Development-only multi-domain PS-complete recovery. V99/V102/V104/V106/V111/V113 one-shot data are excluded from fitting/selection; no new external generalisation claim is made.",
+  "development_sources": {
+    "cicapt_phase1": {
+      "sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+      "decoded_ipv4_packets": 700000,
+      "observed_windows": 2048,
+      "contiguous_sequences": 2037,
+      "parser_audit": {
+        "decoded_ipv4": 700000,
+        "full_tcp": 667843,
+        "full_udp": 32083,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 74,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 7858
+      }
+    },
+    "ctu350": {
+      "dataset": "CTU-Malware-Capture-Botnet-350-1",
+      "capture": "2018-05-03_win16.pcap",
+      "sha256": "436516746ebd29fc2d040127c20f7f830ca07ed514cc91c12da89d36a11e67c7",
+      "decoded_ipv4_packets": 438087,
+      "observed_windows": 77159,
+      "contiguous_sequences": 2559,
+      "parser_audit": {
+        "decoded_ipv4": 438087,
+        "full_tcp": 204514,
+        "full_udp": 189377,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 44196,
+        "skipped_truncated_ethernet": 1,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 885747
+      }
+    },
+    "cicapt_phase2_sanity": {
+      "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+      "decoded_ipv4_packets": 700000,
+      "observed_windows": 2007,
+      "contiguous_sequences": 1996,
+      "parser_audit": {
+        "decoded_ipv4": 700000,
+        "full_tcp": 655190,
+        "full_udp": 44626,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 184,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 5608
+      },
+      "used_for_selection": false
+    }
+  },
+  "balanced_sampling": {
+    "train_sequences_per_source": 1425,
+    "validation_sequences_per_source": 600,
+    "embargo_sequences": 12
+  },
+  "selection": {
+    "rule": "prefer seeds beating persistence on both selected development validation domains, then minimize worst source MSE/persistence ratio; CICAPT Phase-2 excluded",
+    "selected_seed": 44,
+    "phase2_used_for_selection": false,
+    "consumed_external_used_for_selection": false
+  },
+  "seeds": {
+    "42": {
+      "seed": 42,
+      "selected_epoch": 5,
+      "combined_validation_mse": 0.030030978843569756,
+      "validation": {
+        "cicapt_phase1": {
+          "sequences": 600,
+          "model_mse": 0.01684362068772316,
+          "persistence_mse": 0.020760338753461838,
+          "improvement_vs_persistence": 0.18866349495793056,
+          "beats_persistence": true
+        },
+        "ctu350": {
+          "sequences": 600,
+          "model_mse": 0.04321833699941635,
+          "persistence_mse": 0.050367143005132675,
+          "improvement_vs_persistence": 0.14193391920180629,
+          "beats_persistence": true
+        }
+      },
+      "phase2_sanity": {
+        "sequences": 1996,
+        "model_mse": 0.023584231734275818,
+        "persistence_mse": 0.03040805645287037,
+        "improvement_vs_persistence": 0.2244084467933963,
+        "beats_persistence": true
+      }
+    },
+    "43": {
+      "seed": 43,
+      "selected_epoch": 6,
+      "combined_validation_mse": 0.02971193753182888,
+      "validation": {
+        "cicapt_phase1": {
+          "sequences": 600,
+          "model_mse": 0.01713438518345356,
+          "persistence_mse": 0.020760338753461838,
+          "improvement_vs_persistence": 0.17465772659435247,
+          "beats_persistence": true
+        },
+        "ctu350": {
+          "sequences": 600,
+          "model_mse": 0.04228948429226875,
+          "persistence_mse": 0.050367143005132675,
+          "improvement_vs_persistence": 0.1603755589639215,
+          "beats_persistence": true
+        }
+      },
+      "phase2_sanity": {
+        "sequences": 1996,
+        "model_mse": 0.02359997108578682,
+        "persistence_mse": 0.03040805645287037,
+        "improvement_vs_persistence": 0.22389084214032035,
+        "beats_persistence": true
+      }
+    },
+    "44": {
+      "seed": 44,
+      "selected_epoch": 5,
+      "combined_validation_mse": 0.02953559160232544,
+      "validation": {
+        "cicapt_phase1": {
+          "sequences": 600,
+          "model_mse": 0.017109226435422897,
+          "persistence_mse": 0.020760338753461838,
+          "improvement_vs_persistence": 0.1758695925628915,
+          "beats_persistence": true
+        },
+        "ctu350": {
+          "sequences": 600,
+          "model_mse": 0.04196195676922798,
+          "persistence_mse": 0.050367143005132675,
+          "improvement_vs_persistence": 0.16687836026451136,
+          "beats_persistence": true
+        }
+      },
+      "phase2_sanity": {
+        "sequences": 1996,
+        "model_mse": 0.02406465634703636,
+        "persistence_mse": 0.03040805645287037,
+        "improvement_vs_persistence": 0.20860919262188563,
+        "beats_persistence": true
+      }
+    }
+  },
+  "selected_candidate": {
+    "seed": 44,
+    "selected_epoch": 5,
+    "combined_validation_mse": 0.02953559160232544,
+    "validation": {
+      "cicapt_phase1": {
+        "sequences": 600,
+        "model_mse": 0.017109226435422897,
+        "persistence_mse": 0.020760338753461838,
+        "improvement_vs_persistence": 0.1758695925628915,
+        "beats_persistence": true
+      },
+      "ctu350": {
+        "sequences": 600,
+        "model_mse": 0.04196195676922798,
+        "persistence_mse": 0.050367143005132675,
+        "improvement_vs_persistence": 0.16687836026451136,
+        "beats_persistence": true
+      }
+    },
+    "phase2_sanity": {
+      "sequences": 1996,
+      "model_mse": 0.02406465634703636,
+      "persistence_mse": 0.03040805645287037,
+      "improvement_vs_persistence": 0.20860919262188563,
+      "beats_persistence": true
+    }
+  },
+  "support_gate": {
+    "method": "max robust standardized history-summary deviation",
+    "threshold": 37.50000083819034,
+    "fit_provenance": {
+      "center_scale": "balanced CICAPT Phase-1 train + CTU-350-1 train only",
+      "threshold": "balanced CICAPT Phase-1 validation + CTU-350-1 validation only",
+      "cicapt_phase2_excluded_from_fit": true,
+      "consumed_external_excluded_from_fit": true
+    },
+    "evaluation": {
+      "cicapt_phase1_validation": {
+        "threshold": 37.50000083819034,
+        "supported_sequences": 600,
+        "total_sequences": 600,
+        "supported_fraction": 1.0,
+        "median_score": 2.587669254545826,
+        "max_score": 5.395926151508207
+      },
+      "ctu350_validation": {
+        "threshold": 37.50000083819034,
+        "supported_sequences": 594,
+        "total_sequences": 600,
+        "supported_fraction": 0.99,
+        "median_score": 18.75000041909517,
+        "max_score": 43.750000977888725
+      },
+      "cicapt_phase2_sanity": {
+        "threshold": 37.50000083819034,
+        "supported_sequences": 1996,
+        "total_sequences": 1996,
+        "supported_fraction": 1.0,
+        "median_score": 2.275919499455083,
+        "max_score": 6.250003119930695
+      }
+    }
+  },
+  "packet_features_present_mean": {
+    "cicapt_phase1": 1.0,
+    "ctu350": 1.0,
+    "cicapt_phase2": 1.0
+  },
+  "development_gates": {
+    "cicapt_phase1_validation_beats_persistence": true,
+    "ctu350_validation_beats_persistence": true,
+    "cicapt_phase2_sanity_beats_persistence": true,
+    "cicapt_phase1_validation_support_at_least_0_95": true,
+    "ctu350_validation_support_at_least_0_95": true,
+    "cicapt_phase2_sanity_support_at_least_0_90": true,
+    "cicapt_packet_presence_at_least_0_95": true,
+    "ctu350_packet_presence_at_least_0_95": true
+  },
+  "adapter_contract": {
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "features": [
+      "flow_count_log",
+      "bytes_log",
+      "packets_log",
+      "duration_ms_log",
+      "syn_fraction",
+      "ack_fraction",
+      "rst_fraction",
+      "fin_fraction",
+      "psh_fraction",
+      "urg_fraction",
+      "backward_packet_fraction",
+      "tcp_fraction",
+      "udp_fraction",
+      "active",
+      "iat_ms_log",
+      "iat_variance_log",
+      "iat_max_log",
+      "tcp_window_log",
+      "ttl_mean_scaled",
+      "ttl_variance_scaled",
+      "fragment_fraction",
+      "payload_mean_log",
+      "payload_variance_log",
+      "payload_max_log",
+      "unique_destination_ports_log",
+      "sequential_port_transition_fraction",
+      "random_port_transition_fraction",
+      "retransmission_fraction",
+      "retransmission_count_log",
+      "packet_features_present",
+      "iat_present",
+      "tcp_window_present",
+      "payload_present",
+      "scan_sequence_present"
+    ],
+    "feature_count": 34,
+    "mode": "service",
+    "window_seconds": 10,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "max_nodes": 32,
+    "packet_features_required": true,
+    "mapping": "raw PCAP/PCAPNG -> V112 tolerant audited decoder -> bidirectional connections -> PS-complete service graph",
+    "pcap_reader_mode": {
+      "allow_truncated": true
+    },
+    "development_domains": [
+      "CICAPT-IIoT2024",
+      "CTU-Malware-Capture-Botnet-350-1"
+    ]
+  },
+  "adapter_contract_sha256": "5e6bc128be01168d1fbbf124545bf1ea82c5dc443e57eab885b8e96aceff0740",
+  "freeze": {
+    "model_file": "gnn_lstm_multidomain_ps_complete_candidate.npz",
+    "model_sha256": "cff4ba77ff1e405ff7bb506e77a9fd178ec39be79975e7d397102e0da2cf9ffe",
+    "support_gate_file": "support_gate.json",
+    "support_gate_sha256": "bbef67a8f6bf7d920388e3499c7eb6157f2b4a290c67189f1977ed4660689f0e",
+    "candidate_frozen_before_new_external_holdout": true,
+    "new_external_holdout_selected": false
+  },
+  "quarantine": {
+    "v111_sha256": "cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3",
+    "v113_sha256": "510e9bc5237b037e240c0064bcba3c073e2363abaecf6a20478c361f5f6ec613",
+    "consumed_external_used_for_fitting": false
+  },
+  "training_curves": {
+    "42": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.03556373715400696
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.28613218168417615,
+        "validation_mse": 0.03188758343458176
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.2640572405523724,
+        "validation_mse": 0.03086281567811966
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.2569833338260651,
+        "validation_mse": 0.030589476227760315
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.2521228631337484,
+        "validation_mse": 0.03007957525551319
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.2477969851758745,
+        "validation_mse": 0.030030978843569756
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.24622817668649885,
+        "validation_mse": 0.030173636972904205
+      }
+    ],
+    "43": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.03556373715400696
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.2862426880333159,
+        "validation_mse": 0.031431861221790314
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.2615233947833379,
+        "validation_mse": 0.0307200588285923
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.25260297358036043,
+        "validation_mse": 0.030083268880844116
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.24742644164297317,
+        "validation_mse": 0.0300153698772192
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.24532047741942936,
+        "validation_mse": 0.029953457415103912
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.24355332983864678,
+        "validation_mse": 0.02971193753182888
+      }
+    ],
+    "44": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.03556373715400696
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.2884868035713832,
+        "validation_mse": 0.031886421144008636
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.2635921474960115,
+        "validation_mse": 0.03092137910425663
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.255435049533844,
+        "validation_mse": 0.030333952978253365
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.2501396036810345,
+        "validation_mse": 0.030145637691020966
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.24463639226224687,
+        "validation_mse": 0.02953559160232544
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.23735637565453846,
+        "validation_mse": 0.030225202441215515
+      }
+    ]
+  }
+}
