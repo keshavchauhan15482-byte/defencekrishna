@@ -1,0 +1,56 @@
+{
+  "schema_version": "v106-prereg.1",
+  "status": "HOLDOUT_SELECTED_HASH_PENDING",
+  "selected_after_v105_merge_commit": "53adc745ea107e6e3ccc36c12ca366f1e2429989",
+  "claim_boundary": "V106 is a single fresh external state-transition forecasting test only. It does not certify attack recall/FPR, MITRE stages, or warning before successful compromise.",
+  "external_holdout": {
+    "dataset": "USTC-TFC2016",
+    "capture": "Malware/Miuref.pcap",
+    "publisher_repository": "davidyslu/USTC-TFC2016",
+    "source_url": "https://raw.githubusercontent.com/davidyslu/USTC-TFC2016/master/Malware/Miuref.pcap",
+    "expected_bytes": 17196739,
+    "publisher_git_blob_sha1": "7a69acdb1b90f99e8f50377dc0970405de6a4b2f",
+    "sha256": null,
+    "md5": null,
+    "labels_required_or_accessed": false,
+    "repo_history_audit": {
+      "miuref_match_found_before_selection": false,
+      "ustc_tfc2016_match_found_before_selection": false,
+      "selected_before_any_packet_decode": true
+    }
+  },
+  "registered_candidate": {
+    "model_file": "garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz",
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_file": "garuda_v3/artifacts/certification/v101/support_gate.json",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+    "adapter_contract_sha256": "1f705e4427f65507ae5d71dd353fbe58966e2882bff7acc182f45fad99fb5e7f",
+    "architecture": "gnn_lstm",
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual"
+  },
+  "consumed_external_quarantine": [
+    "HIKARI-2021/V99",
+    "MAWI-200601011400/V102",
+    "CTU-IDSEVAL-6/V104"
+  ],
+  "one_shot_gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "pass_requires_model_mse_strictly_less_than_persistence_mse": true,
+    "pass_requires_improvement_vs_persistence_strictly_greater_than": 0.0,
+    "unsupported_or_incompatible_is_not_pass": true,
+    "result_improving_rerun_permitted": false
+  },
+  "acquisition": {
+    "metadata_hash_freeze_required_before_decode": true,
+    "packet_decode_permitted": false,
+    "model_inference_permitted": false
+  },
+  "evaluation_permitted": false
+}
