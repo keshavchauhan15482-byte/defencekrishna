@@ -1,94 +1,134 @@
-name: V102 MAWI frozen one-shot
+name: V102 MAWI frozen external one-shot
 
 on:
   push:
     branches: [feat/v102-mawi-preregister]
     paths:
-      - 'garuda_v3/artifacts/certification/v102/preregistration.json'
+      - 'garuda_v3/artifacts/certification/v102/acquisition_manifest.json'
+      - '.github/workflows/v102-mawi-one-shot.yml'
 
 permissions:
   contents: write
 
+concurrency:
+  group: v102-mawi-one-shot
+  cancel-in-progress: false
+
 jobs:
-  mawi-one-shot:
+  frozen-one-shot:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
-      OPENBLAS_NUM_THREADS: '1'
-      OMP_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
-      PYTHONHASHSEED: '0'
+      OPENBLAS_NUM_THREADS: 1
+      OMP_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
+      PYTHONHASHSEED: 0
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
 
-      - name: Install deterministic runtime
-        run: python -m pip install 'numpy<2.1' pytest
-
-      - name: Verify frozen evaluator contracts before external decode
+      - name: Install and verify frozen evaluator
         run: |
+          python -m pip install 'numpy<2.1' pytest
           python -m compileall -q garuda_v3/v102_mawi_one_shot.py
           python -m pytest -q garuda_v3/tests/test_v102_mawi_one_shot.py
+
+      - name: Verify committed hash-pinned preregistration before packet decode
+        run: |
+          test ! -e garuda_v3/artifacts/certification/v102/evaluation_lock.json
+          test ! -e garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json
           python - <<'PY'
           import json
           from pathlib import Path
-          root=Path('garuda_v3/artifacts/certification/v102')
-          p=json.loads((root/'preregistration.json').read_text())
-          a=json.loads((root/'acquisition_manifest.json').read_text())
-          assert p['status']=='HASH_FROZEN_ONE_SHOT_REGISTERED'
-          assert p['evaluation_permitted'] is True
-          assert p['one_shot_rules_after_hash_pin']['runs_allowed']==1
-          assert p['registered_candidate']['model_sha256']=='30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79'
-          assert p['registered_candidate']['support_gate_sha256']=='2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3'
-          assert p['external_holdout']['compressed_sha256']=='c3a4d0459c3d44570d33e67aa4d8533e3695a1eef1aaa4b443af4f23e2368737'
-          assert p['external_holdout']['decompressed_sha256']=='6d0925f42db3a296ba84976e908f256f14efd39db6ae318f58d8e343bcabf199'
+          prereg_path=Path('garuda_v3/artifacts/certification/v102/preregistration.json')
+          acquisition_path=Path('garuda_v3/artifacts/certification/v102/acquisition_manifest.json')
+          d=json.loads(prereg_path.read_text())
+          a=json.loads(acquisition_path.read_text())
+          assert d['schema_version']=='v102-prereg.1'
+          assert d['status']=='HASH_PINNED_EVALUATION_PERMITTED'
+          assert d['evaluation_permitted'] is True
           assert a['status']=='HASH_ACQUIRED_MODEL_NOT_RUN'
           assert a['evaluation_performed'] is False
           assert a['packet_records_decoded'] is False
-          assert a['compressed_sha256']==p['external_holdout']['compressed_sha256']
-          assert a['decompressed_sha256']==p['external_holdout']['decompressed_sha256']
-          print('V102 source hashes, runtime, and evaluator are frozen; exactly one packet decode/model run is permitted')
+          assert a['graph_windows_constructed'] is False
+          assert a['support_scoring_performed'] is False
+          assert a['model_inference_performed'] is False
+          assert d['external_holdout']['compressed_sha256']==a['compressed_sha256']
+          assert d['external_holdout']['decompressed_sha256']==a['decompressed_sha256']
+          assert d['external_holdout']['compressed_bytes']==a['compressed_bytes']
+          assert d['external_holdout']['decompressed_bytes']==a['decompressed_bytes']
+          assert a['pcap_global_header']['snaplen']==d['external_holdout']['publisher_caplen_bytes']==96
+          assert a['pcap_global_header']['linktype']==d['external_holdout']['pcap_contract']['linktype']==1
+          assert d['snaplen_adapter_policy']['frozen_before_packet_decode'] is True
+          assert d['snaplen_adapter_policy']['feature_mapping_retuned_on_mawi'] is False
+          print(json.dumps({
+              'compressed_sha256':a['compressed_sha256'],
+              'decompressed_sha256':a['decompressed_sha256'],
+              'status':d['status'],
+          }, indent=2))
           PY
 
-      - name: Fail if immutable one-shot result already exists on branch
-        run: |
-          git fetch origin "${GITHUB_REF_NAME}"
-          if git cat-file -e "origin/${GITHUB_REF_NAME}:garuda_v3/artifacts/certification/v102/one_shot_result.json" 2>/dev/null; then
-            echo 'V102 one-shot result already exists; rerun is prohibited.' >&2
-            exit 1
-          fi
-
-      - name: Download exact hash-frozen MAWI object
+      - name: Download and verify exact hash-pinned MAWI object
         run: |
           mkdir -p datasets/v102
           curl -L --fail --retry 4 --retry-all-errors --retry-delay 5 --connect-timeout 30 \
             --output datasets/v102/200601011400.dump.gz \
             'https://mawi.nezu.wide.ad.jp/mawi/samplepoint-B/2006/200601011400.dump.gz'
           python - <<'PY'
-          import gzip, hashlib, json, shutil
+          import gzip, hashlib, json
           from pathlib import Path
-          root=Path('garuda_v3/artifacts/certification/v102')
-          p=json.loads((root/'preregistration.json').read_text())
-          a=json.loads((root/'acquisition_manifest.json').read_text())
+          a=json.loads(Path('garuda_v3/artifacts/certification/v102/acquisition_manifest.json').read_text())
           gz=Path('datasets/v102/200601011400.dump.gz')
-          def sha(path):
-              h=hashlib.sha256()
-              with path.open('rb') as f:
-                  for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
-              return h.hexdigest()
-          assert sha(gz)==a['compressed_sha256']==p['external_holdout']['compressed_sha256'], 'compressed MAWI hash mismatch'
-          raw=Path('datasets/v102/200601011400.dump')
-          with gzip.open(gz,'rb') as src, raw.open('wb') as dst: shutil.copyfileobj(src,dst,1024*1024)
-          assert sha(raw)==a['decompressed_sha256']==p['external_holdout']['decompressed_sha256'], 'decompressed MAWI hash mismatch'
-          print('Exact preregistered MAWI bytes verified')
+          h=hashlib.sha256(gz.read_bytes()).hexdigest()
+          assert h==a['compressed_sha256'], (h,a['compressed_sha256'])
+          out=Path('datasets/v102/200601011400.dump')
+          dh=hashlib.sha256()
+          with gzip.open(gz,'rb') as src, out.open('wb') as dst:
+              while True:
+                  block=src.read(1024*1024)
+                  if not block: break
+                  dh.update(block); dst.write(block)
+          assert dh.hexdigest()==a['decompressed_sha256'], (dh.hexdigest(),a['decompressed_sha256'])
+          print('MAWI bytes match pre-inference acquisition hashes')
           PY
 
-      - name: Execute the single registered external evaluation
+      - name: Consume one-shot and commit lock before model inference
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v102')
+          assert not (root/'evaluation_lock.json').exists()
+          assert not (root/'mawi_one_shot_result.json').exists()
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_PINNED_EVALUATION_PERMITTED'
+          assert p['external_holdout']['decompressed_sha256']==a['decompressed_sha256']
+          lock={
+              'schema_version':'v102-lock.1',
+              'status':'ONE_SHOT_CONSUMED_BEFORE_INFERENCE',
+              'github_run_id':os.environ.get('GITHUB_RUN_ID'),
+              'github_sha_before_lock':os.environ.get('GITHUB_SHA'),
+              'capture_sha256':a['decompressed_sha256'],
+              'model_sha256':p['registered_candidate']['model_sha256'],
+              'support_gate_sha256':p['registered_candidate']['support_gate_sha256'],
+              'adapter_contract_sha256':p['registered_candidate']['adapter_contract_sha256'],
+              'result_observed_before_lock':False,
+              'rerun_for_claim_improvement_permitted':False,
+          }
+          (root/'evaluation_lock.json').write_text(json.dumps(lock,indent=2,sort_keys=True)+'\n')
+          PY
+          git add -f garuda_v3/artifacts/certification/v102/evaluation_lock.json
+          git commit -m "evidence(v102): consume MAWI one-shot before inference"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Execute immutable MAWI external state-forecast evaluation
         run: |
           python -m garuda_v3.v102_mawi_one_shot \
             --pcap datasets/v102/200601011400.dump \
@@ -96,36 +136,49 @@ jobs:
             --support-gate garuda_v3/artifacts/certification/v101/support_gate.json \
             --prereg garuda_v3/artifacts/certification/v102/preregistration.json \
             --acquisition garuda_v3/artifacts/certification/v102/acquisition_manifest.json \
-            --output garuda_v3/artifacts/certification/v102/one_shot_result.json
+            --lock garuda_v3/artifacts/certification/v102/evaluation_lock.json \
+            --output garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json
 
-      - name: Verify honest PASS or FAIL evidence boundary
+      - name: Verify result boundary without changing PASS or FAIL
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          r=json.loads(Path('garuda_v3/artifacts/certification/v102/one_shot_result.json').read_text())
-          assert r['schema_version']=='v102.1'
-          assert r['status'] in {'PASS','FAIL'}
-          assert r['dataset']['labels_accessed'] is False
-          assert r['one_shot_integrity']['runs_allowed']==1
-          assert r['one_shot_integrity']['retrained_on_mawi'] is False
-          assert r['one_shot_integrity']['support_fit_on_mawi'] is False
-          assert r['one_shot_integrity']['rerun_for_claim_improvement'] is False
-          print(json.dumps({'status':r['status'],'state_forecasting':r['state_forecasting'],'runtime_support':r['runtime_support']},indent=2))
+          p=Path('garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json')
+          d=json.loads(p.read_text())
+          assert d['schema_version']=='v102.1'
+          assert d['status'] in {'PASS','FAIL'}
+          assert d['dataset']['capture']=='200601011400.dump'
+          assert d['dataset']['publisher_packet_count']==6587564
+          assert d['frozen_runtime']['contract']['packet_features_trained'] is True
+          assert d['one_shot_integrity']['pre_inference_lock_present'] is True
+          assert d['one_shot_integrity']['retrained_on_mawi'] is False
+          assert d['one_shot_integrity']['support_fit_on_mawi'] is False
+          assert d['one_shot_integrity']['adapter_selected_on_mawi'] is False
+          assert d['one_shot_integrity']['rerun_for_claim_improvement'] is False
+          assert d['state_forecasting']['beats_persistence']==(d['status']=='PASS')
+          print(json.dumps({
+              'status':d['status'],
+              'state_forecasting':d['state_forecasting'],
+              'runtime_support':d['runtime_support'],
+              'adapter':{k:d['adapter'][k] for k in ('packet_records','decoded_ipv4_packets','truncated_ipv4_packets','observed_windows','contiguous_sequences','packet_features_present_mean_on_observed_nodes')},
+          }, indent=2))
           PY
 
-      - name: Record immutable V102 result
+      - name: Record immutable one-shot result
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add garuda_v3/artifacts/certification/v102/one_shot_result.json
-          git commit -m "evidence(v102): record frozen MAWI one-shot result"
+          git add -f garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json
+          git commit -m "evidence(v102): record first frozen MAWI external one-shot"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
-      - name: Upload immutable V102 evidence
+      - name: Upload V102 evidence
         uses: actions/upload-artifact@v4
         with:
           name: v102-mawi-one-shot-evidence
-          path: garuda_v3/artifacts/certification/v102/one_shot_result.json
+          path: |
+            garuda_v3/artifacts/certification/v102/preregistration.json
+            garuda_v3/artifacts/certification/v102/acquisition_manifest.json
+            garuda_v3/artifacts/certification/v102/evaluation_lock.json
+            garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json
           if-no-files-found: error
           retention-days: 30

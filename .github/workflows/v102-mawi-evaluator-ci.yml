@@ -1,0 +1,28 @@
+name: V102 MAWI evaluator contract CI
+
+on:
+  push:
+    branches: [feat/v102-mawi-evaluator-freeze]
+    paths:
+      - 'garuda_v3/v102_mawi_one_shot.py'
+      - 'garuda_v3/tests/test_v102_mawi_one_shot.py'
+      - '.github/workflows/v102-mawi-one-shot.yml'
+      - '.github/workflows/v102-mawi-evaluator-ci.yml'
+
+jobs:
+  contract-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'numpy<2.1' pytest
+      - run: python -m compileall -q garuda_v3/v102_mawi_one_shot.py
+      - run: python -m pytest -q garuda_v3/tests/test_v102_mawi_one_shot.py
+      - name: Assert CI did not access external MAWI bytes
+        run: |
+          test ! -e datasets/v102/200601011400.dump
+          test ! -e datasets/v102/200601011400.dump.gz
+          test ! -e garuda_v3/artifacts/certification/v102/mawi_one_shot_result.json
+          echo 'Evaluator contract tested without external holdout access'

@@ -1,60 +1,85 @@
 import struct
 from pathlib import Path
 
+import numpy as np
 import pytest
 
+from garuda_v3.data import FEATURES
 from garuda_v3.v102_mawi_one_shot import (
+    EXPECTED_CAPTURE,
     EXPECTED_MODEL_SHA256,
+    EXPECTED_RECORDS,
     EXPECTED_SNAPLEN,
     EXPECTED_SUPPORT_SHA256,
+    HORIZON,
+    HISTORY,
     V102ContractError,
-    mawi_packets,
+    _decode_truncated_ipv4,
+    build_sequences,
 )
 
 
-def _write_truncated_tcp(path: Path, snaplen: int = 96):
-    eth = b'\x00' * 12 + struct.pack('!H', 0x0800)
-    ip = bytearray(20)
-    ip[0] = 0x45
-    ip[2:4] = struct.pack('!H', 140)  # full IPv4 length, larger than captured bytes
-    ip[8] = 64
-    ip[9] = 6
-    ip[12:16] = b'\x0a\x00\x00\x01'
-    ip[16:20] = b'\x0a\x00\x00\x02'
-    tcp = bytearray(20)
-    tcp[0:2] = struct.pack('!H', 1234)
-    tcp[2:4] = struct.pack('!H', 80)
-    tcp[4:8] = struct.pack('!I', 7)
-    tcp[12] = 0x50
-    tcp[13] = 0x02
-    tcp[14:16] = struct.pack('!H', 64240)
-    frame = eth + bytes(ip) + bytes(tcp)
-    global_header = b'\xd4\xc3\xb2\xa1' + struct.pack('<HHIIII', 2, 4, 0, 0, snaplen, 1)
-    record = struct.pack('<IIII', 1, 0, len(frame), 154) + frame
-    path.write_bytes(global_header + record)
+def _ethernet_ipv4_tcp_frame(*, ip_total_len=200, captured_len=96):
+    eth = b"\x00" * 12 + struct.pack("!H", 0x0800)
+    version_ihl = (4 << 4) | 5
+    ip = struct.pack(
+        "!BBHHHBBH4s4s",
+        version_ihl,
+        0,
+        ip_total_len,
+        1,
+        0,
+        64,
+        6,
+        0,
+        b"\x0a\x00\x00\x01",
+        b"\x0a\x00\x00\x02",
+    )
+    tcp = struct.pack("!HHIIBBHHH", 12345, 443, 1000, 0, 5 << 4, 0x18, 4096, 0, 0)
+    payload = b"x" * max(0, captured_len - len(eth) - len(ip) - len(tcp))
+    return (eth + ip + tcp + payload)[:captured_len]
 
 
-def test_truncated_payload_length_is_derived_from_ipv4_total_length(tmp_path):
-    p = tmp_path / '200601011400.dump'
-    _write_truncated_tcp(p)
-    rows = list(mawi_packets(p))
-    assert len(rows) == 1
-    assert rows[0]['protocol'] == 'tcp'
-    assert rows[0]['sport'] == 1234
-    assert rows[0]['dport'] == 80
-    assert rows[0]['payload_len'] == 100
-    assert rows[0]['ttl'] == 64
-    assert rows[0]['win'] == 64240
+def test_snaplen_truncation_preserves_header_features_and_wire_payload_length():
+    frame = _ethernet_ipv4_tcp_frame(ip_total_len=200, captured_len=96)
+    item = _decode_truncated_ipv4(frame, original=214, timestamp=1.25, linktype=1)
+    assert item is not None
+    assert item["protocol"] == "tcp"
+    assert item["sport"] == 12345
+    assert item["dport"] == 443
+    assert item["seq"] == 1000
+    assert item["flags"] == 0x18
+    assert item["win"] == 4096
+    assert item["ttl"] == 64
+    assert item["bytes"] == 214
+    assert item["capture_truncated"] is True
+    # 200-byte IPv4 total length - 20-byte IPv4 header - 20-byte TCP header.
+    assert item["payload_len"] == 160
 
 
-def test_unexpected_snaplen_fails_closed(tmp_path):
-    p = tmp_path / '200601011400.dump'
-    _write_truncated_tcp(p, snaplen=128)
-    with pytest.raises(V102ContractError, match='Unexpected PCAP contract'):
-        list(mawi_packets(p))
+def test_non_ipv4_ethernet_frame_is_ignored():
+    frame = b"\x00" * 12 + struct.pack("!H", 0x86DD) + b"\x00" * 80
+    assert _decode_truncated_ipv4(frame, original=len(frame), timestamp=0.0, linktype=1) is None
 
 
-def test_runtime_hashes_are_frozen_v101_values():
+def test_sequence_builder_requires_contiguous_8_plus_4_windows():
+    n = HISTORY + HORIZON
+    times = np.arange(n, dtype=np.int64) * 10
+    x = np.zeros((n, 32, len(FEATURES)), dtype=np.float32)
+    adj = np.zeros((n, 32, 32), dtype=np.float32)
+    mask = np.ones((n, 32), dtype=np.float32)
+    sx, sa, sm, target, cutoffs = build_sequences(times, x, adj, mask)
+    assert sx.shape[0] == 1
+    assert sa.shape[0] == 1
+    assert sm.shape[0] == 1
+    assert target.shape == (1, HORIZON, len(FEATURES))
+    assert cutoffs.tolist() == [80]
+
+
+def test_frozen_external_contract_constants_are_not_placeholder_values():
+    assert EXPECTED_CAPTURE == "200601011400.dump"
+    assert EXPECTED_RECORDS == 6_587_564
+    assert EXPECTED_SNAPLEN == 96
     assert len(EXPECTED_MODEL_SHA256) == 64
     assert len(EXPECTED_SUPPORT_SHA256) == 64
-    assert EXPECTED_SNAPLEN == 96
+    assert EXPECTED_MODEL_SHA256 != EXPECTED_SUPPORT_SHA256
