@@ -40,7 +40,8 @@ jobs:
           g=fit_gate(x[:128],m[:128],x[128:],m[128:])
           s,p,t,d=decisions(g,x[128:],m[128:])
           assert len(s)==128 and d.dtype==bool
-          assert t.all() and (p>=.95).all()
+          assert t.all() and (p[:,0]>=.95).all()
+          assert g['schema_version']=='v120-support.2'
           assert g['fit_provenance']['all_consumed_external_holdouts_excluded_from_fit'] is True
           print('V120 support envelope unit contract: PASS')
           PY
@@ -68,7 +69,7 @@ jobs:
           import json
           from pathlib import Path
           r=json.loads(Path('garuda_v3/artifacts/certification/v120/summary.json').read_text())
-          assert r['schema_version']=='v120.1'
+          assert r['schema_version']=='v120.2'
           assert r['status'] in {'DEV_ROBUST_SUPPORT_PASS','DEV_ROBUST_SUPPORT_FAIL'}
           assert r['support_design']['v119_statistics_used_for_fit_or_thresholding'] is False
           assert r['support_design']['consumed_external_bytes_read'] is False
