@@ -1,0 +1,39 @@
+{
+  "schema_version": "v102-closure.1",
+  "status": "INCOMPATIBLE_AFTER_CONSUMPTION",
+  "dataset": "MAWI Working Group Traffic Archive",
+  "capture": "200601011400.dump",
+  "capture_sha256": "6d0925f42db3a296ba84976e908f256f14efd39db6ae318f58d8e343bcabf199",
+  "compressed_sha256": "c3a4d0459c3d44570d33e67aa4d8533e3695a1eef1aaa4b443af4f23e2368737",
+  "github_run_id": 36308007599,
+  "github_job_id": 108588322029,
+  "pre_inference_lock_commit": "56f1e7b",
+  "one_shot_consumed": true,
+  "rerun_permitted_for_claim_improvement": false,
+  "frozen_runtime": {
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "adapter_contract_sha256": "870e7894378e687c542f286eabccf367c10d4d41dbebe7551b4ce95df2c65ac8"
+  },
+  "execution": {
+    "frozen_evaluator_tests_passed": true,
+    "hash_pinned_preregistration_verified": true,
+    "downloaded_bytes_matched_pre_inference_hashes": true,
+    "pre_inference_lock_committed": true,
+    "packet_record_decoding_started": true,
+    "graph_sequence_construction_completed": false,
+    "model_forward_completed": false,
+    "state_forecast_mse_computed": false,
+    "persistence_mse_computed": false,
+    "support_scoring_completed": false
+  },
+  "failure": {
+    "exception_type": "V102ContractError",
+    "message": "Invalid PCAP capture/original length",
+    "location": "garuda_v3/v102_mawi_one_shot.py:classic_packets",
+    "triggering_guard": "captured > snaplen or captured > original",
+    "interpretation": "The frozen MAWI adapter rejected a packet record before graph construction/model evaluation. No PASS/FAIL forecasting metric exists for V102."
+  },
+  "claim_boundary": "V102 creates no fresh external generalisation claim. MAWI is consumed and quarantined from fitting, parser/adapter selection, thresholding, checkpoint selection, and any retry intended to improve the claim. A parser improvement may be developed only from specifications/synthetic or non-MAWI development data, and must be frozen before a different untouched external holdout is selected.",
+  "next_gate": "Develop and test a standards-compliant truncated-PCAP parser without using MAWI for fitting/selection; freeze the candidate and parser; then preregister a different untouched external capture for exactly one evaluation."
+}
