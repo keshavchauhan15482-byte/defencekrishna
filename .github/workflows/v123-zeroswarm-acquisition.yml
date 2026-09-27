@@ -1,0 +1,93 @@
+name: V123 ZeroSWARM acquisition freeze
+
+on:
+  push:
+    branches: [feat/v123-zeroswarm-one-shot]
+    paths:
+      - '.github/workflows/v123-zeroswarm-acquisition.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  acquire-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and hash-freeze all registered PCAPs without packet decode
+        run: |
+          python - <<'PY'
+          import hashlib, json, urllib.request, urllib.parse
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v123')
+          ppath=root/'preregistration.json'
+          p=json.loads(ppath.read_text())
+          assert p['status']=='SOURCE_SELECTED_HASH_PENDING'
+          assert p['acquisition']['packet_decode_permitted'] is False
+          assert p['acquisition']['model_inference_permitted'] is False
+          expected=p['external_holdout']['expected_files']
+          assert len(expected)==4
+          frozen=[]
+          for item in expected:
+              name=item['name']; md5_expected=item['expected_md5']
+              url='https://zenodo.org/records/15082260/files/'+urllib.parse.quote(name,safe='')+'?download=1'
+              out=Path('/tmp')/('v123-'+hashlib.sha256(name.encode()).hexdigest()[:12]+'.pcap')
+              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 Garuda-V123/1.0'})
+              hmd5=hashlib.md5(); hsha=hashlib.sha256(); total=0
+              with urllib.request.urlopen(req,timeout=180) as src, out.open('wb') as dst:
+                  while True:
+                      block=src.read(1024*1024)
+                      if not block: break
+                      dst.write(block); hmd5.update(block); hsha.update(block); total+=len(block)
+              got=hmd5.hexdigest()
+              assert got==md5_expected,(name,got,md5_expected)
+              frozen.append({'name':name,'source_url':url,'bytes':total,'md5':got,'sha256':hsha.hexdigest()})
+          manifest={
+              'schema_version':'v123-acquisition.1',
+              'status':'HASH_FROZEN_NO_PACKET_DECODE',
+              'zenodo_record':'15082260',
+              'file_count':len(frozen),
+              'files':frozen,
+              'selection_rule':'all four publisher PCAPs; no omission/cherry-pick',
+              'packet_records_decoded':False,
+              'model_inference_performed':False,
+              'labels_accessed':False
+          }
+          (root/'acquisition_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          p['external_holdout']['frozen_files']=frozen
+          p['status']='HASH_FROZEN_ONE_SHOT_ARMED'
+          p['acquisition']['packet_decode_permitted']=True
+          p['acquisition']['model_inference_permitted']=True
+          p['evaluation_permitted']=True
+          ppath.write_text(json.dumps(p,indent=2)+'\n')
+          print(json.dumps({'file_count':len(frozen),'total_bytes':sum(x['bytes'] for x in frozen),'files':frozen},indent=2))
+          PY
+      - name: Verify acquisition-only evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v123')
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED'
+          assert p['evaluation_permitted'] is True
+          assert a['status']=='HASH_FROZEN_NO_PACKET_DECODE'
+          assert a['file_count']==4 and len(a['files'])==4
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          assert a['labels_accessed'] is False
+          expected={x['name']:x['expected_md5'] for x in p['external_holdout']['expected_files']}
+          frozen={x['name']:x['md5'] for x in a['files']}
+          assert expected==frozen
+          print('V123 acquisition-only freeze: PASS')
+          PY
+      - name: Record immutable acquisition freeze
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v123/preregistration.json garuda_v3/artifacts/certification/v123/acquisition_manifest.json
+          git commit -m 'evidence(v123): freeze ZeroSWARM all-PCAP hashes'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
