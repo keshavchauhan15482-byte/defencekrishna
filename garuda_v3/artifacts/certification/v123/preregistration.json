@@ -1,6 +1,6 @@
 {
   "schema_version": "v123-prereg.1",
-  "status": "SOURCE_SELECTED_HASH_PENDING",
+  "status": "HASH_FROZEN_ONE_SHOT_ARMED",
   "selected_after_v122_commit": "c8755fb2fac573ea5f2e7fdd8957d8d5e91036aa",
   "claim_boundary": "Single fresh publisher-independent external state-transition forecasting test over all four publisher PCAPs. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is created.",
   "external_holdout": {
@@ -17,6 +17,12 @@
       {"name": "[Zero-SWARM] Nmap_v1.pcap", "expected_md5": "62bddfe28a2170b669a649fd04c9a6c9"},
       {"name": "ZeroSWARM Normal data_v2.pcap", "expected_md5": "eee8b87e62c482fd574b6e78d32cb12b"},
       {"name": "ZeroSWARM Normal data_v2b.pcap", "expected_md5": "9f8235fcdbfcacb32e7a70db14fc6c74"}
+    ],
+    "frozen_files": [
+      {"name":"[Zero-SWARM] Flooding Attack_v1.pcap","bytes":8760369,"md5":"a970eda097645d24ec3b9eb24de858b2","sha256":"f0f8f117f7759ca0a1fec5183677fd2e9e52f034d09ab09584bae8172d15b278"},
+      {"name":"[Zero-SWARM] Nmap_v1.pcap","bytes":9417479,"md5":"62bddfe28a2170b669a649fd04c9a6c9","sha256":"f3dc1a28f6b5d3a157305411abd1232ddeb4509bbb178578a0de0170cd984483"},
+      {"name":"ZeroSWARM Normal data_v2.pcap","bytes":232217247,"md5":"eee8b87e62c482fd574b6e78d32cb12b","sha256":"6f9b3e9228cc60e7b1130b790c11b187c5562bee5363f34f2e2da59c133540a3"},
+      {"name":"ZeroSWARM Normal data_v2b.pcap","bytes":18119840,"md5":"9f8235fcdbfcacb32e7a70db14fc6c74","sha256":"7ccdb3216007134eecaabf622eb2f2d6c09a06f2e4bbaec8b477a9906d52a7df"}
     ],
     "repo_history_audit": {
       "authoritative_branch": "feat/v67-ps9plus-evidence",
@@ -44,6 +50,8 @@
     "semantic_support_contract_sha256": "2b248bdb0c9504598d8feecb5a09bdcb322db605872839c684f235c938fec564",
     "robust_behavior_gate_file": "garuda_v3/artifacts/certification/v120/robust_support_gate.json",
     "robust_behavior_gate_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
+    "evaluator_file": "garuda_v3/v123_zeroswarm_one_shot.py",
+    "evaluator_git_blob_sha1": "fca4c550ea9a0f5c35391aa930b0128ee03a0064",
     "architecture": "gnn_lstm",
     "raw_schema": "garuda-observed-graph-v46-ps-complete",
     "model_schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
@@ -54,19 +62,7 @@
     "mode": "service",
     "max_nodes": 32
   },
-  "consumed_external_quarantine": [
-    "HIKARI-2021/V99",
-    "MAWI-200601011400/V102",
-    "CTU-IDSEVAL-6/V104",
-    "USTC-TFC2016-Miuref/V106",
-    "CTU-Malware-Capture-Botnet-327-1/V111",
-    "CTU-Malware-Capture-Botnet-111-1/V113",
-    "CTU-Malware-Capture-Botnet-326-1/V114",
-    "Kitsune-Mirai/V117",
-    "MTA-FormBook/V119",
-    "Honeynet-FC09/V121",
-    "AI4CYBER-side-run/non-authoritative-consumed"
-  ],
+  "consumed_external_quarantine": ["HIKARI-2021/V99","MAWI-200601011400/V102","CTU-IDSEVAL-6/V104","USTC-TFC2016-Miuref/V106","CTU-Malware-Capture-Botnet-327-1/V111","CTU-Malware-Capture-Botnet-111-1/V113","CTU-Malware-Capture-Botnet-326-1/V114","Kitsune-Mirai/V117","MTA-FormBook/V119","Honeynet-FC09/V121","AI4CYBER-side-run/non-authoritative-consumed"],
   "one_shot_gate": {
     "minimum_total_sequences_across_all_pcaps": 32,
     "minimum_semantic_support_fraction": 0.95,
@@ -79,8 +75,8 @@
   },
   "acquisition": {
     "all_file_hashes_must_be_frozen_before_decode": true,
-    "packet_decode_permitted": false,
-    "model_inference_permitted": false
+    "packet_decode_permitted": true,
+    "model_inference_permitted": true
   },
-  "evaluation_permitted": false
+  "evaluation_permitted": true
 }
