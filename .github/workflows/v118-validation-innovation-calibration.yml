@@ -1,0 +1,84 @@
+name: V118 validation-only innovation calibration
+
+on:
+  push:
+    branches: [feat/v118-validation-innovation-calibration]
+    paths:
+      - 'garuda_v3/v118_validation_innovation_calibration.py'
+      - '.github/workflows/v118-validation-innovation-calibration.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  calibrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify V118 code
+        run: python -m compileall -q garuda_v3/v118_validation_innovation_calibration.py
+      - name: Fetch hash-pinned CICAPT development captures
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v118 \
+            --ids cicapt_network \
+            --extract
+      - name: Fit validation-only innovation calibration
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v118
+          python -m garuda_v3.v118_validation_innovation_calibration \
+            --phase1 datasets/v118/1stPhase-timed-Merged.pcap \
+            --phase2 datasets/v118/2ndPhase-timed-MergedV2.pcap \
+            --model garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v116/support_gate.json \
+            --relative-transform garuda_v3/artifacts/certification/v116/relative_transform.json \
+            --output-dir garuda_v3/artifacts/certification/v118 \
+            --packet-limit 2000000
+      - name: Verify fail-closed calibration boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v118/summary.json').read_text())
+          c=json.loads(Path('garuda_v3/artifacts/certification/v118/innovation_calibration.json').read_text())
+          assert r['schema_version']=='v118.1'
+          assert r['status'] in {'DEV_INNOVATION_CALIBRATION_PASS','DEV_INNOVATION_CALIBRATION_FAIL'}
+          assert c['phase2_used_for_fit'] is False and c['external_used_for_fit'] is False and c['consumed_external_used_for_fit'] is False
+          assert r['freeze']['new_external_holdout_selected'] is False
+          if r['status']=='DEV_INNOVATION_CALIBRATION_PASS':
+              assert r['recovery_gate_passed'] is True
+              assert r['freeze']['candidate_runtime_frozen_before_new_external_selection'] is True
+              assert all(r['gates'].values())
+          else:
+              assert r['recovery_gate_passed'] is False
+              assert r['freeze']['candidate_runtime_frozen_before_new_external_selection'] is False
+          print(json.dumps({'status':r['status'],'calibration':r['calibration'],'validation':r['validation'],'phase2':r['phase2_sanity'],'support':r['phase2_support'],'gates':r['gates']},indent=2))
+          PY
+      - name: Record immutable V118 evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v118
+          git commit -m 'evidence(v118): record validation-only innovation calibration'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v118-validation-innovation-calibration
+          path: garuda_v3/artifacts/certification/v118/*
+          if-no-files-found: error
+          retention-days: 30
