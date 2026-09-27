@@ -3,7 +3,12 @@
 This code may inspect only archive bytes and ZIP central-directory metadata. It never
 extracts a PCAP member, decodes packets, reads labels, constructs graphs, or invokes
 the model. The first metadata-only attempt revealed 12 PCAP members for the six
-publisher-described logical capture scenarios; V104 now freezes all 12 members.
+publisher-described logical capture scenarios; V104 freezes all 12 members.
+
+Known packaging-only AppleDouble entries under ``__MACOSX/`` are ignored as ZIP
+metadata, but are recorded in the acquisition manifest. Any other non-PCAP payload
+fails closed. This policy is based only on central-directory metadata observed before
+external packet extraction/decoding and never selects or drops a PCAP member.
 """
 from __future__ import annotations
 
@@ -11,7 +16,7 @@ import argparse
 import hashlib
 import json
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 
 def file_hash(path: Path, algorithm: str) -> str:
@@ -20,6 +25,49 @@ def file_hash(path: Path, algorithm: str) -> str:
         for block in iter(lambda: f.read(1024 * 1024), b''):
             h.update(block)
     return h.hexdigest()
+
+
+def is_ignorable_packaging_metadata(filename: str) -> bool:
+    """Return True only for known macOS packaging metadata paths.
+
+    Classification uses the ZIP member name only. It never opens/extracts the member.
+    AppleDouble resource-fork sidecars have a ``._`` basename and are commonly stored
+    below ``__MACOSX/``. ``.DS_Store`` is likewise packaging metadata. No ordinary
+    payload file is ignored by this helper.
+    """
+    path = PurePosixPath(filename)
+    parts = path.parts
+    if not parts or parts[0] != '__MACOSX__':
+        return False
+    basename = path.name
+    return basename.startswith('._') or basename == '.DS_Store'
+
+
+def classify_entries(infos: list[zipfile.ZipInfo]) -> tuple[list[dict], list[dict], list[str]]:
+    """Classify central-directory entries without extracting archive member bytes."""
+    pcap_entries: list[dict] = []
+    ignored_metadata: list[dict] = []
+    unexpected_payloads: list[str] = []
+    for info in infos:
+        if info.is_dir():
+            continue
+        row = {
+            'filename': info.filename,
+            'compressed_bytes': int(info.compress_size),
+            'uncompressed_bytes': int(info.file_size),
+            'crc32_hex': f'{info.CRC:08x}',
+        }
+        lower = info.filename.lower()
+        if lower.endswith(('.pcap', '.pcapng')):
+            pcap_entries.append(row)
+        elif is_ignorable_packaging_metadata(info.filename):
+            ignored_metadata.append(row)
+        else:
+            unexpected_payloads.append(info.filename)
+    pcap_entries.sort(key=lambda r: r['filename'])
+    ignored_metadata.sort(key=lambda r: r['filename'])
+    unexpected_payloads.sort()
+    return pcap_entries, ignored_metadata, unexpected_payloads
 
 
 def main() -> int:
@@ -44,27 +92,16 @@ def main() -> int:
         bad = zf.testzip()
         if bad is not None:
             raise RuntimeError(f'ZIP CRC integrity failure: {bad}')
-        entries = []
-        for info in zf.infolist():
-            if info.is_dir():
-                continue
-            entries.append({
-                'filename': info.filename,
-                'compressed_bytes': int(info.compress_size),
-                'uncompressed_bytes': int(info.file_size),
-                'crc32_hex': f'{info.CRC:08x}',
-            })
-    entries.sort(key=lambda r: r['filename'])
-    pcap_entries = [r for r in entries if r['filename'].lower().endswith(('.pcap', '.pcapng'))]
-    non_pcap = [r['filename'] for r in entries if r not in pcap_entries]
+        pcap_entries, ignored_metadata, unexpected_payloads = classify_entries(zf.infolist())
+
     expected_members = int(ext['archive_pcap_member_count'])
     if len(pcap_entries) != expected_members:
         raise RuntimeError(f'Expected exactly {expected_members} frozen PCAP members, found {len(pcap_entries)}')
-    if non_pcap:
-        raise RuntimeError(f'Unexpected non-PCAP members in registered pcap.zip: {non_pcap}')
+    if unexpected_payloads:
+        raise RuntimeError(f'Unexpected non-PCAP payload members in registered pcap.zip: {unexpected_payloads}')
 
     report = {
-        'schema_version': 'v104-acquisition.1',
+        'schema_version': 'v104-acquisition.2',
         'status': 'HASH_AND_ENTRY_METADATA_FROZEN_MODEL_NOT_RUN',
         'evaluation_performed': False,
         'archive_extracted': False,
@@ -81,7 +118,10 @@ def main() -> int:
         'pcap_entry_count': len(pcap_entries),
         'pcap_entries': pcap_entries,
         'aggregate_uncompressed_pcap_bytes': int(sum(r['uncompressed_bytes'] for r in pcap_entries)),
-        'member_policy': 'all 12 PCAP members are frozen for the one-shot; no selection/drop permitted',
+        'ignored_packaging_metadata_count': len(ignored_metadata),
+        'ignored_packaging_metadata_entries': ignored_metadata,
+        'packaging_metadata_policy': 'ignore only __MACOSX AppleDouble (._*) or .DS_Store central-directory entries; fail on every other non-PCAP payload',
+        'member_policy': 'all 12 PCAP members are frozen for the one-shot; no PCAP selection/drop permitted',
         'next_step': 'Pin archive SHA-256 and the full sorted 12-member manifest into preregistration before any extraction or packet decode.'
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
