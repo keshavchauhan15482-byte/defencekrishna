@@ -1,0 +1,97 @@
+{
+  "schema_version": "v119.1",
+  "status": "FAIL",
+  "gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "requires_calibrated_mse_strictly_less_than_persistence_mse": true,
+    "requires_positive_improvement": true,
+    "total_sequences_gate_passed": true,
+    "support_gate_passed": false,
+    "persistence_gate_passed": true,
+    "positive_improvement_gate_passed": true,
+    "finite_metrics_gate_passed": true,
+    "all_gates_passed": false
+  },
+  "dataset": {
+    "name": "Malware-Traffic-Analysis.net 2026-08-09 exercise",
+    "scenario": "FormBook C2 activity",
+    "publisher": "Malware-Traffic-Analysis.net",
+    "source_url": "https://www.malware-traffic-analysis.net/2026/08/09/2026-08-09-traffic-analysis-exercise.pcap.zip",
+    "archive_sha256": "676bf6b5f269a8da49e8da6b6dcb3aed0ca2629f99005dc39f4b887ad9bee822",
+    "pcap_member": "2026-08-09-traffic-analysis-exercise.pcap",
+    "pcap_sha256": "0ea6b597732a9ce6af9a7e3adff4512c9a91b4bce27184c8fdeb746f05cce170",
+    "pcap_bytes": 16007378,
+    "labels_accessed": false
+  },
+  "frozen_runtime": {
+    "base_model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "support_gate_sha256": "8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+    "alpha": 0.663139650493983,
+    "raw_schema": "garuda-observed-graph-v46-ps-complete",
+    "model_schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
+    "feature_count": 34,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "max_nodes": 32,
+    "adapter_mode": "V112 tolerant packet decoder -> 34-feature PS-complete graph -> V116 history-relative transform -> V118 validation-only innovation calibration"
+  },
+  "capture_processing": {
+    "decoded_ipv4_packets": 22387,
+    "packet_limit": 2000000,
+    "observed_windows": 83,
+    "contiguous_sequences": 52,
+    "first_window_epoch": 1786241250,
+    "last_window_epoch": 1786242090,
+    "cutoff_timestamps_sha256": "27de2b56cae76081f63398ac295571c63dad4a4bffafe6184b1cbe69e3f2f1f9",
+    "packet_features_present_mean_on_observed_nodes": 1.0,
+    "parser_audit": {
+      "decoded_ipv4": 22387,
+      "full_tcp": 20850,
+      "full_udp": 1508,
+      "degraded_short_ip_options": 0,
+      "degraded_short_tcp": 0,
+      "degraded_short_udp": 0,
+      "nonfirst_fragment": 0,
+      "other_protocol": 29,
+      "skipped_truncated_ethernet": 0,
+      "skipped_truncated_vlan": 0,
+      "skipped_truncated_ipv4_header": 0,
+      "non_ipv4": 86
+    }
+  },
+  "state_forecasting": {
+    "metric": "raw reconstructed pooled-state MSE",
+    "base_v116_model_mse_diagnostic": 0.016656874013727164,
+    "calibrated_v118_mse": 0.017372941553847124,
+    "persistence_mse": 0.024158076736689987,
+    "base_v116_improvement_vs_persistence_diagnostic": 0.31050496298699143,
+    "calibrated_improvement_vs_persistence": 0.28086404628966033,
+    "calibrated_beats_persistence": true
+  },
+  "runtime_support": {
+    "method": "max robust standardized history-summary deviation",
+    "threshold": 29.1337654691185,
+    "supported_sequences": 10,
+    "total_sequences": 52,
+    "supported_fraction": 0.19230769230769232,
+    "median_score": 51.050854870323576,
+    "max_score": 104.16666502133008,
+    "interpretation": "training-support diagnostic only; outside support is not attack/OOD detection"
+  },
+  "one_shot_integrity": {
+    "runs_allowed_for_claim": 1,
+    "model_inference_performed_once": true,
+    "retrained_on_external": false,
+    "transform_fit_on_external": false,
+    "calibration_fit_on_external": false,
+    "support_fit_on_external": false,
+    "threshold_fit_on_external": false,
+    "labels_accessed": false,
+    "rerun_for_claim_improvement": false
+  },
+  "claim_boundary": "Fresh publisher-independent external state-transition forecasting only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is made."
+}
