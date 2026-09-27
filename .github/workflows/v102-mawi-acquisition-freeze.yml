@@ -15,7 +15,7 @@ permissions:
 jobs:
   acquisition-only:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -46,7 +46,7 @@ jobs:
       - name: Download exact preregistered MAWI object
         run: |
           mkdir -p datasets/v102
-          curl -L --fail --retry 4 --retry-delay 5 \
+          curl -L --fail --retry 4 --retry-all-errors --retry-delay 5 --connect-timeout 30 \
             --output datasets/v102/200601011400.dump.gz \
             'https://mawi.nezu.wide.ad.jp/mawi/samplepoint-B/2006/200601011400.dump.gz'
           test -s datasets/v102/200601011400.dump.gz
