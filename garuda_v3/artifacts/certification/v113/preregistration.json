@@ -1,0 +1,69 @@
+{
+  "schema_version": "v113-prereg.1",
+  "status": "HASH_FROZEN_ONE_SHOT_ARMED",
+  "claim_boundary": "Sequential post-recovery fresh external state-transition forecasting test. This is not the first external test and does not certify attack recall/FPR, MITRE stages, or warning before successful compromise.",
+  "selected_after_active_commit": "94c791c0d4750c2fbc26abe4b652f53423e6591a",
+  "evaluator_frozen_before_selection_commit": "02b53802e26adf6838eb5887ff6451a488ff7fa7",
+  "external_holdout": {
+    "publisher": "Stratosphere Laboratory Malware Capture Facility Project",
+    "dataset": "CTU-Malware-Capture-Botnet-326-1",
+    "capture": "2018-01-30_win10.pcap",
+    "malware_family": "Dridex",
+    "source_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-326-1/2018-01-30_win10.pcap",
+    "publisher_index_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-326-1/",
+    "publisher_listed_size": "193M",
+    "publisher_listed_duration": "33 days 11:23:14",
+    "labels_required_or_accessed_for_scoring": false,
+    "repo_history_audit": {
+      "exact_dataset_code_search_matches": 0,
+      "exact_capture_code_search_matches": 0,
+      "malware_family_code_search_matches": 0,
+      "active_tree_exact_dataset_path_matches": 0,
+      "active_tree_exact_capture_path_matches": 0,
+      "active_tree_sha": "77d080d1ae6fcd32018af158ea3b9c1aec25b332",
+      "selection_occurred_before_capture_download": true,
+      "selection_occurred_before_packet_decode": true,
+      "selection_occurred_before_model_inference": true,
+      "note": "GitHub code-search responses returned zero matches but were marked incomplete; the active branch recursive tree independently contained no exact dataset or capture path match."
+    },
+    "independence_note": "Different capture and malware family from consumed V111 TrickBot, but from the same Stratosphere MCFP publisher; report as sequential external recovery evidence, not publisher-independent replication.",
+    "bytes": 202194456,
+    "sha256": "5ec0ad15e4eac30c4155fc9fe9ab66d1dd561f23e8eba029eda08ce9ad36aa48",
+    "md5": "fd87e6c90b2316b52972d9f67102be04"
+  },
+  "registered_candidate": {
+    "model_file": "garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz",
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_file": "garuda_v3/artifacts/certification/v108/support_gate.json",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "adapter_contract_file": "garuda_v3/artifacts/certification/v112/adapter_contract.json",
+    "adapter_contract_sha256": "2c48468ed2e608377c226137bb432ee85efb27cfcb4ba7052f893816976e2e8c",
+    "evaluator": "garuda_v3/v113_frozen_external_one_shot.py",
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34,
+    "architecture": "gnn_lstm",
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual",
+    "tolerant_packet_reader": true
+  },
+  "one_shot_gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "pass_requires_model_mse_strictly_less_than_persistence_mse": true,
+    "pass_requires_improvement_vs_persistence_strictly_greater_than": 0.0,
+    "unsupported_or_incompatible_is_not_pass": true,
+    "result_improving_rerun_permitted": false
+  },
+  "acquisition": {
+    "manifest": "garuda_v3/artifacts/certification/v113/acquisition_manifest.json",
+    "packet_decode_had_occurred": false,
+    "model_inference_had_occurred": false,
+    "labels_had_been_accessed": false
+  },
+  "evaluation_permitted": true,
+  "rerun_for_claim_improvement_permitted": false
+}
