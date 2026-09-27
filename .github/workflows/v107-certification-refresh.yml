@@ -1,0 +1,56 @@
+name: V107 certification refresh verification
+
+on:
+  push:
+    branches: [feat/v107-certification-refresh]
+    paths:
+      - '.github/workflows/v107-certification-refresh.yml'
+      - 'garuda_v3/v107_verify_precompromise.py'
+      - 'garuda_v3/tests/test_v107_precompromise_validator.py'
+      - 'garuda_v3/artifacts/certification/v97/stage_packet_manifest.json'
+      - 'garuda_v3/artifacts/certification/v98/verified_precompromise_manifest.json'
+      - 'garuda_v3/artifacts/certification/v107/certification_protocol.json'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile validator
+        run: python -m compileall -q garuda_v3/v107_verify_precompromise.py garuda_v3/tests/test_v107_precompromise_validator.py
+      - name: Run strict validator tests
+        run: python -m unittest discover -s garuda_v3/tests -p 'test_v107_precompromise_validator.py' -v
+      - name: Validate certification manifests
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          v97=json.loads(Path('garuda_v3/artifacts/certification/v97/stage_packet_manifest.json').read_text())
+          v98=json.loads(Path('garuda_v3/artifacts/certification/v98/verified_precompromise_manifest.json').read_text())
+          v107=json.loads(Path('garuda_v3/artifacts/certification/v107/certification_protocol.json').read_text())
+          assert v97['schema_version']=='v97.2'
+          assert v97['declared_status']=='SHADOW_UNRESOLVED'
+          assert v97['packet_evidence']['world_model_consumes_packet_features'] is True
+          assert v97['packet_evidence']['packet_features_trained'] is True
+          assert v97['packet_evidence']['supported_features']['ttl_variance'] is True
+          assert v97['packet_evidence']['supported_features']['tcp_window'] is True
+          assert v97['packet_evidence']['supported_features']['fragmentation'] is True
+          assert v97['packet_evidence']['supported_features']['retransmission'] is True
+          assert v97['packet_evidence']['supported_features']['payload_distribution'] is False
+          assert v97['packet_evidence']['supported_features']['port_scan_patterns'] is False
+          assert v98['schema_version']=='v98.2'
+          assert v98['declared_status']=='SHADOW_UNRESOLVED'
+          assert v98['validator']['status']=='READY'
+          assert v98['repository_audit']['successful_compromise_artifact_found'] is False
+          assert v107['status']=='FUTURE_PROTOCOL_FROZEN'
+          assert v107['non_retroactivity']['v106_status_remains']=='FAIL'
+          assert v107['operational_support_gate']['required_for_autonomous_action'] is True
+          assert v107['operational_support_gate']['required_for_reporting_external_forecast_mse'] is False
+          print('V107 certification contracts verified')
+          PY

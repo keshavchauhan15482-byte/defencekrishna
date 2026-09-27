@@ -1,8 +1,8 @@
 {
-  "schema_version": "v97.1",
+  "schema_version": "v97.2",
   "candidate_id": "v97-stage-packet-evidence-shadow",
   "declared_status": "SHADOW_UNRESOLVED",
-  "claim_boundary": "This candidate is an evidence-integrity checkpoint for supervised five-stage MITRE output plus packet-origin telemetry. It does not certify fresh external generalisation or warning before successful compromise.",
+  "claim_boundary": "Packet-trained world-model runtime evidence is now hash-pinned, but the combined V97 gate remains unresolved because complete independently validated five-stage supervision and full SIH packet-feature coverage are not yet frozen.",
   "required_stages": [
     "reconnaissance",
     "initial_access",
@@ -14,66 +14,72 @@
     "label_source": "publisher_timeline_unvalidated",
     "unknown_label_policy": "masked",
     "provenance": {
-      "training_sources": [
-        "development"
-      ],
-      "validation_sources": [
-        "development_validation"
-      ],
+      "training_sources": ["development"],
+      "validation_sources": ["development_validation"],
       "calibration_sources": [],
-      "evaluation_sources": [
-        "v81_fresh_reserve"
-      ]
+      "evaluation_sources": ["v81_fresh_reserve"]
     },
     "metrics": {},
     "artifact": null,
+    "status": "UNRESOLVED",
     "notes": [
-      "V69 explicitly states that publisher stage labels are network_stage_validated=false and therefore cannot support a supervised network-stage release claim by alignment alone.",
-      "V82 trains a five-class stage mapper but its current one-shot fresh reserve evaluates only Reconnaissance and Lateral Movement subtypes; Exploitation is documented there as an Initial Access proxy.",
-      "Until native or independently network-validated labels and complete five-stage metrics are frozen into a hash-pinned artifact, this gate must remain unresolved."
+      "V69 explicitly records network_stage_validated=false; alignment alone cannot certify native network-stage supervision.",
+      "V82 has a five-class mapper, but its one-shot reserve does not contain independently validated support for all five required stages and documents Exploitation as an Initial Access proxy.",
+      "Native or independently validated five-stage labels plus complete per-stage precision/recall/F1/FPR/support remain required."
     ]
   },
   "packet_evidence": {
-    "origin": "pcapng",
-    "source_capture_sha256": null,
-    "world_model_consumes_packet_features": false,
+    "status": "RUNTIME_PACKET_MODEL_PROVEN_PARTIAL_PS_FEATURE_COVERAGE",
+    "origin": "pcap/pcapng",
+    "source_capture_sha256": [
+      "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+      "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3"
+    ],
+    "world_model_consumes_packet_features": true,
+    "packet_features_trained": true,
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+    "adapter_contract_sha256": "1f705e4427f65507ae5d71dd353fbe58966e2882bff7acc182f45fad99fb5e7f",
+    "runtime_artifact": "garuda_v3/artifacts/certification/v105/summary.json",
+    "external_runtime_artifact": "garuda_v3/artifacts/certification/v106/one_shot_result.json",
     "supported_features": {
-      "ttl_variance": false,
-      "tcp_window": false,
-      "fragmentation": false,
+      "ttl_variance": true,
+      "tcp_window": true,
+      "fragmentation": true,
       "payload_distribution": false,
       "port_scan_patterns": false,
-      "retransmission": false
+      "retransmission": true
     },
-    "artifact": null,
+    "schema_semantics_audit": {
+      "feature_index_17_declared_name": "duplicate_payload_segment_fraction",
+      "feature_index_17_runtime_value": "retransmission_fraction",
+      "semantic_name_matches_runtime_value": false,
+      "claim_policy": "Count index 17 only as retransmission evidence; do not claim payload-size distribution from this feature."
+    },
     "notes": [
-      "V68 code audits real PCAP/PCAPNG packet telemetry and includes the SIH packet feature schema.",
-      "V70 code consumes the combined flow+packet state vector in a residual LSTM transition benchmark.",
-      "No checked-in hash-pinned V68/V70 execution artifact and source capture SHA-256 were found in the current certification tree, so code capability is not upgraded to runtime evidence here."
+      "V101/V105 freeze a packet-feature-trained GNN+LSTM candidate and validation-fitted support gate; V105 development recovery keeps model/support hashes unchanged and records packet_features_present_mean=1.0.",
+      "V106 independently confirms the frozen runtime reports packet_features_trained=true and packet_features_present_mean_on_observed_nodes=1.0 on a fresh external raw PCAP; V106 remains an overall FAIL because runtime support coverage was 0/64, not because packet features were absent.",
+      "Full SIH packet-feature coverage is still incomplete: explicit payload-size distribution and port-scan sequencing/signature features are not in the active v3.1 state vector."
     ]
   },
   "observed_repository_evidence": {
-    "v68_packet_contract": {
-      "path": "garuda_v3/v68_cicapt_packet_contract.py",
-      "git_blob_sha1": "2e5a73554c2e0a51dc145368678c8eec344d4874"
-    },
-    "v69_stage_alignment": {
-      "path": "garuda_v3/v69_cicapt_stage_alignment_audit.py",
-      "git_blob_sha1": "1a225ae3f052ce2da6f56c67885f86cf9133521f"
-    },
-    "v70_packet_world_model": {
-      "path": "garuda_v3/v70_cicapt_packet_world_model.py",
-      "git_blob_sha1": "ef2b54725dc1a9b975c34beeb8b763610551c78b"
-    },
-    "v82_stage_head": {
-      "path": "garuda_v3/v82_robust_stage_head_fresh_eval.py",
-      "git_blob_sha1": "0a537cd8b3ab6eda845d00f4cf2da6dd0077849b"
-    }
+    "v68_packet_contract": {"path":"garuda_v3/v68_cicapt_packet_contract.py","git_blob_sha1":"2e5a73554c2e0a51dc145368678c8eec344d4874"},
+    "v69_stage_alignment": {"path":"garuda_v3/v69_cicapt_stage_alignment_audit.py","git_blob_sha1":"1a225ae3f052ce2da6f56c67885f86cf9133521f"},
+    "v70_packet_world_model": {"path":"garuda_v3/v70_cicapt_packet_world_model.py","git_blob_sha1":"ef2b54725dc1a9b975c34beeb8b763610551c78b"},
+    "v82_stage_head": {"path":"garuda_v3/v82_robust_stage_head_fresh_eval.py","git_blob_sha1":"0a537cd8b3ab6eda845d00f4cf2da6dd0077849b"},
+    "v105_runtime_summary": "garuda_v3/artifacts/certification/v105/summary.json",
+    "v106_external_result": "garuda_v3/artifacts/certification/v106/one_shot_result.json"
   },
+  "resolved_since_v97_1": [
+    "hash-pinned packet extraction/evaluation artifact tied to real capture SHA-256 values",
+    "artifact-backed proof that the evaluated GNN+LSTM world model was trained on and consumes packet-origin telemetry"
+  ],
   "known_gaps_for_pass": [
     "hash-pinned native or independently network-validated five-stage supervision artifact",
     "precision/recall/F1/FPR/support for all five required stages from that supervised evaluation",
-    "hash-pinned packet extraction/evaluation artifact tied to a real capture SHA-256",
-    "artifact-backed proof that the evaluated candidate world model consumed the packet feature representation"
+    "explicit payload-size distribution feature in the active state representation",
+    "explicit port-scan sequencing/signature feature in the active state representation",
+    "resolve the legacy index-17 feature-name/runtime-value semantic mismatch in a versioned schema before claiming that named feature literally"
   ]
 }
