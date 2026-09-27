@@ -2,7 +2,7 @@ name: V102 MAWI frozen external one-shot
 
 on:
   push:
-    branches: [feat/v102-mawi-preregister]
+    branches: [feat/v102-mawi-evaluator-freeze]
     paths:
       - 'garuda_v3/artifacts/certification/v102/acquisition_manifest.json'
       - '.github/workflows/v102-mawi-one-shot.yml'
