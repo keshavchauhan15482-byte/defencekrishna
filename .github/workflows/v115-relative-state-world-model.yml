@@ -1,0 +1,116 @@
+name: V115 history-relative PS-complete world model
+
+on:
+  push:
+    branches: [feat/v115-relative-state-world-model]
+    paths:
+      - 'garuda_v3/model.py'
+      - 'garuda_v3/v115_relative_state_world_model.py'
+      - '.github/workflows/v115-relative-state-world-model.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  develop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify history-only relative transform invariance and schema registration
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from garuda_v3.v115_relative_state_world_model import fit_transform,apply_transform,RELATIVE_FEATURES,RELATIVE_SCHEMA
+          from garuda_v3.ps_complete import FEATURES
+          from garuda_v3.model import GraphWorldModel, SUPPORTED_SCHEMAS
+          assert RELATIVE_SCHEMA in SUPPORTED_SCHEMAS
+          probe=GraphWorldModel(architecture='gnn_lstm',feature_dim=34,decoder='residual',schema=RELATIVE_SCHEMA)
+          assert probe.schema==RELATIVE_SCHEMA and probe.f==34
+          rng=np.random.default_rng(115)
+          x=rng.uniform(.1,2.0,size=(8,8,4,34)).astype(np.float32)
+          mask=np.ones((8,8,4),dtype=np.float32)
+          y=rng.uniform(.1,2.0,size=(8,4,34)).astype(np.float32)
+          for j in range(29,34):
+              x[...,j]=1.0; y[...,j]=1.0
+          tr=fit_transform(x,mask)
+          nx,ny,c=apply_transform(x,y,mask,tr)
+          shifted=x.copy(); shifted_y=y.copy()
+          offsets=np.linspace(.2,1.3,29,dtype=np.float32)
+          shifted[...,:29]+=offsets
+          shifted_y[...,:29]+=offsets
+          sx,sy,sc=apply_transform(shifted,shifted_y,mask,tr)
+          assert np.allclose(nx[...,:29],sx[...,:29],atol=2e-5)
+          assert np.allclose(ny[...,:29],sy[...,:29],atol=2e-5)
+          assert np.allclose(nx[...,29:],x[...,29:])
+          assert np.allclose(ny[...,29:],y[...,29:])
+          assert len(RELATIVE_FEATURES)==29 and len(FEATURES)==34
+          print('history-relative additive baseline invariance + schema registration: PASS')
+          PY
+      - name: Fetch hash-pinned CICAPT development captures
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v115 \
+            --ids cicapt_network \
+            --extract
+      - name: Train three-seed development candidate
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v115
+          python -m garuda_v3.v115_relative_state_world_model \
+            --phase1 datasets/v115/1stPhase-timed-Merged.pcap \
+            --phase2 datasets/v115/2ndPhase-timed-MergedV2.pcap \
+            --output-dir garuda_v3/artifacts/certification/v115 \
+            --packet-limit 2000000 \
+            --seeds 42 43 44 \
+            --epochs 8 \
+            --batch-size 64
+      - name: Verify fail-closed development evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v115/summary.json').read_text())
+          assert r['schema_version']=='v115.1'
+          assert r['status'] in {'DEV_RELATIVE_STATE_PASS','DEV_RELATIVE_STATE_FAIL'}
+          assert r['selection']['phase2_used_for_selection'] is False
+          assert r['selection']['external_used_for_selection'] is False
+          assert r['support_gate']['fit_provenance']['all_consumed_external_holdouts_excluded_from_fit'] is True
+          assert r['representation']['contract']['future_information_used_for_transform'] is False
+          assert r['representation']['contract']['external_statistics_used'] is False
+          assert r['freeze']['new_external_holdout_selected'] is False
+          if r['status']=='DEV_RELATIVE_STATE_PASS':
+              assert r['recovery_gate_passed'] is True
+              assert r['freeze']['candidate_frozen_before_new_external_selection'] is True
+              assert all(r['gates'].values())
+          else:
+              assert r['recovery_gate_passed'] is False
+              assert r['freeze']['candidate_frozen_before_new_external_selection'] is False
+          print(json.dumps({'status':r['status'],'selected':r['selected_candidate'],'support':r['support_gate'],'gates':r['gates'],'freeze':r['freeze']},indent=2))
+          PY
+      - name: Record immutable V115 development evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v115
+          git commit -m 'evidence(v115): record history-relative development result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v115-relative-state-evidence
+          path: garuda_v3/artifacts/certification/v115/*
+          if-no-files-found: error
+          retention-days: 30
