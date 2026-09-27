@@ -2,7 +2,8 @@
 
 This code may inspect only archive bytes and ZIP central-directory metadata. It never
 extracts a PCAP member, decodes packets, reads labels, constructs graphs, or invokes
-the model.
+the model. The first metadata-only attempt revealed 12 PCAP members for the six
+publisher-described logical capture scenarios; V104 now freezes all 12 members.
 """
 from __future__ import annotations
 
@@ -56,8 +57,9 @@ def main() -> int:
     entries.sort(key=lambda r: r['filename'])
     pcap_entries = [r for r in entries if r['filename'].lower().endswith(('.pcap', '.pcapng'))]
     non_pcap = [r['filename'] for r in entries if r not in pcap_entries]
-    if len(pcap_entries) != int(ext['publisher_capture_count']):
-        raise RuntimeError(f'Expected exactly {ext["publisher_capture_count"]} PCAP entries, found {len(pcap_entries)}')
+    expected_members = int(ext['archive_pcap_member_count'])
+    if len(pcap_entries) != expected_members:
+        raise RuntimeError(f'Expected exactly {expected_members} frozen PCAP members, found {len(pcap_entries)}')
     if non_pcap:
         raise RuntimeError(f'Unexpected non-PCAP members in registered pcap.zip: {non_pcap}')
 
@@ -75,10 +77,12 @@ def main() -> int:
         'archive_bytes': int(args.archive.stat().st_size),
         'archive_md5': observed_md5,
         'archive_sha256': observed_sha256,
+        'publisher_logical_capture_count': int(ext['publisher_logical_capture_count']),
         'pcap_entry_count': len(pcap_entries),
         'pcap_entries': pcap_entries,
         'aggregate_uncompressed_pcap_bytes': int(sum(r['uncompressed_bytes'] for r in pcap_entries)),
-        'next_step': 'Pin archive SHA-256 and the full sorted PCAP entry manifest into preregistration before any extraction or packet decode.'
+        'member_policy': 'all 12 PCAP members are frozen for the one-shot; no selection/drop permitted',
+        'next_step': 'Pin archive SHA-256 and the full sorted 12-member manifest into preregistration before any extraction or packet decode.'
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
