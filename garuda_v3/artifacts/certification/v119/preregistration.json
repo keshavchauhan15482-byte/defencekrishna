@@ -43,6 +43,8 @@
     "innovation_calibration_file": "garuda_v3/artifacts/certification/v118/innovation_calibration.json",
     "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
     "innovation_alpha": 0.663139650493983,
+    "evaluator_file": "garuda_v3/v119_ai4cyber_one_shot.py",
+    "evaluator_git_blob_sha1": "860a4ea912be9f648a56347d922f871d2c07b1e3",
     "architecture": "gnn_lstm",
     "schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
     "raw_schema": "garuda-observed-graph-v46-ps-complete",
@@ -76,6 +78,7 @@
   "acquisition": {
     "archive_and_member_hash_freeze_required_before_decode": true,
     "packet_decode_permitted": true,
+    "model_inference_performed": false,
     "model_inference_permitted": true
   },
   "evaluation_permitted": true
