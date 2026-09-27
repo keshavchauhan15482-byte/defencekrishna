@@ -1,0 +1,62 @@
+name: V97 supervised stage + packet evidence gate
+
+on:
+  push:
+    branches:
+      - feat/v67-ps9plus-evidence
+    paths:
+      - 'garuda_v3/v97_stage_packet_evidence_gate.py'
+      - 'garuda_v3/tests/test_v97_stage_packet_evidence_gate.py'
+      - 'garuda_v3/artifacts/certification/v97/stage_packet_manifest.json'
+      - 'garuda_v3/v68_cicapt_packet_contract.py'
+      - 'garuda_v3/v69_cicapt_stage_alignment_audit.py'
+      - 'garuda_v3/v70_cicapt_packet_world_model.py'
+      - 'garuda_v3/v82_robust_stage_head_fresh_eval.py'
+      - '.github/workflows/v97-stage-packet-evidence-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-stage-packet-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run V97 verifier tests
+        run: python -m unittest garuda_v3.tests.test_v97_stage_packet_evidence_gate
+      - name: Materialize real V97 evidence report
+        run: |
+          python -m garuda_v3.v97_stage_packet_evidence_gate \
+            --repo-root . \
+            --manifest garuda_v3/artifacts/certification/v97/stage_packet_manifest.json \
+            --output garuda_v3/artifacts/certification/v97/stage_packet_report.json
+          cat garuda_v3/artifacts/certification/v97/stage_packet_report.json
+      - name: Enforce declared fail-closed state consistency
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path('garuda_v3/artifacts/certification/v97/stage_packet_manifest.json').read_text())
+          report = json.loads(Path('garuda_v3/artifacts/certification/v97/stage_packet_report.json').read_text())
+          allowed = {'PASS', 'SHADOW_UNRESOLVED'}
+          if report.get('status') not in allowed:
+              raise SystemExit(f"invalid V97 status: {report.get('status')}")
+          declared = manifest.get('declared_status')
+          if declared is not None and declared != report.get('status'):
+              raise SystemExit(f"declared_status={declared} but verifier={report.get('status')}")
+          if report.get('status') == 'PASS' and report.get('reasons'):
+              raise SystemExit('PASS cannot contain unresolved reasons')
+          if report.get('status') == 'SHADOW_UNRESOLVED' and not report.get('reasons'):
+              raise SystemExit('SHADOW_UNRESOLVED must explain missing evidence')
+          print(f"V97 status is self-consistent: {report['status']}")
+          PY
+      - name: Upload V97 evidence report
+        uses: actions/upload-artifact@v4
+        with:
+          name: v97-stage-packet-evidence-report
+          path: garuda_v3/artifacts/certification/v97/stage_packet_report.json
