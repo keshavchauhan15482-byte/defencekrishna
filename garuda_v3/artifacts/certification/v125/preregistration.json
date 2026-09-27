@@ -1,0 +1,28 @@
+{
+  "schema_version": "v125-prereg.1",
+  "status": "SOURCE_SELECTED_BEFORE_METRICS",
+  "base_evidence": "V124 exact-native five-stage result",
+  "base_result_commit": "4a4a430af340f42fd83ecdb26a1e7aea6d26816f",
+  "failed_stage_to_replicate": "Initial Access",
+  "original_v124_test_recall": 0.375,
+  "original_gate": 0.40,
+  "gate_is_unchanged": true,
+  "fresh_test_source": {
+    "publisher": "University of West Florida Cyber Analytics Research Group",
+    "dataset_release": "UWF-ZeekData24",
+    "native_tactic": "Initial Access",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/csv/Initial_Access/part-00000-9a37b839-429e-444b-82a5-a6d5e69dad7e-c000.csv",
+    "selected_before_download": true,
+    "selected_before_row_count": true,
+    "selected_before_model_metrics": true,
+    "used_in_v124_training_or_test": false
+  },
+  "replication_gate": {
+    "minimum_native_rows": 10,
+    "minimum_initial_access_recall": 0.40,
+    "proxy_mapping_permitted": false,
+    "model_selection_on_fresh_test_permitted": false,
+    "retuning_on_fresh_test_permitted": false
+  },
+  "claim_boundary": "Targeted independent native-label replication of V124's only failed per-stage recall gate. V124 itself remains immutable FAIL; V125 may only provide complementary Initial Access evidence and may not rewrite V124 metrics."
+}
