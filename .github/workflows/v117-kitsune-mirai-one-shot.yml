@@ -1,0 +1,129 @@
+name: V117 Kitsune Mirai frozen one-shot
+
+on:
+  push:
+    branches: [feat/v117-kitsune-mirai-one-shot]
+    paths:
+      - '.github/workflows/v117-kitsune-mirai-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify frozen preregistration and evaluator identity
+        run: |
+          python -m compileall -q garuda_v3/v117_kitsune_mirai_one_shot.py
+          test "$(git rev-parse HEAD:garuda_v3/v117_kitsune_mirai_one_shot.py)" = "5a1db6aa62a19a60fec3380a068a29ecc9413c10"
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v117')
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED' and p['evaluation_permitted'] is True
+          assert a['status']=='HASH_FROZEN_NO_PACKET_DECODE'
+          assert a['packet_records_decoded'] is False and a['model_inference_performed'] is False
+          assert not (root/'one_shot_result.json').exists()
+          for path,expected in [
+            ('garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz','1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c'),
+            ('garuda_v3/artifacts/certification/v116/support_gate.json','8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5'),
+            ('garuda_v3/artifacts/certification/v116/relative_transform.json','6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643')]:
+              h=hashlib.sha256(Path(path).read_bytes()).hexdigest(); assert h==expected,(path,h)
+          print('V117 frozen candidate/evaluator identity: PASS')
+          PY
+      - name: Reacquire exact frozen bytes and extract without decoding
+        run: |
+          python - <<'PY'
+          import hashlib,json,urllib.request,zipfile
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v117')
+          p=json.loads((root/'preregistration.json').read_text()); a=json.loads((root/'acquisition_manifest.json').read_text())
+          archive=Path('/tmp/v117-mirai.zip'); out=Path('/tmp/mirai.pcap')
+          urllib.request.urlretrieve(p['external_holdout']['source_url'],archive)
+          assert hashlib.sha256(archive.read_bytes()).hexdigest()==a['archive_sha256']
+          with zipfile.ZipFile(archive) as z:
+              data=z.read(a['selected_pcap_member']); out.write_bytes(data)
+          assert len(data)==a['selected_pcap_uncompressed_bytes']
+          assert hashlib.sha256(data).hexdigest()==a['selected_pcap_sha256']
+          print('exact frozen external bytes reacquired; no packet decoder invoked')
+          PY
+      - name: Commit irreversible pre-decode one-shot lock
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/certification/v117/consumption_lock.json')
+          if p.exists(): raise SystemExit('V117 consumption lock already exists; rerun forbidden')
+          p.write_text(json.dumps({
+            'schema_version':'v117-lock.1',
+            'status':'CONSUMED_FOR_SINGLE_CLAIM_RUN',
+            'packet_decode_had_occurred_before_lock':False,
+            'model_inference_had_occurred_before_lock':False,
+            'result_improving_rerun_permitted':False,
+            'capture_sha256':'da69165a7b47353de854e82b3e8c88741383bf94099db2aeaac35d27c7c921fe',
+            'model_sha256':'1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c',
+            'support_gate_sha256':'8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5',
+            'relative_transform_sha256':'6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643',
+            'runner_git_blob_sha1':'5a1db6aa62a19a60fec3380a068a29ecc9413c10'
+          },indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v117/consumption_lock.json
+          git commit -m 'evidence(v117): lock Kitsune Mirai before packet decode'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Run exactly one frozen external evaluation
+        run: |
+          python -m garuda_v3.v117_kitsune_mirai_one_shot \
+            --pcap /tmp/mirai.pcap \
+            --model garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v116/support_gate.json \
+            --relative-transform garuda_v3/artifacts/certification/v116/relative_transform.json \
+            --prereg garuda_v3/artifacts/certification/v117/preregistration.json \
+            --acquisition garuda_v3/artifacts/certification/v117/acquisition_manifest.json \
+            --output garuda_v3/artifacts/certification/v117/one_shot_result.json
+      - name: Verify immutable result contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v117/one_shot_result.json').read_text())
+          assert r['schema_version']=='v117.1' and r['status'] in {'PASS','FAIL'}
+          assert r['dataset']['labels_accessed'] is False
+          assert r['one_shot_integrity']['runs_allowed_for_claim']==1
+          assert r['one_shot_integrity']['retrained_on_external'] is False
+          assert r['one_shot_integrity']['transform_fit_on_external'] is False
+          assert r['one_shot_integrity']['support_fit_on_external'] is False
+          assert r['one_shot_integrity']['rerun_for_claim_improvement'] is False
+          assert r['gate']['all_gates_passed'] == (r['status']=='PASS')
+          print(json.dumps({'status':r['status'],'forecast':r['state_forecasting'],'support':r['runtime_support'],'gate':r['gate']},indent=2))
+          PY
+      - name: Record immutable one-shot result
+        run: |
+          git add garuda_v3/artifacts/certification/v117/one_shot_result.json
+          git commit -m 'evidence(v117): record Kitsune Mirai one-shot result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v117-kitsune-mirai-one-shot
+          path: garuda_v3/artifacts/certification/v117/*
+          if-no-files-found: error
+          retention-days: 30
