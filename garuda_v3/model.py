@@ -16,9 +16,11 @@ class GraphWorldModel:
     def __init__(self, architecture='gnn_lstm', feature_dim=len(FEATURES), graph_dim=12, hidden=16, seed=42,
                  decoder='absolute', stage_count=0, schema=SCHEMA):
         if architecture not in ('gnn_lstm','lstm'): raise ValueError('Unknown architecture')
-        if decoder not in ('absolute', 'residual'): raise ValueError('Unknown decoder')
+        if decoder not in ('absolute', 'residual', 'relative_residual'): raise ValueError('Unknown decoder')
         if stage_count not in (0, 5): raise ValueError('stage_count must be 0 or 5')
         if schema not in SUPPORTED_SCHEMAS: raise ValueError(f'Unsupported graph schema: {schema}')
+        if decoder == 'relative_residual' and schema != RELATIVE_PS_COMPLETE_SCHEMA:
+            raise ValueError('relative_residual decoder requires relative PS-complete schema')
         self.schema=schema
         self.config=dict(architecture=architecture,feature_dim=feature_dim,graph_dim=graph_dim,hidden=hidden,
                          seed=seed,decoder=decoder,stage_count=stage_count,schema=schema)
@@ -38,7 +40,7 @@ class GraphWorldModel:
         weight('mean',hidden,feature_dim);bias('mean_b',feature_dim)
         weight('sigma',hidden,feature_dim);bias('sigma_b',feature_dim)
         weight('risk',hidden,1);bias('risk_b',1)
-        if decoder=='residual': self.params['mean'].data[:]=0
+        if decoder in ('residual','relative_residual'): self.params['mean'].data[:]=0
         if stage_count: weight('stage',hidden,stage_count);bias('stage_b',stage_count)
     def parameters(self): return list(self.params.values())
     def cell(self,x,h,c,name):
@@ -72,6 +74,10 @@ class GraphWorldModel:
             if self.decoder=='residual':
                 proposed=current+.1*innovation.tanh()
                 current=proposed.relu()-(proposed-1).relu()
+            elif self.decoder=='relative_residual':
+                # Relative coordinates are centered and intentionally may be negative or >1.
+                # Do not apply the raw-feature [0,1] clamp used by the legacy residual decoder.
+                current=current+.1*innovation.tanh()
             else: current=innovation.sigmoid()
             if self.stage_count:
                 stages.append((h@self.params['stage']+self.params['stage_b']).sigmoid().reshape(b,1,self.stage_count))
