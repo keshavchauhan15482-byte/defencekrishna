@@ -1,6 +1,6 @@
 {
-  "schema_version": "v106-prereg.1",
-  "status": "HOLDOUT_SELECTED_HASH_PENDING",
+  "schema_version": "v106-prereg.2",
+  "status": "HASH_FROZEN_ONE_SHOT_ARMED",
   "selected_after_v105_merge_commit": "53adc745ea107e6e3ccc36c12ca366f1e2429989",
   "claim_boundary": "V106 is a single fresh external state-transition forecasting test only. It does not certify attack recall/FPR, MITRE stages, or warning before successful compromise.",
   "external_holdout": {
@@ -13,8 +13,8 @@
     "source_url": "https://raw.githubusercontent.com/davidyslu/USTC-TFC2016/master/Malware/Miuref.pcap",
     "expected_bytes": 17196739,
     "publisher_git_blob_sha1": "070174d3486e74f04fccdc96504e6f4c60bf8333",
-    "sha256": null,
-    "md5": null,
+    "sha256": "ec2476c9fb34a202b11d1138286143ad2cd7055fbc9401baf150b3d513c3d0ae",
+    "md5": "7a21246187cfe0c4b7ff82be798d836d",
     "labels_required_or_accessed": false,
     "metadata_correction_before_decode": {
       "previous_unverified_blob_sha1": "7a69acdb1b90f99e8f50377dc0970405de6a4b2f",
@@ -58,8 +58,9 @@
   },
   "acquisition": {
     "metadata_hash_freeze_required_before_decode": true,
-    "packet_decode_permitted": false,
-    "model_inference_permitted": false
+    "packet_decode_permitted": true,
+    "model_inference_permitted": true,
+    "acquisition_manifest": "garuda_v3/artifacts/certification/v106/acquisition_manifest.json"
   },
-  "evaluation_permitted": false
+  "evaluation_permitted": true
 }
