@@ -1,1 +1,103 @@
-placeholder
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#020611">
+  <title>Krishna Defence System — Garuda AI Evaluator Mode</title>
+  <link rel="stylesheet" href="/selection.css">
+</head>
+<body>
+<div class="noise"></div>
+<header class="topbar">
+  <a class="brand" href="/"><span class="mark">G</span><span><b>KRISHNA DEFENCE SYSTEM</b><small>GARUDA AI · SIH 2026 · EVALUATOR MODE</small></span></a>
+  <nav><a href="#proof">Proof chain</a><a href="#difference">Why Garuda</a><a href="#claims">Claim scope</a><a href="#demo">Live demo</a></nav>
+  <button id="connectBtn" class="connect"><i></i><span id="connectionLabel">Connect runtime</span></button>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="heroCopy">
+      <div class="eyebrow"><i></i>WORLD-MODEL NETWORK ATTACK FORECASTING</div>
+      <h1>Detecting now is useful.<br><span>Forecasting what happens next</span> is the mission.</h1>
+      <p>Garuda converts flow + packet telemetry into 10-second network graphs, learns temporal state transitions with GraphSAGE + LSTM, and rolls the network state forward at +10 / +20 / +30 / +40 seconds. Risk/response and externally-qualified state forecasting are kept as separate, integrity-pinned runtimes.</p>
+      <div class="heroActions">
+        <button id="runProof" class="primary">▶ Run proof replay</button>
+        <label class="upload">Analyse PCAP<input id="pcapInput" type="file" accept=".pcap" hidden></label>
+      </div>
+      <div class="micro"><span>34 flow + packet features</span><span>80s observed history</span><span>40s autoregressive horizon</span><span>Offline / local runtime</span></div>
+    </div>
+    <div class="heroPanel glass">
+      <div class="panelHead"><span>SELECTION READINESS</span><b id="overallStatus" class="pill waiting">WAITING</b></div>
+      <div class="scoreRing"><canvas id="ring"></canvas><div><strong id="score">—</strong><small>runtime proof</small></div></div>
+      <div class="heroStats">
+        <div><small>Fresh external</small><b id="externalMetric">15.07%</b><em>lower MSE vs persistence</em></div>
+        <div><small>External sequences</small><b>2,209</b><em>V123 all 4 PCAPs</em></div>
+        <div><small>Semantic support</small><b>100%</b><em>input compatibility</em></div>
+        <div><small>Full integration</small><b id="ciState">PASS</b><em>V127 post-merge CI</em></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="proof" class="proofBlock">
+    <div class="sectionTitle"><div><small>THE ONE TIMELINE A JUDGE SHOULD SEE</small><h2>Observed history → forecast issued → future observed → defender decision</h2></div><span id="proofMode" class="tag">RECORDED RUNTIME PROOF</span></div>
+    <div class="timeline glass">
+      <article class="step observed"><span>01</span><div><small>OBSERVED HISTORY</small><h3>8 × 10s network graphs</h3><p id="observedText">Connect the runtime to load the exact model history contract.</p></div><b id="observedBadge">80s</b></article>
+      <div class="arrow">→</div>
+      <article class="step forecast"><span>02</span><div><small>FORECAST ISSUED</small><h3>Future state at +10 / +20 / +30 / +40s</h3><p id="forecastText">No future graph is supplied as model input.</p></div><b id="forecastBadge">K=4</b></article>
+      <div class="arrow">→</div>
+      <article class="step actual"><span>03</span><div><small>FUTURE OBSERVED</small><h3>Fresh external holdout compared with persistence</h3><p>V123: frozen model, four publisher PCAPs, 2,209 sequences, no external fitting.</p></div><b>+15.07%</b></article>
+      <div class="arrow">→</div>
+      <article class="step decision"><span>04</span><div><small>DEFENDER DECISION</small><h3>Review / Arjuna / Krishna / Sudarshana</h3><p id="decisionText">Response stays fail-closed and operator-scoped unless evidence gates authorize action.</p></div><b id="decisionBadge">SHADOW</b></article>
+    </div>
+    <div class="timelineNote"><b>Important:</b> this chain certifies <strong>future network-state forecasting</strong>. It does not relabel attack onset as successful compromise. Objective successful-compromise timestamp + model-warning pairing remains a separate evidence gate.</div>
+  </section>
+
+  <section id="difference" class="compareBlock">
+    <div class="sectionTitle"><div><small>EVALUATOR QUESTION #4</small><h2>What changes versus a temporal IDS?</h2></div><span class="tag cyan">CONCRETE DIFFERENCE</span></div>
+    <div class="compareGrid">
+      <article class="compareCard muted"><div class="icon">IDS</div><small>TEMPORAL IDS</small><h3>“What does the traffic look like now?”</h3><ul><li>Classifies/detects current or recent observations</li><li>May use sequence context but usually returns a present-state label/risk</li><li>Detection evidence is not itself a learned future-state rollout</li></ul></article>
+      <article class="compareCard bright"><div class="icon">G</div><small>GARUDA WORLD MODEL</small><h3>“Given this state, what network state comes next?”</h3><ul><li>GraphSAGE encodes spatial service relationships</li><li>LSTM learns temporal transition dynamics</li><li>Autoregressive state rollout at four future horizons</li><li><strong>Fresh external V123: 15.07% lower state MSE than persistence</strong></li></ul></article>
+    </div>
+  </section>
+
+  <section id="claims" class="challengeBlock">
+    <div class="sectionTitle"><div><small>THE FOUR QUESTIONS WE EXPECT</small><h2>Evaluator challenge board</h2></div><span class="tag">FAIL-CLOSED ANSWERS</span></div>
+    <div class="challengeGrid">
+      <article><div class="challengeTop"><span>01</span><b class="pill partial">PARTIAL</b></div><h3>Attack detected, or forecast before compromise?</h3><p><strong>Certified:</strong> future state forecasting on a fresh external publisher holdout. <strong>Not yet certified:</strong> same-campaign model warning strictly before an objective successful-compromise timestamp.</p><small>We never substitute attack onset for compromise.</small></article>
+      <article><div class="challengeTop"><span>02</span><b class="pill partial">SEPARATE</b></div><h3>Is the future attack stage predicted?</h3><p>V125 supplies native five-stage supervised evidence, but it is kept separate from the V123 state-only future rollout. The live state runtime intentionally has no risk/stage head.</p><small>No classifier result is presented as future-stage proof.</small></article>
+      <article><div class="challengeTop"><span>03</span><b class="pill pass">PASS</b></div><h3>Does a fresh checkout run end-to-end?</h3><p>V126 repaired checkpoint/loading/training regressions. V127 integrated the external-qualified state runtime. Full regression, NTRO integrity, UI, V11/V15 contracts and localhost smoke all pass on main.</p><small>Live status below is read from the running checkout.</small></article>
+      <article><div class="challengeTop"><span>04</span><b class="pill pass">PASS</b></div><h3>What is the concrete improvement over IDS?</h3><p>Not a marketing accuracy number: a learned K-step future-state rollout compared against persistence on an untouched external publisher dataset.</p><small>V123 calibrated raw-state MSE improvement: 15.0735%.</small></article>
+    </div>
+  </section>
+
+  <section id="demo" class="liveGrid">
+    <article class="glass liveCard">
+      <div class="panelHead"><span>LIVE DUAL RUNTIME</span><b id="runtimeBadge" class="pill waiting">DISCONNECTED</b></div>
+      <dl><div><dt>Risk / response runtime</dt><dd id="riskRuntime">—</dd></div><div><dt>V123 state runtime</dt><dd id="stateRuntime">—</dd></div><div><dt>Packet trained</dt><dd id="packetTrained">—</dd></div><div><dt>History / horizon</dt><dd id="contract">—</dd></div><div><dt>Output separation</dt><dd id="separation">—</dd></div></dl>
+    </article>
+    <article class="glass liveCard trajectoryCard">
+      <div class="panelHead"><span>LIVE STATE-FORECAST TRAJECTORY</span><b class="pill pass">STATE ONLY</b></div>
+      <div id="stateTrajectory" class="trajectory"><div class="empty">Upload a service-mode PCAP to run the V123-qualified state forecaster.</div></div>
+      <div class="claimLine">Risk probability: <b>not emitted by V123</b> · MITRE stage: <b>not emitted by V123</b> · containment: <b>never authorized by V123 alone</b></div>
+    </article>
+    <article class="glass liveCard responseCard">
+      <div class="panelHead"><span>DEFENCE ROUTING</span><b id="postureBadge" class="pill partial">REVIEW ONLY</b></div>
+      <div class="defenceFlow"><div><b>ARJUNA</b><small>reviewed known threats</small></div><i>→</i><div><b>KRISHNA</b><small>unknown alert triage</small></div><i>→</i><div><b>SUDARSHANA</b><small>operator-scoped containment</small></div></div>
+      <p id="responseText">Connect runtime to load the current response posture.</p>
+    </article>
+  </section>
+
+  <section class="evidenceStrip">
+    <div><small>V123 FRESH EXTERNAL</small><b>PASS</b><span>2,209 sequences · 4 PCAPs · 15.07% better than persistence</span></div>
+    <div><small>V125 NATIVE MITRE</small><b>COMPOSITE PASS</b><span>classification evidence; kept separate from future-stage claims</span></div>
+    <div><small>V127 RELEASE</small><b>FULL CI PASS</b><span>dual runtime + fresh checkout smoke + integration regression</span></div>
+    <div class="pending"><small>SUCCESSFUL-COMPROMISE LEAD</small><b>PENDING EVIDENCE</b><span>requires objective compromise timestamp paired with actual warning</span></div>
+  </section>
+</main>
+
+<div id="modal" class="modal" hidden><div class="dialog"><small>LOCAL RUNTIME</small><h2>Connect evaluator deck</h2><p>Paste the viewer/operator token from <code>garuda_v3/runtime/access.json</code>. It stays in this browser tab.</p><form id="connectForm"><input id="token" type="password" autocomplete="off" placeholder="Bearer token" required><button>Connect</button></form><button id="closeModal" class="ghost">Close</button></div></div>
+<div id="toast" class="toast" hidden></div>
+<script src="/selection.js"></script>
+</body>
+</html>
