@@ -1,0 +1,27 @@
+name: Temporary Export Current Repo
+on:
+  push:
+    branches: [tmp/export-current-repo-zip]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact authoritative snapshot
+        uses: actions/checkout@v4
+        with:
+          ref: b5419e6bcfe11e27b6431d1fcae0178de134bc45
+          path: defencekrishna-current
+      - name: Build ZIP
+        run: |
+          rm -rf defencekrishna-current/.git
+          zip -qr defencekrishna-current-b5419e6.zip defencekrishna-current
+          unzip -t defencekrishna-current-b5419e6.zip >/dev/null
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: defencekrishna-current-b5419e6
+          path: defencekrishna-current-b5419e6.zip
+          retention-days: 1
