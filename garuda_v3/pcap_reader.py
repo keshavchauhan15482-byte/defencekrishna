@@ -3,12 +3,12 @@
 Format is detected from magic bytes, never filename. Supported link types are
 Ethernet (DLT_EN10MB=1) and raw IPv4 (DLT_RAW=101).
 
-The historical behavior remains strict by default.  V103 adds an explicit
-``allow_truncated=True`` mode for snaplen-limited captures.  Tolerant mode never
-fabricates captured bytes: it preserves IP-level telemetry, parses transport
-base headers only when present, and derives payload *length* from declared IPv4
-lengths.  Packets whose required transport header bytes are unavailable degrade
-to protocol ``other`` instead of crashing.
+The historical behavior remains strict by default. V103 added an explicit
+``allow_truncated=True`` mode for snaplen-limited network/transport payloads.
+V105 extends only that opt-in tolerant path to safely skip link-layer runt records
+whose Ethernet/VLAN/IP base headers are unavailable. Such records cannot support
+network telemetry, so tolerant mode audits and skips them rather than fabricating
+fields. Strict mode retains the historical fail-closed Ethernet/VLAN behavior.
 """
 from __future__ import annotations
 
@@ -26,7 +26,8 @@ _PCAPNG_MAGIC = b'\x0a\x0d\x0d\x0a'
 _AUDIT_KEYS = (
     'decoded_ipv4', 'full_tcp', 'full_udp', 'degraded_short_ip_options',
     'degraded_short_tcp', 'degraded_short_udp', 'nonfirst_fragment',
-    'other_protocol',
+    'other_protocol', 'skipped_truncated_ethernet', 'skipped_truncated_vlan',
+    'skipped_truncated_ipv4_header', 'non_ipv4',
 )
 
 
@@ -64,23 +65,41 @@ def _decode_ipv4(
 ):
     offset = 0
     if linktype == 1:
+        # IEEE 802.3/Ethernet II requires 14 bytes before EtherType can be read.
+        # In tolerant mode a shorter record cannot provide trustworthy IP telemetry,
+        # so skip it with an explicit audit marker instead of inventing headers.
         if len(data) < 14:
+            if allow_truncated:
+                _bump(audit, 'skipped_truncated_ethernet')
+                return None
             raise ValueError('Truncated Ethernet frame')
         kind = struct.unpack('!H', data[12:14])[0]
         offset = 14
         for _ in range(2):
             if kind in (0x8100, 0x88A8):
                 if len(data) < offset + 4:
+                    if allow_truncated:
+                        _bump(audit, 'skipped_truncated_vlan')
+                        return None
                     raise ValueError('Truncated VLAN header')
                 kind = struct.unpack('!H', data[offset + 2:offset + 4])[0]
                 offset += 4
         if kind != 0x0800:
+            _bump(audit, 'non_ipv4')
             return None
     elif linktype != 101:
         raise ValueError(f'Unsupported link type {linktype}; expected Ethernet(1) or raw IPv4(101)')
 
     ip = data[offset:]
-    if len(ip) < 20 or ip[0] >> 4 != 4:
+    # A captured IPv4 base header requires 20 bytes. Historical strict behavior for
+    # this case was to ignore the undecodable record rather than raise; preserve it.
+    # Tolerant mode additionally makes that skip visible in the audit contract.
+    if len(ip) < 20:
+        if allow_truncated:
+            _bump(audit, 'skipped_truncated_ipv4_header')
+        return None
+    if ip[0] >> 4 != 4:
+        _bump(audit, 'non_ipv4')
         return None
     ihl = (ip[0] & 15) * 4
     length = struct.unpack('!H', ip[2:4])[0]
@@ -93,7 +112,7 @@ def _decode_ipv4(
     proto = ip[9]
     declared_transport_len = max(0, length - ihl)
 
-    # In tolerant mode an IP options area can itself be snaplen-truncated.  The
+    # In tolerant mode an IP options area can itself be snaplen-truncated. The
     # base IPv4 header still gives stable endpoint/TTL/fragment telemetry, but
     # transport location is not trustworthy, so degrade deterministically.
     if len(ip) < ihl:
@@ -302,9 +321,10 @@ def _pcapng_packets(f, first4: bytes, max_packets: int, *, allow_truncated=False
 def packets(path, max_packets=250000, *, allow_truncated=False, audit=None):
     """Yield decoded IPv4 packet telemetry.
 
-    ``allow_truncated`` is opt-in so all historical callers retain strict
-    full-snaplen behavior.  When an ``audit`` dict is supplied, tolerant decode
-    categories are counted without changing packet values.
+    ``allow_truncated`` is opt-in so historical callers retain strict behavior.
+    In tolerant mode, snaplen-truncated network/transport records may degrade to
+    stable IP telemetry, while link-layer runts that cannot establish IP identity
+    are skipped and audited. No missing packet bytes are fabricated.
     """
     if max_packets < 1:
         raise ValueError('max_packets must be positive')

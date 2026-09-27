@@ -1,0 +1,42 @@
+name: V105 link-layer runt recovery
+
+on:
+  push:
+    branches: [feat/v105-linklayer-runt-recovery-ci]
+    paths:
+      - 'garuda_v3/pcap_reader.py'
+      - 'garuda_v3/tests/test_v105_linklayer_runt.py'
+      - '.github/workflows/v105-linklayer-runt-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parser-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependency
+        run: python -m pip install pytest
+      - name: Compile parser and recovery tests
+        run: python -m compileall -q garuda_v3/pcap_reader.py garuda_v3/tests/test_v105_linklayer_runt.py
+      - name: Run V105 runt recovery tests
+        run: python -m pytest -q garuda_v3/tests/test_v105_linklayer_runt.py
+      - name: Verify V105 claim boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('garuda_v3/pcap_reader.py').read_text()
+          assert "skipped_truncated_ethernet" in text
+          assert "skipped_truncated_vlan" in text
+          assert "skipped_truncated_ipv4_header" in text
+          test=Path('garuda_v3/tests/test_v105_linklayer_runt.py').read_text()
+          assert "strict_mode_still_fails" in test
+          assert "tolerant_mode_skips_ethernet_runt" in test
+          print('V105 parser recovery verified; this does not rerun or alter consumed V104 evidence.')
+          PY
