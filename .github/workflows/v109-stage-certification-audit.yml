@@ -1,0 +1,66 @@
+name: V109 stage certification audit
+
+on:
+  push:
+    branches: [feat/v109-stage-certification-audit]
+    paths:
+      - 'garuda_v3/artifacts/certification/v97/stage_packet_manifest.json'
+      - 'garuda_v3/v109_stage_certification_audit.py'
+      - 'garuda_v3/tests/test_v109_stage_certification_audit.py'
+      - '.github/workflows/v109-stage-certification-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run fail-closed unit tests
+        run: |
+          python -m unittest garuda_v3.tests.test_v109_stage_certification_audit -v
+      - name: Generate V109 certification audit
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v109
+          python -m garuda_v3.v109_stage_certification_audit \
+            --manifest garuda_v3/artifacts/certification/v97/stage_packet_manifest.json \
+            --output garuda_v3/artifacts/certification/v109/stage_certification_audit.json
+      - name: Verify exact evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/certification/v109/stage_certification_audit.json').read_text())
+          assert d['schema_version']=='v109.1'
+          assert d['packet_feature_gate']['status']=='PASS'
+          assert d['packet_feature_gate']['schema']=='garuda-observed-graph-v46-ps-complete'
+          assert d['packet_feature_gate']['feature_count']==34
+          assert d['five_stage_gate']['status']=='UNRESOLVED'
+          assert d['combined_v97_gate']=='SHADOW_UNRESOLVED'
+          print(json.dumps(d,indent=2))
+          PY
+      - name: Record immutable V109 audit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v109/stage_certification_audit.json
+          if git diff --cached --quiet; then
+            echo 'V109 audit already recorded'
+          else
+            git commit -m 'evidence(v109): record packet-pass stage-unresolved audit'
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+      - name: Upload audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v109-stage-certification-audit
+          path: |
+            garuda_v3/artifacts/certification/v97/stage_packet_manifest.json
+            garuda_v3/artifacts/certification/v109/stage_certification_audit.json
+          if-no-files-found: error
+          retention-days: 30
