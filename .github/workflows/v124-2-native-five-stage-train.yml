@@ -1,0 +1,49 @@
+name: V124.2 pooled native five-stage certification
+on:
+  push:
+    branches: [feat/v124-native-five-stage-certification]
+    paths:
+      - 'garuda_v3/v124_2_native_five_stage_train.py'
+      - '.github/workflows/v124-2-native-five-stage-train.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - name: Install dependencies
+        run: python -m pip install 'numpy<2.1' scikit-learn
+      - name: Run V124.2 pooled native five-stage certification
+        run: python -m garuda_v3.v124_2_native_five_stage_train --output garuda_v3/artifacts/certification/v124/five_stage_result_v124_2.json
+      - name: Verify evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/certification/v124/five_stage_result_v124_2.json')
+          r=json.loads(p.read_text())
+          assert r['schema_version']=='v124-five-stage.2'
+          assert r['proxy_mapping_used'] is False
+          assert r['development_iteration'] is True
+          assert r['selection']['selection_scope']=='validation_only'
+          assert set(r['stages'])=={'Reconnaissance','Initial Access','Lateral Movement','Command and Control','Exfiltration'}
+          assert all(v['test']>=3 for v in r['source'].values())
+          print(json.dumps({'status':r['status'],'winner':r['selection']['winner'],'test':r['test'],'gates':r['gates']},indent=2))
+          PY
+      - name: Record immutable V124.2 result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v124/five_stage_result_v124_2.json
+          git commit -m 'evidence(v124.2): record pooled native five-stage result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v124-2-five-stage-evidence
+          path: garuda_v3/artifacts/certification/v124/five_stage_result_v124_2.json
+          retention-days: 30
