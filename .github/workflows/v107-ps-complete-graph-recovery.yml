@@ -114,6 +114,8 @@ jobs:
             echo 'V107 evidence already recorded'
           else
             git commit -m 'evidence(v107): record PS-complete packet GraphSAGE recovery'
+            git fetch origin "${GITHUB_REF_NAME}"
+            git rebase "origin/${GITHUB_REF_NAME}"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
