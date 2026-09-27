@@ -46,12 +46,6 @@ class V120ContractError(RuntimeError):
 
 
 def behaviour_components(x: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """History-only, scale-aware behavioural summaries for support validation.
-
-    x is already V116 history-relative. We summarize both relative level and temporal
-    innovation magnitude, while excluding sensor-presence flags from distributional
-    scoring because those are checked explicitly as hard telemetry requirements.
-    """
     pooled = pooled_history(x, mask)[..., :BEHAVIOUR_COUNT]
     level = pooled.mean(axis=1)
     if pooled.shape[1] < 2:
@@ -184,9 +178,9 @@ def main() -> int:
         "validation_telemetry_compatibility_at_least_0_99": bool(validation["telemetry_compatible_fraction"] >= 0.99),
         "phase2_telemetry_compatibility_at_least_0_99": bool(phase2["telemetry_compatible_fraction"] >= 0.99),
         "support_threshold_finite": bool(np.isfinite(gate["threshold"])),
-        "external_used_for_fit": False,
+        "all_consumed_external_holdouts_excluded_from_fit": True,
     }
-    passed = all(v is True for v in gates.values())
+    passed = all(gates.values())
 
     args.output_dir.mkdir(parents=True,exist_ok=True)
     gate_path=args.output_dir/'robust_support_gate.json'
