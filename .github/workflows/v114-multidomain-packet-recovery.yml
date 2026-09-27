@@ -1,0 +1,114 @@
+name: V114 multidomain PS-complete packet recovery
+
+on:
+  push:
+    branches: [feat/v114-multidomain-packet-recovery]
+    paths:
+      - 'garuda_v3/v114_multidomain_packet_recovery.py'
+      - '.github/workflows/v114-multidomain-packet-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install 'numpy<2.1'
+      - name: Verify V114 code and quarantine contract
+        run: |
+          python -m compileall -q garuda_v3/v114_multidomain_packet_recovery.py
+          python - <<'PY'
+          from garuda_v3.v114_multidomain_packet_recovery import QUARANTINED_SHA256, CTU_DEV_CAPTURE
+          assert CTU_DEV_CAPTURE == '2018-05-03_win16.pcap'
+          assert QUARANTINED_SHA256['v111_ctu3271'] == 'cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3'
+          assert QUARANTINED_SHA256['v113_ctu1111'] == '510e9bc5237b037e240c0064bcba3c073e2363abaecf6a20478c361f5f6ec613'
+          PY
+      - name: Fetch hash-pinned CICAPT development captures
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v114 \
+            --ids cicapt_network \
+            --extract
+      - name: Fetch CTU-350-1 development PCAP
+        run: |
+          mkdir -p datasets/v114/ctu350
+          curl --fail --location --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 1200 \
+            'https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-350-1/2018-05-03_win16.pcap' \
+            -o datasets/v114/ctu350/2018-05-03_win16.pcap
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('datasets/v114/ctu350/2018-05-03_win16.pcap')
+          h=hashlib.sha256(p.read_bytes()).hexdigest()
+          print({'bytes':p.stat().st_size,'sha256':h})
+          assert p.stat().st_size > 10_000_000
+          PY
+      - name: Train and validate multidomain candidate
+        id: recovery
+        continue-on-error: true
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v114
+          python -m garuda_v3.v114_multidomain_packet_recovery \
+            --cicapt-phase1 datasets/v114/1stPhase-timed-Merged.pcap \
+            --cicapt-phase2 datasets/v114/2ndPhase-timed-MergedV2.pcap \
+            --ctu-dev datasets/v114/ctu350/2018-05-03_win16.pcap \
+            --packet-limit-cicapt 700000 \
+            --packet-limit-ctu 700000 \
+            --max-train-per-source 1800 \
+            --max-valid-per-source 700 \
+            --seeds 42 43 44 \
+            --epochs 6 \
+            --batch-size 64 \
+            --output-dir garuda_v3/artifacts/certification/v114
+      - name: Record immutable V114 development evidence
+        if: always()
+        run: |
+          if [ ! -f garuda_v3/artifacts/certification/v114/summary.json ]; then
+            echo 'V114 did not reach report generation; refusing to fabricate evidence.'
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/certification/v114/summary.json')
+          r=json.loads(p.read_text())
+          assert r['status'] in {'DEV_MULTIDOMAIN_PASS','DEV_MULTIDOMAIN_FAIL'}
+          assert r['selection']['phase2_used_for_selection'] is False
+          assert r['selection']['consumed_external_used_for_selection'] is False
+          assert r['quarantine']['consumed_external_used_for_fitting'] is False
+          assert r['freeze']['new_external_holdout_selected'] is False
+          assert r['adapter_contract']['feature_count']==34
+          print(json.dumps({'status':r['status'],'gates':r['development_gates'],'freeze':r['freeze']},indent=2))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v114
+          if git diff --cached --quiet; then
+            echo 'V114 evidence already recorded'
+          else
+            git commit -m 'evidence(v114): record multidomain development recovery'
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+      - name: Upload V114 development evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v114-multidomain-development-evidence
+          path: garuda_v3/artifacts/certification/v114/*
+          if-no-files-found: error
+          retention-days: 30
