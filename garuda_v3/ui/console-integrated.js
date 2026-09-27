@@ -18,6 +18,23 @@ for(const [key,name,desc] of scenarios){const b=document.createElement('button')
 $('campaign').onclick=async()=>{paused=true;text('pause','Resume replay');for(const [key] of scenarios)await run(key)};
 $('pause').onclick=()=>{paused=!paused;text('pause',paused?'Resume replay':'Pause replay');text('mode',paused?'Replay paused':'Recorded replay · auto')};
 async function counters(){try{const r=await api('/bridge/response');text('patterns',r.memory_count??'—');text('mutations',r.validated_mutation_count??'N/A');}catch(e){text('patterns','—');text('mutations','—');}}
+async function proofStatus(){
+ try{
+  const s=await api('/bridge/status'),latest=s.latest_state_runtime||{},arch=s.runtime_architecture||{};
+  const history=(Number(latest.history_windows)||8)*(Number(latest.window_seconds)||10),horizon=(Number(latest.forecast_windows)||4)*(Number(latest.window_seconds)||10);
+  const live=latest.enabled===true&&Number(latest.feature_count)===34&&latest.packet_features_trained===true&&latest.risk_head_trained===false&&latest.stage_head_trained===false;
+  text('proof-runtime',live?'V123 state runtime live':'Runtime connected · state path review');
+  $('proof-runtime').classList.toggle('runtime-ok',live);$('proof-runtime').classList.toggle('runtime-warn',!live);
+  text('proof-contract',(latest.feature_count||34)+' features · '+history+'s → '+horizon+'s');
+  text('runtime-detail',live?(latest.fresh_external_evidence||'V123 PASS')+' · packet-trained · state-only runtime':'Runtime connected; latest state contract is not fully verified.');
+  const separated=arch.outputs_are_not_conflated===true;
+  text('runtime-separation',separated?'Dual-runtime outputs verified separate':'Risk/state output separation under review');
+  text('proof-posture',s.enforcement_enabled?'Enforcement armed':'Review gated');
+ }catch(e){
+  text('proof-runtime','Runtime proof unavailable');$('proof-runtime').classList.remove('runtime-ok');$('proof-runtime').classList.add('runtime-warn');
+  text('runtime-detail','Live status unavailable; frozen V128 CI evidence remains separate.');
+ }
+}
 $('analyze-file').onclick=async()=>{
 const file=$('capture-file').files[0];
 if(!file||file.size>8*1024*1024){text('upload-status','Select a CSV or PCAP of at most 8 MiB.');return;}
@@ -35,5 +52,5 @@ try{
  if(d.forecasts.length)feed('Uploaded file analyzed',d.forecasts.length+' model outputs; no containment issued');
 }catch(e){text('upload-status',e.message)}finally{busy=false;locked(false);$('analyze-file').disabled=false}
 };
-counters();replay();setInterval(replay,3500);setInterval(counters,5000);
+counters();proofStatus();replay();setInterval(replay,3500);setInterval(counters,5000);setInterval(proofStatus,10000);
 })();
