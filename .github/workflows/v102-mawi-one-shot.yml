@@ -4,7 +4,7 @@ on:
   push:
     branches: [feat/v102-mawi-preregister]
     paths:
-      - 'garuda_v3/artifacts/certification/v102/acquisition_manifest.json'
+      - 'garuda_v3/artifacts/certification/v102/preregistration.json'
 
 permissions:
   contents: write
@@ -35,19 +35,24 @@ jobs:
           python -m compileall -q garuda_v3/v102_mawi_one_shot.py
           python -m pytest -q garuda_v3/tests/test_v102_mawi_one_shot.py
           python - <<'PY'
-          import hashlib, json
+          import json
           from pathlib import Path
           root=Path('garuda_v3/artifacts/certification/v102')
           p=json.loads((root/'preregistration.json').read_text())
           a=json.loads((root/'acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_REGISTERED'
+          assert p['evaluation_permitted'] is True
           assert p['one_shot_rules_after_hash_pin']['runs_allowed']==1
           assert p['registered_candidate']['model_sha256']=='30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79'
           assert p['registered_candidate']['support_gate_sha256']=='2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3'
+          assert p['external_holdout']['compressed_sha256']=='c3a4d0459c3d44570d33e67aa4d8533e3695a1eef1aaa4b443af4f23e2368737'
+          assert p['external_holdout']['decompressed_sha256']=='6d0925f42db3a296ba84976e908f256f14efd39db6ae318f58d8e343bcabf199'
           assert a['status']=='HASH_ACQUIRED_MODEL_NOT_RUN'
           assert a['evaluation_performed'] is False
           assert a['packet_records_decoded'] is False
-          assert len(a['compressed_sha256'])==64 and len(a['decompressed_sha256'])==64
-          print('V102 acquisition and evaluator are frozen; packet decode now permitted exactly once')
+          assert a['compressed_sha256']==p['external_holdout']['compressed_sha256']
+          assert a['decompressed_sha256']==p['external_holdout']['decompressed_sha256']
+          print('V102 source hashes, runtime, and evaluator are frozen; exactly one packet decode/model run is permitted')
           PY
 
       - name: Fail if immutable one-shot result already exists on branch
@@ -61,25 +66,26 @@ jobs:
       - name: Download exact hash-frozen MAWI object
         run: |
           mkdir -p datasets/v102
-          curl -L --fail --retry 4 --retry-delay 5 \
+          curl -L --fail --retry 4 --retry-all-errors --retry-delay 5 --connect-timeout 30 \
             --output datasets/v102/200601011400.dump.gz \
             'https://mawi.nezu.wide.ad.jp/mawi/samplepoint-B/2006/200601011400.dump.gz'
           python - <<'PY'
           import gzip, hashlib, json, shutil
           from pathlib import Path
           root=Path('garuda_v3/artifacts/certification/v102')
+          p=json.loads((root/'preregistration.json').read_text())
           a=json.loads((root/'acquisition_manifest.json').read_text())
           gz=Path('datasets/v102/200601011400.dump.gz')
-          def sha(p):
+          def sha(path):
               h=hashlib.sha256()
-              with p.open('rb') as f:
+              with path.open('rb') as f:
                   for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
               return h.hexdigest()
-          assert sha(gz)==a['compressed_sha256'], 'compressed MAWI hash mismatch'
+          assert sha(gz)==a['compressed_sha256']==p['external_holdout']['compressed_sha256'], 'compressed MAWI hash mismatch'
           raw=Path('datasets/v102/200601011400.dump')
           with gzip.open(gz,'rb') as src, raw.open('wb') as dst: shutil.copyfileobj(src,dst,1024*1024)
-          assert sha(raw)==a['decompressed_sha256'], 'decompressed MAWI hash mismatch'
-          print('Exact acquisition-frozen MAWI bytes verified')
+          assert sha(raw)==a['decompressed_sha256']==p['external_holdout']['decompressed_sha256'], 'decompressed MAWI hash mismatch'
+          print('Exact preregistered MAWI bytes verified')
           PY
 
       - name: Execute the single registered external evaluation
