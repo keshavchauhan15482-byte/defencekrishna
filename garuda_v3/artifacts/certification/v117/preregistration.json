@@ -1,0 +1,71 @@
+{
+  "schema_version": "v117-prereg.1",
+  "status": "SOURCE_SELECTED_HASH_PENDING",
+  "selected_after_v116_merge_commit": "c21618189984c7f7429131943f5960028432edde",
+  "claim_boundary": "V117 is a single fresh publisher-independent external state-transition forecasting test only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is created.",
+  "external_holdout": {
+    "dataset": "Kitsune Network Attack",
+    "scenario": "Mirai botnet demo capture",
+    "publisher_repository": "ymirsky/Kitsune-py",
+    "publisher_commit_sha": "7c8ea51e89268d9a20399dca4bf32d663e638eb4",
+    "archive_path": "mirai.zip",
+    "archive_git_blob_sha1": "154aebb8647f5db66f454ff20d148cd12cddbaf7",
+    "archive_expected_bytes": 7824919,
+    "source_url": "https://raw.githubusercontent.com/ymirsky/Kitsune-py/7c8ea51e89268d9a20399dca4bf32d663e638eb4/mirai.zip",
+    "archive_sha256": null,
+    "pcap_member": null,
+    "pcap_sha256": null,
+    "labels_required_or_accessed": false,
+    "selection_basis": "Original Kitsune authors publish this Mirai network capture as their demo input; source/publisher family is distinct from prior MCFP/CTU, CICAPT, USTC, HIKARI and MAWI external attempts.",
+    "repo_history_audit": {
+      "authoritative_tree_sha": "53a1a4b05a32d2611e91d9aedf591265db9290bb",
+      "kitsune_path_match_found_before_selection": false,
+      "mirai_path_match_found_before_selection": false,
+      "selected_before_archive_download": true,
+      "selected_before_packet_decode": true,
+      "selected_before_model_inference": true
+    }
+  },
+  "registered_candidate": {
+    "model_file": "garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz",
+    "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "support_gate_file": "garuda_v3/artifacts/certification/v116/support_gate.json",
+    "support_gate_sha256": "8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5",
+    "relative_transform_file": "garuda_v3/artifacts/certification/v116/relative_transform.json",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "architecture": "gnn_lstm",
+    "schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
+    "raw_schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual"
+  },
+  "consumed_external_quarantine": [
+    "HIKARI-2021/V99",
+    "MAWI-200601011400/V102",
+    "CTU-IDSEVAL-6/V104",
+    "USTC-TFC2016-Miuref/V106",
+    "CTU-Malware-Capture-Botnet-327-1/V111",
+    "CTU-Malware-Capture-Botnet-111-1/V113",
+    "CTU-Malware-Capture-Botnet-326-1/V114"
+  ],
+  "one_shot_gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "pass_requires_raw_model_mse_strictly_less_than_raw_persistence_mse": true,
+    "pass_requires_raw_improvement_strictly_greater_than_zero": true,
+    "unsupported_or_incompatible_is_not_pass": true,
+    "runs_allowed_for_claim": 1,
+    "result_improving_rerun_permitted": false
+  },
+  "acquisition": {
+    "archive_and_member_hash_freeze_required_before_decode": true,
+    "packet_decode_permitted": false,
+    "model_inference_permitted": false
+  },
+  "evaluation_permitted": false
+}
