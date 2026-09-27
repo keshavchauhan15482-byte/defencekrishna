@@ -1,0 +1,137 @@
+name: V105 link-layer runt recovery
+
+on:
+  push:
+    branches: [feat/v105-linklayer-runt-recovery]
+    paths:
+      - 'garuda_v3/pcap_reader.py'
+      - 'garuda_v3/v105_linklayer_runt_recovery.py'
+      - 'garuda_v3/tests/test_v105_linklayer_runt_recovery.py'
+      - 'garuda_v3/tests/test_v105_recovery_contract.py'
+      - '.github/workflows/v105-linklayer-runt-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v105-linklayer-runt-recovery
+  cancel-in-progress: false
+
+jobs:
+  development-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install deterministic V105 runtime
+        run: python -m pip install 'numpy<2.1' pytest
+
+      - name: Verify strict default, generic tolerant L2 semantics, and quarantine
+        run: |
+          python -m compileall -q garuda_v3/pcap_reader.py garuda_v3/v105_linklayer_runt_recovery.py
+          python -m pytest -q \
+            garuda_v3/tests/test_v103_truncated_pcap.py \
+            garuda_v3/tests/test_v105_linklayer_runt_recovery.py \
+            garuda_v3/tests/test_v105_recovery_contract.py
+
+      - name: Fetch hash-verified CICAPT development captures only
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v105 \
+            --ids cicapt_network \
+            --extract
+
+      - name: Revalidate unchanged V101 model and support gate
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v105
+          python -m garuda_v3.v105_linklayer_runt_recovery \
+            --phase1 datasets/v105/1stPhase-timed-Merged.pcap \
+            --phase2 datasets/v105/2ndPhase-timed-MergedV2.pcap \
+            --model garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v101/support_gate.json \
+            --v101-summary garuda_v3/artifacts/certification/v101/summary.json \
+            --v103-summary garuda_v3/artifacts/certification/v103/summary.json \
+            --packet-limit 2000000 \
+            --output garuda_v3/artifacts/certification/v105/summary.json
+
+      - name: Verify evidence and consumed-holdout boundaries
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v105/summary.json').read_text())
+          assert r['schema_version']=='v105.1'
+          assert r['status'] in {'DEV_LINKLAYER_RECOVERY_PASS','DEV_LINKLAYER_RECOVERY_FAIL'}
+          assert r['frozen_runtime']['model_sha256']=='30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79'
+          assert r['frozen_runtime']['support_gate_sha256']=='2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3'
+          assert r['frozen_runtime']['model_changed_from_v101'] is False
+          assert r['frozen_runtime']['support_gate_changed_from_v101'] is False
+          q=r['quarantine']
+          assert q['hikari_used'] is False and q['mawi_used'] is False and q['ctu_idseval6_used'] is False
+          assert q['hikari_future_fitting_allowed'] is False
+          assert q['mawi_future_fitting_allowed'] is False
+          assert q['ctu_idseval6_future_fitting_allowed'] is False
+          assert q['ctu_idseval6_rerun_after_parser_change_allowed'] is False
+          assert r['development_sources']['dataset']=='CICAPT-IIoT2024'
+          assert r['development_sources']['development_reuse'] is True
+          assert r['development_sources']['consumed_external_packets_used'] is False
+          assert r['development_sources']['phase2']['used_for_selection'] is False
+          assert r['state_forecasting']['v103_metric_equivalence']['phase1_validation_matches_v103'] is True
+          assert r['state_forecasting']['v103_metric_equivalence']['phase2_sanity_matches_v103'] is True
+          assert r['recovery_checks']['development_metrics_match_v103'] is True
+          assert r['recovery_checks']['development_depends_on_l2_runt_skips'] is False
+          assert r['runtime_support']['support_gate_refit'] is False
+          assert r['freeze']['new_external_holdout_selected'] is False
+          assert len(r['freeze']['adapter_contract_sha256'])==64
+          assert len(r['freeze']['pcap_reader_sha256'])==64
+          print(json.dumps({
+            'status':r['status'],
+            'state_forecasting':r['state_forecasting'],
+            'runtime_support':r['runtime_support'],
+            'phase1_l2_audit':r['development_sources']['phase1']['linklayer_skip_audit'],
+            'phase2_l2_audit':r['development_sources']['phase2']['linklayer_skip_audit'],
+            'pcap_reader_sha256':r['freeze']['pcap_reader_sha256'],
+            'adapter_contract_sha256':r['freeze']['adapter_contract_sha256'],
+          }, indent=2))
+          PY
+
+      - name: Record immutable V105 development evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --ff-only origin "${GITHUB_REF_NAME}"
+          git add garuda_v3/artifacts/certification/v105/summary.json
+          git commit -m "evidence(v105): record link-layer runt development recovery"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Enforce V105 development recovery gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v105/summary.json').read_text())
+          if not r['recovery_gate_passed']:
+              raise SystemExit('V105 development link-layer recovery gate did not pass')
+          print('V105 DEV_LINKLAYER_RECOVERY_PASS')
+          PY
+
+      - name: Upload V105 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v105-linklayer-runt-recovery-evidence
+          path: garuda_v3/artifacts/certification/v105/summary.json
+          if-no-files-found: error
+          retention-days: 30
