@@ -81,7 +81,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add garuda_v3/artifacts/certification/v102/acquisition_manifest.json
+          git status --short
+          git add -f garuda_v3/artifacts/certification/v102/acquisition_manifest.json
+          if git diff --cached --quiet; then
+            echo "acquisition manifest was not staged; refusing to continue"
+            exit 1
+          fi
           git commit -m "evidence(v102): freeze MAWI source hashes before evaluation"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
