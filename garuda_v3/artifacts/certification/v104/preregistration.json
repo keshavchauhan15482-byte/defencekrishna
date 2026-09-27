@@ -32,9 +32,18 @@
     "source_url": "https://zenodo.org/records/21027042/files/pcap.zip?download=1",
     "official_archive_md5": "bb4476af2b9d4b8ce875dda88a0cca7b",
     "publisher_archive_size_mb": 38.4,
-    "publisher_capture_count": 6,
+    "publisher_logical_capture_count": 6,
+    "archive_pcap_member_count": 12,
     "publisher_packet_count": 1106116,
-    "publisher_description": "one benign user capture, two malware captures, and three port-scan captures",
+    "publisher_description": "six logical capture scenarios: one benign user, two malware, and three port scans",
+    "archive_member_count_observation": {
+      "source": "first acquisition attempt ZIP central-directory metadata only",
+      "packet_bytes_extracted": false,
+      "packet_records_decoded": false,
+      "model_inference_performed": false,
+      "observed_pcap_members": 12,
+      "policy_after_metadata_observation": "include all 12 PCAP members; no member selection or dropping is permitted"
+    },
     "archive_sha256": null,
     "pcap_entries": null,
     "freshness_audit": {
@@ -56,7 +65,7 @@
       "verify official archive MD5",
       "compute archive SHA-256",
       "inspect ZIP central-directory metadata only",
-      "record sorted entry names, compressed/uncompressed byte counts, and CRC values"
+      "record all 12 sorted PCAP member names, compressed/uncompressed byte counts, and CRC values"
     ],
     "forbidden_before_hash_pin": [
       "extract PCAP packet bytes",
@@ -68,15 +77,15 @@
       "change model weights",
       "change support threshold",
       "change adapter mapping based on external traffic",
-      "select or drop captures based on external traffic"
+      "select or drop archive members based on external traffic"
     ]
   },
   "one_shot_rules_after_hash_pin": {
     "runs_allowed": 1,
-    "evaluation_unit": "all six PCAP captures in the registered archive, no cherry-picking",
-    "primary_gate": "aggregate element-weighted state forecast MSE across all compatible registered captures must be lower than aggregate persistence MSE",
-    "per_capture_metrics_reported": true,
-    "all_compatible_captures_included": true,
+    "evaluation_unit": "all 12 PCAP members in the registered archive, representing all six logical scenarios; no cherry-picking",
+    "primary_gate": "aggregate element-weighted state forecast MSE across all compatible registered PCAP members must be lower than aggregate persistence MSE",
+    "per_member_metrics_reported": true,
+    "all_compatible_members_included": true,
     "retuning_after_result": false,
     "rerun_for_claim_improvement": false,
     "support_is_diagnostic_not_attack_detection": true,
@@ -85,5 +94,5 @@
     "mitre_stage_claim": false,
     "successful_compromise_warning_claim": false
   },
-  "claim_boundary": "V104 is preregistered only for fresh external state-transition forecasting. No CTU-IDSEVAL-6 packet records or labels may be inspected until archive identity and entry metadata are frozen."
+  "claim_boundary": "V104 is preregistered only for fresh external state-transition forecasting. A first metadata-only acquisition observed 12 PCAP archive members before any extraction or packet decode; policy is now frozen to include all 12."
 }
