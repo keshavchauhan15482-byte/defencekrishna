@@ -1,0 +1,37 @@
+name: V96 verified pre-compromise semantics
+
+on:
+  push:
+    branches:
+      - feat/v67-ps9plus-evidence
+    paths:
+      - 'garuda_v3/verified_campaigns.py'
+      - 'garuda_v3/precompromise_evaluation.py'
+      - 'garuda_v3/tests/test_precompromise_evaluation.py'
+      - 'garuda_v3/artifacts/certification/v96/**'
+      - '.github/workflows/v96-claim-semantics.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-claims:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run strict pre-compromise semantics tests
+        run: python -m unittest garuda_v3.tests.test_precompromise_evaluation
+      - name: Audit fresh-holdout preregistration is still pre-result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('garuda_v3/artifacts/certification/v96/hikari_one_shot_preregistration.json')
+          x = json.loads(p.read_text())
+          assert x['status'] == 'PRE_EVALUATION_FROZEN'
+          assert x['one_shot_policy']['retrain_on_hikari'] is False
+          assert x['one_shot_policy']['fit_threshold_on_hikari'] is False
+          assert x['one_shot_policy']['rerun_after_result_for_better_metrics'] is False
+          print('Fresh holdout preregistration remains frozen and pre-result.')
+          PY
