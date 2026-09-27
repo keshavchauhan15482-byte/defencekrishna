@@ -1,0 +1,116 @@
+name: V101 packet-compatible GraphSAGE recovery
+
+on:
+  push:
+    branches: [feat/v101-packet-compatible-recovery]
+    paths:
+      - 'garuda_v3/v101_packet_graph_recovery.py'
+      - 'garuda_v3/tests/test_v101_packet_graph_recovery.py'
+      - '.github/workflows/v101-packet-graph-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  packet-graph-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install V101 dependencies
+        run: python -m pip install 'numpy<2.1' pytest
+
+      - name: Verify V101 fail-closed contracts
+        run: |
+          python -m compileall -q garuda_v3/v101_packet_graph_recovery.py
+          python -m pytest -q garuda_v3/tests/test_v101_packet_graph_recovery.py
+
+      - name: Fetch hash-verified CICAPT development captures
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v101 \
+            --ids cicapt_network \
+            --extract
+
+      - name: Train packet-compatible GraphSAGE+LSTM development candidate
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v101
+          python -m garuda_v3.v101_packet_graph_recovery \
+            --phase1 datasets/v101/1stPhase-timed-Merged.pcap \
+            --phase2 datasets/v101/2ndPhase-timed-MergedV2.pcap \
+            --packet-limit 2000000 \
+            --seeds 42 43 44 \
+            --epochs 8 \
+            --batch-size 64 \
+            --output-dir garuda_v3/artifacts/certification/v101
+
+      - name: Verify evidence integrity and claim boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import numpy as np
+          from garuda_v3.model import GraphWorldModel
+
+          root=Path('garuda_v3/artifacts/certification/v101')
+          report=json.loads((root/'summary.json').read_text())
+          gate=json.loads((root/'support_gate.json').read_text())
+          model,meta=GraphWorldModel.load(root/'gnn_lstm_packet_candidate.npz')
+
+          assert report['schema_version']=='v101.1'
+          assert report['status'] in {'DEV_RECOVERY_PASS','DEV_RECOVERY_FAIL'}
+          assert report['quarantine']['hikari_used_for_training'] is False
+          assert report['quarantine']['hikari_used_for_support_fit'] is False
+          assert report['quarantine']['hikari_used_for_adapter_selection'] is False
+          assert report['selection']['phase2_used_for_selection'] is False
+          assert report['selection']['hikari_used_for_selection'] is False
+          assert report['development_sources']['development_reuse'] is True
+          assert report['freeze']['new_external_holdout_selected'] is False
+          assert meta['packet_features_trained'] is True
+          assert meta['risk_head_trained'] is False
+          assert meta['hikari_used_for_fitting'] is False
+          assert gate['fit_provenance']['center_scale']=='CICAPT Phase-1 train only'
+          assert gate['fit_provenance']['threshold']=='CICAPT Phase-1 validation only'
+          assert gate['fit_provenance']['phase2_excluded_from_fit'] is True
+          assert gate['fit_provenance']['hikari_excluded_from_fit'] is True
+          assert np.isfinite(float(gate['threshold']))
+          print(json.dumps({
+              'status': report['status'],
+              'recovery_gate_passed': report['recovery_gate_passed'],
+              'selected_candidate': report['selected_candidate'],
+              'support_gate': report['support_gate'],
+          }, indent=2))
+          PY
+
+      - name: Record immutable V101 development evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add garuda_v3/artifacts/certification/v101
+          if git diff --cached --quiet; then
+            echo "V101 evidence already recorded"
+          else
+            git commit -m "evidence(v101): record packet-compatible development recovery"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Upload V101 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v101-packet-graph-recovery-evidence
+          path: garuda_v3/artifacts/certification/v101/*
+          if-no-files-found: error
+          retention-days: 30

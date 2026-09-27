@@ -1,0 +1,304 @@
+{
+  "schema_version": "v101.1",
+  "status": "DEV_RECOVERY_PASS",
+  "recovery_gate_passed": true,
+  "claim_boundary": "V101 is development-only recovery evidence. It does not alter the immutable V99 HIKARI FAIL and does not certify fresh external generalisation, attack recall/FPR, MITRE stages, or warning before successful compromise.",
+  "quarantine": {
+    "hikari_consumed_external_holdout": true,
+    "hikari_used_for_training": false,
+    "hikari_used_for_normalization": false,
+    "hikari_used_for_support_fit": false,
+    "hikari_used_for_adapter_selection": false,
+    "hikari_used_for_seed_or_checkpoint_selection": false,
+    "future_external_requires_different_untouched_holdout": true
+  },
+  "development_sources": {
+    "dataset": "CICAPT-IIoT2024",
+    "development_reuse": true,
+    "phase1": {
+      "capture": "1stPhase-timed-Merged.pcap",
+      "sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+      "decoded_packets": 2000000,
+      "observed_windows": 5846,
+      "contiguous_sequences": 5835,
+      "train_sequences": 4084,
+      "validation_sequences": 1739,
+      "embargo_sequences": 12,
+      "first_cutoff_epoch": 1701118740,
+      "last_cutoff_epoch": 1701177080
+    },
+    "phase2": {
+      "capture": "2ndPhase-timed-MergedV2.pcap",
+      "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+      "decoded_packets": 2000000,
+      "observed_windows": 5688,
+      "contiguous_sequences": 5677,
+      "first_cutoff_epoch": 1701469050,
+      "last_cutoff_epoch": 1701525810,
+      "used_for_selection": false
+    }
+  },
+  "adapter_contract": {
+    "schema": "garuda-observed-graph-v3.1",
+    "features": [
+      "flow_count_log",
+      "bytes_log",
+      "packets_log",
+      "duration_ms_log",
+      "syn_fraction",
+      "ack_fraction",
+      "rst_fraction",
+      "fin_fraction",
+      "backward_packet_fraction",
+      "tcp_fraction",
+      "udp_fraction",
+      "active",
+      "iat_ms_log",
+      "tcp_window_log",
+      "ttl_mean_scaled",
+      "ttl_variance_scaled",
+      "fragment_fraction",
+      "duplicate_payload_segment_fraction",
+      "packet_features_present",
+      "iat_present",
+      "tcp_window_present"
+    ],
+    "feature_count": 21,
+    "mode": "service",
+    "window_seconds": 10,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "max_nodes": 32,
+    "mapping": "raw PCAP packet telemetry -> bidirectional connections -> v3.1 service graph",
+    "packet_features_required": true
+  },
+  "adapter_contract_sha256": "870e7894378e687c542f286eabccf367c10d4d41dbebe7551b4ce95df2c65ac8",
+  "packet_features_present_mean": {
+    "phase1_train": 1.0,
+    "phase1_validation": 1.0,
+    "phase2_sanity": 1.0
+  },
+  "selection": {
+    "rule": "minimum Phase-1 validation MSE only; ties by seed",
+    "selected_seed": 44,
+    "phase2_used_for_selection": false,
+    "hikari_used_for_selection": false
+  },
+  "seeds": {
+    "42": {
+      "seed": 42,
+      "best_epoch": 8,
+      "validation_mse": 0.01108651701360941,
+      "validation_persistence_mse": 0.01501518115401268,
+      "validation_improvement_vs_persistence": 0.26164613667370695,
+      "validation_gate_passed": true,
+      "phase2_mse": 0.024199053645133972,
+      "phase2_persistence_mse": 0.02880091778934002,
+      "phase2_improvement_vs_persistence": 0.1597818575736263,
+      "phase2_sanity_passed": true
+    },
+    "43": {
+      "seed": 43,
+      "best_epoch": 8,
+      "validation_mse": 0.010837286710739136,
+      "validation_persistence_mse": 0.01501518115401268,
+      "validation_improvement_vs_persistence": 0.27824469118423106,
+      "validation_gate_passed": true,
+      "phase2_mse": 0.02393663302063942,
+      "phase2_persistence_mse": 0.02880091778934002,
+      "phase2_improvement_vs_persistence": 0.16889339444942966,
+      "phase2_sanity_passed": true
+    },
+    "44": {
+      "seed": 44,
+      "best_epoch": 8,
+      "validation_mse": 0.009739501401782036,
+      "validation_persistence_mse": 0.01501518115401268,
+      "validation_improvement_vs_persistence": 0.35135638379033235,
+      "validation_gate_passed": true,
+      "phase2_mse": 0.0219773780554533,
+      "phase2_persistence_mse": 0.02880091778934002,
+      "phase2_improvement_vs_persistence": 0.2369209128610579,
+      "phase2_sanity_passed": true
+    }
+  },
+  "selected_candidate": {
+    "seed": 44,
+    "best_epoch": 8,
+    "validation_mse": 0.009739501401782036,
+    "validation_persistence_mse": 0.01501518115401268,
+    "validation_improvement_vs_persistence": 0.35135638379033235,
+    "validation_gate_passed": true,
+    "phase2_mse": 0.0219773780554533,
+    "phase2_persistence_mse": 0.02880091778934002,
+    "phase2_improvement_vs_persistence": 0.2369209128610579,
+    "phase2_sanity_passed": true
+  },
+  "support_gate": {
+    "threshold": 7.705308669179127,
+    "method": "max robust standardized history-summary deviation",
+    "phase2_supported_sequences": 5669,
+    "phase2_total_sequences": 5677,
+    "phase2_supported_fraction": 0.9985908050026422,
+    "phase2_median_score": 2.992571480746236,
+    "phase2_max_score": 10.228961562267576,
+    "fit_provenance": {
+      "center_scale": "CICAPT Phase-1 train only",
+      "threshold": "CICAPT Phase-1 validation only",
+      "phase2_excluded_from_fit": true,
+      "hikari_excluded_from_fit": true
+    }
+  },
+  "freeze": {
+    "model_file": "gnn_lstm_packet_candidate.npz",
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_file": "support_gate.json",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "candidate_frozen_before_any_new_external_holdout": true,
+    "new_external_holdout_selected": false
+  },
+  "training_curves": {
+    "42": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.01501518115401268
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.11196722637396306,
+        "validation_mse": 0.012682472355663776
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.09571602614596486,
+        "validation_mse": 0.012420888058841228
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.09080163721228018,
+        "validation_mse": 0.011481295339763165
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.08713121560867876,
+        "validation_mse": 0.011179851368069649
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.08562542067375034,
+        "validation_mse": 0.011178641580045223
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.0853237173287198,
+        "validation_mse": 0.011090375483036041
+      },
+      {
+        "epoch": 7,
+        "train_objective": 0.08431599289178848,
+        "validation_mse": 0.01117725670337677
+      },
+      {
+        "epoch": 8,
+        "train_objective": 0.08403368148719892,
+        "validation_mse": 0.01108651701360941
+      }
+    ],
+    "43": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.01501518115401268
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.11061443923972547,
+        "validation_mse": 0.012339694425463676
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.09329509164672345,
+        "validation_mse": 0.011802813969552517
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.08767302258638665,
+        "validation_mse": 0.011584300547838211
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.08504038758110255,
+        "validation_mse": 0.011124088428914547
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.08354199607856572,
+        "validation_mse": 0.010948707349598408
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.08299712324514985,
+        "validation_mse": 0.010883813723921776
+      },
+      {
+        "epoch": 7,
+        "train_objective": 0.08246094943024218,
+        "validation_mse": 0.010976937599480152
+      },
+      {
+        "epoch": 8,
+        "train_objective": 0.08198983292095363,
+        "validation_mse": 0.010837286710739136
+      }
+    ],
+    "44": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.01501518115401268
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.11263989738654345,
+        "validation_mse": 0.012087973766028881
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.08976401103427634,
+        "validation_mse": 0.011077061295509338
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.08362489816499874,
+        "validation_mse": 0.01059472281485796
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.08039745257701725,
+        "validation_mse": 0.010588145814836025
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.07968904619337991,
+        "validation_mse": 0.010809127241373062
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.07796875183703378,
+        "validation_mse": 0.010363638401031494
+      },
+      {
+        "epoch": 7,
+        "train_objective": 0.07554377667838708,
+        "validation_mse": 0.009981204755604267
+      },
+      {
+        "epoch": 8,
+        "train_objective": 0.07519510242855176,
+        "validation_mse": 0.009739501401782036
+      }
+    ]
+  },
+  "next_gate": "Only after this development candidate is frozen: preregister a genuinely untouched, non-HIKARI external dataset/campaign and execute exactly one evaluation without retuning."
+}
