@@ -1,5 +1,5 @@
 {
-  "schema_version": "v106-prereg.2",
+  "schema_version": "v106-prereg.3",
   "status": "HASH_FROZEN_ONE_SHOT_ARMED",
   "selected_after_v105_merge_commit": "53adc745ea107e6e3ccc36c12ca366f1e2429989",
   "claim_boundary": "V106 is a single fresh external state-transition forecasting test only. It does not certify attack recall/FPR, MITRE stages, or warning before successful compromise.",
@@ -42,6 +42,10 @@
     "mode": "service",
     "max_nodes": 32,
     "decoder": "residual"
+  },
+  "one_shot_runner": {
+    "path": "garuda_v3/v106_ustctfc_miuref_one_shot.py",
+    "sha256": "36d9db439fd7faff8834e45bf1bc428e37591252b5abe42e941b9b9ba350e512"
   },
   "consumed_external_quarantine": [
     "HIKARI-2021/V99",
