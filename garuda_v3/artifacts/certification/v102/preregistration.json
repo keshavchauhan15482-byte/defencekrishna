@@ -1,0 +1,73 @@
+{
+  "schema_version": "v102-prereg.1",
+  "status": "ACQUISITION_ONLY_HASH_PENDING",
+  "evaluation_permitted": false,
+  "registered_before_external_model_evaluation": true,
+  "registered_candidate": {
+    "model_file": "garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz",
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_file": "garuda_v3/artifacts/certification/v101/support_gate.json",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "adapter_contract_sha256": "870e7894378e687c542f286eabccf367c10d4d41dbebe7551b4ce95df2c65ac8",
+    "source_commit": "4870660a05cc9506e3f2356eba14f5c5eb870f7f",
+    "architecture": "gnn_lstm",
+    "schema": "garuda-observed-graph-v3.1",
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual"
+  },
+  "external_holdout": {
+    "dataset": "MAWI Working Group Traffic Archive",
+    "samplepoint": "B",
+    "capture_id": "200601011400",
+    "capture_filename": "200601011400.dump",
+    "compressed_filename": "200601011400.dump.gz",
+    "source_url": "https://mawi.nezu.wide.ad.jp/mawi/samplepoint-B/2006/200601011400.dump.gz",
+    "publisher_info_url": "https://mawi.wide.ad.jp/mawi/samplepoint-B/2006/200601011400.html",
+    "publisher_start_time": "2006-01-01T14:00:00",
+    "publisher_end_time": "2006-01-01T14:15:00",
+    "publisher_total_seconds": 899.76,
+    "publisher_packet_count": 6587564,
+    "publisher_caplen_bytes": 96,
+    "publisher_compressed_size_mb": 184.23,
+    "compressed_sha256": null,
+    "decompressed_sha256": null,
+    "freshness_audit": {
+      "repository_search_terms": ["mawi", "samplepoint-B"],
+      "prior_repository_use_found": false,
+      "hikari": false,
+      "selected_after_v101_candidate_freeze": true
+    }
+  },
+  "acquisition_rules": {
+    "allowed_before_hash_pin": [
+      "download exact registered URL",
+      "compute compressed and decompressed SHA-256",
+      "inspect classic-PCAP global header only",
+      "record byte counts, snaplen and linktype"
+    ],
+    "forbidden_before_hash_pin": [
+      "decode packet records",
+      "construct graph windows",
+      "run model inference",
+      "run support scoring",
+      "change model weights",
+      "change support threshold",
+      "change feature mapping based on observed traffic"
+    ]
+  },
+  "one_shot_rules_after_hash_pin": {
+    "runs_allowed": 1,
+    "retuning_after_result": false,
+    "rerun_for_claim_improvement": false,
+    "primary_gate": "state forecast MSE must be lower than persistence MSE on the exact registered capture",
+    "support_is_diagnostic_not_attack_detection": true,
+    "risk_recall_fpr_claim": false,
+    "mitre_stage_claim": false,
+    "successful_compromise_warning_claim": false
+  },
+  "claim_boundary": "V102 is preregistered only for fresh external state-transition forecasting. Acquisition/hash freezing occurs before any packet-record decode or model inference."
+}
