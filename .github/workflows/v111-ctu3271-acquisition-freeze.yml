@@ -1,0 +1,92 @@
+name: V111 CTU 327-1 acquisition freeze
+
+on:
+  push:
+    branches: [feat/v111-ctu3271-fresh-one-shot]
+    paths:
+      - 'garuda_v3/artifacts/certification/v111/selection_freeze.json'
+      - '.github/workflows/v111-ctu3271-acquisition-freeze.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  freeze-acquisition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify selection predates acquisition
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v111/selection_freeze.json').read_text())
+          assert p['status']=='SELECTED_BEFORE_ACQUISITION'
+          assert p['external_holdout']['dataset']=='CTU-Malware-Capture-Botnet-327-1'
+          assert p['external_holdout']['repo_history_audit']['selection_occurred_before_packet_decode'] is True
+          assert p['external_holdout']['repo_history_audit']['selection_occurred_before_model_inference'] is True
+          assert p['registered_candidate']['model_sha256']=='f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed'
+          assert p['registered_candidate']['support_gate_sha256']=='7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1'
+          PY
+      - name: Download bytes only; no packet decode or inference
+        run: |
+          mkdir -p /tmp/v111
+          URL='https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-1/capture_win11.pcap'
+          curl --fail --location --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 1200 "$URL" -o /tmp/v111/capture_win11.pcap
+          test -s /tmp/v111/capture_win11.pcap
+      - name: Freeze acquisition hashes
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          selection=Path('garuda_v3/artifacts/certification/v111/selection_freeze.json')
+          p=json.loads(selection.read_text())
+          f=Path('/tmp/v111/capture_win11.pcap')
+          def digest(name):
+              h=hashlib.new(name)
+              with f.open('rb') as x:
+                  for b in iter(lambda:x.read(1024*1024),b''): h.update(b)
+              return h.hexdigest()
+          a={
+            'schema_version':'v111-acquisition.1',
+            'status':'HASH_FROZEN_NO_DECODE',
+            'dataset':p['external_holdout']['dataset'],
+            'capture':p['external_holdout']['capture'],
+            'source_url':p['external_holdout']['source_url'],
+            'bytes':f.stat().st_size,
+            'sha256':digest('sha256'),
+            'md5':digest('md5'),
+            'packet_records_decoded':False,
+            'model_inference_performed':False,
+            'labels_accessed':False
+          }
+          out=Path('garuda_v3/artifacts/certification/v111/acquisition_manifest.json')
+          out.write_text(json.dumps(a,indent=2)+'\n')
+          reg={
+            'schema_version':'v111-prereg.1',
+            'status':'HASH_FROZEN_ONE_SHOT_ARMED',
+            'claim_boundary':p['claim_boundary'],
+            'selected_after_active_commit':p['selected_after_active_commit'],
+            'external_holdout':{**p['external_holdout'],'bytes':a['bytes'],'sha256':a['sha256'],'md5':a['md5']},
+            'registered_candidate':p['registered_candidate'],
+            'one_shot_gate':p['one_shot_gate'],
+            'acquisition':{
+              'manifest':'garuda_v3/artifacts/certification/v111/acquisition_manifest.json',
+              'packet_decode_had_occurred':False,
+              'model_inference_had_occurred':False,
+              'labels_had_been_accessed':False
+            },
+            'evaluation_permitted':True
+          }
+          Path('garuda_v3/artifacts/certification/v111/preregistration.json').write_text(json.dumps(reg,indent=2)+'\n')
+          print(json.dumps({'bytes':a['bytes'],'sha256':a['sha256'],'md5':a['md5']},indent=2))
+          PY
+      - name: Commit immutable acquisition freeze
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v111/acquisition_manifest.json garuda_v3/artifacts/certification/v111/preregistration.json
+          git commit -m 'evidence(v111): hash-freeze CTU 327-1 before decode'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
