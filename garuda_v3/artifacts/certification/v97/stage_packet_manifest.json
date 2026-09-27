@@ -1,8 +1,8 @@
 {
-  "schema_version": "v97.1",
-  "candidate_id": "v97-stage-packet-evidence-shadow",
+  "schema_version": "v97.2",
+  "candidate_id": "v107-stage-packet-evidence-refresh",
   "declared_status": "SHADOW_UNRESOLVED",
-  "claim_boundary": "This candidate is an evidence-integrity checkpoint for supervised five-stage MITRE output plus packet-origin telemetry. It does not certify fresh external generalisation or warning before successful compromise.",
+  "claim_boundary": "Packet+flow runtime evidence is now closed by V107 development evidence. The exact five-stage supervised MITRE gate remains unresolved; this manifest does not certify fresh external generalisation or warning before successful compromise.",
   "required_stages": [
     "reconnaissance",
     "initial_access",
@@ -11,69 +11,84 @@
     "exfiltration"
   ],
   "stage_evidence": {
+    "status": "SHADOW_UNRESOLVED",
     "label_source": "publisher_timeline_unvalidated",
+    "network_stage_validated": false,
     "unknown_label_policy": "masked",
-    "provenance": {
-      "training_sources": [
-        "development"
-      ],
-      "validation_sources": [
-        "development_validation"
-      ],
-      "calibration_sources": [],
-      "evaluation_sources": [
-        "v81_fresh_reserve"
-      ]
+    "proxy_labels_allowed_for_certification": false,
+    "heuristic_only_labels_allowed_for_certification": false,
+    "validator": {
+      "path": "garuda_v3/v107_stage_certification_validator.py",
+      "ci_workflow": ".github/workflows/v107-integrity-contracts.yml",
+      "ci_run_id": 36311990772,
+      "ci_conclusion": "success",
+      "fail_closed": true
     },
     "metrics": {},
     "artifact": null,
-    "notes": [
-      "V69 explicitly states that publisher stage labels are network_stage_validated=false and therefore cannot support a supervised network-stage release claim by alignment alone.",
-      "V82 trains a five-class stage mapper but its current one-shot fresh reserve evaluates only Reconnaissance and Lateral Movement subtypes; Exploitation is documented there as an Initial Access proxy.",
-      "Until native or independently network-validated labels and complete five-stage metrics are frozen into a hash-pinned artifact, this gate must remain unresolved."
+    "observed_limitations": [
+      "V69 explicitly records network_stage_validated=false for publisher-timeline alignment.",
+      "V82 has a five-class mapper, but its prior held-out evidence does not provide non-proxy held-out metrics with positive support for all five SIH stages.",
+      "CICAPT-IIoT2024 supplies publisher ATT&CK tactics/techniques, but the current certified network-stage artifact does not natively cover the exact SIH five-stage set with validated labels and complete held-out metrics."
     ]
   },
   "packet_evidence": {
-    "origin": "pcapng",
-    "source_capture_sha256": null,
-    "world_model_consumes_packet_features": false,
+    "status": "DEV_PACKET_FLOW_RUNTIME_PASS",
+    "origin": "raw_pcap",
+    "world_model_consumes_packet_features": true,
+    "world_model_architecture": "gnn_lstm",
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34,
+    "all_ps_required_features_present": true,
+    "packet_features_present_mean": {
+      "phase1_train": 1.0,
+      "phase1_validation": 1.0,
+      "phase2_sanity": 1.0
+    },
     "supported_features": {
-      "ttl_variance": false,
-      "tcp_window": false,
-      "fragmentation": false,
-      "payload_distribution": false,
-      "port_scan_patterns": false,
-      "retransmission": false
+      "tcp_flags_syn_ack_fin_rst_psh_urg": true,
+      "iat_mean_variance_max": true,
+      "bidirectional_ratio": true,
+      "ttl_mean_variance": true,
+      "tcp_window": true,
+      "fragmentation": true,
+      "payload_distribution": true,
+      "port_scan_patterns_and_sequencing": true,
+      "retransmission_count_and_fraction": true
     },
-    "artifact": null,
-    "notes": [
-      "V68 code audits real PCAP/PCAPNG packet telemetry and includes the SIH packet feature schema.",
-      "V70 code consumes the combined flow+packet state vector in a residual LSTM transition benchmark.",
-      "No checked-in hash-pinned V68/V70 execution artifact and source capture SHA-256 were found in the current certification tree, so code capability is not upgraded to runtime evidence here."
-    ]
-  },
-  "observed_repository_evidence": {
-    "v68_packet_contract": {
-      "path": "garuda_v3/v68_cicapt_packet_contract.py",
-      "git_blob_sha1": "2e5a73554c2e0a51dc145368678c8eec344d4874"
+    "source_captures": [
+      {
+        "name": "1stPhase-timed-Merged.pcap",
+        "sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6"
+      },
+      {
+        "name": "2ndPhase-timed-MergedV2.pcap",
+        "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3"
+      }
+    ],
+    "artifact": {
+      "summary_path": "garuda_v3/artifacts/certification/v107/summary.json",
+      "model_path": "garuda_v3/artifacts/certification/v107/gnn_lstm_ps_complete_candidate.npz",
+      "model_sha256": "9ad1e191e9eecf7a35a2d943a617da8b35d44694c754a3e112a563d2a2f30436",
+      "support_gate_sha256": "ad7d41c88f986b62a77d4e4e2800732fb34f59b3f8c73c1e85b94ef23b978915",
+      "adapter_contract_sha256": "c42309fb3bb3f362bf9260b35b1188a57fdf69510fd14ae9f5a46919b9839c1a",
+      "ci_run_id": 36311924566,
+      "ci_conclusion": "success"
     },
-    "v69_stage_alignment": {
-      "path": "garuda_v3/v69_cicapt_stage_alignment_audit.py",
-      "git_blob_sha1": "1a225ae3f052ce2da6f56c67885f86cf9133521f"
+    "development_state_forecasting": {
+      "selected_seed": 42,
+      "validation_mse": 0.015546713024377823,
+      "validation_persistence_mse": 0.020817944779992104,
+      "validation_improvement_vs_persistence": 0.2532061551378695,
+      "phase2_mse": 0.02430075593292713,
+      "phase2_persistence_mse": 0.031055666506290436,
+      "phase2_improvement_vs_persistence": 0.21750976015907025,
+      "phase2_supported_fraction": 0.9992954025013211
     },
-    "v70_packet_world_model": {
-      "path": "garuda_v3/v70_cicapt_packet_world_model.py",
-      "git_blob_sha1": "ef2b54725dc1a9b975c34beeb8b763610551c78b"
-    },
-    "v82_stage_head": {
-      "path": "garuda_v3/v82_robust_stage_head_fresh_eval.py",
-      "git_blob_sha1": "0a537cd8b3ab6eda845d00f4cf2da6dd0077849b"
-    }
+    "claim_boundary": "Development-only PS-complete packet+flow runtime proof. It is not a fresh external generalisation pass."
   },
   "known_gaps_for_pass": [
-    "hash-pinned native or independently network-validated five-stage supervision artifact",
-    "precision/recall/F1/FPR/support for all five required stages from that supervised evaluation",
-    "hash-pinned packet extraction/evaluation artifact tied to a real capture SHA-256",
-    "artifact-backed proof that the evaluated candidate world model consumed the packet feature representation"
+    "hash-pinned native or independently network-validated supervision covering exactly all five required SIH stages without proxy/heuristic substitutions",
+    "held-out precision/recall/F1/FPR/support for every required stage from the same hash-pinned supervised candidate"
   ]
 }
