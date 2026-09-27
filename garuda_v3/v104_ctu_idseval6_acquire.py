@@ -2,13 +2,14 @@
 
 This code may inspect only archive bytes and ZIP central-directory metadata. It never
 extracts a PCAP member, decodes packets, reads labels, constructs graphs, or invokes
-the model. The first metadata-only attempt revealed 12 PCAP members for the six
-publisher-described logical capture scenarios; V104 freezes all 12 members.
+the model. The publisher describes six logical capture scenarios. Metadata-only ZIP
+inspection showed six real PCAP payloads plus macOS AppleDouble sidecars whose names
+also end in ``.pcap``; V104 therefore freezes all six real payload PCAPs.
 
 Known packaging-only AppleDouble entries under ``__MACOSX/`` are ignored as ZIP
 metadata, but are recorded in the acquisition manifest. Any other non-PCAP payload
-fails closed. This policy is based only on central-directory metadata observed before
-external packet extraction/decoding and never selects or drops a PCAP member.
+fails closed. Packaging classification is performed before extension classification so
+``__MACOSX/.../._capture.pcap`` can never be mistaken for a packet capture.
 """
 from __future__ import annotations
 
@@ -57,11 +58,10 @@ def classify_entries(infos: list[zipfile.ZipInfo]) -> tuple[list[dict], list[dic
             'uncompressed_bytes': int(info.file_size),
             'crc32_hex': f'{info.CRC:08x}',
         }
-        lower = info.filename.lower()
-        if lower.endswith(('.pcap', '.pcapng')):
-            pcap_entries.append(row)
-        elif is_ignorable_packaging_metadata(info.filename):
+        if is_ignorable_packaging_metadata(info.filename):
             ignored_metadata.append(row)
+        elif info.filename.lower().endswith(('.pcap', '.pcapng')):
+            pcap_entries.append(row)
         else:
             unexpected_payloads.append(info.filename)
     pcap_entries.sort(key=lambda r: r['filename'])
@@ -96,12 +96,12 @@ def main() -> int:
 
     expected_members = int(ext['archive_pcap_member_count'])
     if len(pcap_entries) != expected_members:
-        raise RuntimeError(f'Expected exactly {expected_members} frozen PCAP members, found {len(pcap_entries)}')
+        raise RuntimeError(f'Expected exactly {expected_members} frozen real PCAP members, found {len(pcap_entries)}')
     if unexpected_payloads:
         raise RuntimeError(f'Unexpected non-PCAP payload members in registered pcap.zip: {unexpected_payloads}')
 
     report = {
-        'schema_version': 'v104-acquisition.2',
+        'schema_version': 'v104-acquisition.3',
         'status': 'HASH_AND_ENTRY_METADATA_FROZEN_MODEL_NOT_RUN',
         'evaluation_performed': False,
         'archive_extracted': False,
@@ -120,9 +120,10 @@ def main() -> int:
         'aggregate_uncompressed_pcap_bytes': int(sum(r['uncompressed_bytes'] for r in pcap_entries)),
         'ignored_packaging_metadata_count': len(ignored_metadata),
         'ignored_packaging_metadata_entries': ignored_metadata,
-        'packaging_metadata_policy': 'ignore only __MACOSX AppleDouble (._*) or .DS_Store central-directory entries; fail on every other non-PCAP payload',
-        'member_policy': 'all 12 PCAP members are frozen for the one-shot; no PCAP selection/drop permitted',
-        'next_step': 'Pin archive SHA-256 and the full sorted 12-member manifest into preregistration before any extraction or packet decode.'
+        'packaging_metadata_policy': 'classify __MACOSX AppleDouble (._*) or .DS_Store as packaging metadata before extension checks; fail on every other non-PCAP payload',
+        'member_policy': 'all 6 real publisher PCAP payload members are frozen for the one-shot; no real PCAP selection/drop permitted',
+        'metadata_only_amendment': 'Earlier suffix-only counting reported 12 .pcap-like names; central-directory path semantics show six are __MACOSX AppleDouble sidecars. No member bytes were extracted or decoded when this classification was corrected.',
+        'next_step': 'Pin archive SHA-256 and the full sorted six-real-PCAP manifest into preregistration before any extraction or packet decode.'
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
