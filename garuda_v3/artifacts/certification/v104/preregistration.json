@@ -1,7 +1,7 @@
 {
-  "schema_version": "v104-prereg.2",
-  "status": "ACQUISITION_ONLY_HASH_PENDING",
-  "evaluation_permitted": false,
+  "schema_version": "v104-prereg.3",
+  "status": "HASH_FROZEN_ONE_SHOT_REGISTERED",
+  "evaluation_permitted": true,
   "registered_before_external_packet_decode": true,
   "registered_candidate": {
     "model_file": "garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz",
@@ -31,11 +31,51 @@
     "archive_filename": "pcap.zip",
     "source_url": "https://zenodo.org/records/21027042/files/pcap.zip?download=1",
     "official_archive_md5": "bb4476af2b9d4b8ce875dda88a0cca7b",
+    "archive_sha256": "fa1da03ac3797f70747c62b89f12cc31305cc260f74162c6b8060aeb2e74c518",
+    "archive_bytes": 38413013,
     "publisher_archive_size_mb": 38.4,
     "publisher_logical_capture_count": 6,
     "archive_pcap_member_count": 6,
     "publisher_packet_count": 1106116,
     "publisher_description": "six logical capture scenarios: one benign user, two malware, and three port scans",
+    "pcap_entries": [
+      {
+        "compressed_bytes": 8859346,
+        "crc32_hex": "5dc419e9",
+        "filename": "pcap/ctu-idseval-6-benign-user-traffic-1.pcap",
+        "uncompressed_bytes": 16753738
+      },
+      {
+        "compressed_bytes": 2383469,
+        "crc32_hex": "de688885",
+        "filename": "pcap/ctu-idseval-6-malicious-malware-1.pcap",
+        "uncompressed_bytes": 15598906
+      },
+      {
+        "compressed_bytes": 24706622,
+        "crc32_hex": "61628edb",
+        "filename": "pcap/ctu-idseval-6-malicious-malware-2.pcap",
+        "uncompressed_bytes": 69890363
+      },
+      {
+        "compressed_bytes": 36349,
+        "crc32_hex": "d75c05ca",
+        "filename": "pcap/ctu-idseval-6-malicious-portscan-1.pcap",
+        "uncompressed_bytes": 148670
+      },
+      {
+        "compressed_bytes": 3839,
+        "crc32_hex": "d277a240",
+        "filename": "pcap/ctu-idseval-6-malicious-portscan-2.pcap",
+        "uncompressed_bytes": 15246
+      },
+      {
+        "compressed_bytes": 2419484,
+        "crc32_hex": "1c9e9235",
+        "filename": "pcap/ctu-idseval-6-malicious-portscan-3.pcap",
+        "uncompressed_bytes": 9711700
+      }
+    ],
     "archive_member_count_observation": {
       "source": "metadata-only ZIP central-directory inspection before any member extraction or packet decode",
       "packet_bytes_extracted": false,
@@ -44,11 +84,10 @@
       "initial_pcap_suffix_matches": 12,
       "appledouble_sidecars_with_pcap_suffix": 6,
       "real_pcap_members": 6,
+      "ignored_packaging_metadata_count": 7,
       "correction_basis": "ZIP member path/basename semantics only: __MACOSX/.../._*.pcap are AppleDouble packaging sidecars, not packet captures",
       "policy_after_metadata_correction": "include all six real publisher PCAP payload members; no real PCAP selection or dropping is permitted"
     },
-    "archive_sha256": null,
-    "pcap_entries": null,
     "freshness_audit": {
       "repository_search_terms": ["CTU-IDSEVAL", "21027042"],
       "prior_repository_use_found": false,
@@ -62,34 +101,20 @@
       ]
     }
   },
-  "acquisition_rules": {
-    "allowed_before_hash_pin": [
-      "download exact registered pcap.zip URL",
-      "verify official archive MD5",
-      "compute archive SHA-256",
-      "inspect ZIP central-directory metadata only",
-      "record all six sorted real PCAP member names, compressed/uncompressed byte counts, and CRC values",
-      "record known macOS packaging sidecars separately without extracting their bytes"
-    ],
-    "forbidden_before_hash_pin": [
-      "extract PCAP packet bytes",
-      "decode packet records",
-      "construct graph windows",
-      "run support scoring",
-      "run model inference",
-      "read labels.zip or Zeek labels",
-      "change model weights",
-      "change support threshold",
-      "change adapter mapping based on external traffic",
-      "select or drop any real PCAP member based on external traffic"
-    ]
+  "hash_freeze": {
+    "acquisition_commit": "a6389387f34cc76248d6634f4a66b48ed8106bc0",
+    "acquisition_manifest_git_blob_sha": "213497ffe2bc62bf838fe41ba383b5a37a1cd69f",
+    "archive_identity_frozen_before_member_extraction": true,
+    "real_member_manifest_frozen_before_member_extraction": true,
+    "model_or_support_changed_after_v103": false
   },
   "one_shot_rules_after_hash_pin": {
     "runs_allowed": 1,
     "evaluation_unit": "all six real PCAP payload members in the registered archive, representing all six publisher logical scenarios; no cherry-picking",
     "primary_gate": "aggregate element-weighted state forecast MSE across all six registered real PCAP members must be lower than aggregate persistence MSE",
     "per_member_metrics_reported": true,
-    "all_compatible_members_included": true,
+    "all_registered_real_members_must_be_attempted": true,
+    "all_registered_real_members_must_be_evaluable_for_performance_claim": true,
     "retuning_after_result": false,
     "rerun_for_claim_improvement": false,
     "support_is_diagnostic_not_attack_detection": true,
@@ -98,5 +123,5 @@
     "mitre_stage_claim": false,
     "successful_compromise_warning_claim": false
   },
-  "claim_boundary": "V104 is preregistered only for fresh external state-transition forecasting. Before any member extraction or packet decode, metadata-only inspection corrected suffix-only counting from 12 .pcap-like names to six real PCAP payloads plus six AppleDouble .pcap sidecars. All six real PCAPs remain mandatory for the one-shot."
+  "claim_boundary": "V104 is registered only for one fresh external state-transition forecasting evaluation. Archive identity, six-real-PCAP membership, V101 model/support hashes, and the frozen V103 adapter were fixed before any CTU-IDSEVAL-6 member extraction, packet-record decoding, support scoring, or model inference."
 }
