@@ -1,0 +1,520 @@
+{
+  "schema_version": "v107.1",
+  "status": "DEV_PS_COMPLETE_PASS",
+  "recovery_gate_passed": true,
+  "claim_boundary": "Development-only PS-complete packet+flow GraphSAGE+LSTM evidence; no fresh external, MITRE-stage or successful-compromise warning claim.",
+  "quarantine": {
+    "consumed_external": [
+      "HIKARI-2021/V99",
+      "MAWI-200601011400/V102",
+      "CTU-IDSEVAL-6/V104",
+      "USTC-TFC2016/Miuref/V106"
+    ],
+    "used_for_training_or_selection": false
+  },
+  "development_sources": {
+    "dataset": "CICAPT-IIoT2024",
+    "development_reuse": true,
+    "phase1": {
+      "capture": "1stPhase-timed-Merged.pcap",
+      "sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+      "decoded_packets": 2000000,
+      "parser_audit": {
+        "decoded_ipv4": 2000000,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "full_tcp": 1905694,
+        "full_udp": 94172,
+        "non_ipv4": 21940,
+        "nonfirst_fragment": 0,
+        "other_protocol": 134,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "skipped_truncated_vlan": 0
+      },
+      "observed_windows": 5846,
+      "contiguous_sequences": 5835,
+      "train_sequences": 4084,
+      "validation_sequences": 1739,
+      "embargo_sequences": 12
+    },
+    "phase2": {
+      "capture": "2ndPhase-timed-MergedV2.pcap",
+      "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+      "decoded_packets": 2000000,
+      "parser_audit": {
+        "decoded_ipv4": 2000000,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "full_tcp": 1872776,
+        "full_udp": 126738,
+        "non_ipv4": 14481,
+        "nonfirst_fragment": 0,
+        "other_protocol": 486,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "skipped_truncated_vlan": 0
+      },
+      "observed_windows": 5688,
+      "contiguous_sequences": 5677,
+      "used_for_selection": false
+    }
+  },
+  "adapter_contract": {
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "features": [
+      "flow_count_log",
+      "bytes_log",
+      "packets_log",
+      "duration_ms_log",
+      "syn_fraction",
+      "ack_fraction",
+      "rst_fraction",
+      "fin_fraction",
+      "psh_fraction",
+      "urg_fraction",
+      "backward_packet_fraction",
+      "tcp_fraction",
+      "udp_fraction",
+      "active",
+      "iat_ms_log",
+      "iat_variance_log",
+      "iat_max_log",
+      "tcp_window_log",
+      "ttl_mean_scaled",
+      "ttl_variance_scaled",
+      "fragment_fraction",
+      "payload_mean_log",
+      "payload_variance_log",
+      "payload_max_log",
+      "unique_destination_ports_log",
+      "sequential_port_transition_fraction",
+      "random_port_transition_fraction",
+      "retransmission_fraction",
+      "retransmission_count_log",
+      "packet_features_present",
+      "iat_present",
+      "tcp_window_present",
+      "payload_present",
+      "scan_sequence_present"
+    ],
+    "feature_count": 34,
+    "required_flow_features": [
+      "ack_fraction",
+      "backward_packet_fraction",
+      "bytes_log",
+      "duration_ms_log",
+      "fin_fraction",
+      "flow_count_log",
+      "iat_max_log",
+      "iat_ms_log",
+      "iat_variance_log",
+      "packets_log",
+      "psh_fraction",
+      "rst_fraction",
+      "syn_fraction",
+      "tcp_fraction",
+      "udp_fraction",
+      "urg_fraction"
+    ],
+    "required_packet_features": [
+      "fragment_fraction",
+      "payload_max_log",
+      "payload_mean_log",
+      "payload_variance_log",
+      "random_port_transition_fraction",
+      "retransmission_count_log",
+      "retransmission_fraction",
+      "sequential_port_transition_fraction",
+      "tcp_window_log",
+      "ttl_mean_scaled",
+      "ttl_variance_scaled",
+      "unique_destination_ports_log"
+    ],
+    "all_ps_required_features_present": true,
+    "mode": "service",
+    "window_seconds": 10,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "max_nodes": 32,
+    "mapping": "raw PCAP packet telemetry -> bidirectional connections -> PS-complete service graph",
+    "packet_features_required": true
+  },
+  "adapter_contract_sha256": "c42309fb3bb3f362bf9260b35b1188a57fdf69510fd14ae9f5a46919b9839c1a",
+  "packet_features_present_mean": {
+    "phase1_train": 1.0,
+    "phase1_validation": 1.0,
+    "phase2_sanity": 1.0
+  },
+  "required_feature_observation": {
+    "ack_fraction": {
+      "phase1_train_nonzero_fraction": 0.7678644463920538,
+      "phase1_validation_nonzero_fraction": 0.7227086077322383,
+      "phase2_nonzero_fraction": 0.6962620741181225
+    },
+    "backward_packet_fraction": {
+      "phase1_train_nonzero_fraction": 0.7727023079170319,
+      "phase1_validation_nonzero_fraction": 0.7260143074817282,
+      "phase2_nonzero_fraction": 0.7004170192652227
+    },
+    "bytes_log": {
+      "phase1_train_nonzero_fraction": 1.0,
+      "phase1_validation_nonzero_fraction": 1.0,
+      "phase2_nonzero_fraction": 1.0
+    },
+    "duration_ms_log": {
+      "phase1_train_nonzero_fraction": 0.9988781770376862,
+      "phase1_validation_nonzero_fraction": 0.9995867875313138,
+      "phase2_nonzero_fraction": 1.0
+    },
+    "fin_fraction": {
+      "phase1_train_nonzero_fraction": 0.7673970201577563,
+      "phase1_validation_nonzero_fraction": 0.7225020014978952,
+      "phase2_nonzero_fraction": 0.6958351439745671
+    },
+    "flow_count_log": {
+      "phase1_train_nonzero_fraction": 1.0,
+      "phase1_validation_nonzero_fraction": 1.0,
+      "phase2_nonzero_fraction": 1.0
+    },
+    "fragment_fraction": {
+      "phase1_train_nonzero_fraction": 0.0,
+      "phase1_validation_nonzero_fraction": 0.0,
+      "phase2_nonzero_fraction": 0.0
+    },
+    "iat_max_log": {
+      "phase1_train_nonzero_fraction": 0.9988781770376862,
+      "phase1_validation_nonzero_fraction": 0.9995867875313138,
+      "phase2_nonzero_fraction": 1.0
+    },
+    "iat_ms_log": {
+      "phase1_train_nonzero_fraction": 0.9988781770376862,
+      "phase1_validation_nonzero_fraction": 0.9995867875313138,
+      "phase2_nonzero_fraction": 1.0
+    },
+    "iat_variance_log": {
+      "phase1_train_nonzero_fraction": 0.9988781770376862,
+      "phase1_validation_nonzero_fraction": 0.9995867875313138,
+      "phase2_nonzero_fraction": 0.9878096196509846
+    },
+    "packets_log": {
+      "phase1_train_nonzero_fraction": 1.0,
+      "phase1_validation_nonzero_fraction": 1.0,
+      "phase2_nonzero_fraction": 1.0
+    },
+    "payload_max_log": {
+      "phase1_train_nonzero_fraction": 0.9741162722757815,
+      "phase1_validation_nonzero_fraction": 0.9758270705818548,
+      "phase2_nonzero_fraction": 0.9659294497937775
+    },
+    "payload_mean_log": {
+      "phase1_train_nonzero_fraction": 0.9741162722757815,
+      "phase1_validation_nonzero_fraction": 0.9758270705818548,
+      "phase2_nonzero_fraction": 0.9659294497937775
+    },
+    "payload_variance_log": {
+      "phase1_train_nonzero_fraction": 0.7687759275489336,
+      "phase1_validation_nonzero_fraction": 0.7227086077322383,
+      "phase2_nonzero_fraction": 0.6968872218283283
+    },
+    "psh_fraction": {
+      "phase1_train_nonzero_fraction": 0.7677709611451943,
+      "phase1_validation_nonzero_fraction": 0.7227086077322383,
+      "phase2_nonzero_fraction": 0.6962010840976145
+    },
+    "random_port_transition_fraction": {
+      "phase1_train_nonzero_fraction": 0.1846099912357581,
+      "phase1_validation_nonzero_fraction": 0.15753725368663,
+      "phase2_nonzero_fraction": 0.20244112557082847
+    },
+    "retransmission_count_log": {
+      "phase1_train_nonzero_fraction": 0.7677709611451943,
+      "phase1_validation_nonzero_fraction": 0.7227086077322383,
+      "phase2_nonzero_fraction": 0.6962010840976145
+    },
+    "retransmission_fraction": {
+      "phase1_train_nonzero_fraction": 0.7677709611451943,
+      "phase1_validation_nonzero_fraction": 0.7227086077322383,
+      "phase2_nonzero_fraction": 0.6962010840976145
+    },
+    "rst_fraction": {
+      "phase1_train_nonzero_fraction": 0.00960560911481157,
+      "phase1_validation_nonzero_fraction": 0.009297280545440458,
+      "phase2_nonzero_fraction": 0.007928702666026272
+    },
+    "sequential_port_transition_fraction": {
+      "phase1_train_nonzero_fraction": 0.0,
+      "phase1_validation_nonzero_fraction": 0.0004132124686862426,
+      "phase2_nonzero_fraction": 0.0003659401230473664
+    },
+    "syn_fraction": {
+      "phase1_train_nonzero_fraction": 0.7931872626351154,
+      "phase1_validation_nonzero_fraction": 0.7466749309160404,
+      "phase2_nonzero_fraction": 0.7301496542628212
+    },
+    "tcp_fraction": {
+      "phase1_train_nonzero_fraction": 0.7936546888694128,
+      "phase1_validation_nonzero_fraction": 0.7468815371503835,
+      "phase2_nonzero_fraction": 0.730271634303837
+    },
+    "tcp_window_log": {
+      "phase1_train_nonzero_fraction": 0.7934677183756939,
+      "phase1_validation_nonzero_fraction": 0.7466749309160404,
+      "phase2_nonzero_fraction": 0.730271634303837
+    },
+    "ttl_mean_scaled": {
+      "phase1_train_nonzero_fraction": 1.0,
+      "phase1_validation_nonzero_fraction": 1.0,
+      "phase2_nonzero_fraction": 1.0
+    },
+    "ttl_variance_scaled": {
+      "phase1_train_nonzero_fraction": 0.7727023079170319,
+      "phase1_validation_nonzero_fraction": 0.7260143074817282,
+      "phase2_nonzero_fraction": 0.15104178578780048
+    },
+    "udp_fraction": {
+      "phase1_train_nonzero_fraction": 0.2498510078878177,
+      "phase1_validation_nonzero_fraction": 0.31117481470003355,
+      "phase2_nonzero_fraction": 0.2988053579733016
+    },
+    "unique_destination_ports_log": {
+      "phase1_train_nonzero_fraction": 0.9984224364592462,
+      "phase1_validation_nonzero_fraction": 0.9995867875313138,
+      "phase2_nonzero_fraction": 0.9876876396099689
+    },
+    "urg_fraction": {
+      "phase1_train_nonzero_fraction": 0.0,
+      "phase1_validation_nonzero_fraction": 0.0,
+      "phase2_nonzero_fraction": 0.0
+    }
+  },
+  "selection": {
+    "rule": "minimum Phase-1 validation MSE only; ties by seed",
+    "selected_seed": 42,
+    "phase2_used_for_selection": false
+  },
+  "seeds": {
+    "42": {
+      "seed": 42,
+      "best_epoch": 8,
+      "validation_mse": 0.015546713024377823,
+      "validation_persistence_mse": 0.020817944779992104,
+      "validation_improvement_vs_persistence": 0.2532061551378695,
+      "validation_gate_passed": true,
+      "phase2_mse": 0.02430075593292713,
+      "phase2_persistence_mse": 0.031055666506290436,
+      "phase2_improvement_vs_persistence": 0.21750976015907025,
+      "phase2_sanity_passed": true
+    },
+    "43": {
+      "seed": 43,
+      "best_epoch": 8,
+      "validation_mse": 0.01562846079468727,
+      "validation_persistence_mse": 0.020817944779992104,
+      "validation_improvement_vs_persistence": 0.24927936163479442,
+      "validation_gate_passed": true,
+      "phase2_mse": 0.024213824421167374,
+      "phase2_persistence_mse": 0.031055666506290436,
+      "phase2_improvement_vs_persistence": 0.2203089759396155,
+      "phase2_sanity_passed": true
+    },
+    "44": {
+      "seed": 44,
+      "best_epoch": 8,
+      "validation_mse": 0.01572883315384388,
+      "validation_persistence_mse": 0.020817944779992104,
+      "validation_improvement_vs_persistence": 0.24445792703991187,
+      "validation_gate_passed": true,
+      "phase2_mse": 0.0247295293956995,
+      "phase2_persistence_mse": 0.031055666506290436,
+      "phase2_improvement_vs_persistence": 0.20370315057670887,
+      "phase2_sanity_passed": true
+    }
+  },
+  "selected_candidate": {
+    "seed": 42,
+    "best_epoch": 8,
+    "validation_mse": 0.015546713024377823,
+    "validation_persistence_mse": 0.020817944779992104,
+    "validation_improvement_vs_persistence": 0.2532061551378695,
+    "validation_gate_passed": true,
+    "phase2_mse": 0.02430075593292713,
+    "phase2_persistence_mse": 0.031055666506290436,
+    "phase2_improvement_vs_persistence": 0.21750976015907025,
+    "phase2_sanity_passed": true
+  },
+  "support_gate": {
+    "threshold": 8.80609323395997,
+    "method": "max robust standardized history-summary deviation",
+    "phase2_supported_sequences": 5673,
+    "phase2_total_sequences": 5677,
+    "phase2_supported_fraction": 0.9992954025013211,
+    "phase2_median_score": 3.749996507540267,
+    "phase2_max_score": 9.921702265851996,
+    "fit_provenance": {
+      "center_scale": "CICAPT Phase-1 train only",
+      "threshold": "CICAPT Phase-1 validation only",
+      "phase2_excluded_from_fit": true,
+      "consumed_external_excluded_from_fit": [
+        "HIKARI-2021/V99",
+        "MAWI-200601011400/V102",
+        "CTU-IDSEVAL-6/V104",
+        "USTC-TFC2016/Miuref/V106"
+      ]
+    }
+  },
+  "freeze": {
+    "model_file": "gnn_lstm_ps_complete_candidate.npz",
+    "model_sha256": "9ad1e191e9eecf7a35a2d943a617da8b35d44694c754a3e112a563d2a2f30436",
+    "support_gate_file": "support_gate.json",
+    "support_gate_sha256": "ad7d41c88f986b62a77d4e4e2800732fb34f59b3f8c73c1e85b94ef23b978915",
+    "candidate_frozen_before_any_new_external_holdout": true,
+    "new_external_holdout_selected": false
+  },
+  "training_curves": {
+    "42": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.020817942917346954
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.17993152351118624,
+        "validation_mse": 0.016856959089636803
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.15847906039562076,
+        "validation_mse": 0.016086537390947342
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.15256587858311832,
+        "validation_mse": 0.015820123255252838
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.15044238907285035,
+        "validation_mse": 0.015642520040273666
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.14983076590579003,
+        "validation_mse": 0.015724044293165207
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.14932798326481134,
+        "validation_mse": 0.01562844030559063
+      },
+      {
+        "epoch": 7,
+        "train_objective": 0.14938942913431674,
+        "validation_mse": 0.015867311507463455
+      },
+      {
+        "epoch": 8,
+        "train_objective": 0.14901543769519776,
+        "validation_mse": 0.015546713024377823
+      }
+    ],
+    "43": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.020817942917346954
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.18106713145971298,
+        "validation_mse": 0.01679723709821701
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.15991884795948863,
+        "validation_mse": 0.016555750742554665
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.1569088586838916,
+        "validation_mse": 0.016452781856060028
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.15523096441756934,
+        "validation_mse": 0.016154002398252487
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.15424116502981633,
+        "validation_mse": 0.016097193583846092
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.15248738136142492,
+        "validation_mse": 0.015670787543058395
+      },
+      {
+        "epoch": 7,
+        "train_objective": 0.1506396969780326,
+        "validation_mse": 0.015683187171816826
+      },
+      {
+        "epoch": 8,
+        "train_objective": 0.15050278534181416,
+        "validation_mse": 0.01562846079468727
+      }
+    ],
+    "44": [
+      {
+        "epoch": 0,
+        "train_objective": null,
+        "validation_mse": 0.020817942917346954
+      },
+      {
+        "epoch": 1,
+        "train_objective": 0.1824285436887294,
+        "validation_mse": 0.017142465338110924
+      },
+      {
+        "epoch": 2,
+        "train_objective": 0.16136131971143186,
+        "validation_mse": 0.0165855810046196
+      },
+      {
+        "epoch": 3,
+        "train_objective": 0.1572559450287372,
+        "validation_mse": 0.01647302135825157
+      },
+      {
+        "epoch": 4,
+        "train_objective": 0.156448102905415,
+        "validation_mse": 0.016508139669895172
+      },
+      {
+        "epoch": 5,
+        "train_objective": 0.15619877388235182,
+        "validation_mse": 0.016499562188982964
+      },
+      {
+        "epoch": 6,
+        "train_objective": 0.15593286650255322,
+        "validation_mse": 0.01640104316174984
+      },
+      {
+        "epoch": 7,
+        "train_objective": 0.15516480954829603,
+        "validation_mse": 0.01606866717338562
+      },
+      {
+        "epoch": 8,
+        "train_objective": 0.15203468105755746,
+        "validation_mse": 0.01572883315384388
+      }
+    ]
+  },
+  "next_gate": "Keep V106 quarantined. After this candidate is frozen, select a genuinely untouched external holdout only once; V97 stage and V98 successful-compromise gates remain separate."
+}
