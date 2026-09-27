@@ -1,9 +1,13 @@
 """V104 frozen one-shot CTU-IDSEVAL-6 state-transition evaluation.
 
-All registered PCAP members must be accounted for and evaluable. No labels, Zeek logs,
-or capture selection are used. The unchanged V101 model/support gate and frozen V103
-tolerant packet adapter are evaluated against persistence over all members, with the
-primary MSE aggregated by predicted state elements.
+All six registered real PCAP payload members must be accounted for and evaluable. No
+labels, Zeek logs, or capture selection are used. The unchanged V101 model/support
+gate and frozen V103 tolerant packet adapter are evaluated against persistence over
+all publisher captures, with the primary MSE aggregated by predicted state elements.
+
+The six-member count was refrozen before packet extraction/decoding after ZIP
+central-directory metadata established that the other six .pcap-suffixed names were
+__MACOSX AppleDouble packaging sidecars rather than capture payloads.
 """
 from __future__ import annotations
 
@@ -30,7 +34,7 @@ MODEL_SHA256 = '30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79
 SUPPORT_SHA256 = '2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3'
 ADAPTER_SHA256 = '65052c50704ad371ff7ad84fec6b74c7530d546a7916722c96a255b9b7c93841'
 PCAP_READER_SHA256 = '91c978b54c5ca32fb9e30cde75e8abe7e7c9fc24655f49ea40291762feddab71'
-EXPECTED_MEMBERS = 12
+EXPECTED_MEMBERS = 6
 MAX_PACKETS_PER_MEMBER = 2_000_000
 
 
@@ -204,7 +208,7 @@ def main() -> int:
         total_persistence_sse += psse
         total_elements += elements
     if len(members) != EXPECTED_MEMBERS or total_elements <= 0:
-        raise V104ContractError('Not all registered PCAP members produced evidence')
+        raise V104ContractError('Not all registered real PCAP members produced evidence')
 
     model_mse = total_model_sse / total_elements
     persistence_mse = total_persistence_sse / total_elements
@@ -214,9 +218,9 @@ def main() -> int:
     total_sequences = sum(r['support']['total_sequences'] for r in members)
 
     result = {
-        'schema_version': 'v104.1',
+        'schema_version': 'v104.2',
         'status': 'PASS' if passed else 'FAIL',
-        'gate': 'element-weighted aggregate frozen-model state MSE across all 12 registered PCAP members must be lower than aggregate persistence MSE',
+        'gate': 'element-weighted aggregate frozen-model state MSE across all six registered real PCAP members must be lower than aggregate persistence MSE',
         'dataset': {
             'name': 'CTU-IDSEVAL-6', 'version': 'v1', 'zenodo_record': '21027042',
             'doi': '10.5281/zenodo.21027042',
@@ -245,11 +249,12 @@ def main() -> int:
             'interpretation': 'training-support diagnostic only; outside support is not attack/OOD detection',
         },
         'one_shot_integrity': {
-            'runs_allowed': 1, 'all_registered_members_included': True,
+            'runs_allowed': 1, 'all_registered_real_pcap_members_included': True,
             'retrained_on_external': False, 'normalization_fit_on_external': False,
             'support_fit_on_external': False, 'threshold_fit_on_external': False,
             'adapter_changed_after_external_packet_decode': False,
             'labels_accessed': False, 'rerun_for_claim_improvement': False,
+            'packaging_sidecars_excluded_before_packet_decode': True,
         },
         'claim_boundary': 'Fresh external one-shot state-transition forecasting only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is made.',
     }
