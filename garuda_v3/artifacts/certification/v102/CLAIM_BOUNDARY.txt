@@ -1,0 +1,1 @@
+No fresh external generalisation performance claim is made from V102. The MAWI holdout is consumed and may be retained only for postmortem evidence, never for fitting, adapter selection, thresholding, checkpoint selection, or claim-improving reruns.
