@@ -1,0 +1,71 @@
+{
+  "schema_version": "v102.1",
+  "status": "INCOMPATIBLE",
+  "performance_gate_evaluated": false,
+  "external_holdout_consumed": true,
+  "rerun_permitted_for_claim_improvement": false,
+  "dataset": {
+    "name": "MAWI Working Group Traffic Archive",
+    "samplepoint": "B",
+    "capture_id": "200601011400",
+    "capture": "200601011400.dump",
+    "compressed_sha256": "c3a4d0459c3d44570d33e67aa4d8533e3695a1eef1aaa4b443af4f23e2368737",
+    "decompressed_sha256": "6d0925f42db3a296ba84976e908f256f14efd39db6ae318f58d8e343bcabf199",
+    "labels_accessed": false
+  },
+  "frozen_runtime": {
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "adapter_contract_sha256": "870e7894378e687c542f286eabccf367c10d4d41dbebe7551b4ce95df2c65ac8",
+    "architecture": "gnn_lstm",
+    "schema": "garuda-observed-graph-v3.1",
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual"
+  },
+  "attempt": {
+    "github_actions_run_id": 36306968653,
+    "github_actions_job_id": 108585409015,
+    "source_commit": "a6f63f2fa42dc0237aa60221b8bcf469dc74c221",
+    "preflight_tests_passed": true,
+    "source_hashes_verified_before_decode": true,
+    "packet_decode_started": true,
+    "graph_sequence_construction_completed": false,
+    "model_inference_performed": false,
+    "support_scoring_performed": false,
+    "state_mse_computed": false,
+    "persistence_mse_computed": false,
+    "attack_labels_accessed": false,
+    "error_type": "V102ContractError",
+    "error_message": "Snaplen omitted required TCP header bytes",
+    "failure_location": "decode_truncated_ipv4 -> mawi_packets -> packet_service_graphs",
+    "interpretation": "The preregistered 96-byte-snaplen adapter encountered a TCP record whose required transport header bytes were not available under the frozen fail-closed policy. The run therefore stopped before model inference and cannot support a PASS or FAIL state-forecast performance claim."
+  },
+  "state_forecasting": {
+    "model_mse": null,
+    "persistence_mse": null,
+    "improvement_vs_persistence": null,
+    "beats_persistence": null
+  },
+  "integrity": {
+    "model_retuned_on_mawi": false,
+    "normalization_fit_on_mawi": false,
+    "support_fit_on_mawi": false,
+    "threshold_fit_on_mawi": false,
+    "adapter_changed_after_observing_mawi_for_this_claim": false,
+    "rerun_for_better_metrics": false,
+    "mawi_quarantined_from_future_candidate_fitting": true,
+    "mawi_quarantined_from_future_adapter_selection": true,
+    "future_fresh_external_claim_requires_different_holdout": true
+  },
+  "next_recovery_gate": [
+    "Harden truncated-capture handling on synthetic and development-only packet sources, without using MAWI for fitting or selection.",
+    "Re-run development validation and persistence gates after any adapter/runtime change.",
+    "Freeze the recovered runtime and adapter before selecting a different untouched external holdout.",
+    "Evaluate that different external holdout exactly once."
+  ],
+  "claim_boundary": "V102 records an honest consumed external compatibility failure only. It does not alter V99, does not establish external state-forecast generalisation, and does not certify attack recall/FPR, MITRE-stage accuracy, or warning before successful compromise."
+}

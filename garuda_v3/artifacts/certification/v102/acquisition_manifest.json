@@ -1,0 +1,27 @@
+{
+  "compressed_bytes": 193177875,
+  "compressed_filename": "200601011400.dump.gz",
+  "compressed_sha256": "c3a4d0459c3d44570d33e67aa4d8533e3695a1eef1aaa4b443af4f23e2368737",
+  "decompressed_bytes": 466955908,
+  "decompressed_sha256": "6d0925f42db3a296ba84976e908f256f14efd39db6ae318f58d8e343bcabf199",
+  "evaluation_performed": false,
+  "graph_windows_constructed": false,
+  "model_inference_performed": false,
+  "next_step": "Pin these hashes into preregistration in a new commit before any packet-record decoding or model inference.",
+  "packet_records_decoded": false,
+  "pcap_global_header": {
+    "endianness": "little",
+    "linktype": 1,
+    "magic_hex": "d4c3b2a1",
+    "sigfigs": 0,
+    "snaplen": 96,
+    "thiszone": 0,
+    "timestamp_resolution": "microseconds",
+    "version_major": 2,
+    "version_minor": 4
+  },
+  "schema_version": "v102-acquisition.1",
+  "source_url": "https://mawi.nezu.wide.ad.jp/mawi/samplepoint-B/2006/200601011400.dump.gz",
+  "status": "HASH_ACQUIRED_MODEL_NOT_RUN",
+  "support_scoring_performed": false
+}
