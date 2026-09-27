@@ -1,0 +1,19 @@
+{
+  "schema_version": "v121-acquisition.1",
+  "status": "HASH_FROZEN_NO_PACKET_DECODE",
+  "source_url": "https://media.githubusercontent.com/media/honeynet/forensic_challenges/master/zip_files/challenges/fc09.zip",
+  "archive_bytes": 60646083,
+  "archive_sha256": "90938c45d4309f9af0ef29cd308e4d201be905998b98778511a04c3bebd81cc3",
+  "archive_sha1": "a64f9e0f51f2f31c3f9e437ab835040c2b644aff",
+  "archive_lfs_sha256_verified": true,
+  "archive_published_sha1_verified": true,
+  "nested_original_tar_present": true,
+  "nested_original_tar_published_sha1": "dbc378ce1807a4a2459f882b13b4224d0db8fbc7",
+  "selected_pcap_member_basename": "traffic.pcap",
+  "selected_pcap_bytes": 10207674,
+  "selected_pcap_sha256": "712ee23b7b43e12e4e94945e4e1d9ad60b85ee48d3adf78fb9b4ae49dbb262e1",
+  "selected_pcap_sha1": "fcf291916d552c9cea2905dc8d1816b141d5bbc8",
+  "packet_records_decoded": false,
+  "model_inference_performed": false,
+  "labels_accessed": false
+}
