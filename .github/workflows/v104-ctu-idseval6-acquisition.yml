@@ -30,31 +30,39 @@ jobs:
 
       - name: Verify metadata-only acquisition contracts
         run: |
-          python -m compileall -q garuda_v3/v104_ctu_idseval6_acquire.py
+          python -m compileall -q garuda_v3/v104_ctu_idseval6_acquire.py garuda_v3/v104_ctu_idseval6_one_shot.py
           python -m unittest discover -s garuda_v3/tests -p 'test_v104_ctu_idseval6_acquire.py' -v
           python - <<'PY'
           import json
           from pathlib import Path
           d=json.loads(Path('garuda_v3/artifacts/certification/v104/preregistration.json').read_text())
-          assert d['schema_version']=='v104-prereg.1'
+          assert d['schema_version']=='v104-prereg.2'
           assert d['status']=='ACQUISITION_ONLY_HASH_PENDING'
           assert d['evaluation_permitted'] is False
           assert d['external_holdout']['dataset']=='CTU-IDSEVAL-6'
           assert d['external_holdout']['zenodo_record']=='21027042'
           assert d['external_holdout']['official_archive_md5']=='bb4476af2b9d4b8ce875dda88a0cca7b'
-          assert d['external_holdout']['archive_pcap_member_count']==12
-          assert d['external_holdout']['archive_member_count_observation']['packet_records_decoded'] is False
+          assert d['external_holdout']['publisher_logical_capture_count']==6
+          assert d['external_holdout']['archive_pcap_member_count']==6
+          obs=d['external_holdout']['archive_member_count_observation']
+          assert obs['packet_bytes_extracted'] is False
+          assert obs['packet_records_decoded'] is False
+          assert obs['model_inference_performed'] is False
+          assert obs['first_suffix_only_pcap_like_count']==12
+          assert obs['corrected_real_pcap_payload_count']==6
+          assert obs['observed_appledouble_pcap_suffix_sidecars']==6
           assert d['external_holdout']['archive_sha256'] is None
           assert d['external_holdout']['pcap_entries'] is None
           assert d['external_holdout']['freshness_audit']['prior_repository_use_found'] is False
           assert d['registered_candidate']['source_commit']=='72c1eaf0f79754a3d8c5454b574ea201d3f9e68c'
           assert d['registered_candidate']['adapter_contract_sha256']=='65052c50704ad371ff7ad84fec6b74c7530d546a7916722c96a255b9b7c93841'
+          assert d['metadata_only_amendment']['made_before_packet_record_decode'] is True
           evaluator=Path('garuda_v3/v104_ctu_idseval6_one_shot.py')
           assert evaluator.exists()
           text=evaluator.read_text()
-          assert "EXPECTED_MEMBERS = 12" in text
-          assert "members_dropped': 0" in text
-          print('V104 acquisition is fail-closed and evaluator is pre-frozen before packet decode')
+          assert "EXPECTED_MEMBERS = 6" in text
+          assert "'members_dropped': 0" in text
+          print('V104 acquisition is fail-closed; six real payload PCAPs are refrozen before packet decode')
           PY
 
       - name: Download exact registered pcap.zip
@@ -67,6 +75,7 @@ jobs:
 
       - name: Freeze archive identity and ZIP metadata only
         run: |
+          rm -f garuda_v3/artifacts/certification/v104/acquisition_manifest.json
           python -m garuda_v3.v104_ctu_idseval6_acquire \
             --prereg garuda_v3/artifacts/certification/v104/preregistration.json \
             --archive datasets/v104/pcap.zip \
@@ -78,7 +87,7 @@ jobs:
           import json
           from pathlib import Path
           d=json.loads(Path('garuda_v3/artifacts/certification/v104/acquisition_manifest.json').read_text())
-          assert d['schema_version']=='v104-acquisition.2'
+          assert d['schema_version']=='v104-acquisition.3'
           assert d['status']=='HASH_AND_ENTRY_METADATA_FROZEN_MODEL_NOT_RUN'
           assert d['evaluation_performed'] is False
           assert d['archive_extracted'] is False
@@ -89,11 +98,12 @@ jobs:
           assert d['archive_md5']=='bb4476af2b9d4b8ce875dda88a0cca7b'
           assert len(d['archive_sha256'])==64
           assert d['publisher_logical_capture_count']==6
-          assert d['pcap_entry_count']==12
-          assert len(d['pcap_entries'])==12
-          assert d['ignored_packaging_metadata_count']>=1
+          assert d['pcap_entry_count']==6
+          assert len(d['pcap_entries'])==6
+          assert all(x['filename'].startswith('pcap/') for x in d['pcap_entries'])
+          assert d['ignored_packaging_metadata_count']==7
           assert all(x['filename'].startswith('__MACOSX/') for x in d['ignored_packaging_metadata_entries'])
-          assert 'no PCAP selection/drop permitted' in d['member_policy']
+          assert 'no real PCAP selection/drop permitted' in d['member_policy']
           print(json.dumps(d, indent=2, sort_keys=True))
           PY
 
@@ -102,8 +112,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --ff-only origin "${GITHUB_REF_NAME}"
-          git add garuda_v3/artifacts/certification/v104/acquisition_manifest.json
-          git commit -m "evidence(v104): freeze CTU-IDSEVAL-6 archive identity"
+          git add -f garuda_v3/artifacts/certification/v104/acquisition_manifest.json
+          git commit -m "evidence(v104): freeze corrected CTU-IDSEVAL-6 archive identity"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Upload acquisition manifest
