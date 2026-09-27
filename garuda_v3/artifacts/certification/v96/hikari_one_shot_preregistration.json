@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "status": "PRE_EVALUATION_FROZEN",
+  "purpose": "Fresh external one-shot generalization evaluation for SIH26153 evidence. No result has been observed under this registration.",
+  "dataset": {
+    "name": "HIKARI-2021",
+    "publisher": "Zenodo / Keio University authors",
+    "record_id": "6463389",
+    "version": "1.4.0",
+    "doi": "10.5281/zenodo.6463389",
+    "primary_capture": {
+      "filename": "Monday_2022-04-11_0622_BRUTEFORCE_XML_150s.pcap",
+      "official_md5": "900deec66e058801a377fd81c5fc805e",
+      "role": "timestamp-preserving unseen packet capture"
+    },
+    "ground_truth": {
+      "filename": "ground-truth.zip",
+      "official_md5": "a940cca16c3f1051e0de30f22bb843de"
+    },
+    "freshness_audit": {
+      "repository_code_search_terms_checked": ["HIKARI", "HIKARI2021"],
+      "repository_code_search_matches": 0,
+      "commit_message_search_term_checked": "HIKARI",
+      "commit_message_matches": 0,
+      "known_prior_dataset_families_excluded": [
+        "CIC-IDS2018",
+        "CICAPT-IIoT2024",
+        "X-IIoTID",
+        "CTU-13",
+        "UNSW-NB15",
+        "IoT-23",
+        "RT-IoT2022",
+        "ToN-IoT",
+        "WUSTL-IIoT"
+      ]
+    }
+  },
+  "frozen_runtime": {
+    "git_commit_before_holdout_registration": "787ccbd6fc8ab215d7d1d18613d26a99c7ceb995",
+    "branch": "feat/v67-ps9plus-evidence",
+    "active_runtime_manifest": "garuda_v3/active_runtime_bundle.json",
+    "artifact_directory": "garuda_v3/artifacts/residual_run",
+    "model": "gnn_lstm.npz",
+    "model_git_blob_sha1": "c1e411859042c10818ea46bedda8b483d5c9d717",
+    "history_states": 8,
+    "forecast_horizon_states": 4,
+    "state_window_seconds": 10,
+    "decoder": "residual",
+    "seed": 42
+  },
+  "one_shot_policy": {
+    "retrain_on_hikari": false,
+    "fit_normalization_on_hikari": false,
+    "fit_threshold_on_hikari": false,
+    "fit_support_statistics_on_hikari": false,
+    "change_feature_mapping_after_label_metrics_seen": false,
+    "rerun_after_result_for_better_metrics": false,
+    "allowed_before_result": [
+      "download exact preregistered files",
+      "verify official MD5 and compute SHA-256",
+      "perform schema/ground-truth compatibility audit without computing model performance",
+      "implement deterministic feature adapter using the already frozen Garuda feature contract"
+    ],
+    "required_outcome": "Report the first compatible frozen-model result even if poor. If the capture cannot be mapped without changing the frozen feature contract, report INCOMPATIBLE rather than tuning around it."
+  },
+  "claim_boundary": "This file is a preregistration, not an evaluation result. It does not establish unseen-dataset performance, MITRE-stage performance, or verified pre-compromise warning."
+}
