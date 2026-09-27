@@ -1,0 +1,15 @@
+{
+  "schema_version": "v119-acquisition.1",
+  "status": "HASH_FROZEN_NO_PACKET_DECODE",
+  "source_url": "https://www.malware-traffic-analysis.net/2026/08/09/2026-08-09-traffic-analysis-exercise.pcap.zip",
+  "archive_bytes": 12792967,
+  "archive_sha256": "676bf6b5f269a8da49e8da6b6dcb3aed0ca2629f99005dc39f4b887ad9bee822",
+  "selected_pcap_member": "2026-08-09-traffic-analysis-exercise.pcap",
+  "selected_pcap_bytes": 16007378,
+  "selected_pcap_sha256": "0ea6b597732a9ce6af9a7e3adff4512c9a91b4bce27184c8fdeb746f05cce170",
+  "packet_records_decoded": false,
+  "model_inference_performed": false,
+  "labels_accessed": false,
+  "zip_password_scheme": "infected_YYYYMMDD",
+  "zip_password_used_for_access_only": true
+}

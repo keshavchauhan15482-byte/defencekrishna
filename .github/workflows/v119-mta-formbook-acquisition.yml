@@ -1,0 +1,81 @@
+name: V119 MTA FormBook acquisition freeze
+
+on:
+  push:
+    branches: [feat/v119-mta-formbook-one-shot]
+    paths:
+      - 'garuda_v3/artifacts/certification/v119/selection_freeze.json'
+      - '.github/workflows/v119-mta-formbook-acquisition.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  acquire-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download selected archive and hash exact bytes
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v119 garuda_v3/artifacts/certification/v119
+          URL='https://www.malware-traffic-analysis.net/2026/08/09/2026-08-09-traffic-analysis-exercise.pcap.zip'
+          curl -L --fail --retry 3 --retry-delay 2 "$URL" -o /tmp/v119/capture.zip
+          test "$(stat -c%s /tmp/v119/capture.zip)" -eq 12792967
+          sha256sum /tmp/v119/capture.zip | tee /tmp/v119/archive.sha256
+          unzip -l /tmp/v119/capture.zip | tee /tmp/v119/listing.txt
+      - name: Extract without packet decode and freeze PCAP hash
+        run: |
+          set -euo pipefail
+          MEMBER='2026-08-09-traffic-analysis-exercise.pcap'
+          unzip -P infected_20260809 -p /tmp/v119/capture.zip "$MEMBER" > /tmp/v119/capture.pcap
+          test -s /tmp/v119/capture.pcap
+          sha256sum /tmp/v119/capture.pcap | tee /tmp/v119/pcap.sha256
+          ARCHIVE_SHA=$(cut -d' ' -f1 /tmp/v119/archive.sha256)
+          PCAP_SHA=$(cut -d' ' -f1 /tmp/v119/pcap.sha256)
+          ARCHIVE_BYTES=$(stat -c%s /tmp/v119/capture.zip)
+          PCAP_BYTES=$(stat -c%s /tmp/v119/capture.pcap)
+          python - <<PY
+          import json
+          from pathlib import Path
+          out={
+            'schema_version':'v119-acquisition.1',
+            'status':'HASH_FROZEN_NO_PACKET_DECODE',
+            'source_url':'https://www.malware-traffic-analysis.net/2026/08/09/2026-08-09-traffic-analysis-exercise.pcap.zip',
+            'archive_bytes':int('$ARCHIVE_BYTES'),
+            'archive_sha256':'$ARCHIVE_SHA',
+            'selected_pcap_member':'2026-08-09-traffic-analysis-exercise.pcap',
+            'selected_pcap_bytes':int('$PCAP_BYTES'),
+            'selected_pcap_sha256':'$PCAP_SHA',
+            'packet_records_decoded':False,
+            'model_inference_performed':False,
+            'labels_accessed':False,
+            'zip_password_scheme':'infected_YYYYMMDD',
+            'zip_password_used_for_access_only':True
+          }
+          Path('garuda_v3/artifacts/certification/v119/acquisition_manifest.json').write_text(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          PY
+      - name: Verify acquisition-only boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('garuda_v3/artifacts/certification/v119/selection_freeze.json').read_text())
+          a=json.loads(Path('garuda_v3/artifacts/certification/v119/acquisition_manifest.json').read_text())
+          assert s['status']=='SELECTED_BEFORE_DOWNLOAD'
+          assert a['status']=='HASH_FROZEN_NO_PACKET_DECODE'
+          assert a['archive_bytes']==s['external_holdout']['archive_expected_bytes']
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          assert a['labels_accessed'] is False
+          print('V119 acquisition-only freeze: PASS')
+          PY
+      - name: Record immutable acquisition freeze
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v119/acquisition_manifest.json
+          git commit -m 'evidence(v119): freeze MTA FormBook archive and PCAP hashes'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
