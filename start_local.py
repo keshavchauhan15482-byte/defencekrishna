@@ -14,8 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 VENV = ROOT / ".venv"
 ENGINE_URL = "http://127.0.0.1:8090"
-PREMIUM_URL = ENGINE_URL
 CONSOLE_URL = "http://127.0.0.1:8091"
+PREMIUM_URL = CONSOLE_URL
 ENGINE_HEALTH_URL = ENGINE_URL + "/health"
 CONSOLE_HEALTH_URL = CONSOLE_URL + "/health"
 ENGINE_LOG = ROOT / "garuda_v3" / "runtime" / "localhost.log"
@@ -76,16 +76,16 @@ def wait_until_ready(processes: list[subprocess.Popen], timeout: float = 45.0) -
                 print(f"[Krishna Defence] A localhost service exited during startup (code {code}).", flush=True)
                 print("--- Garuda engine log ---", flush=True)
                 print(tail_log(ENGINE_LOG), flush=True)
-                print("--- Legacy console log ---", flush=True)
+                print("--- Premium console log ---", flush=True)
                 print(tail_log(CONSOLE_LOG), flush=True)
                 return False
-        if http_ok(ENGINE_HEALTH_URL) and http_ok(PREMIUM_URL) and http_ok(CONSOLE_HEALTH_URL) and http_ok(CONSOLE_URL):
+        if http_ok(ENGINE_HEALTH_URL) and http_ok(CONSOLE_HEALTH_URL) and http_ok(PREMIUM_URL):
             return True
         time.sleep(0.4)
     print("[Krishna Defence] Local services did not become healthy in time.", flush=True)
     print("--- Garuda engine log ---", flush=True)
     print(tail_log(ENGINE_LOG), flush=True)
-    print("--- Legacy console log ---", flush=True)
+    print("--- Premium console log ---", flush=True)
     print(tail_log(CONSOLE_LOG), flush=True)
     return False
 
@@ -123,7 +123,7 @@ def stop_service(proc: subprocess.Popen) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Launch Krishna Defence premium evaluator deck + compatibility console")
+    parser = argparse.ArgumentParser(description="Launch Krishna Defence premium console + Garuda engine")
     parser.add_argument("--smoke", action="store_true", help="verify both localhost services and exit")
     parser.add_argument("--skip-install", action="store_true", help="do not install requirements")
     parser.add_argument("--current-python", action="store_true", help="use the current Python instead of .venv")
@@ -134,9 +134,9 @@ def main() -> int:
     engine_open = port_is_open(8090)
     console_open = port_is_open(8091)
     if engine_open or console_open:
-        if http_ok(ENGINE_HEALTH_URL) and http_ok(PREMIUM_URL) and http_ok(CONSOLE_HEALTH_URL) and http_ok(CONSOLE_URL):
-            print(f"[Krishna Defence] Premium Garuda evaluator deck is running at {PREMIUM_URL}", flush=True)
-            print(f"[Krishna Defence] Compatibility console is running at {CONSOLE_URL}", flush=True)
+        if http_ok(ENGINE_HEALTH_URL) and http_ok(CONSOLE_HEALTH_URL) and http_ok(PREMIUM_URL):
+            print(f"[Krishna Defence] Premium console is running at {PREMIUM_URL}", flush=True)
+            print(f"[Krishna Defence] Garuda engine is running at {ENGINE_URL}", flush=True)
             if not args.smoke and not args.no_browser:
                 webbrowser.open(PREMIUM_URL)
             return 0
@@ -154,13 +154,13 @@ def main() -> int:
         print(f"[Krishna Defence] Setup failed: {exc}", flush=True)
         return 2
 
-    print("[Krishna Defence] Starting premium Garuda evaluator deck on 8090 + compatibility console on 8091...", flush=True)
+    print("[Krishna Defence] Starting Garuda engine on 8090 + premium console on 8091...", flush=True)
     processes, log_handles = start_services(py)
     try:
         if not wait_until_ready(processes):
             return 3
-        print(f"[Krishna Defence] PREMIUM DECK HEALTHY: {PREMIUM_URL}", flush=True)
-        print(f"[Krishna Defence] COMPATIBILITY CONSOLE HEALTHY: {CONSOLE_URL}", flush=True)
+        print(f"[Krishna Defence] PREMIUM CONSOLE HEALTHY: {PREMIUM_URL}", flush=True)
+        print(f"[Krishna Defence] GARUDA ENGINE HEALTHY: {ENGINE_URL}", flush=True)
         token_file = ROOT / "garuda_v3" / "runtime" / "access.json"
         print(f"[Krishna Defence] Local access tokens remain server-side: {token_file}", flush=True)
         if args.smoke:
@@ -168,7 +168,7 @@ def main() -> int:
         if not args.no_browser:
             opened = webbrowser.open(PREMIUM_URL)
             if opened:
-                print("[Krishna Defence] Browser launch requested for the premium evaluator deck.", flush=True)
+                print("[Krishna Defence] Browser launch requested for the premium console.", flush=True)
             else:
                 print(f"[Krishna Defence] Browser could not be opened automatically. Open {PREMIUM_URL} manually.", flush=True)
         print("[Krishna Defence] Keep this window open. Press Ctrl+C to stop both services.", flush=True)
