@@ -1,0 +1,340 @@
+{
+  "schema_version": "v124-five-stage.2",
+  "status": "FAIL",
+  "development_iteration": true,
+  "supersedes_v124_1": false,
+  "proxy_mapping_used": false,
+  "stages": [
+    "Reconnaissance",
+    "Initial Access",
+    "Lateral Movement",
+    "Command and Control",
+    "Exfiltration"
+  ],
+  "network_features": [
+    "duration",
+    "missed_bytes",
+    "orig_bytes",
+    "orig_ip_bytes",
+    "orig_pkts",
+    "resp_bytes",
+    "resp_ip_bytes",
+    "resp_pkts",
+    "src_port_zeek",
+    "dest_port_zeek",
+    "proto_tcp",
+    "proto_udp",
+    "service_http",
+    "service_ftp",
+    "service_smb",
+    "service_dns",
+    "service_ssh",
+    "conn_state_sf",
+    "conn_state_syn_family",
+    "conn_state_reset_family"
+  ],
+  "source": {
+    "Reconnaissance": {
+      "files": [
+        {
+          "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Reconnaissance/part-00000-ae3fd4d9-9aba-4c1d-968c-88755355ee78-c000.csv",
+          "rows": 5289,
+          "sha256": "d9cbb3d5b5bcd49a82db5449bb66acaf66498f1ad1ce674050efd2b64fb6c88a"
+        }
+      ],
+      "pooled_unique_rows": 5289,
+      "train": 3173,
+      "validation": 1058,
+      "test": 1058
+    },
+    "Initial Access": {
+      "files": [
+        {
+          "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Initial_Access/part-00000-e6022464-fb77-4508-a850-006424f5de8a-c000.csv",
+          "rows": 37,
+          "sha256": "2ef33d747abac789898e4884a6ffcfc4f0c649153d74d889a2bae869a9916d4a"
+        },
+        {
+          "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/csv/Initial_Access/part-00000-9a37b839-429e-444b-82a5-a6d5e69dad7e-c000.csv",
+          "rows": 561,
+          "sha256": "faf6b9e07a7dab23ce364898772af062f51ddef4feb9329778750f8ed699d0e6"
+        }
+      ],
+      "pooled_unique_rows": 598,
+      "train": 358,
+      "validation": 120,
+      "test": 120
+    },
+    "Lateral Movement": {
+      "files": [
+        {
+          "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Lateral_Movement/part-00000-0d012414-989a-4b0f-937d-36b02cacf398-c000.csv",
+          "rows": 29,
+          "sha256": "917da2e8e041aac84c8a21d63442783b9f4f5ee303bdc1032aa011ea12d695f4"
+        },
+        {
+          "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-1/csv/Lateral_Movement/part-00000-4890c258-40e8-4ef8-b345-06d436539b95-c000.csv",
+          "rows": 20,
+          "sha256": "add687e01690797bfa74fc65b7ff759e994df7fef4990db6814a6cefec87d3cb"
+        }
+      ],
+      "pooled_unique_rows": 49,
+      "train": 29,
+      "validation": 10,
+      "test": 10
+    },
+    "Command and Control": {
+      "files": [
+        {
+          "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall22/csv/Command_and_Control/part-00000-c365ae06-4940-4fb1-b261-3a9ed9970961-c000.csv",
+          "rows": 17,
+          "sha256": "c8f1f83cad6ec09306e1e33f406bd63b70386654f4e18283ae1c4f175af89ad2"
+        },
+        {
+          "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Command_and_Control/part-00000-eac46840-7128-467c-b661-98cb0893dbae-c000.csv",
+          "rows": 3,
+          "sha256": "cb6de8c96e862b73e043adf4585d9d613f7b4d24175f36e7d81502c6d6cacd48"
+        }
+      ],
+      "pooled_unique_rows": 17,
+      "train": 10,
+      "validation": 3,
+      "test": 4
+    },
+    "Exfiltration": {
+      "files": [
+        {
+          "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/csv/Exfiltration/part-00000-6a530c25-0f6b-46a1-ba16-c6b658ef75e8-c000.csv",
+          "rows": 23,
+          "sha256": "b485153727b8a630582838eebf75c924cb0b49476b69de1b728b85d4371827f0"
+        }
+      ],
+      "pooled_unique_rows": 23,
+      "train": 13,
+      "validation": 5,
+      "test": 5
+    }
+  },
+  "selection": {
+    "split": "per-class pooled-deduplicated chronological 60/20/20",
+    "selection_scope": "validation_only",
+    "validation_candidates": [
+      {
+        "name": "extra_trees_balanced",
+        "macro_recall": 0.6304631379962193,
+        "accuracy": 0.9715719063545151,
+        "per_stage": {
+          "Reconnaissance": {
+            "support": 1058,
+            "tp": 1034,
+            "fp": 3,
+            "fn": 24,
+            "precision": 0.9971070395371263,
+            "recall": 0.9773156899810964,
+            "f1": 0.9871121718377087
+          },
+          "Initial Access": {
+            "support": 120,
+            "tp": 117,
+            "fp": 4,
+            "fn": 3,
+            "precision": 0.9669421487603306,
+            "recall": 0.975,
+            "f1": 0.970954356846473
+          },
+          "Lateral Movement": {
+            "support": 10,
+            "tp": 10,
+            "fp": 12,
+            "fn": 0,
+            "precision": 0.45454545454545453,
+            "recall": 1.0,
+            "f1": 0.625
+          },
+          "Command and Control": {
+            "support": 3,
+            "tp": 0,
+            "fp": 12,
+            "fn": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "Exfiltration": {
+            "support": 5,
+            "tp": 1,
+            "fp": 3,
+            "fn": 4,
+            "precision": 0.25,
+            "recall": 0.2,
+            "f1": 0.22222222222222224
+          }
+        }
+      },
+      {
+        "name": "logistic_balanced",
+        "macro_recall": 0.6244833018273471,
+        "accuracy": 0.5083612040133779,
+        "per_stage": {
+          "Reconnaissance": {
+            "support": 1058,
+            "tp": 491,
+            "fp": 2,
+            "fn": 567,
+            "precision": 0.9959432048681541,
+            "recall": 0.46408317580340264,
+            "f1": 0.6331399097356544
+          },
+          "Initial Access": {
+            "support": 120,
+            "tp": 103,
+            "fp": 385,
+            "fn": 17,
+            "precision": 0.21106557377049182,
+            "recall": 0.8583333333333333,
+            "f1": 0.33881578947368424
+          },
+          "Lateral Movement": {
+            "support": 10,
+            "tp": 10,
+            "fp": 171,
+            "fn": 0,
+            "precision": 0.055248618784530384,
+            "recall": 1.0,
+            "f1": 0.10471204188481674
+          },
+          "Command and Control": {
+            "support": 3,
+            "tp": 0,
+            "fp": 14,
+            "fn": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "Exfiltration": {
+            "support": 5,
+            "tp": 4,
+            "fp": 16,
+            "fn": 1,
+            "precision": 0.2,
+            "recall": 0.8,
+            "f1": 0.32000000000000006
+          }
+        }
+      },
+      {
+        "name": "random_forest_balanced",
+        "macro_recall": 0.5915973534971645,
+        "accuracy": 0.975752508361204,
+        "per_stage": {
+          "Reconnaissance": {
+            "support": 1058,
+            "tp": 1040,
+            "fp": 3,
+            "fn": 18,
+            "precision": 0.99712368168744,
+            "recall": 0.9829867674858223,
+            "f1": 0.9900047596382674
+          },
+          "Initial Access": {
+            "support": 120,
+            "tp": 117,
+            "fp": 6,
+            "fn": 3,
+            "precision": 0.9512195121951219,
+            "recall": 0.975,
+            "f1": 0.9629629629629629
+          },
+          "Lateral Movement": {
+            "support": 10,
+            "tp": 10,
+            "fp": 4,
+            "fn": 0,
+            "precision": 0.7142857142857143,
+            "recall": 1.0,
+            "f1": 0.8333333333333333
+          },
+          "Command and Control": {
+            "support": 3,
+            "tp": 0,
+            "fp": 13,
+            "fn": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "Exfiltration": {
+            "support": 5,
+            "tp": 0,
+            "fp": 3,
+            "fn": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      }
+    ],
+    "winner": "extra_trees_balanced"
+  },
+  "test": {
+    "accuracy": 0.9582289055973267,
+    "macro_recall": 0.7253434152488973,
+    "per_stage": {
+      "Reconnaissance": {
+        "support": 1058,
+        "tp": 1051,
+        "fp": 35,
+        "fn": 7,
+        "precision": 0.9677716390423573,
+        "recall": 0.9933837429111532,
+        "f1": 0.9804104477611941
+      },
+      "Initial Access": {
+        "support": 120,
+        "tp": 82,
+        "fp": 6,
+        "fn": 38,
+        "precision": 0.9318181818181818,
+        "recall": 0.6833333333333333,
+        "f1": 0.7884615384615384
+      },
+      "Lateral Movement": {
+        "support": 10,
+        "tp": 10,
+        "fp": 4,
+        "fn": 0,
+        "precision": 0.7142857142857143,
+        "recall": 1.0,
+        "f1": 0.8333333333333333
+      },
+      "Command and Control": {
+        "support": 4,
+        "tp": 3,
+        "fp": 4,
+        "fn": 1,
+        "precision": 0.42857142857142855,
+        "recall": 0.75,
+        "f1": 0.5454545454545454
+      },
+      "Exfiltration": {
+        "support": 5,
+        "tp": 1,
+        "fp": 1,
+        "fn": 4,
+        "precision": 0.5,
+        "recall": 0.2,
+        "f1": 0.28571428571428575
+      }
+    }
+  },
+  "gates": {
+    "all_exact_native_labels_no_proxy": true,
+    "all_stage_source_rows_at_least_15": true,
+    "all_stage_test_support_at_least_3": true,
+    "test_macro_recall_at_least_0_60": true,
+    "each_stage_recall_at_least_0_40": false
+  },
+  "claim_boundary": "Publisher-native five-stage network-record classifier development evidence with no proxy mapping. V124.1 remains immutable. This artifact does not claim successful-compromise lead time or external one-shot stage generalisation."
+}
