@@ -1,0 +1,88 @@
+{
+  "schema_version": "v106.1",
+  "status": "FAIL",
+  "gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "requires_model_mse_strictly_less_than_persistence_mse": true,
+    "total_sequences_gate_passed": true,
+    "support_gate_passed": false,
+    "persistence_gate_passed": true,
+    "all_gates_passed": false
+  },
+  "dataset": {
+    "name": "USTC-TFC2016",
+    "capture": "Malware/Miuref.pcap",
+    "bytes": 17196739,
+    "sha256": "ec2476c9fb34a202b11d1138286143ad2cd7055fbc9401baf150b3d513c3d0ae",
+    "md5": "7a21246187cfe0c4b7ff82be798d836d",
+    "publisher_git_blob_sha1": "070174d3486e74f04fccdc96504e6f4c60bf8333",
+    "labels_accessed": false
+  },
+  "frozen_runtime": {
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "adapter_contract_sha256": "1f705e4427f65507ae5d71dd353fbe58966e2882bff7acc182f45fad99fb5e7f",
+    "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+    "contract": {
+      "architecture": "gnn_lstm",
+      "history": 8,
+      "horizon": 4,
+      "decoder": "residual",
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32
+    },
+    "packet_features_trained": true
+  },
+  "capture_processing": {
+    "decoded_ipv4_packets": 72728,
+    "parser_audit": {
+      "decoded_ipv4": 72728,
+      "degraded_short_ip_options": 0,
+      "degraded_short_tcp": 0,
+      "degraded_short_udp": 0,
+      "full_tcp": 72565,
+      "full_udp": 136,
+      "non_ipv4": 15831,
+      "nonfirst_fragment": 0,
+      "other_protocol": 27,
+      "skipped_truncated_ethernet": 1,
+      "skipped_truncated_ipv4_header": 0,
+      "skipped_truncated_vlan": 0
+    },
+    "observed_windows": 22246,
+    "contiguous_sequences": 64,
+    "first_window_epoch": 10,
+    "last_window_epoch": 516670,
+    "cutoff_timestamps_sha256": "275474d013e345c77e854bad9d470ce13bb2473ec566c7a15cf5ff0848106b86",
+    "packet_features_present_mean_on_observed_nodes": 1.0
+  },
+  "state_forecasting": {
+    "model_mse": 0.07897923331234773,
+    "persistence_mse": 0.08523475413633558,
+    "improvement_vs_persistence": 0.07339166854381905,
+    "beats_persistence": true
+  },
+  "runtime_support": {
+    "method": "max robust standardized history-summary deviation",
+    "threshold": 7.705308669179127,
+    "supported_sequences": 0,
+    "total_sequences": 64,
+    "supported_fraction": 0.0,
+    "median_score": 25.00000055879356,
+    "max_score": 30.327537961174652,
+    "interpretation": "training-support diagnostic only; outside support is not attack/OOD detection"
+  },
+  "one_shot_integrity": {
+    "runs_allowed_for_claim": 1,
+    "retrained_on_external": false,
+    "normalization_fit_on_external": false,
+    "support_fit_on_external": false,
+    "threshold_fit_on_external": false,
+    "adapter_changed_after_external_packet_decode": false,
+    "labels_accessed": false,
+    "rerun_for_claim_improvement": false
+  },
+  "claim_boundary": "Fresh external one-shot state-transition forecasting only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is made."
+}
