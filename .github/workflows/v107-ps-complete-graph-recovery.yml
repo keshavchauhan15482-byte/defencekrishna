@@ -1,0 +1,126 @@
+name: V107 PS-complete packet+flow GraphSAGE recovery
+
+on:
+  push:
+    branches: [feat/v107-stage-packet-v98-integrity-refresh]
+    paths:
+      - 'garuda_v3/model.py'
+      - 'garuda_v3/v107_ps_complete_graph_recovery.py'
+      - 'garuda_v3/tests/test_v107_ps_complete_graph_recovery.py'
+      - '.github/workflows/v107-ps-complete-graph-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v107-ps-complete-graph-recovery
+  cancel-in-progress: false
+
+jobs:
+  ps-complete-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install V107 dependencies
+        run: python -m pip install 'numpy<2.1' pytest
+
+      - name: Verify versioned schema and fail-closed contracts
+        run: |
+          python -m compileall -q garuda_v3/model.py garuda_v3/v107_ps_complete_graph_recovery.py
+          python -m pytest -q garuda_v3/tests/test_v107_ps_complete_graph_recovery.py
+
+      - name: Fetch hash-verified CICAPT development captures
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v107 \
+            --ids cicapt_network \
+            --extract
+
+      - name: Train full 34-feature packet+flow GraphSAGE+LSTM candidate
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v107
+          python -m garuda_v3.v107_ps_complete_graph_recovery \
+            --phase1 datasets/v107/1stPhase-timed-Merged.pcap \
+            --phase2 datasets/v107/2ndPhase-timed-MergedV2.pcap \
+            --packet-limit 2000000 \
+            --seeds 42 43 44 \
+            --epochs 8 \
+            --batch-size 64 \
+            --output-dir garuda_v3/artifacts/certification/v107
+
+      - name: Verify evidence integrity and exact PS feature contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import numpy as np
+          from garuda_v3.model import GraphWorldModel, PS_COMPLETE_SCHEMA
+          from garuda_v3.ps_complete import FEATURES
+          from garuda_v3.v107_ps_complete_graph_recovery import REQUIRED_FLOW, REQUIRED_PACKET
+
+          root=Path('garuda_v3/artifacts/certification/v107')
+          report=json.loads((root/'summary.json').read_text())
+          gate=json.loads((root/'support_gate.json').read_text())
+          model,meta=GraphWorldModel.load(root/'gnn_lstm_ps_complete_candidate.npz')
+
+          assert report['schema_version']=='v107.1'
+          assert report['status'] in {'DEV_PS_COMPLETE_PASS','DEV_PS_COMPLETE_FAIL'}
+          assert report['adapter_contract']['schema']==PS_COMPLETE_SCHEMA
+          assert report['adapter_contract']['feature_count']==34==len(FEATURES)
+          assert report['adapter_contract']['all_ps_required_features_present'] is True
+          assert set(report['adapter_contract']['required_flow_features'])==REQUIRED_FLOW
+          assert set(report['adapter_contract']['required_packet_features'])==REQUIRED_PACKET
+          assert model.schema==PS_COMPLETE_SCHEMA and model.f==34
+          assert meta['packet_features_trained'] is True
+          assert meta['ps_complete_features_trained'] is True
+          assert meta['risk_head_trained'] is False
+          assert meta['stage_supervised'] is False
+          assert meta['consumed_external_used_for_fitting'] is False
+          assert report['quarantine']['used_for_training_or_selection'] is False
+          assert 'USTC-TFC2016/Miuref/V106' in report['quarantine']['consumed_external']
+          assert report['selection']['phase2_used_for_selection'] is False
+          assert gate['fit_provenance']['center_scale']=='CICAPT Phase-1 train only'
+          assert gate['fit_provenance']['threshold']=='CICAPT Phase-1 validation only'
+          assert 'USTC-TFC2016/Miuref/V106' in gate['fit_provenance']['consumed_external_excluded_from_fit']
+          assert np.isfinite(float(gate['threshold']))
+          print(json.dumps({
+            'status': report['status'],
+            'feature_count': report['adapter_contract']['feature_count'],
+            'selected_candidate': report['selected_candidate'],
+            'support_gate': report['support_gate'],
+          }, indent=2))
+          PY
+
+      - name: Record immutable V107 development evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v107
+          if git diff --cached --quiet; then
+            echo 'V107 evidence already recorded'
+          else
+            git commit -m 'evidence(v107): record PS-complete packet GraphSAGE recovery'
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Upload V107 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v107-ps-complete-graph-recovery-evidence
+          path: garuda_v3/artifacts/certification/v107/*
+          if-no-files-found: error
+          retention-days: 30
