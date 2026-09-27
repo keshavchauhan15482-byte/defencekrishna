@@ -1,0 +1,68 @@
+{
+  "schema_version": "v121-selection.1",
+  "status": "SELECTED_BEFORE_DOWNLOAD",
+  "selected_after_v120_merge_commit": "df7c9d4078bae6f1c1d2049e34362b934810ae5f",
+  "claim_boundary": "V121 is reserved for exactly one fresh publisher-independent external state-transition forecasting test of the frozen V120 runtime. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is created.",
+  "external_holdout": {
+    "dataset": "The Honeynet Project Forensic Challenge 9 - Mobile Malware",
+    "scenario": "malware communications traffic.pcap",
+    "publisher": "The Honeynet Project",
+    "publisher_repository": "honeynet/forensic_challenges",
+    "publisher_repository_tree_sha": "2499cfdbdd21c1107146ec1ee3f918fd3039956e",
+    "source_page": "https://www.honeynet.org/challenges/forensic-challenge-9-mobile-malware/",
+    "source_path": "zip_files/challenges/fc09.zip",
+    "source_url": "https://media.githubusercontent.com/media/honeynet/forensic_challenges/master/zip_files/challenges/fc09.zip",
+    "archive_expected_bytes": 60646083,
+    "archive_lfs_sha256": "90938c45d4309f9af0ef29cd308e4d201be905998b98778511a04c3bebd81cc3",
+    "archive_published_sha1": "a64f9e0f51f2f31c3f9e437ab835040c2b644aff",
+    "archive_password": "84443a1b5f4a4d91d88342d149dc5f10ad0e1fe0f9f9b4a63f6d66f05ac47b27",
+    "selected_member_basename": "traffic.pcap",
+    "labels_required_or_accessed": false,
+    "repo_history_audit": {
+      "authoritative_tree_sha": "2cf2ac7e49685b0eeff16bd211566b76bed64185",
+      "honeynet_path_match_found_before_selection": false,
+      "fc09_path_match_found_before_selection": false,
+      "traffic_pcap_path_match_found_before_selection": false,
+      "selected_before_archive_download": true,
+      "selected_before_packet_decode": true,
+      "selected_before_model_inference": true
+    }
+  },
+  "registered_runtime": {
+    "base_model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+    "robust_support_gate_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
+    "alpha": 0.663139650493983,
+    "architecture": "gnn_lstm",
+    "raw_schema": "garuda-observed-graph-v46-ps-complete",
+    "model_schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
+    "feature_count": 34,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual"
+  },
+  "one_shot_gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "requires_calibrated_mse_strictly_less_than_persistence_mse": true,
+    "requires_positive_improvement": true,
+    "requires_finite_metrics": true,
+    "runs_allowed_for_claim": 1,
+    "result_improving_rerun_permitted": false
+  },
+  "consumed_external_quarantine": [
+    "V99 HIKARI",
+    "V102 MAWI",
+    "V104 CTU-IDSEVAL-6",
+    "V106 USTC Miuref",
+    "V111 CTU 327-1",
+    "V113 CTU 111-1",
+    "V114 CTU 326-1",
+    "V117 Kitsune Mirai",
+    "V119 MTA FormBook"
+  ]
+}
