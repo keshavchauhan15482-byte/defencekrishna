@@ -1,89 +1,31 @@
-name: V111 CTU Botnet 327-2 acquisition freeze
+name: V111 CTU Botnet 327-2 acquisition freeze (sealed)
 
 on:
-  push:
-    branches: [feat/v111-ctu3272-fresh-one-shot]
-    paths:
-      - 'garuda_v3/artifacts/certification/v111/preregistration.json'
-      - '.github/workflows/v111-ctu3272-acquisition.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
-
-concurrency:
-  group: v111-ctu3272-acquisition
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  acquisition-only:
+  verify-sealed-acquisition:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Verify holdout is still pre-decode
+      - name: Verify immutable pre-decode acquisition evidence
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p=json.loads(Path('garuda_v3/artifacts/certification/v111/preregistration.json').read_text())
-          assert p['schema_version']=='v111-prereg.1'
-          assert p['status']=='HOLDOUT_SELECTED_HASH_PENDING'
-          assert p['external_holdout']['pcap_sha256'] is None
-          assert p['acquisition']['packet_decode_permitted'] is False
-          assert p['acquisition']['graph_construction_permitted'] is False
-          assert p['acquisition']['model_inference_permitted'] is False
-          assert p['acquisition']['evaluation_permitted'] is False
-          assert p['prediction_warning_policy']['status']=='DEV_ONLY_FREEZE_PENDING'
+          a=json.loads(Path('garuda_v3/artifacts/certification/v111/acquisition_manifest.json').read_text())
+          assert a['schema_version']=='v111-acquisition.1'
+          assert a['status']=='HASH_FROZEN_MODEL_NOT_RUN'
+          assert a['bytes']==69890363
+          assert a['sha256']=='ce9d45d2b5c0be8be56481cbd4d98a094a96e453328e9d88f88e882d94a79884'
+          assert a['md5']=='8bf6f9ec33d1c521ee4129671d31ee61'
+          assert a['packet_records_decoded'] is False
+          assert a['graph_windows_constructed'] is False
+          assert a['support_scoring_performed'] is False
+          assert a['model_inference_performed'] is False
+          assert a['external_labels_accessed'] is False
+          print('V111 acquisition evidence remains sealed pre-decode/pre-inference')
           PY
-      - name: Download exact publisher PCAP object
-        run: |
-          mkdir -p datasets/v111
-          curl -L --fail --retry 4 --retry-all-errors --retry-delay 4 --connect-timeout 30 \
-            -o datasets/v111/2018-03-27_win3.capture1.pcap \
-            'https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-2/2018-03-27_win3.capture1.pcap'
-      - name: Freeze byte identity only
-        run: |
-          python - <<'PY'
-          import hashlib,json
-          from pathlib import Path
-          p=json.loads(Path('garuda_v3/artifacts/certification/v111/preregistration.json').read_text())
-          f=Path('datasets/v111/2018-03-27_win3.capture1.pcap')
-          data=f.read_bytes()
-          if len(data) < 50_000_000:
-              raise SystemExit(f'unexpectedly small publisher object: {len(data)} bytes')
-          magic=data[:4].hex()
-          if magic not in {'d4c3b2a1','a1b2c3d4','4d3cb2a1','a1b23c4d'}:
-              raise SystemExit(f'not a classic PCAP global header: magic={magic}')
-          out={
-            'schema_version':'v111-acquisition.1',
-            'status':'HASH_FROZEN_MODEL_NOT_RUN',
-            'dataset':p['external_holdout']['dataset'],
-            'capture':p['external_holdout']['capture'],
-            'source_url':p['external_holdout']['source_url'],
-            'bytes':len(data),
-            'pcap_magic_hex':magic,
-            'sha256':hashlib.sha256(data).hexdigest(),
-            'md5':hashlib.md5(data).hexdigest(),
-            'packet_records_decoded':False,
-            'graph_windows_constructed':False,
-            'support_scoring_performed':False,
-            'model_inference_performed':False,
-            'external_labels_accessed':False,
-            'publisher_infection_timestamp_used_for_fitting':False,
-            'next_step':'Freeze the development-only prediction-warning policy, then pin these hashes into preregistration before external packet decode.'
-          }
-          root=Path('garuda_v3/artifacts/certification/v111'); root.mkdir(parents=True,exist_ok=True)
-          (root/'acquisition_manifest.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
-          print(json.dumps(out,indent=2))
-          PY
-      - name: Commit acquisition manifest only
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -f garuda_v3/artifacts/certification/v111/acquisition_manifest.json
-          git commit -m 'evidence(v111): freeze CTU 327-2 capture byte identity'
-          git push origin "HEAD:${GITHUB_REF_NAME}"
