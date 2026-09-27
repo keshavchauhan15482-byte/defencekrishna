@@ -4,6 +4,7 @@ on:
   push:
     branches: [feat/v115-relative-state-world-model]
     paths:
+      - 'garuda_v3/model.py'
       - 'garuda_v3/v115_relative_state_world_model.py'
       - '.github/workflows/v115-relative-state-world-model.yml'
   workflow_dispatch:
@@ -28,12 +29,16 @@ jobs:
           cache: pip
       - name: Install runtime dependency
         run: python -m pip install 'numpy<2.1'
-      - name: Verify history-only relative transform invariance
+      - name: Verify history-only relative transform invariance and schema registration
         run: |
           python - <<'PY'
           import numpy as np
-          from garuda_v3.v115_relative_state_world_model import fit_transform,apply_transform,RELATIVE_FEATURES
+          from garuda_v3.v115_relative_state_world_model import fit_transform,apply_transform,RELATIVE_FEATURES,RELATIVE_SCHEMA
           from garuda_v3.ps_complete import FEATURES
+          from garuda_v3.model import GraphWorldModel, SUPPORTED_SCHEMAS
+          assert RELATIVE_SCHEMA in SUPPORTED_SCHEMAS
+          probe=GraphWorldModel(architecture='gnn_lstm',feature_dim=34,decoder='residual',schema=RELATIVE_SCHEMA)
+          assert probe.schema==RELATIVE_SCHEMA and probe.f==34
           rng=np.random.default_rng(115)
           x=rng.uniform(.1,2.0,size=(8,8,4,34)).astype(np.float32)
           mask=np.ones((8,8,4),dtype=np.float32)
@@ -52,7 +57,7 @@ jobs:
           assert np.allclose(nx[...,29:],x[...,29:])
           assert np.allclose(ny[...,29:],y[...,29:])
           assert len(RELATIVE_FEATURES)==29 and len(FEATURES)==34
-          print('history-relative additive baseline invariance: PASS')
+          print('history-relative additive baseline invariance + schema registration: PASS')
           PY
       - name: Fetch hash-pinned CICAPT development captures
         run: |
