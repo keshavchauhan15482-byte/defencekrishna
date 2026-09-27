@@ -1,0 +1,21 @@
+{
+  "schema_version": "v119-acquisition.1",
+  "status": "HASH_FROZEN_NO_PACKET_DECODE",
+  "source_url": "https://www.malware-traffic-analysis.net/training/Ursnif-traffic-example-5.pcap.zip",
+  "archive_bytes": 2896624,
+  "archive_sha256": "f66b5234614d3874415e750309cbd4d20b2c1d85ce85d102f456884219de034b",
+  "members": [
+    {
+      "name": "Ursnif-traffic-example-5.pcap",
+      "uncompressed_bytes": 4620736,
+      "compressed_bytes": 2896400,
+      "crc32": "756164cb"
+    }
+  ],
+  "selected_pcap_member": "Ursnif-traffic-example-5.pcap",
+  "selected_pcap_uncompressed_bytes": 4620736,
+  "selected_pcap_sha256": "728f4030480ce08dc41c560346941537875361ea4e7de37d87b4e4b0ad1fd8f5",
+  "packet_records_decoded": false,
+  "model_inference_performed": false,
+  "labels_accessed": false
+}
