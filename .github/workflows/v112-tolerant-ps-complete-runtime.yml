@@ -1,0 +1,103 @@
+name: V112 tolerant PS-complete runtime recovery
+
+on:
+  push:
+    branches: [feat/v112-tolerant-ps-complete-runtime]
+    paths:
+      - 'garuda_v3/v112_tolerant_ps_complete_runtime.py'
+      - '.github/workflows/v112-tolerant-ps-complete-runtime.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install 'numpy<2.1'
+      - name: Prove tolerant parser behavior on synthetic development fixture
+        run: |
+          python - <<'PY'
+          import struct,tempfile
+          from pathlib import Path
+          from garuda_v3.pcap_reader import packets
+          p=Path(tempfile.mkstemp(suffix='.pcap')[1])
+          gh=b'\xd4\xc3\xb2\xa1'+struct.pack('<HHIIII',2,4,0,0,65535,1)
+          bad=b'abcde'
+          eth=b'\x00'*12+b'\x08\x00'
+          ip=bytes([0x45,0])+struct.pack('!H',28)+b'\x00\x01\x00\x00'+bytes([64,17])+b'\x00\x00'+bytes([10,0,0,1,10,0,0,2])
+          udp=struct.pack('!HHHH',1234,80,8,0)
+          good=eth+ip+udp
+          def rec(sec,data): return struct.pack('<IIII',sec,0,len(data),len(data))+data
+          p.write_bytes(gh+rec(1,bad)+rec(2,good))
+          try:
+              list(packets(p,max_packets=10))
+              raise AssertionError('strict parser unexpectedly accepted truncated Ethernet frame')
+          except ValueError as e:
+              assert 'Truncated Ethernet frame' in str(e)
+          audit={}
+          rows=list(packets(p,max_packets=10,allow_truncated=True,audit=audit))
+          assert len(rows)==1 and rows[0]['protocol']=='udp'
+          assert audit.get('skipped_truncated_ethernet')==1
+          print({'decoded':len(rows),'audit':audit})
+          PY
+      - name: Fetch hash-pinned CICAPT development capture
+        run: |
+          python -m garuda_v3.public_data_fetch \
+            --catalogue datasets/multisource/catalogue.json \
+            --root datasets/v112 \
+            --ids cicapt_network \
+            --extract
+      - name: Evaluate unchanged V108 model with tolerant runtime on development only
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v112
+          python -m garuda_v3.v112_tolerant_ps_complete_runtime \
+            --phase2 datasets/v112/2ndPhase-timed-MergedV2.pcap \
+            --model garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v108/support_gate.json \
+            --packet-limit 2000000 \
+            --output-dir garuda_v3/artifacts/certification/v112
+      - name: Verify recovery boundary and freeze
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v112/summary.json').read_text())
+          assert r['schema_version']=='v112.1'
+          assert r['status']=='DEV_TOLERANT_RUNTIME_PASS'
+          assert r['recovery_gate_passed'] is True
+          assert r['recovery_design']['model_weights_retrained_after_v111'] is False
+          assert r['recovery_design']['support_gate_refit_after_v111'] is False
+          assert r['recovery_design']['v111_used_for_fit_selection_or_thresholding'] is False
+          assert r['quarantined_external']['used'] is False
+          assert r['freeze']['model_sha256']=='f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed'
+          assert r['freeze']['support_gate_sha256']=='7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1'
+          assert r['freeze']['candidate_frozen_before_new_external_selection'] is True
+          assert r['freeze']['new_external_holdout_selected'] is False
+          print(json.dumps({'status':r['status'],'forecast':r['state_forecasting'],'support':r['runtime_support'],'audit':r['parser_audit'],'adapter_sha':r['adapter_contract_sha256']},indent=2))
+          PY
+      - name: Record immutable V112 development recovery
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v112
+          git commit -m 'evidence(v112): freeze tolerant PS-complete runtime on development'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v112-tolerant-runtime-evidence
+          path: garuda_v3/artifacts/certification/v112/*
+          if-no-files-found: error
+          retention-days: 30

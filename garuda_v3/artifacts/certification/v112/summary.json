@@ -1,0 +1,160 @@
+{
+  "schema_version": "v112.1",
+  "status": "DEV_TOLERANT_RUNTIME_PASS",
+  "claim_boundary": "Development-only runtime-adapter recovery. V111 is quarantined; no new external-generalisation, attack, MITRE-stage, or successful-compromise claim is created.",
+  "recovery_design": {
+    "model_weights_retrained_after_v111": false,
+    "support_gate_refit_after_v111": false,
+    "normalization_refit_after_v111": false,
+    "risk_or_stage_thresholds_changed": false,
+    "only_change": "packet decoder runtime contract switches to pre-existing audited allow_truncated=True mode",
+    "v111_used_for_fit_selection_or_thresholding": false
+  },
+  "quarantined_external": {
+    "dataset": "CTU-Malware-Capture-Botnet-327-1",
+    "sha256": "cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3",
+    "used": false
+  },
+  "development_source": {
+    "dataset": "CICAPT-IIoT2024",
+    "capture": "2ndPhase-timed-MergedV2.pcap",
+    "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+    "development_reuse": true,
+    "decoded_ipv4_packets": 2000000,
+    "observed_windows": 5688,
+    "contiguous_sequences": 5677
+  },
+  "frozen_candidate": {
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "contract": {
+      "architecture": "gnn_lstm",
+      "decoder": "residual",
+      "schema": "garuda-observed-graph-v46-ps-complete",
+      "feature_count": 34,
+      "history": 8,
+      "horizon": 4,
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32,
+      "packet_features_trained": true,
+      "ps_complete_features_trained": true,
+      "feature_order_match": true
+    }
+  },
+  "adapter_contract": {
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "features": [
+      "flow_count_log",
+      "bytes_log",
+      "packets_log",
+      "duration_ms_log",
+      "syn_fraction",
+      "ack_fraction",
+      "rst_fraction",
+      "fin_fraction",
+      "psh_fraction",
+      "urg_fraction",
+      "backward_packet_fraction",
+      "tcp_fraction",
+      "udp_fraction",
+      "active",
+      "iat_ms_log",
+      "iat_variance_log",
+      "iat_max_log",
+      "tcp_window_log",
+      "ttl_mean_scaled",
+      "ttl_variance_scaled",
+      "fragment_fraction",
+      "payload_mean_log",
+      "payload_variance_log",
+      "payload_max_log",
+      "unique_destination_ports_log",
+      "sequential_port_transition_fraction",
+      "random_port_transition_fraction",
+      "retransmission_fraction",
+      "retransmission_count_log",
+      "packet_features_present",
+      "iat_present",
+      "tcp_window_present",
+      "payload_present",
+      "scan_sequence_present"
+    ],
+    "feature_count": 34,
+    "mode": "service",
+    "window_seconds": 10,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "max_nodes": 32,
+    "packet_features_required": true,
+    "mapping": "raw PCAP/PCAPNG -> tolerant audited decoder -> bidirectional connections -> PS-complete service graph",
+    "pcap_reader_mode": {
+      "allow_truncated": true,
+      "skip_unrecoverable_short_link_layer_records": true,
+      "degrade_recoverable_short_network_transport_records": true,
+      "audit_keys": [
+        "decoded_ipv4",
+        "full_tcp",
+        "full_udp",
+        "degraded_short_ip_options",
+        "degraded_short_tcp",
+        "degraded_short_udp",
+        "nonfirst_fragment",
+        "other_protocol",
+        "skipped_truncated_ethernet",
+        "skipped_truncated_vlan",
+        "skipped_truncated_ipv4_header",
+        "non_ipv4"
+      ]
+    },
+    "frozen_model_weights_changed": false,
+    "frozen_support_gate_changed": false
+  },
+  "adapter_contract_sha256": "2c48468ed2e608377c226137bb432ee85efb27cfcb4ba7052f893816976e2e8c",
+  "parser_audit": {
+    "decoded_ipv4": 2000000,
+    "full_tcp": 1872776,
+    "full_udp": 126738,
+    "degraded_short_ip_options": 0,
+    "degraded_short_tcp": 0,
+    "degraded_short_udp": 0,
+    "nonfirst_fragment": 0,
+    "other_protocol": 486,
+    "skipped_truncated_ethernet": 0,
+    "skipped_truncated_vlan": 0,
+    "skipped_truncated_ipv4_header": 0,
+    "non_ipv4": 14481
+  },
+  "packet_features_present_mean": 1.0,
+  "state_forecasting": {
+    "model_mse": 0.023915782523195945,
+    "persistence_mse": 0.03105567495256201,
+    "improvement_vs_persistence": 0.22990620684536253,
+    "beats_persistence": true
+  },
+  "runtime_support": {
+    "method": "max robust standardized history-summary deviation",
+    "threshold": 8.80609323395997,
+    "supported_sequences": 5673,
+    "total_sequences": 5677,
+    "supported_fraction": 0.9992954025013211,
+    "median_score": 3.749996507540267,
+    "max_score": 9.921702265851996
+  },
+  "gates": {
+    "phase2_sequences_at_least_32": true,
+    "model_beats_persistence": true,
+    "improvement_positive": true,
+    "support_fraction_at_least_0_95": true,
+    "packet_presence_at_least_0_95": true
+  },
+  "recovery_gate_passed": true,
+  "freeze": {
+    "candidate_frozen_before_new_external_selection": true,
+    "new_external_holdout_selected": false,
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "adapter_contract_sha256": "2c48468ed2e608377c226137bb432ee85efb27cfcb4ba7052f893816976e2e8c"
+  },
+  "cutoff_timestamps_sha256": "3562349e247df438737178689c7acd28a913d77d323b76da954fd34b4b93a8d4"
+}
