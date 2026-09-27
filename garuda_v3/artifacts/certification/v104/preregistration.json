@@ -1,7 +1,7 @@
 {
-  "schema_version": "v104-prereg.2",
-  "status": "ACQUISITION_ONLY_HASH_PENDING",
-  "evaluation_permitted": false,
+  "schema_version": "v104-prereg.3",
+  "status": "HASH_FROZEN_ONE_SHOT_REGISTERED",
+  "evaluation_permitted": true,
   "registered_before_external_packet_decode": true,
   "registered_candidate": {
     "model_file": "garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz",
@@ -21,6 +21,15 @@
     "decoder": "residual",
     "truncated_capture_mode": true
   },
+  "frozen_evaluator": {
+    "file": "garuda_v3/v104_ctu_idseval6_one_shot.py",
+    "git_blob_sha1": "515d0fea5608065ac0a4bcbe8c7dff6a4c714623",
+    "refreeze_commit": "5a95e5e12599024bc3af1bc48663f38cdedf1383",
+    "expected_real_pcap_members": 6,
+    "refrozen_before_packet_member_extraction": true,
+    "refrozen_before_packet_record_decode": true,
+    "refrozen_before_model_inference": true
+  },
   "external_holdout": {
     "dataset": "CTU-IDSEVAL-6",
     "version": "v1",
@@ -31,11 +40,52 @@
     "archive_filename": "pcap.zip",
     "source_url": "https://zenodo.org/records/21027042/files/pcap.zip?download=1",
     "official_archive_md5": "bb4476af2b9d4b8ce875dda88a0cca7b",
+    "archive_sha256": "fa1da03ac3797f70747c62b89f12cc31305cc260f74162c6b8060aeb2e74c518",
+    "archive_bytes": 38413013,
     "publisher_archive_size_mb": 38.4,
     "publisher_logical_capture_count": 6,
     "archive_pcap_member_count": 6,
     "publisher_packet_count": 1106116,
     "publisher_description": "six logical capture scenarios: one benign user, two malware, and three port scans",
+    "pcap_entries": [
+      {
+        "compressed_bytes": 8859346,
+        "crc32_hex": "5dc419e9",
+        "filename": "pcap/ctu-idseval-6-benign-user-traffic-1.pcap",
+        "uncompressed_bytes": 16753738
+      },
+      {
+        "compressed_bytes": 2383469,
+        "crc32_hex": "de688885",
+        "filename": "pcap/ctu-idseval-6-malicious-malware-1.pcap",
+        "uncompressed_bytes": 15598906
+      },
+      {
+        "compressed_bytes": 24706622,
+        "crc32_hex": "61628edb",
+        "filename": "pcap/ctu-idseval-6-malicious-malware-2.pcap",
+        "uncompressed_bytes": 69890363
+      },
+      {
+        "compressed_bytes": 36349,
+        "crc32_hex": "d75c05ca",
+        "filename": "pcap/ctu-idseval-6-malicious-portscan-1.pcap",
+        "uncompressed_bytes": 148670
+      },
+      {
+        "compressed_bytes": 3839,
+        "crc32_hex": "d277a240",
+        "filename": "pcap/ctu-idseval-6-malicious-portscan-2.pcap",
+        "uncompressed_bytes": 15246
+      },
+      {
+        "compressed_bytes": 2419484,
+        "crc32_hex": "1c9e9235",
+        "filename": "pcap/ctu-idseval-6-malicious-portscan-3.pcap",
+        "uncompressed_bytes": 9711700
+      }
+    ],
+    "ignored_packaging_metadata_count": 7,
     "archive_member_count_observation": {
       "source": "ZIP central-directory metadata only; no member extraction or packet decode",
       "packet_bytes_extracted": false,
@@ -48,8 +98,6 @@
       "amendment_reason": "__MACOSX AppleDouble resource-fork sidecars use .pcap suffixes but are packaging metadata, not packet captures",
       "policy_after_metadata_observation": "include all six real publisher PCAP payloads and record/exclude only __MACOSX AppleDouble packaging sidecars; no real PCAP selection or dropping permitted"
     },
-    "archive_sha256": null,
-    "pcap_entries": null,
     "freshness_audit": {
       "repository_search_terms": ["CTU-IDSEVAL", "21027042"],
       "prior_repository_use_found": false,
@@ -63,35 +111,23 @@
       ]
     }
   },
-  "acquisition_rules": {
-    "allowed_before_hash_pin": [
-      "download exact registered pcap.zip URL",
-      "verify official archive MD5",
-      "compute archive SHA-256",
-      "inspect ZIP central-directory metadata only",
-      "classify __MACOSX AppleDouble sidecars from member path names only",
-      "record all six sorted real PCAP member names, compressed/uncompressed byte counts, and CRC values",
-      "record all ignored packaging metadata names and metadata fields"
-    ],
-    "forbidden_before_hash_pin": [
-      "extract PCAP packet bytes",
-      "decode packet records",
-      "construct graph windows",
-      "run support scoring",
-      "run model inference",
-      "read labels.zip or Zeek labels",
-      "change model weights",
-      "change support threshold",
-      "change packet adapter mapping based on external traffic",
-      "select or drop any real PCAP payload based on external traffic"
-    ]
+  "acquisition_evidence": {
+    "manifest_file": "garuda_v3/artifacts/certification/v104/acquisition_manifest.json",
+    "manifest_git_blob_sha1": "213497ffe2bc62bf838fe41ba383b5a37a1cd69f",
+    "record_commit": "9fc9ac20b393a1804f38f9c8c8ab3504e2028d3a",
+    "schema_version": "v104-acquisition.3",
+    "archive_extracted": false,
+    "packet_records_decoded": false,
+    "model_inference_performed": false,
+    "labels_accessed": false
   },
-  "one_shot_rules_after_hash_pin": {
+  "one_shot_rules": {
     "runs_allowed": 1,
     "evaluation_unit": "all six real PCAP payload members in the registered archive, representing all six publisher-described logical scenarios; no cherry-picking",
-    "primary_gate": "aggregate element-weighted state forecast MSE across all registered real PCAP members must be lower than aggregate persistence MSE",
+    "primary_gate": "aggregate element-weighted state forecast MSE across all six registered real PCAP members must be lower than aggregate persistence MSE",
     "per_member_metrics_reported": true,
     "all_registered_real_pcap_members_included": true,
+    "consume_lock_required_before_member_extraction": true,
     "retuning_after_result": false,
     "rerun_for_claim_improvement": false,
     "support_is_diagnostic_not_attack_detection": true,
@@ -109,5 +145,5 @@
     "changed_packet_adapter": false,
     "scope": "ZIP packaging-member classification only"
   },
-  "claim_boundary": "V104 remains preregistered only for fresh external state-transition forecasting. Metadata-only central-directory inspection corrected the payload count from 12 suffix-matching names to six real PCAPs plus AppleDouble packaging sidecars before any packet extraction, decode, or model inference."
+  "claim_boundary": "V104 is hash-frozen for exactly one fresh external state-transition forecasting evaluation. All six real publisher PCAP payloads are registered; AppleDouble packaging sidecars were identified from central-directory names and excluded before any packet extraction, decode, support scoring, or model inference."
 }
