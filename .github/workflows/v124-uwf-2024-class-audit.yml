@@ -1,0 +1,39 @@
+name: V124 UWF 2024 native five-stage class audit
+on:
+  push:
+    branches: [feat/v124-native-five-stage-certification]
+    paths:
+      - 'garuda_v3/v124_uwf_2024_class_audit.py'
+      - '.github/workflows/v124-uwf-2024-class-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Audit exact native stage folders
+        run: |
+          rm -rf /tmp/v124-2024
+          python -m garuda_v3.v124_uwf_2024_class_audit --cache-dir /tmp/v124-2024 --output garuda_v3/artifacts/certification/v124/source_2024_audit.json
+      - name: Verify no proxies
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v124/source_2024_audit.json').read_text())
+          assert r['proxy_mapping_used'] is False
+          assert set(r['row_counts'])=={'reconnaissance','initial_access','lateral_movement','command_and_control','exfiltration'}
+          print(json.dumps({'status':r['status'],'row_counts':r['row_counts'],'numeric_feature_candidates':r['numeric_feature_candidates']},indent=2))
+          PY
+      - name: Record immutable class-source audit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v124/source_2024_audit.json
+          git commit -m 'evidence(v124): record UWF 2024 native class-source audit'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
