@@ -1,0 +1,186 @@
+{
+  "schema_version": "v105.1",
+  "status": "DEV_LINKLAYER_RECOVERY_PASS",
+  "recovery_gate_passed": true,
+  "claim_boundary": "Development-only generic link-layer runt recovery evidence. HIKARI, MAWI, and CTU-IDSEVAL-6 are consumed/quarantined and were not used for fitting, parser selection, or validation. No fresh external generalisation claim is created.",
+  "frozen_runtime": {
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "model_changed_from_v101": false,
+    "support_gate_changed_from_v101": false,
+    "contract": {
+      "architecture": "gnn_lstm",
+      "history": 8,
+      "horizon": 4,
+      "decoder": "residual",
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32
+    }
+  },
+  "adapter": {
+    "policy": {
+      "schema_version": "v105-adapter.1",
+      "base_schema": "garuda-observed-graph-v3.1",
+      "strict_default_unchanged": true,
+      "tolerant_mode_opt_in": true,
+      "l2_runt_semantics": {
+        "truncated_ethernet_header": "skip record and audit; fabricate no network fields",
+        "truncated_vlan_header": "skip record and audit; fabricate no network fields",
+        "truncated_ipv4_base_header": "skip record and audit; fabricate no network fields",
+        "valid_records_after_skipped_runt_continue_decoding": true
+      },
+      "inherited_v103_snaplen_semantics": {
+        "short_ip_options": "degrade to protocol other with trustworthy IP-level telemetry",
+        "short_tcp_base_header": "degrade to protocol other",
+        "short_udp_header": "degrade to protocol other",
+        "tcp_options_may_be_truncated_after_complete_base_header": true,
+        "nonfirst_fragment": "protocol other with IP-level telemetry",
+        "fabricate_payload_bytes": false
+      },
+      "consumed_external_quarantine": [
+        "HIKARI-2021/V99",
+        "MAWI-200601011400/V102",
+        "CTU-IDSEVAL-6/V104"
+      ],
+      "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+      "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+      "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad"
+    },
+    "adapter_contract_sha256": "1f705e4427f65507ae5d71dd353fbe58966e2882bff7acc182f45fad99fb5e7f",
+    "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+    "generic_change_selected_without_consumed_external_fitting": true
+  },
+  "quarantine": {
+    "hikari_used": false,
+    "mawi_used": false,
+    "ctu_idseval6_used": false,
+    "hikari_future_fitting_allowed": false,
+    "mawi_future_fitting_allowed": false,
+    "ctu_idseval6_future_fitting_allowed": false,
+    "ctu_idseval6_rerun_after_parser_change_allowed": false
+  },
+  "development_sources": {
+    "dataset": "CICAPT-IIoT2024",
+    "development_reuse": true,
+    "phase1": {
+      "capture": "1stPhase-timed-Merged.pcap",
+      "sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+      "decoded_packets": 2000000,
+      "parser_audit": {
+        "decoded_ipv4": 2000000,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "full_tcp": 1905694,
+        "full_udp": 94172,
+        "non_ipv4": 21940,
+        "nonfirst_fragment": 0,
+        "other_protocol": 134,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "skipped_truncated_vlan": 0
+      },
+      "linklayer_skip_audit": {
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0
+      },
+      "observed_windows": 5846,
+      "contiguous_sequences": 5835,
+      "train_sequences": 4084,
+      "validation_sequences": 1739
+    },
+    "phase2": {
+      "capture": "2ndPhase-timed-MergedV2.pcap",
+      "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+      "decoded_packets": 2000000,
+      "parser_audit": {
+        "decoded_ipv4": 2000000,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "full_tcp": 1872776,
+        "full_udp": 126738,
+        "non_ipv4": 14481,
+        "nonfirst_fragment": 0,
+        "other_protocol": 486,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "skipped_truncated_vlan": 0
+      },
+      "linklayer_skip_audit": {
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0
+      },
+      "observed_windows": 5688,
+      "contiguous_sequences": 5677,
+      "used_for_selection": false
+    },
+    "consumed_external_packets_used": false
+  },
+  "packet_features_present_mean": {
+    "phase1_train": 1.0,
+    "phase1_validation": 1.0,
+    "phase2_sanity": 1.0
+  },
+  "state_forecasting": {
+    "phase1_validation": {
+      "model_mse": 0.009739501401782036,
+      "persistence_mse": 0.01501518115401268,
+      "improvement_vs_persistence": 0.35135638379033235,
+      "beats_persistence": true
+    },
+    "phase2_sanity": {
+      "model_mse": 0.02197737991809845,
+      "persistence_mse": 0.02880091778934002,
+      "improvement_vs_persistence": 0.23692084818794007,
+      "beats_persistence": true
+    },
+    "v101_reference_selected_candidate": {
+      "seed": 44,
+      "best_epoch": 8,
+      "validation_mse": 0.009739501401782036,
+      "validation_persistence_mse": 0.01501518115401268,
+      "validation_improvement_vs_persistence": 0.35135638379033235,
+      "validation_gate_passed": true,
+      "phase2_mse": 0.0219773780554533,
+      "phase2_persistence_mse": 0.02880091778934002,
+      "phase2_improvement_vs_persistence": 0.2369209128610579,
+      "phase2_sanity_passed": true
+    },
+    "v103_metric_equivalence": {
+      "phase1_validation_matches_v103": true,
+      "phase2_sanity_matches_v103": true
+    },
+    "metric_equivalence_tolerance": {
+      "rtol": 1e-06,
+      "atol": 1e-10,
+      "purpose": "hosted-runner floating-point reproducibility only; not a model-performance margin"
+    }
+  },
+  "runtime_support": {
+    "threshold": 7.705308669179127,
+    "phase2_supported_sequences": 5669,
+    "phase2_total_sequences": 5677,
+    "phase2_supported_fraction": 0.9985908050026422,
+    "phase2_median_score": 2.992571480746236,
+    "phase2_max_score": 10.228961562267576,
+    "support_gate_refit": false
+  },
+  "recovery_checks": {
+    "strict_default_preserved_by_unit_tests": true,
+    "synthetic_l2_runt_skip_semantics_required_by_unit_tests": true,
+    "development_metrics_match_v103_with_fixed_numeric_tolerance": true,
+    "development_depends_on_l2_runt_skips": false
+  },
+  "freeze": {
+    "adapter_contract_sha256": "1f705e4427f65507ae5d71dd353fbe58966e2882bff7acc182f45fad99fb5e7f",
+    "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+    "candidate_model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "new_external_holdout_selected": false
+  },
+  "next_gate": "Only after V105 is frozen and merged: select a different genuinely untouched non-HIKARI/non-MAWI/non-CTU-IDSEVAL-6 external holdout, preregister it, and evaluate exactly once without retuning."
+}
