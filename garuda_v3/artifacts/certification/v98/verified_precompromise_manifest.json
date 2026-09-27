@@ -1,5 +1,5 @@
 {
-  "schema_version": "v98.2",
+  "schema_version": "v98.3",
   "declared_status": "SHADOW_UNRESOLVED",
   "campaign_id": null,
   "warning_event": null,
@@ -33,6 +33,21 @@
       "future_positive_window"
     ]
   },
+  "evidence_bundler": {
+    "status": "READY_NO_RELEASE_EVENTS",
+    "path": "garuda_v3/v110_precompromise_evidence_bundle.py",
+    "git_blob_sha1": "148079280ccd97793d3e899097d9707449183467",
+    "test_path": "garuda_v3/tests/test_v110_precompromise_evidence_bundle.py",
+    "selection_policy": [
+      "only caller-supplied raw events are eligible; no timestamp or success marker is synthesized",
+      "first objective successful-compromise event is the compromise boundary",
+      "first valid model warning before that boundary is the lead-time statistic",
+      "attack-onset semantics are rejected by the strict V107 validator",
+      "reused train/validation/calibration/development campaigns are rejected",
+      "if multiple certifiable campaigns exist an explicit campaign_id is required to prevent post-hoc selection",
+      "selected raw warning, compromise and provenance JSON objects are copied into an immutable hash-pinned bundle"
+    ]
+  },
   "provenance": {
     "identity_proof_complete": false,
     "evidence_campaign_ids": [],
@@ -41,7 +56,7 @@
     "calibration_campaign_ids": [],
     "development_reused_campaign_ids": []
   },
-  "claim_boundary": "Validator machinery is now frozen, but no successful-compromise lead-time claim is certified until real campaign artifacts satisfy it. The validator cannot promote attack-start/onset evidence into successful compromise evidence.",
+  "claim_boundary": "Validator and deterministic evidence-bundling machinery are frozen, but no successful-compromise lead-time claim is certified until real model-warning, objective successful-compromise, and disjoint campaign-provenance artifacts satisfy them. Synthetic CI fixtures are never release evidence.",
   "legacy_evidence_excluded": {
     "v93_attack_step_lead_time_seconds": 297.67,
     "accepted_as_successful_compromise_evidence": false,
@@ -50,14 +65,18 @@
   "repository_audit": {
     "successful_compromise_artifact_found": false,
     "establishes_compromise_artifact_found": false,
+    "paired_real_model_warning_artifact_found": false,
     "validator_implementation_found": true,
-    "audit_conclusion": "The evidence-verification code path is complete, but the active evidence set still lacks a paired objective successful-compromise event and model-warning event for one disjoint campaign."
+    "deterministic_bundler_found": true,
+    "audit_conclusion": "Engineering support for strict verification and deterministic bundling is complete. The active evidence set still lacks a real paired objective successful-compromise event and model-warning event for one disjoint campaign."
   },
+  "engineering_gate": "PASS",
+  "evidence_gate": "UNRESOLVED",
   "required_for_pass": [
     "Select one explicitly identified evidence campaign and prove its identity is disjoint from train, validation, calibration, and development-reused campaign identities.",
     "Record an actual model-emitted warning event with a timezone-aware timestamp and emitted_by_model=true.",
     "Record an objective successful-compromise event for the same campaign with a timezone-aware timestamp, establishes_successful_compromise=true, objective_success_marker, and source_reference.",
-    "Run garuda_v3/v107_verify_precompromise.py and commit its PASS artifact together with the raw event/provenance JSON files.",
+    "Run garuda_v3/v110_precompromise_evidence_bundle.py on the raw logs and commit the resulting PASS bundle.",
     "Keep the certified claim scoped only to the exact campaign represented by those artifacts."
   ]
 }
