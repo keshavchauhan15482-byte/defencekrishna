@@ -1,0 +1,67 @@
+name: V112 tolerant PS-complete adapter recovery
+
+on:
+  push:
+    branches: [feat/v112-tolerant-ps-complete-recovery]
+    paths:
+      - 'garuda_v3/v112_tolerant_ps_complete_recovery.py'
+      - 'garuda_v3/tests/test_v112_tolerant_ps_complete_recovery.py'
+      - '.github/workflows/v112-tolerant-ps-complete-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install 'numpy<2.1' pytest
+      - name: Verify contracts and parser regressions
+        run: |
+          python -m compileall -q garuda_v3/v112_tolerant_ps_complete_recovery.py
+          python -m pytest -q garuda_v3/tests/test_v112_tolerant_ps_complete_recovery.py garuda_v3/tests/test_pcap_reader.py
+      - name: Fetch hash-verified CICAPT development captures only
+        run: |
+          python -m garuda_v3.public_data_fetch --catalogue datasets/multisource/catalogue.json --root datasets/v112 --ids cicapt_network --extract
+      - name: Run V112 development recovery
+        run: |
+          rm -rf garuda_v3/artifacts/certification/v112
+          python -m garuda_v3.v112_tolerant_ps_complete_recovery --phase1 datasets/v112/1stPhase-timed-Merged.pcap --phase2 datasets/v112/2ndPhase-timed-MergedV2.pcap --model garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz --support-gate garuda_v3/artifacts/certification/v108/support_gate.json --v108-summary garuda_v3/artifacts/certification/v108/summary.json --packet-limit 2000000 --output garuda_v3/artifacts/certification/v112/summary.json
+      - name: Verify evidence boundaries
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v112/summary.json').read_text())
+          assert r['status']=='DEV_TOLERANT_PS_COMPLETE_PASS'
+          assert r['recovery_gate_passed'] is True
+          assert r['frozen_runtime']['model_changed'] is False
+          assert r['frozen_runtime']['support_gate_changed'] is False
+          assert r['frozen_runtime']['feature_count']==34
+          assert r['development_sources']['consumed_external_packets_used'] is False
+          assert r['quarantine']['v111_used_for_fitting'] is False
+          assert r['quarantine']['v111_rerun_allowed'] is False
+          assert r['freeze']['new_external_holdout_selected'] is False
+          assert all(r['state_forecasting']['matches_v108_frozen_reference'].values())
+          assert r['runtime_support']['phase2_supported_fraction'] > .95
+          print(json.dumps({'status':r['status'],'adapter':r['freeze']['adapter_contract_sha256'],'support':r['runtime_support']['phase2_supported_fraction']},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v112-tolerant-ps-complete-evidence
+          path: garuda_v3/artifacts/certification/v112/summary.json
+          if-no-files-found: error
+          retention-days: 30
