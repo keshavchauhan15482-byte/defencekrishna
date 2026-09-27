@@ -1,8 +1,14 @@
 """Bounded dependency-free PCAP/PCAPNG IPv4 TCP/UDP decoder.
 
-The SIH datasets include captures whose filename ends in ``.pcap`` while the bytes are
-actually PCAPNG.  Format is therefore detected from magic bytes, never from filename.
-Supported link types are Ethernet (DLT_EN10MB=1) and raw IPv4 (DLT_RAW=101).
+Format is detected from magic bytes, never filename. Supported link types are
+Ethernet (DLT_EN10MB=1) and raw IPv4 (DLT_RAW=101).
+
+The historical behavior remains strict by default.  V103 adds an explicit
+``allow_truncated=True`` mode for snaplen-limited captures.  Tolerant mode never
+fabricates captured bytes: it preserves IP-level telemetry, parses transport
+base headers only when present, and derives payload *length* from declared IPv4
+lengths.  Packets whose required transport header bytes are unavailable degrade
+to protocol ``other`` instead of crashing.
 """
 from __future__ import annotations
 
@@ -17,8 +23,45 @@ _CLASSIC = {
 }
 _PCAPNG_MAGIC = b'\x0a\x0d\x0d\x0a'
 
+_AUDIT_KEYS = (
+    'decoded_ipv4', 'full_tcp', 'full_udp', 'degraded_short_ip_options',
+    'degraded_short_tcp', 'degraded_short_udp', 'nonfirst_fragment',
+    'other_protocol',
+)
 
-def _decode_ipv4(data: bytes, *, original: int, timestamp: float, linktype: int):
+
+def _bump(audit, key: str) -> None:
+    if audit is not None:
+        audit[key] = int(audit.get(key, 0)) + 1
+
+
+def _base_item(ip: bytes, *, original: int, timestamp: float, frag: int, payload_len: int):
+    return dict(
+        t=float(timestamp),
+        src=socket.inet_ntoa(ip[12:16]),
+        dst=socket.inet_ntoa(ip[16:20]),
+        bytes=int(original),
+        ttl=int(ip[8]),
+        frag=bool(frag & 0x3FFF),
+        protocol='other',
+        sport=0,
+        dport=0,
+        flags=0,
+        win=0,
+        seq=None,
+        payload_len=max(0, int(payload_len)),
+    )
+
+
+def _decode_ipv4(
+    data: bytes,
+    *,
+    original: int,
+    timestamp: float,
+    linktype: int,
+    allow_truncated: bool = False,
+    audit=None,
+):
     offset = 0
     if linktype == 1:
         if len(data) < 14:
@@ -41,50 +84,82 @@ def _decode_ipv4(data: bytes, *, original: int, timestamp: float, linktype: int)
         return None
     ihl = (ip[0] & 15) * 4
     length = struct.unpack('!H', ip[2:4])[0]
-    if ihl < 20 or length < ihl or len(ip) < length:
+    if ihl < 20 or length < ihl:
+        raise ValueError('Invalid IPv4 header/total length')
+    if not allow_truncated and len(ip) < length:
         raise ValueError('Truncated IPv4 packet; use full-snaplen capture')
+
     frag = struct.unpack('!H', ip[6:8])[0]
     proto = ip[9]
-    item = dict(
-        t=float(timestamp),
-        src=socket.inet_ntoa(ip[12:16]),
-        dst=socket.inet_ntoa(ip[16:20]),
-        bytes=int(original),
-        ttl=int(ip[8]),
-        frag=bool(frag & 0x3FFF),
-        protocol='other',
-        sport=0,
-        dport=0,
-        flags=0,
-        win=0,
-        seq=None,
-        payload_len=0,
-    )
-    if frag & 0x1FFF:
+    declared_transport_len = max(0, length - ihl)
+
+    # In tolerant mode an IP options area can itself be snaplen-truncated.  The
+    # base IPv4 header still gives stable endpoint/TTL/fragment telemetry, but
+    # transport location is not trustworthy, so degrade deterministically.
+    if len(ip) < ihl:
+        if not allow_truncated:
+            raise ValueError('Truncated IPv4 packet; use full-snaplen capture')
+        item = _base_item(
+            ip, original=original, timestamp=timestamp, frag=frag,
+            payload_len=declared_transport_len,
+        )
+        _bump(audit, 'decoded_ipv4')
+        _bump(audit, 'degraded_short_ip_options')
         return item
 
-    transport = ip[ihl:length]
+    item = _base_item(
+        ip, original=original, timestamp=timestamp, frag=frag,
+        payload_len=declared_transport_len if allow_truncated else 0,
+    )
+    _bump(audit, 'decoded_ipv4')
+
+    if frag & 0x1FFF:
+        _bump(audit, 'nonfirst_fragment')
+        return item
+
+    captured_transport = ip[ihl:min(len(ip), length)]
     if proto == 6:
-        if len(transport) < 20:
+        if len(captured_transport) < 20:
+            if allow_truncated:
+                _bump(audit, 'degraded_short_tcp')
+                return item
             raise ValueError('Truncated TCP header')
-        tcp_len = (transport[12] >> 4) * 4
-        if tcp_len < 20 or tcp_len > len(transport):
+        tcp_len = (captured_transport[12] >> 4) * 4
+        if tcp_len < 20 or tcp_len > declared_transport_len:
+            if allow_truncated:
+                _bump(audit, 'degraded_short_tcp')
+                return item
             raise ValueError('Invalid TCP data offset')
-        sport, dport, seq = struct.unpack('!HHI', transport[:8])
+        if not allow_truncated and tcp_len > len(captured_transport):
+            raise ValueError('Invalid TCP data offset')
+        sport, dport, seq = struct.unpack('!HHI', captured_transport[:8])
         item.update(
             protocol='tcp', sport=int(sport), dport=int(dport), seq=int(seq),
-            flags=int(transport[13]), win=struct.unpack('!H', transport[14:16])[0],
-            payload_len=len(transport) - tcp_len,
+            flags=int(captured_transport[13]),
+            win=struct.unpack('!H', captured_transport[14:16])[0],
+            payload_len=max(0, declared_transport_len - tcp_len)
+            if allow_truncated else len(captured_transport) - tcp_len,
         )
+        _bump(audit, 'full_tcp')
     elif proto == 17:
-        if len(transport) < 8:
+        if len(captured_transport) < 8:
+            if allow_truncated:
+                _bump(audit, 'degraded_short_udp')
+                return item
             raise ValueError('Truncated UDP header')
-        sport, dport = struct.unpack('!HH', transport[:4])
-        item.update(protocol='udp', sport=int(sport), dport=int(dport), payload_len=max(0, len(transport) - 8))
+        sport, dport = struct.unpack('!HH', captured_transport[:4])
+        item.update(
+            protocol='udp', sport=int(sport), dport=int(dport),
+            payload_len=max(0, declared_transport_len - 8)
+            if allow_truncated else max(0, len(captured_transport) - 8),
+        )
+        _bump(audit, 'full_udp')
+    else:
+        _bump(audit, 'other_protocol')
     return item
 
 
-def _classic_packets(f, first4: bytes, max_packets: int):
+def _classic_packets(f, first4: bytes, max_packets: int, *, allow_truncated=False, audit=None):
     tail = f.read(20)
     header = first4 + tail
     if len(header) != 24:
@@ -109,14 +184,17 @@ def _classic_packets(f, first4: bytes, max_packets: int):
         count += 1
         if count > max_packets:
             raise ValueError('Packet count limit exceeded')
-        item = _decode_ipv4(data, original=original, timestamp=sec + sub / unit, linktype=linktype)
+        item = _decode_ipv4(
+            data, original=original, timestamp=sec + sub / unit,
+            linktype=linktype, allow_truncated=allow_truncated, audit=audit,
+        )
         if item is not None:
             yield item
 
 
 def _option_ts_resolution(body: bytes, endian: str) -> float:
     """Parse IDB options; default PCAPNG timestamp resolution is microseconds."""
-    pos = 8  # linktype(2), reserved(2), snaplen(4)
+    pos = 8
     resolution = 1e-6
     while pos + 4 <= len(body):
         code, length = struct.unpack(endian + 'HH', body[pos:pos + 4])
@@ -131,9 +209,7 @@ def _option_ts_resolution(body: bytes, endian: str) -> float:
     return float(resolution)
 
 
-def _pcapng_packets(f, first4: bytes, max_packets: int):
-    # The first section header begins with magic already consumed. Read total length +
-    # byte-order magic so section endianness can be established before parsing length.
+def _pcapng_packets(f, first4: bytes, max_packets: int, *, allow_truncated=False, audit=None):
     head_tail = f.read(8)
     if len(head_tail) != 8:
         raise ValueError('Truncated PCAPNG section header')
@@ -151,7 +227,7 @@ def _pcapng_packets(f, first4: bytes, max_packets: int):
     if len(rest) != total - 12 or struct.unpack(endian + 'I', rest[-4:])[0] != total:
         raise ValueError('Truncated or inconsistent PCAPNG section header')
 
-    interfaces: list[tuple[int, int, float]] = []  # linktype, snaplen, ts_resolution
+    interfaces: list[tuple[int, int, float]] = []
     count = 0
     while True:
         prefix = f.read(8)
@@ -159,8 +235,6 @@ def _pcapng_packets(f, first4: bytes, max_packets: int):
             break
         if len(prefix) != 8:
             raise ValueError('Truncated PCAPNG block header')
-
-        # A new Section Header Block can change byte order and resets interface ids.
         if prefix[:4] == _PCAPNG_MAGIC:
             bom = f.read(4)
             if len(bom) != 4:
@@ -191,19 +265,14 @@ def _pcapng_packets(f, first4: bytes, max_packets: int):
             raise ValueError('PCAPNG trailing block length mismatch')
         body = rest[:-4]
 
-        if block_type == 1:  # Interface Description Block
+        if block_type == 1:
             if len(body) < 8:
                 raise ValueError('Truncated PCAPNG interface block')
             linktype = struct.unpack(endian + 'H', body[:2])[0]
             snaplen = struct.unpack(endian + 'I', body[4:8])[0]
-            if linktype not in (1, 101):
-                # Keep interface numbering stable; unsupported interfaces are marked.
-                interfaces.append((int(linktype), int(snaplen), _option_ts_resolution(body, endian)))
-            else:
-                interfaces.append((int(linktype), int(snaplen), _option_ts_resolution(body, endian)))
+            interfaces.append((int(linktype), int(snaplen), _option_ts_resolution(body, endian)))
             continue
-
-        if block_type != 6:  # Enhanced Packet Block carries interface + timestamp.
+        if block_type != 6:
             continue
         if len(body) < 20:
             raise ValueError('Truncated PCAPNG enhanced packet block')
@@ -222,21 +291,37 @@ def _pcapng_packets(f, first4: bytes, max_packets: int):
         if count > max_packets:
             raise ValueError('Packet count limit exceeded')
         timestamp = ((int(ts_hi) << 32) | int(ts_lo)) * resolution
-        item = _decode_ipv4(data, original=original, timestamp=timestamp, linktype=linktype)
+        item = _decode_ipv4(
+            data, original=original, timestamp=timestamp, linktype=linktype,
+            allow_truncated=allow_truncated, audit=audit,
+        )
         if item is not None:
             yield item
 
 
-def packets(path, max_packets=250000):
+def packets(path, max_packets=250000, *, allow_truncated=False, audit=None):
+    """Yield decoded IPv4 packet telemetry.
+
+    ``allow_truncated`` is opt-in so all historical callers retain strict
+    full-snaplen behavior.  When an ``audit`` dict is supplied, tolerant decode
+    categories are counted without changing packet values.
+    """
     if max_packets < 1:
         raise ValueError('max_packets must be positive')
+    if audit is not None:
+        for key in _AUDIT_KEYS:
+            audit.setdefault(key, 0)
     with open(path, 'rb') as f:
         first4 = f.read(4)
         if len(first4) != 4:
             raise ValueError('Truncated capture header')
         if first4 in _CLASSIC:
-            yield from _classic_packets(f, first4, int(max_packets))
+            yield from _classic_packets(
+                f, first4, int(max_packets), allow_truncated=allow_truncated, audit=audit,
+            )
         elif first4 == _PCAPNG_MAGIC:
-            yield from _pcapng_packets(f, first4, int(max_packets))
+            yield from _pcapng_packets(
+                f, first4, int(max_packets), allow_truncated=allow_truncated, audit=audit,
+            )
         else:
             raise ValueError('Unsupported capture format; expected classic PCAP or PCAPNG')
