@@ -91,7 +91,10 @@ jobs:
           assert r['development_sources']['phase2']['used_for_selection'] is False
           assert r['state_forecasting']['v103_metric_equivalence']['phase1_validation_matches_v103'] is True
           assert r['state_forecasting']['v103_metric_equivalence']['phase2_sanity_matches_v103'] is True
-          assert r['recovery_checks']['development_metrics_match_v103'] is True
+          tol=r['state_forecasting']['metric_equivalence_tolerance']
+          assert tol['rtol']==1e-6 and tol['atol']==1e-10
+          assert 'floating-point reproducibility' in tol['purpose']
+          assert r['recovery_checks']['development_metrics_match_v103_with_fixed_numeric_tolerance'] is True
           assert r['recovery_checks']['development_depends_on_l2_runt_skips'] is False
           assert r['runtime_support']['support_gate_refit'] is False
           assert r['freeze']['new_external_holdout_selected'] is False
