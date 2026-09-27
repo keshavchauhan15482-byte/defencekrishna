@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Verify fail-closed preregistration
+      - name: Verify fail-closed preregistration and pre-frozen evaluator
         run: |
           python - <<'PY'
           import json
@@ -42,7 +42,12 @@ jobs:
           assert d['external_holdout']['freshness_audit']['prior_repository_use_found'] is False
           assert d['registered_candidate']['source_commit']=='72c1eaf0f79754a3d8c5454b574ea201d3f9e68c'
           assert d['registered_candidate']['adapter_contract_sha256']=='65052c50704ad371ff7ad84fec6b74c7530d546a7916722c96a255b9b7c93841'
-          print('V104 acquisition remains fail-closed after metadata-only member-count freeze')
+          evaluator=Path('garuda_v3/v104_ctu_idseval6_one_shot.py')
+          assert evaluator.exists()
+          text=evaluator.read_text()
+          assert "EXPECTED_MEMBERS = 12" in text
+          assert "members_dropped': 0" in text
+          print('V104 acquisition is fail-closed and evaluator is pre-frozen before packet decode')
           PY
 
       - name: Download exact registered pcap.zip
