@@ -1,6 +1,6 @@
 {
   "schema_version": "v119-prereg.1",
-  "status": "SOURCE_SELECTED_HASH_PENDING",
+  "status": "HASH_FROZEN_ONE_SHOT_ARMED",
   "selected_after_v118_merge_commit": "3acbea0ab53cb0f0b2bdeb7fb740b96b5e695beb",
   "claim_boundary": "V119 is a single fresh publisher-independent external state-transition forecasting test only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is created.",
   "external_holdout": {
@@ -22,7 +22,14 @@
       "selected_before_archive_download": true,
       "selected_before_packet_decode": true,
       "selected_before_model_inference": true
-    }
+    },
+    "archive_bytes": 90069398,
+    "archive_md5": "efc27d2f30ed9b8c1b5ba3fd103f3a60",
+    "archive_sha256": "b72eb23dc13c7ace01eb0eee72ded940a4e0eb22a48d3b79bce914f065633646",
+    "pcap_member_count": 4,
+    "pcap_member": "FIDS/From Wireshark/cyberattack manual.pcapng",
+    "pcap_bytes": 119557196,
+    "pcap_sha256": "08d7c6c3d5d66ec96bc279b3169b1a02b7810ea80c7f253fb49ce61ff893bfce"
   },
   "registered_candidate": {
     "base_version": "V116",
@@ -68,8 +75,8 @@
   },
   "acquisition": {
     "archive_and_member_hash_freeze_required_before_decode": true,
-    "packet_decode_permitted": false,
-    "model_inference_permitted": false
+    "packet_decode_permitted": true,
+    "model_inference_permitted": true
   },
-  "evaluation_permitted": false
+  "evaluation_permitted": true
 }

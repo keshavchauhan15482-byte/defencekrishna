@@ -1,0 +1,88 @@
+{
+  "schema_version": "v119-acquisition.1",
+  "status": "HASH_FROZEN_NO_PACKET_DECODE",
+  "source_url": "https://zenodo.org/records/15649231/files/AI4CYBER%20-%20UC3%20-%20Cyberattack%20Network%20Packet%20Captures.zip?download=1",
+  "archive_bytes": 90069398,
+  "archive_md5": "efc27d2f30ed9b8c1b5ba3fd103f3a60",
+  "archive_sha256": "b72eb23dc13c7ace01eb0eee72ded940a4e0eb22a48d3b79bce914f065633646",
+  "members": [
+    {
+      "name": "FIDS/From Firewall pfSense/cyberattack-manual.pcap",
+      "uncompressed_bytes": 73869168,
+      "compressed_bytes": 31523528,
+      "crc32": "299abc61",
+      "is_pcap": true
+    },
+    {
+      "name": "FIDS/From Firewall pfSense/Shenina.pcap",
+      "uncompressed_bytes": 5204313,
+      "compressed_bytes": 3417978,
+      "crc32": "36cb945a",
+      "is_pcap": true
+    },
+    {
+      "name": "FIDS/From Wireshark/cyberattack manual.pcapng",
+      "uncompressed_bytes": 119557196,
+      "compressed_bytes": 49350834,
+      "crc32": "91f5362f",
+      "is_pcap": true
+    },
+    {
+      "name": "FIDS/From Wireshark/Shenina.pcapng",
+      "uncompressed_bytes": 8671760,
+      "compressed_bytes": 5731311,
+      "crc32": "35eea7b3",
+      "is_pcap": true
+    },
+    {
+      "name": "FIDS/Readme.txt",
+      "uncompressed_bytes": 2982,
+      "compressed_bytes": 1027,
+      "crc32": "ae6c90b3",
+      "is_pcap": false
+    },
+    {
+      "name": "FIDS/Terminal - Commands - manual cyberattack.txt",
+      "uncompressed_bytes": 8234,
+      "compressed_bytes": 2078,
+      "crc32": "2464ba90",
+      "is_pcap": false
+    },
+    {
+      "name": "FIDS/Terminal - Shennina.txt",
+      "uncompressed_bytes": 3011,
+      "compressed_bytes": 860,
+      "crc32": "56f92093",
+      "is_pcap": false
+    },
+    {
+      "name": "FIDS/Wazuh/PACS WAzuh Events.csv",
+      "uncompressed_bytes": 54846,
+      "compressed_bytes": 4744,
+      "crc32": "7d3eafed",
+      "is_pcap": false
+    },
+    {
+      "name": "FIDS/Wazuh-Suricata Events/All Events from AttackVM (192.168.61.55) to Victim PACS(192.168.61.50).csv",
+      "uncompressed_bytes": 198850,
+      "compressed_bytes": 22189,
+      "crc32": "5b2567a2",
+      "is_pcap": false
+    },
+    {
+      "name": "FIDS/Wazuh-Suricata Events/only events relevant to AttackVM 192.168.61.55.csv",
+      "uncompressed_bytes": 83398,
+      "compressed_bytes": 12027,
+      "crc32": "e3235b31",
+      "is_pcap": false
+    }
+  ],
+  "pcap_member_count": 4,
+  "selection_rule": "From archive metadata only, select the PCAP/PCAPNG member with greatest uncompressed byte size; ties are resolved by lexicographically smallest member name. No packet decode, labels, filenames semantics, attack annotations, or model output may influence selection.",
+  "selected_pcap_member": "FIDS/From Wireshark/cyberattack manual.pcapng",
+  "selected_pcap_uncompressed_bytes": 119557196,
+  "selected_pcap_sha256": "08d7c6c3d5d66ec96bc279b3169b1a02b7810ea80c7f253fb49ce61ff893bfce",
+  "packet_records_decoded": false,
+  "model_inference_performed": false,
+  "labels_accessed": false
+}
