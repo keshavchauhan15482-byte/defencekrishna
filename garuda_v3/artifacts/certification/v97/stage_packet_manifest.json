@@ -1,8 +1,8 @@
 {
-  "schema_version": "v97.2",
+  "schema_version": "v97.3",
   "candidate_id": "v97-stage-packet-evidence-shadow",
   "declared_status": "SHADOW_UNRESOLVED",
-  "claim_boundary": "Packet-trained world-model runtime evidence is now hash-pinned, but the combined V97 gate remains unresolved because complete independently validated five-stage supervision and full SIH packet-feature coverage are not yet frozen.",
+  "claim_boundary": "The packet-feature side of the V97 gate is resolved by the hash-pinned V108 PS-complete GraphSAGE+LSTM runtime. The combined gate remains unresolved only because independently validated five-stage supervision and complete per-stage metrics are not yet frozen.",
   "required_stages": [
     "reconnaissance",
     "initial_access",
@@ -22,14 +22,15 @@
     "metrics": {},
     "artifact": null,
     "status": "UNRESOLVED",
+    "all_five_independently_network_validated": false,
     "notes": [
-      "V69 explicitly records network_stage_validated=false; alignment alone cannot certify native network-stage supervision.",
-      "V82 has a five-class mapper, but its one-shot reserve does not contain independently validated support for all five required stages and documents Exploitation as an Initial Access proxy.",
-      "Native or independently validated five-stage labels plus complete per-stage precision/recall/F1/FPR/support remain required."
+      "V69 explicitly records network_stage_validated=false; timestamp alignment of publisher tactics to packet windows is not independent network-stage validation.",
+      "V82 trains a five-class mapper but the sealed fresh reserve contains independently held-out support only for Reconnaissance and Lateral Movement; Exploitation is documented as an Initial Access proxy.",
+      "A PASS requires native or independently validated labels plus precision/recall/F1/FPR/support for Reconnaissance, Initial Access, Lateral Movement, Command & Control, and Exfiltration under one frozen protocol."
     ]
   },
   "packet_evidence": {
-    "status": "RUNTIME_PACKET_MODEL_PROVEN_PARTIAL_PS_FEATURE_COVERAGE",
+    "status": "RESOLVED_FULL_PS_FEATURE_COVERAGE",
     "origin": "pcap/pcapng",
     "source_capture_sha256": [
       "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
@@ -37,49 +38,72 @@
     ],
     "world_model_consumes_packet_features": true,
     "packet_features_trained": true,
-    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
-    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
-    "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
-    "adapter_contract_sha256": "1f705e4427f65507ae5d71dd353fbe58966e2882bff7acc182f45fad99fb5e7f",
-    "runtime_artifact": "garuda_v3/artifacts/certification/v105/summary.json",
-    "external_runtime_artifact": "garuda_v3/artifacts/certification/v106/one_shot_result.json",
+    "ps_complete_features_trained": true,
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34,
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "adapter_contract_sha256": "2cc3aff90c525e29fc37e1fe5364913afd2180b747fb6d675a4d0d856a6a2173",
+    "runtime_artifact": "garuda_v3/artifacts/certification/v108/summary.json",
     "supported_features": {
+      "src_dst_ip_port_graph_context": true,
+      "syn_ack_fin_rst": true,
+      "psh_urg": true,
+      "protocol_bytes_packets_duration": true,
+      "iat_mean": true,
+      "iat_variance": true,
+      "iat_max": true,
+      "bidirectional_ratio": true,
+      "ttl_mean": true,
       "ttl_variance": true,
       "tcp_window": true,
       "fragmentation": true,
-      "payload_distribution": false,
-      "port_scan_patterns": false,
-      "retransmission": true
+      "payload_distribution": true,
+      "port_scan_patterns": true,
+      "port_scan_sequencing": true,
+      "retransmission_fraction": true,
+      "retransmission_count": true
     },
     "schema_semantics_audit": {
-      "feature_index_17_declared_name": "duplicate_payload_segment_fraction",
-      "feature_index_17_runtime_value": "retransmission_fraction",
-      "semantic_name_matches_runtime_value": false,
-      "claim_policy": "Count index 17 only as retransmission evidence; do not claim payload-size distribution from this feature."
+      "versioned_schema_resolves_legacy_index_17_alias": true,
+      "legacy_v3_1_checkpoint_retained_for_history_only": true,
+      "active_v108_feature_names_match_runtime_semantics": true,
+      "payload_distribution_features": ["payload_mean_log", "payload_variance_log", "payload_max_log"],
+      "scan_features": ["unique_destination_ports_log", "sequential_port_transition_fraction", "random_port_transition_fraction", "scan_sequence_present"],
+      "retransmission_features": ["retransmission_fraction", "retransmission_count_log"]
+    },
+    "development_forecasting": {
+      "selected_seed": 42,
+      "validation_mse": 0.01540493406355381,
+      "validation_persistence_mse": 0.02082514949142933,
+      "validation_improvement_vs_persistence": 0.2602725819618356,
+      "phase2_mse": 0.02404777891933918,
+      "phase2_persistence_mse": 0.031211022287607193,
+      "phase2_improvement_vs_persistence": 0.22951005264291796,
+      "phase2_supported_fraction": 0.9984146556279725,
+      "scope": "development_reused_cross_phase"
     },
     "notes": [
-      "V101/V105 freeze a packet-feature-trained GNN+LSTM candidate and validation-fitted support gate; V105 development recovery keeps model/support hashes unchanged and records packet_features_present_mean=1.0.",
-      "V106 independently confirms the frozen runtime reports packet_features_trained=true and packet_features_present_mean_on_observed_nodes=1.0 on a fresh external raw PCAP; V106 remains an overall FAIL because runtime support coverage was 0/64, not because packet features were absent.",
-      "Full SIH packet-feature coverage is still incomplete: explicit payload-size distribution and port-scan sequencing/signature features are not in the active v3.1 state vector."
+      "V108 trains the actual GraphSAGE+LSTM state-transition model directly on the 34-feature PS-complete raw-PCAP service-graph representation.",
+      "Packet presence is 1.0 on Phase-1 train, Phase-1 validation, and Phase-2 sanity data.",
+      "Consumed external holdouts are excluded from fitting, candidate selection, normalization, and support-gate fitting.",
+      "This resolves feature implementation/runtime coverage; it does not by itself create a fresh external-generalisation or five-stage claim."
     ]
   },
   "observed_repository_evidence": {
-    "v68_packet_contract": {"path":"garuda_v3/v68_cicapt_packet_contract.py","git_blob_sha1":"2e5a73554c2e0a51dc145368678c8eec344d4874"},
-    "v69_stage_alignment": {"path":"garuda_v3/v69_cicapt_stage_alignment_audit.py","git_blob_sha1":"1a225ae3f052ce2da6f56c67885f86cf9133521f"},
-    "v70_packet_world_model": {"path":"garuda_v3/v70_cicapt_packet_world_model.py","git_blob_sha1":"ef2b54725dc1a9b975c34beeb8b763610551c78b"},
-    "v82_stage_head": {"path":"garuda_v3/v82_robust_stage_head_fresh_eval.py","git_blob_sha1":"0a537cd8b3ab6eda845d00f4cf2da6dd0077849b"},
-    "v105_runtime_summary": "garuda_v3/artifacts/certification/v105/summary.json",
-    "v106_external_result": "garuda_v3/artifacts/certification/v106/one_shot_result.json"
+    "v69_stage_alignment": {"path": "garuda_v3/v69_cicapt_stage_alignment_audit.py", "git_blob_sha1": "1a225ae3f052ce2da6f56c67885f86cf9133521f"},
+    "v82_stage_head": {"path": "garuda_v3/v82_robust_stage_head_fresh_eval.py", "git_blob_sha1": "0a537cd8b3ab6eda845d00f4cf2da6dd0077849b"},
+    "v108_runtime_summary": "garuda_v3/artifacts/certification/v108/summary.json"
   },
-  "resolved_since_v97_1": [
-    "hash-pinned packet extraction/evaluation artifact tied to real capture SHA-256 values",
-    "artifact-backed proof that the evaluated GNN+LSTM world model was trained on and consumes packet-origin telemetry"
+  "resolved_since_v97_2": [
+    "explicit payload-size distribution features are active world-model inputs",
+    "explicit port-scan signature/sequencing features are active world-model inputs",
+    "PSH/URG, IAT variance/max, retransmission count and the remaining mandatory SIH telemetry are active world-model inputs",
+    "legacy feature-name/runtime-value mismatch is removed by a versioned 34-feature schema",
+    "hash-pinned V108 world-model artifact demonstrates direct training on the complete feature schema"
   ],
   "known_gaps_for_pass": [
     "hash-pinned native or independently network-validated five-stage supervision artifact",
-    "precision/recall/F1/FPR/support for all five required stages from that supervised evaluation",
-    "explicit payload-size distribution feature in the active state representation",
-    "explicit port-scan sequencing/signature feature in the active state representation",
-    "resolve the legacy index-17 feature-name/runtime-value semantic mismatch in a versioned schema before claiming that named feature literally"
+    "precision/recall/F1/FPR/support for all five required stages from that supervised evaluation"
   ]
 }
