@@ -1,0 +1,1 @@
+Final V102 status: INCOMPATIBLE_AFTER_CONSUMPTION. No forecasting metrics were produced. MAWI is quarantined from any claim-improving rerun or fitting.
