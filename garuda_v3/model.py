@@ -8,12 +8,19 @@ import numpy as np
 from .autograd import Tensor, concat
 from .data import FEATURES, SCHEMA
 
+PS_COMPLETE_SCHEMA = 'garuda-observed-graph-v46-ps-complete'
+SUPPORTED_SCHEMAS = {SCHEMA, PS_COMPLETE_SCHEMA}
+
 class GraphWorldModel:
-    def __init__(self, architecture='gnn_lstm', feature_dim=len(FEATURES), graph_dim=12, hidden=16, seed=42, decoder='absolute', stage_count=0):
+    def __init__(self, architecture='gnn_lstm', feature_dim=len(FEATURES), graph_dim=12, hidden=16, seed=42,
+                 decoder='absolute', stage_count=0, schema=SCHEMA):
         if architecture not in ('gnn_lstm','lstm'): raise ValueError('Unknown architecture')
         if decoder not in ('absolute', 'residual'): raise ValueError('Unknown decoder')
         if stage_count not in (0, 5): raise ValueError('stage_count must be 0 or 5')
-        self.config=dict(architecture=architecture,feature_dim=feature_dim,graph_dim=graph_dim,hidden=hidden,seed=seed,decoder=decoder,stage_count=stage_count)
+        if schema not in SUPPORTED_SCHEMAS: raise ValueError(f'Unsupported graph schema: {schema}')
+        self.schema=schema
+        self.config=dict(architecture=architecture,feature_dim=feature_dim,graph_dim=graph_dim,hidden=hidden,
+                         seed=seed,decoder=decoder,stage_count=stage_count,schema=schema)
         self.decoder=decoder; self.stage_count=stage_count
         self.architecture=architecture; self.f=feature_dim; self.g=graph_dim; self.h=hidden
         self.params={}; rng=np.random.default_rng(seed)
@@ -30,7 +37,7 @@ class GraphWorldModel:
         weight('mean',hidden,feature_dim);bias('mean_b',feature_dim)
         weight('sigma',hidden,feature_dim);bias('sigma_b',feature_dim)
         weight('risk',hidden,1);bias('risk_b',1)
-        if decoder=='residual': self.params['mean'].data[:]=0  # exact persistence initialization
+        if decoder=='residual': self.params['mean'].data[:]=0
         if stage_count: weight('stage',hidden,stage_count);bias('stage_b',stage_count)
     def parameters(self): return list(self.params.values())
     def cell(self,x,h,c,name):
@@ -40,6 +47,7 @@ class GraphWorldModel:
         c=f*c+i*g; return o*c.tanh(),c
     def forward(self,x,adj,mask,horizon=6,return_stages=False):
         x=Tensor.wrap(x); adj=np.asarray(adj,dtype=np.float32);mask=np.asarray(mask,dtype=np.float32)
+        if x.data.shape[-1] != self.f: raise ValueError(f'Feature dimension mismatch: {x.data.shape[-1]} != {self.f}')
         b,t,n,_=x.data.shape
         denom=np.maximum(mask.sum(axis=2,keepdims=True),1)
         pooled=(x*mask[:,:,:,None]).sum(axis=2)/denom
@@ -73,12 +81,16 @@ class GraphWorldModel:
         return outputs+(concat(stages,1) if stages else None,) if return_stages else outputs
     def save(self,path,metadata):
         path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
-        np.savez_compressed(path,**{k:v.data for k,v in self.params.items()},metadata=json.dumps(metadata),config=json.dumps(self.config),schema=SCHEMA)
+        np.savez_compressed(path,**{k:v.data for k,v in self.params.items()},metadata=json.dumps(metadata),config=json.dumps(self.config),schema=self.schema)
     @classmethod
     def load(cls,path):
         with np.load(path,allow_pickle=False) as z:
-            if str(z['schema'])!=SCHEMA: raise ValueError('Checkpoint schema mismatch')
-            model=cls(**json.loads(str(z['config'])))
+            checkpoint_schema=str(z['schema'])
+            if checkpoint_schema not in SUPPORTED_SCHEMAS: raise ValueError('Checkpoint schema mismatch')
+            config=json.loads(str(z['config']))
+            config.setdefault('schema', checkpoint_schema)
+            if config['schema'] != checkpoint_schema: raise ValueError('Checkpoint config/schema mismatch')
+            model=cls(**config)
             for k,p in model.params.items():
                 if z[k].shape!=p.data.shape or not np.isfinite(z[k]).all(): raise ValueError('Invalid checkpoint parameter')
                 p.data=z[k].copy()
@@ -87,7 +99,6 @@ class GraphWorldModel:
 
 def loss(model,x,adj,mask,future,labels,stage_labels=None,positive_weight=1.):
     mean,sigma,risk,stages=model.forward(x,adj,mask,horizon=labels.shape[1],return_stages=True)
-    # Gaussian negative log likelihood of future state + horizon-specific BCE.
     nll=(((mean-future)/sigma).power(2)*.5+sigma.log()).mean()
     risk=.000001+.999998*risk
     known=(labels>=0).astype(np.float32);target=np.maximum(labels,0)
