@@ -1,17 +1,17 @@
 {
-  "schema_version": "v111-prereg.1",
-  "status": "HOLDOUT_SELECTED_HASH_PENDING",
+  "schema_version": "v111-prereg.2",
+  "status": "HASH_AND_POLICY_FROZEN_ONE_SHOT_ARMED",
   "selected_after_v110_merge_commit": "9eedfe3d1879dca6bf6c07b80d457befe9397176",
-  "claim_boundary": "V111 is a fresh external state-transition forecasting test for the frozen V108 34-feature GraphSAGE+LSTM candidate. A separate warning-before-infection analysis is permitted only if a development-only prediction warning policy is frozen before external packet decode and packet-to-publisher timeline alignment is independently established. No five-stage claim is created.",
+  "claim_boundary": "V111 is a single fresh external state-transition forecasting test for the frozen V108 34-feature GraphSAGE+LSTM candidate. Runtime support is reported separately under V107. A development-only prediction-warning policy is frozen before external packet decode. The publisher last-preinfection packet marker may support a conservative pre-infection warning audit if its predeclared packet-clock interpretation matches the raw capture; it is not an exact successful-compromise timestamp and does not by itself close V98.",
   "external_holdout": {
     "dataset": "CTU-Malware-Capture-Botnet-327-2",
     "project": "Stratosphere Malware Capture Facility Project",
     "publisher_page": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-2/",
     "capture": "2018-03-27_win3.capture1.pcap",
     "source_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-2/2018-03-27_win3.capture1.pcap",
-    "pcap_sha256": null,
-    "pcap_md5": null,
-    "pcap_bytes": null,
+    "pcap_sha256": "ce9d45d2b5c0be8be56481cbd4d98a094a96e453328e9d88f88e882d94a79884",
+    "pcap_md5": "8bf6f9ec33d1c521ee4129671d31ee61",
+    "pcap_bytes": 69890363,
     "labels_required_for_forecast_gate": false,
     "repo_history_audit": {
       "scenario_name_match_found_before_selection": false,
@@ -24,7 +24,18 @@
       "infected_host": "192.168.1.113",
       "publisher_infection_time": "2018-02-20T23:16:56+01:00",
       "publisher_preinfection_tcpdump_marker_text": "1970/01/01 01:29:44.934543",
-      "timestamp_alignment_status": "UNRESOLVED_BEFORE_PACKET_DECODE",
+      "publisher_timeline_source_reference": "MCFP CTU-Malware-Capture-Botnet-327-2 README/index timeline: 'Date of last Last packet in tcpdump before infection (...)' followed by 'infected'",
+      "timestamp_alignment_status": "PREDECLARED_INTERPRETATION_PENDING_RAW_MATCH",
+      "packet_clock_alignment_policy": {
+        "declared_before_external_packet_decode": true,
+        "publisher_marker_timezone_interpretation": "CET UTC+01:00 because the surrounding Feb-20 scenario timeline is explicitly CET",
+        "normalized_marker_utc": "1970-01-01T00:29:44.934543+00:00",
+        "expected_raw_epoch_seconds": 1784.934543,
+        "match_tolerance_seconds": 0.000002,
+        "warning_lookback_seconds": 600,
+        "if_marker_does_not_match": "No pre-infection timing claim; state-forecast evaluation remains valid",
+        "marker_semantics": "last packet before infection, conservative pre-infection boundary only; not exact compromise timestamp"
+      },
       "malware_sample_md5_not_pcap_hash": "2b48789d9272700de5405bf9a9c05204",
       "malware_sample_sha256_not_pcap_hash": "d44543259ac4c83e4f3a8ded001aff1cbe19a26269835d68754d9a48cc3a31be",
       "objective_event_semantics_candidate": "publisher scenario timeline records infected",
@@ -37,6 +48,7 @@
     "support_gate_file": "garuda_v3/artifacts/certification/v108/support_gate.json",
     "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
     "adapter_contract_sha256": "2cc3aff90c525e29fc37e1fe5364913afd2180b747fb6d675a4d0d856a6a2173",
+    "pcap_reader_git_blob_sha1": "58b15611cb8a74aba7d2880068b735ccc20275b5",
     "schema": "garuda-observed-graph-v46-ps-complete",
     "feature_count": 34,
     "architecture": "gnn_lstm",
@@ -48,6 +60,11 @@
     "decoder": "residual",
     "risk_head_trained": false,
     "stage_supervised": false
+  },
+  "frozen_evaluator": {
+    "file": "garuda_v3/v111_ctu3272_one_shot.py",
+    "git_blob_sha1": "6ffbeb32a76558c07545bab67036c805dfe05277",
+    "external_packet_observed_before_freeze": false
   },
   "forecast_gate": {
     "protocol": "v107.1 future external forecast gate",
@@ -61,14 +78,22 @@
     "rerun_for_claim_improvement_permitted": false
   },
   "prediction_warning_policy": {
-    "status": "DEV_ONLY_FREEZE_PENDING",
-    "score_definition": "mean absolute frozen-model predicted future-state transition away from persistence; prediction-only",
-    "threshold_reference": "CICAPT development only; no V111 packet, label, infection timestamp, or outcome input",
+    "status": "DEV_ONLY_WARNING_POLICY_FROZEN",
+    "artifact": "garuda_v3/artifacts/certification/v111/warning_policy.json",
+    "artifact_sha256": "f630df436ee7033a21977cebff47dbc431dfa776fdcc56d54f509d3c3ecf339f",
+    "score_definition": "mean(abs(frozen_model_predicted_future_state - same_history_persistence), axes=(horizon,features)); prediction-only",
+    "threshold_reference": "CICAPT-IIoT2024 Phase-2 development sanity capture; excluded from V108 candidate selection",
+    "reference_capture_sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
     "upper_tail_reference_budget": 0.005,
+    "threshold": 0.06621655994368826,
+    "reference_sequences": 5677,
+    "reference_alerts": 28,
+    "reference_alert_fraction": 0.004932182490752158,
     "support_score_is_warning": false,
     "risk_head_is_warning": false,
     "external_threshold_fitting_permitted": false,
-    "preinfection_claim_permitted_before_policy_and_timestamp_alignment_freeze": false
+    "external_packet_used_to_freeze_policy": false,
+    "publisher_infection_timestamp_used_to_freeze_policy": false
   },
   "consumed_external_quarantine": [
     "HIKARI-2021/V99",
@@ -77,11 +102,13 @@
     "USTC-TFC2016-Miuref/V106"
   ],
   "acquisition": {
-    "metadata_hash_freeze_required_before_decode": true,
-    "packet_decode_permitted": false,
-    "graph_construction_permitted": false,
-    "support_scoring_permitted": false,
-    "model_inference_permitted": false,
-    "evaluation_permitted": false
+    "manifest": "garuda_v3/artifacts/certification/v111/acquisition_manifest.json",
+    "metadata_hash_freeze_completed_before_decode": true,
+    "packet_decode_permitted": true,
+    "graph_construction_permitted": true,
+    "support_scoring_permitted": true,
+    "model_inference_permitted": true,
+    "evaluation_permitted": true,
+    "one_shot_lock_required_before_packet_decode": true
   }
 }
