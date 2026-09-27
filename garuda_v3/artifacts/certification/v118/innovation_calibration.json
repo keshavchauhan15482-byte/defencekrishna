@@ -1,0 +1,14 @@
+{
+  "schema_version": "v118-calibration.1",
+  "method": "global convex persistence-innovation shrinkage",
+  "formula": "forecast = persistence + alpha * (frozen_v116_forecast - persistence)",
+  "alpha": 0.663139650493983,
+  "fit_source": "CICAPT Phase-1 validation only",
+  "fit_metric": "raw reconstructed pooled-state MSE",
+  "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+  "support_gate_sha256": "8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5",
+  "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+  "phase2_used_for_fit": false,
+  "external_used_for_fit": false,
+  "consumed_external_used_for_fit": false
+}

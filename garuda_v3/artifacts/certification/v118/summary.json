@@ -1,0 +1,121 @@
+{
+  "schema_version": "v118.1",
+  "status": "DEV_INNOVATION_CALIBRATION_PASS",
+  "recovery_gate_passed": true,
+  "claim_boundary": "Development-only innovation calibration. V117 and every consumed external holdout remain quarantined; no fresh external, stage, risk, or precompromise claim is created.",
+  "base_candidate": {
+    "version": "V116",
+    "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "support_gate_sha256": "8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643"
+  },
+  "development_sources": {
+    "phase1": {
+      "capture": "1stPhase-timed-Merged.pcap",
+      "sha256": "aaba416bda0cf922e0a2288b5e9cdb3a4050959e14631bc3f1e4d3f1c29395c6",
+      "decoded_ipv4_packets": 2000000,
+      "parser_audit": {
+        "decoded_ipv4": 2000000,
+        "full_tcp": 1905694,
+        "full_udp": 94172,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 134,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 21940
+      },
+      "validation_sequences": 1739,
+      "used_for_alpha_fit": true
+    },
+    "phase2": {
+      "capture": "2ndPhase-timed-MergedV2.pcap",
+      "sha256": "bd24eda4928e3c561756d3cbc5fad4c93554b8c1f2f6e0aba674ff63b4e7bae3",
+      "decoded_ipv4_packets": 2000000,
+      "parser_audit": {
+        "decoded_ipv4": 2000000,
+        "full_tcp": 1872776,
+        "full_udp": 126738,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 486,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 14481
+      },
+      "sequences": 5677,
+      "used_for_alpha_fit": false
+    }
+  },
+  "calibration": {
+    "schema_version": "v118-calibration.1",
+    "method": "global convex persistence-innovation shrinkage",
+    "formula": "forecast = persistence + alpha * (frozen_v116_forecast - persistence)",
+    "alpha": 0.663139650493983,
+    "fit_source": "CICAPT Phase-1 validation only",
+    "fit_metric": "raw reconstructed pooled-state MSE",
+    "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "support_gate_sha256": "8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "phase2_used_for_fit": false,
+    "external_used_for_fit": false,
+    "consumed_external_used_for_fit": false
+  },
+  "calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+  "validation": {
+    "base_model_mse": 0.017789149462814506,
+    "persistence_mse": 0.02081794404493068,
+    "calibrated_mse": 0.01673578152599369,
+    "base_improvement_vs_persistence": 0.14548961105761576,
+    "calibrated_improvement_vs_persistence": 0.19608864881789437,
+    "calibrated_beats_persistence": true,
+    "calibrated_beats_or_matches_base_model": true
+  },
+  "phase2_sanity": {
+    "base_model_mse": 0.02966499763982761,
+    "persistence_mse": 0.03105567495256201,
+    "calibrated_mse": 0.026723295814567703,
+    "base_improvement_vs_persistence": 0.044780134866129306,
+    "calibrated_improvement_vs_persistence": 0.13950362195032243,
+    "calibrated_beats_persistence": true,
+    "calibrated_beats_or_matches_base_model": true
+  },
+  "phase2_support": {
+    "threshold": 29.1337654691185,
+    "supported_sequences": 5589,
+    "total_sequences": 5677,
+    "supported_fraction": 0.9844988550290646,
+    "median_score": 4.828235927738001,
+    "max_score": 70.03656539578296
+  },
+  "gates": {
+    "alpha_strictly_positive": true,
+    "alpha_at_most_one": true,
+    "validation_calibrated_beats_persistence": true,
+    "phase2_calibrated_beats_persistence": true,
+    "phase2_supported_fraction_at_least_0_95": true,
+    "all_metrics_finite": true
+  },
+  "freeze": {
+    "calibration_file": "innovation_calibration.json",
+    "calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+    "candidate_runtime_frozen_before_new_external_selection": true,
+    "new_external_holdout_selected": false
+  },
+  "external_quarantine": [
+    "V99 HIKARI",
+    "V102 MAWI",
+    "V104 CTU-IDSEVAL-6",
+    "V106 USTC Miuref",
+    "V111 CTU 327-1",
+    "V113 CTU 111-1",
+    "V114 CTU 326-1",
+    "V117 Kitsune Mirai"
+  ]
+}
