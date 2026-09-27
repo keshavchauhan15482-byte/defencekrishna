@@ -1,0 +1,77 @@
+name: V100 External Recovery Audit
+
+on:
+  push:
+    branches:
+      - feat/v100-external-recovery-audit
+    paths:
+      - 'garuda_v3/v100_external_recovery_audit.py'
+      - 'garuda_v3/tests/test_v100_external_recovery_audit.py'
+      - '.github/workflows/v100-external-recovery-audit.yml'
+      - 'garuda_v3/artifacts/certification/v99/hikari_one_shot_result.json'
+      - 'garuda_v3/artifacts/certification/v97/stage_packet_manifest.json'
+      - 'garuda_v3/artifacts/certification/v98/verified_precompromise_manifest.json'
+      - 'garuda_v3/artifacts/residual_run/metrics.json'
+      - 'garuda_v3/artifacts/residual_run/support_gate.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v100-external-recovery-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout V100 recovery branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/v100-external-recovery-audit
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic test dependency
+        run: python -m pip install --disable-pip-version-check 'pytest==8.3.5'
+
+      - name: Verify V100 fail-closed audit contract
+        run: python -m pytest -q garuda_v3/tests/test_v100_external_recovery_audit.py
+
+      - name: Generate deterministic V100 recovery audit
+        run: |
+          python -m garuda_v3.v100_external_recovery_audit \
+            --v99 garuda_v3/artifacts/certification/v99/hikari_one_shot_result.json \
+            --metrics garuda_v3/artifacts/residual_run/metrics.json \
+            --support-gate garuda_v3/artifacts/residual_run/support_gate.json \
+            --v97 garuda_v3/artifacts/certification/v97/stage_packet_manifest.json \
+            --v98 garuda_v3/artifacts/certification/v98/verified_precompromise_manifest.json \
+            --output garuda_v3/artifacts/certification/v100/v99_failure_recovery_audit.json
+
+      - name: Record deterministic V100 audit if absent or changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESULT='garuda_v3/artifacts/certification/v100/v99_failure_recovery_audit.json'
+          test -s "$RESULT"
+          if git diff --quiet -- "$RESULT" && git ls-files --error-unmatch "$RESULT" >/dev/null 2>&1; then
+            echo 'V100 audit already matches recorded evidence.'
+            exit 0
+          fi
+          git config user.name 'garuda-evidence-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$RESULT"
+          git commit -m 'evidence(v100): record V99 external recovery audit'
+          git push origin HEAD:feat/v100-external-recovery-audit
+
+      - name: Upload V100 audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: v100-external-recovery-audit
+          path: garuda_v3/artifacts/certification/v100/v99_failure_recovery_audit.json
+          if-no-files-found: error
