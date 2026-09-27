@@ -1,128 +1,13 @@
 name: V123 ZeroSWARM frozen one-shot
 
 on:
-  push:
-    branches: [feat/v123-zeroswarm-one-shot]
-    paths:
-      - '.github/workflows/v123-zeroswarm-one-shot.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
-
-concurrency:
-  group: v123-zeroswarm-one-shot
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  one-shot:
+  frozen-result-recorded:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
-    env:
-      OPENBLAS_NUM_THREADS: '1'
-      OMP_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
-      PYTHONHASHSEED: '0'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-      - name: Install runtime dependency
-        run: python -m pip install 'numpy<2.1'
-      - name: Verify frozen preregistration evaluator and persisted pre-decode lock
-        run: |
-          python - <<'PY'
-          import json, subprocess
-          from pathlib import Path
-          root=Path('garuda_v3/artifacts/certification/v123')
-          p=json.loads((root/'preregistration.json').read_text())
-          a=json.loads((root/'acquisition_manifest.json').read_text())
-          lock=json.loads((root/'execution_lock.json').read_text())
-          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED' and p['evaluation_permitted'] is True
-          assert a['status']=='HASH_FROZEN_NO_PACKET_DECODE' and a['file_count']==4
-          assert a['packet_records_decoded'] is False and a['model_inference_performed'] is False and a['labels_accessed'] is False
-          assert lock['status']=='IRREVERSIBLE_PRE_DECODE_LOCK'
-          assert lock['packet_records_decoded_before_lock'] is False
-          assert lock['model_inference_performed_before_lock'] is False
-          assert lock['runs_allowed_for_claim_after_lock']==1
-          reg=p['registered_candidate']
-          blob=subprocess.check_output(['git','hash-object',reg['evaluator_file']],text=True).strip()
-          assert blob==reg['evaluator_git_blob_sha1']==lock['evaluator_git_blob_sha1']
-          assert lock['model_sha256']==reg['model_sha256']
-          assert lock['relative_transform_sha256']==reg['relative_transform_sha256']
-          assert lock['innovation_calibration_sha256']==reg['innovation_calibration_sha256']
-          assert lock['semantic_support_contract_sha256']==reg['semantic_support_contract_sha256']
-          assert lock['robust_behavior_gate_sha256']==reg['robust_behavior_gate_sha256']
-          assert not (root/'one_shot_result.json').exists()
-          print('V123 persisted pre-decode lock + frozen evaluator identity: PASS')
-          PY
-      - name: Reacquire exact four frozen PCAPs without packet decode
-        run: |
-          python - <<'PY'
-          import hashlib,json,urllib.request
-          from pathlib import Path
-          root=Path('garuda_v3/artifacts/certification/v123')
-          a=json.loads((root/'acquisition_manifest.json').read_text())
-          lock=json.loads((root/'execution_lock.json').read_text())
-          assert [x['sha256'] for x in a['files']]==lock['pcap_sha256s']
-          outdir=Path('/tmp/v123-zeroswarm'); outdir.mkdir(parents=True,exist_ok=True)
-          for f in a['files']:
-              out=outdir/f['name']
-              req=urllib.request.Request(f['source_url'],headers={'User-Agent':'Mozilla/5.0 Garuda-V123/1.0'})
-              hmd5=hashlib.md5(); hsha=hashlib.sha256(); total=0
-              with urllib.request.urlopen(req,timeout=180) as src, out.open('wb') as dst:
-                  while True:
-                      b=src.read(1024*1024)
-                      if not b: break
-                      dst.write(b);hmd5.update(b);hsha.update(b);total+=len(b)
-              assert total==int(f['bytes']) and hmd5.hexdigest()==f['md5'] and hsha.hexdigest()==f['sha256'],f['name']
-          print('Exact four frozen PCAPs reacquired; first packet decode still not performed')
-          PY
-      - name: Run first and only frozen aggregate external evaluation
-        run: |
-          python -m garuda_v3.v123_zeroswarm_one_shot \
-            --pcap-dir /tmp/v123-zeroswarm \
-            --model garuda_v3/artifacts/certification/v116/gnn_lstm_raw_metric_relative_candidate.npz \
-            --relative-transform garuda_v3/artifacts/certification/v116/relative_transform.json \
-            --calibration garuda_v3/artifacts/certification/v118/innovation_calibration.json \
-            --semantic-support-contract garuda_v3/artifacts/certification/v122/semantic_support_contract.json \
-            --behavior-gate garuda_v3/artifacts/certification/v120/robust_support_gate.json \
-            --prereg garuda_v3/artifacts/certification/v123/preregistration.json \
-            --acquisition garuda_v3/artifacts/certification/v123/acquisition_manifest.json \
-            --execution-lock garuda_v3/artifacts/certification/v123/execution_lock.json \
-            --output garuda_v3/artifacts/certification/v123/one_shot_result.json
-      - name: Verify immutable result contract
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          r=json.loads(Path('garuda_v3/artifacts/certification/v123/one_shot_result.json').read_text())
-          assert r['schema_version']=='v123.1' and r['status'] in {'PASS','FAIL'}
-          assert r['dataset']['file_count']==4 and len(r['dataset']['captures'])==4
-          assert r['dataset']['labels_accessed'] is False
-          assert r['runtime_support']['method']=='V122 semantic runtime compatibility'
-          assert r['behavior_shift_diagnostic']['hard_veto'] is False
-          assert r['one_shot_integrity']['model_inference_performed_once'] is True
-          assert r['one_shot_integrity']['retrained_on_external'] is False
-          assert r['one_shot_integrity']['support_fit_on_external'] is False
-          assert r['one_shot_integrity']['all_four_pcaps_processed'] is True
-          assert r['one_shot_integrity']['rerun_for_claim_improvement'] is False
-          if r['status']=='PASS': assert all(r['gate'].values())
-          print(json.dumps({'status':r['status'],'gate':r['gate'],'forecast':r['state_forecasting'],'support':r['runtime_support'],'behavior':r['behavior_shift_diagnostic']},indent=2))
-          PY
-      - name: Record immutable one-shot result
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add garuda_v3/artifacts/certification/v123/one_shot_result.json
-          git commit -m 'evidence(v123): record immutable ZeroSWARM all-PCAP one-shot result'
-          git push origin "HEAD:${GITHUB_REF_NAME}"
-      - name: Upload evidence
-        uses: actions/upload-artifact@v4
-        with:
-          name: v123-zeroswarm-one-shot-evidence
-          path: garuda_v3/artifacts/certification/v123/*
-          if-no-files-found: error
-          retention-days: 30
+      - run: echo 'V123 external one-shot is already consumed and immutably recorded; rerun disabled.'
