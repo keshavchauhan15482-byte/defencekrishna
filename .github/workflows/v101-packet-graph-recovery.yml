@@ -35,7 +35,7 @@ jobs:
       - name: Verify V101 fail-closed contracts
         run: |
           python -m compileall -q garuda_v3/v101_packet_graph_recovery.py
-          pytest -q garuda_v3/tests/test_v101_packet_graph_recovery.py
+          python -m pytest -q garuda_v3/tests/test_v101_packet_graph_recovery.py
 
       - name: Fetch hash-verified CICAPT development captures
         run: |
