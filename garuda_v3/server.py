@@ -81,8 +81,12 @@ class Handler(BaseHTTPRequestHandler):
         origin=self.headers.get('Origin')
         if origin and origin!='http://'+host:return self.respond(403,{'error':'Cross-origin request denied'})
         static_files={
-            '/':('index.html','text/html; charset=utf-8'),
-            '/index.html':('index.html','text/html; charset=utf-8'),
+            '/':('selection.html','text/html; charset=utf-8'),
+            '/index.html':('selection.html','text/html; charset=utf-8'),
+            '/selection.html':('selection.html','text/html; charset=utf-8'),
+            '/legacy-premium.html':('index.html','text/html; charset=utf-8'),
+            '/selection.css':('selection.css','text/css'),
+            '/selection.js':('selection.js','application/javascript'),
             '/platform.html':('platform.html','text/html; charset=utf-8'),
             '/technology.html':('technology.html','text/html; charset=utf-8'),
             '/defence.html':('defence.html','text/html; charset=utf-8'),
