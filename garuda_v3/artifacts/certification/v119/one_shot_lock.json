@@ -1,0 +1,13 @@
+{
+  "schema_version": "v119-lock.1",
+  "status": "CONSUMED_PRE_DECODE_LOCK",
+  "github_run_id": "36316248771",
+  "github_run_attempt": "1",
+  "workflow_head_sha": "0e1dbdcb2b17c562370503290d260934d16957f2",
+  "archive_sha256": "b72eb23dc13c7ace01eb0eee72ded940a4e0eb22a48d3b79bce914f065633646",
+  "pcap_member": "FIDS/From Wireshark/cyberattack manual.pcapng",
+  "pcap_sha256": "08d7c6c3d5d66ec96bc279b3169b1a02b7810ea80c7f253fb49ce61ff893bfce",
+  "packet_decode_performed_before_lock": false,
+  "model_inference_performed_before_lock": false,
+  "rerun_for_claim_improvement_permitted": false
+}
