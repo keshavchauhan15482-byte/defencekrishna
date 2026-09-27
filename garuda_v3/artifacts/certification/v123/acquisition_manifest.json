@@ -1,0 +1,45 @@
+{
+  "schema_version": "v123-acquisition.1",
+  "status": "HASH_FROZEN_NO_PACKET_DECODE",
+  "zenodo_record": "15082260",
+  "file_count": 4,
+  "files": [
+    {
+      "name": "[Zero-SWARM] Flooding Attack_v1.pcap",
+      "source_url": "https://zenodo.org/records/15082260/files/%5BZero-SWARM%5D%20Flooding%20Attack_v1.pcap?download=1",
+      "bytes": 8760369,
+      "md5": "a970eda097645d24ec3b9eb24de858b2",
+      "sha256": "f0f8f117f7759ca0a1fec5183677fd2e9e52f034d09ab09584bae8172d15b278"
+    },
+    {
+      "name": "[Zero-SWARM] Nmap_v1.pcap",
+      "source_url": "https://zenodo.org/records/15082260/files/%5BZero-SWARM%5D%20Nmap_v1.pcap?download=1",
+      "bytes": 9417479,
+      "md5": "62bddfe28a2170b669a649fd04c9a6c9",
+      "sha256": "f3dc1a28f6b5d3a157305411abd1232ddeb4509bbb178578a0de0170cd984483"
+    },
+    {
+      "name": "ZeroSWARM Normal data_v2.pcap",
+      "source_url": "https://zenodo.org/records/15082260/files/ZeroSWARM%20Normal%20data_v2.pcap?download=1",
+      "bytes": 232217247,
+      "md5": "eee8b87e62c482fd574b6e78d32cb12b",
+      "sha256": "6f9b3e9228cc60e7b1130b790c11b187c5562bee5363f34f2e2da59c133540a3"
+    },
+    {
+      "name": "ZeroSWARM Normal data_v2b.pcap",
+      "source_url": "https://zenodo.org/records/15082260/files/ZeroSWARM%20Normal%20data_v2b.pcap?download=1",
+      "bytes": 18119840,
+      "md5": "9f8235fcdbfcacb32e7a70db14fc6c74",
+      "sha256": "7ccdb3216007134eecaabf622eb2f2d6c09a06f2e4bbaec8b477a9906d52a7df"
+    }
+  ],
+  "total_bytes": 268514935,
+  "selection_rule": "all four publisher PCAPs; no omission/cherry-pick",
+  "acquisition_workflow_run_id": "36317784523",
+  "acquisition_job_id": "108615658287",
+  "hash_verification_passed_before_push_race": true,
+  "packet_records_decoded": false,
+  "model_inference_performed": false,
+  "labels_accessed": false,
+  "note": "The acquisition workflow verified all four publisher MD5 values and computed these SHA-256 identities before any packet decode. Its final git push was rejected only because evaluator code advanced the branch concurrently; hashes are copied verbatim from that immutable CI log."
+}
