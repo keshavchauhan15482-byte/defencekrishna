@@ -1,0 +1,75 @@
+name: V119 MTA Ursnif acquisition freeze
+
+on:
+  push:
+    branches: [feat/v119-mta-ursnif-one-shot]
+    paths:
+      - '.github/workflows/v119-mta-ursnif-acquisition.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  acquire-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and hash-freeze archive/member without packet decode
+        run: |
+          python - <<'PY'
+          import hashlib,json,urllib.request,zipfile
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v119')
+          pp=root/'preregistration.json'; p=json.loads(pp.read_text()); e=p['external_holdout']
+          assert p['status']=='SOURCE_SELECTED_HASH_PENDING'
+          assert p['acquisition']['packet_decode_permitted'] is False and p['acquisition']['model_inference_permitted'] is False
+          archive=Path('/tmp/v119-ursnif.zip')
+          req=urllib.request.Request(e['source_url'],headers={'User-Agent':'Mozilla/5.0 Garuda-SIH-research'})
+          with urllib.request.urlopen(req,timeout=60) as src, archive.open('wb') as dst:
+              while True:
+                  b=src.read(1024*1024)
+                  if not b: break
+                  dst.write(b)
+          data=archive.read_bytes()
+          assert len(data)==int(e['archive_expected_bytes']), (len(data),e['archive_expected_bytes'])
+          archive_sha=hashlib.sha256(data).hexdigest()
+          with zipfile.ZipFile(archive) as z:
+              members=[i for i in z.infolist() if not i.is_dir()]
+              pcaps=[i for i in members if i.filename.lower().endswith(('.pcap','.pcapng'))]
+              if len(pcaps)!=1: raise SystemExit(f'expected exactly one pcap member, got {[i.filename for i in pcaps]}')
+              info=pcaps[0]; h=hashlib.sha256(); total=0
+              with z.open(info,pwd=b'infected') as src:
+                  while True:
+                      b=src.read(1024*1024)
+                      if not b: break
+                      h.update(b); total+=len(b)
+              pcap_sha=h.hexdigest()
+              listing=[{'name':i.filename,'uncompressed_bytes':i.file_size,'compressed_bytes':i.compress_size,'crc32':f'{i.CRC:08x}'} for i in members]
+          manifest={'schema_version':'v119-acquisition.1','status':'HASH_FROZEN_NO_PACKET_DECODE','source_url':e['source_url'],'archive_bytes':len(data),'archive_sha256':archive_sha,'members':listing,'selected_pcap_member':info.filename,'selected_pcap_uncompressed_bytes':total,'selected_pcap_sha256':pcap_sha,'packet_records_decoded':False,'model_inference_performed':False,'labels_accessed':False}
+          (root/'acquisition_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          e['archive_sha256']=archive_sha; e['pcap_member']=info.filename; e['pcap_sha256']=pcap_sha
+          p['status']='HASH_FROZEN_ONE_SHOT_ARMED'; p['acquisition']['packet_decode_permitted']=True; p['acquisition']['model_inference_permitted']=True; p['evaluation_permitted']=True
+          pp.write_text(json.dumps(p,indent=2)+'\n')
+          print(json.dumps({'archive_sha256':archive_sha,'pcap_member':info.filename,'pcap_sha256':pcap_sha,'pcap_bytes':total},indent=2))
+          PY
+      - name: Verify acquisition-only boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=Path('garuda_v3/artifacts/certification/v119'); p=json.loads((r/'preregistration.json').read_text()); a=json.loads((r/'acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED' and p['evaluation_permitted'] is True
+          assert p['external_holdout']['archive_sha256']==a['archive_sha256']
+          assert p['external_holdout']['pcap_sha256']==a['selected_pcap_sha256']
+          assert a['packet_records_decoded'] is False and a['model_inference_performed'] is False and a['labels_accessed'] is False
+          print('V119 acquisition-only freeze: PASS')
+          PY
+      - name: Record immutable acquisition evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v119/preregistration.json garuda_v3/artifacts/certification/v119/acquisition_manifest.json
+          git commit -m 'evidence(v119): freeze MTA Ursnif archive and PCAP hashes'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
