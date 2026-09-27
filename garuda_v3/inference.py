@@ -50,9 +50,19 @@ class ForecastService:
         if x[:,:,:,FEATURES.index('packet_features_present')].max()>0 and not self.meta['packet_features_trained']:
             raise ValueError('Packet-derived graphs parsed, but this checkpoint was trained on CSV flows; retrain on packet telemetry before inference')
         advisory_abstention=bool(allow_unsupported_advisory and not runtime_support['supported'])
-        mu,sd,r,stage=self.model.forward(x,a,m,self.meta['horizon'],return_stages=True)
+
+        # Legacy production checkpoints do not necessarily contain the optional
+        # supervised five-stage head. State/risk forecasting remains valid and
+        # stage output must fail closed to Unresolved rather than crashing the
+        # entire runtime.
+        if self.model.stage_count:
+            mu,sd,r,stage=self.model.forward(x,a,m,self.meta['horizon'],return_stages=True)
+        else:
+            mu,sd,r=self.model.forward(x,a,m,self.meta['horizon'])
+            stage=None
+
         stage_timeline=[];predicted_stages=[]
-        stage_status='Not identifiable from Bot/Benign supervision; no probability-to-stage shortcut'
+        stage_status='Unresolved: active runtime checkpoint has no supervised stage head; no probability-to-stage shortcut is used.'
         if stage is not None and self.meta.get('stage_supervised') and not advisory_abstention:
             names=self.meta.get('stage_names',[]);thresholds=self.meta.get('stage_thresholds',[])
             supported=self.meta.get('stage_validation_supported',[])
