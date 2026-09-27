@@ -1,78 +1,27 @@
-name: V106 USTC-TFC2016 Miuref acquisition freeze
+name: V106 USTC-TFC2016 Miuref acquisition freeze (sealed)
 
 on:
-  push:
-    branches: [feat/v106-ustctfc-miuref-preregister]
-    paths:
-      - 'garuda_v3/artifacts/certification/v106/preregistration.json'
-      - '.github/workflows/v106-ustctfc-miuref-acquisition.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  acquisition-only:
+  verify-sealed-acquisition:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Verify preregistration remains pre-decode
+      - name: Verify acquisition is already hash-frozen
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           p=json.loads(Path('garuda_v3/artifacts/certification/v106/preregistration.json').read_text())
-          assert p['status']=='HOLDOUT_SELECTED_HASH_PENDING'
-          assert p['evaluation_permitted'] is False
-          assert p['acquisition']['packet_decode_permitted'] is False
-          assert p['acquisition']['model_inference_permitted'] is False
-          assert p['external_holdout']['sha256'] is None
+          a=json.loads(Path('garuda_v3/artifacts/certification/v106/acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED'
+          assert p['external_holdout']['sha256']==a['sha256']
+          assert p['external_holdout']['md5']==a['md5']
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          print('V106 acquisition sealed; no download/decode/inference performed by this workflow.')
           PY
-      - name: Download exact registered publisher object
-        run: |
-          mkdir -p datasets/v106
-          curl -L --fail --retry 4 --retry-all-errors --retry-delay 3 --connect-timeout 30 \
-            -o datasets/v106/Miuref.pcap \
-            'https://raw.githubusercontent.com/davidyslu/USTC-TFC2016/master/Malware/Miuref.pcap'
-      - name: Freeze byte identity only
-        run: |
-          python - <<'PY'
-          import hashlib,json
-          from pathlib import Path
-          p=json.loads(Path('garuda_v3/artifacts/certification/v106/preregistration.json').read_text())
-          f=Path('datasets/v106/Miuref.pcap')
-          data=f.read_bytes()
-          assert len(data)==p['external_holdout']['expected_bytes'], (len(data),p['external_holdout']['expected_bytes'])
-          git_blob=hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
-          assert git_blob==p['external_holdout']['publisher_git_blob_sha1'], git_blob
-          out={
-            'schema_version':'v106-acquisition.1',
-            'status':'HASH_FROZEN_MODEL_NOT_RUN',
-            'dataset':p['external_holdout']['dataset'],
-            'capture':p['external_holdout']['capture'],
-            'bytes':len(data),
-            'publisher_git_blob_sha1':git_blob,
-            'sha256':hashlib.sha256(data).hexdigest(),
-            'md5':hashlib.md5(data).hexdigest(),
-            'packet_records_decoded':False,
-            'graph_windows_constructed':False,
-            'support_scoring_performed':False,
-            'model_inference_performed':False,
-            'labels_accessed':False,
-            'next_step':'Pin SHA-256/MD5 into preregistration before any packet decode.'
-          }
-          root=Path('garuda_v3/artifacts/certification/v106'); root.mkdir(parents=True,exist_ok=True)
-          (root/'acquisition_manifest.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
-          print(json.dumps(out,indent=2))
-          PY
-      - name: Commit acquisition manifest only
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -f garuda_v3/artifacts/certification/v106/acquisition_manifest.json
-          git commit -m 'evidence(v106): freeze Miuref capture byte identity'
-          git push origin "HEAD:${GITHUB_REF_NAME}"
