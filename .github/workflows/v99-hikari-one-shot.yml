@@ -1,0 +1,105 @@
+name: V99 HIKARI Frozen One-Shot
+
+on:
+  push:
+    branches:
+      - feat/v67-ps9plus-evidence
+    paths:
+      - 'garuda_v3/v99_hikari_one_shot.py'
+      - 'garuda_v3/tests/test_v99_hikari_one_shot.py'
+      - '.github/workflows/v99-hikari-one-shot.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v99-hikari-frozen-one-shot
+  cancel-in-progress: false
+
+jobs:
+  frozen-one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout frozen branch state
+        uses: actions/checkout@v4
+        with:
+          ref: feat/v67-ps9plus-evidence
+          fetch-depth: 0
+
+      - name: Refuse a second recorded one-shot
+        id: guard
+        shell: bash
+        run: |
+          RESULT='garuda_v3/artifacts/certification/v99/hikari_one_shot_result.json'
+          if [[ -f "$RESULT" ]]; then
+            echo 'A V99 result is already recorded in git; refusing a rerun.'
+            echo 'skip=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'skip=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        if: steps.guard.outputs.skip == 'false'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic test/runtime dependencies
+        if: steps.guard.outputs.skip == 'false'
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pytest==8.3.5'
+
+      - name: Run V99 contract tests before observing holdout result
+        if: steps.guard.outputs.skip == 'false'
+        run: python -m pytest -q garuda_v3/tests/test_v99_hikari_one_shot.py
+
+      - name: Download exact preregistered HIKARI capture
+        if: steps.guard.outputs.skip == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .v99-input
+          FILE='.v99-input/Monday_2022-04-11_0622_BRUTEFORCE_XML_150s.pcap'
+          URL='https://zenodo.org/records/6463389/files/Monday_2022-04-11_0622_BRUTEFORCE_XML_150s.pcap?download=1'
+          curl -fL \
+            --retry 8 --retry-all-errors --retry-delay 10 \
+            --connect-timeout 30 --max-time 1800 \
+            -H 'Accept: application/octet-stream' \
+            -A 'Garuda-SIH-V99-Frozen-One-Shot/1.0' \
+            -o "$FILE" "$URL"
+          echo '900deec66e058801a377fd81c5fc805e  '"$FILE" | md5sum -c -
+          sha256sum "$FILE"
+
+      - name: Execute frozen model exactly once on compatible external state task
+        if: steps.guard.outputs.skip == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p garuda_v3/artifacts/certification/v99
+          python -m garuda_v3.v99_hikari_one_shot \
+            --pcap .v99-input/Monday_2022-04-11_0622_BRUTEFORCE_XML_150s.pcap \
+            --model garuda_v3/artifacts/residual_run/gnn_lstm.npz \
+            --support-gate garuda_v3/artifacts/residual_run/support_gate.json \
+            --prereg garuda_v3/artifacts/certification/v96/hikari_one_shot_preregistration.json \
+            --output garuda_v3/artifacts/certification/v99/hikari_one_shot_result.json
+
+      - name: Record immutable first result in repository
+        if: steps.guard.outputs.skip == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESULT='garuda_v3/artifacts/certification/v99/hikari_one_shot_result.json'
+          test -s "$RESULT"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$RESULT"
+          git commit -m 'V99: record first frozen HIKARI one-shot result'
+          git push origin HEAD:feat/v67-ps9plus-evidence
+
+      - name: Upload immutable V99 result
+        if: steps.guard.outputs.skip == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: v99-hikari-one-shot-result
+          path: garuda_v3/artifacts/certification/v99/hikari_one_shot_result.json
+          if-no-files-found: error
