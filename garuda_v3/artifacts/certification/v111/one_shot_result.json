@@ -1,0 +1,42 @@
+{
+  "claim_boundary": "Consumed fresh external compatibility result only; no state-forecast generalisation, five-stage, or exact successful-compromise warning claim is made.",
+  "dataset": {
+    "capture": "2018-03-27_win3.capture1.pcap",
+    "external_labels_accessed": false,
+    "name": "CTU-Malware-Capture-Botnet-327-2",
+    "pcap_sha256": "ce9d45d2b5c0be8be56481cbd4d98a094a96e453328e9d88f88e882d94a79884"
+  },
+  "external_holdout_consumed": true,
+  "failure": {
+    "return_code": 1,
+    "stderr_tail": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/runner/work/defencekrishna/defencekrishna/garuda_v3/v111_ctu3272_one_shot.py\", line 382, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/runner/work/defencekrishna/defencekrishna/garuda_v3/v111_ctu3272_one_shot.py\", line 229, in main\n    sx, sa, sm, target, cutoffs = build_sequences(times, x, adj, mask)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/defencekrishna/defencekrishna/garuda_v3/v101_packet_graph_recovery.py\", line 175, in build_sequences\n    raise RecoveryContractError(\"No contiguous 8-history/4-future graph sequences\")\ngaruda_v3.v101_packet_graph_recovery.RecoveryContractError: No contiguous 8-history/4-future graph sequences\n"
+  },
+  "frozen_runtime": {
+    "evaluator_git_blob_sha1": "6ffbeb32a76558c07545bab67036c805dfe05277",
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "warning_policy_sha256": "f630df436ee7033a21977cebff47dbc431dfa776fdcc56d54f509d3c3ecf339f"
+  },
+  "one_shot_lock": {
+    "capture_sha256": "ce9d45d2b5c0be8be56481cbd4d98a094a96e453328e9d88f88e882d94a79884",
+    "dataset": "CTU-Malware-Capture-Botnet-327-2",
+    "evaluator_git_blob_sha1": "6ffbeb32a76558c07545bab67036c805dfe05277",
+    "external_labels_accessed_before_lock": false,
+    "github_run_id": "36313514446",
+    "github_sha_before_lock": "0bbf27f9e9cbe0862010202bc4fc43f9de2a5082",
+    "graph_windows_constructed_before_lock": false,
+    "model_inference_before_lock": false,
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "packet_records_decoded_before_lock": false,
+    "pcap_reader_git_blob_sha1": "58b15611cb8a74aba7d2880068b735ccc20275b5",
+    "rerun_for_claim_improvement_permitted": false,
+    "schema_version": "v111-lock.1",
+    "status": "ONE_SHOT_CONSUMED_BEFORE_PACKET_DECODE",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "warning_policy_sha256": "f630df436ee7033a21977cebff47dbc431dfa776fdcc56d54f509d3c3ecf339f"
+  },
+  "performance_gate_evaluated": false,
+  "rerun_permitted_for_claim_improvement": false,
+  "schema_version": "v111.1",
+  "status": "INCOMPATIBLE"
+}
