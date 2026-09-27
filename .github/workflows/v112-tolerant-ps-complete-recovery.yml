@@ -32,7 +32,7 @@ jobs:
       - name: Verify contracts and parser regressions
         run: |
           python -m compileall -q garuda_v3/v112_tolerant_ps_complete_recovery.py
-          python -m pytest -q garuda_v3/tests/test_v112_tolerant_ps_complete_recovery.py garuda_v3/tests/test_pcap_reader.py
+          python -m pytest -q garuda_v3/tests/test_v112_tolerant_ps_complete_recovery.py garuda_v3/tests/test_v103_truncated_pcap.py garuda_v3/tests/test_v105_linklayer_runt.py
       - name: Fetch hash-verified CICAPT development captures only
         run: |
           python -m garuda_v3.public_data_fetch --catalogue datasets/multisource/catalogue.json --root datasets/v112 --ids cicapt_network --extract
