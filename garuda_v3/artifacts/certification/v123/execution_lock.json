@@ -1,0 +1,29 @@
+{
+  "schema_version": "v123-lock.2",
+  "status": "IRREVERSIBLE_PRE_DECODE_LOCK",
+  "lock_reason": "Persist the pre-decode one-shot lock before the first actual model inference; prior workflow run 36318006754 stopped at a rejected git push and skipped packet decode/inference.",
+  "prior_infrastructure_attempt": {
+    "github_run_id": "36318006754",
+    "packet_reacquisition_completed": true,
+    "packet_records_decoded": false,
+    "model_inference_performed": false,
+    "failure_stage": "persist execution lock",
+    "failure_reason": "non-fast-forward push race"
+  },
+  "model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+  "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+  "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+  "semantic_support_contract_sha256": "2b248bdb0c9504598d8feecb5a09bdcb322db605872839c684f235c938fec564",
+  "robust_behavior_gate_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
+  "evaluator_git_blob_sha1": "fca4c550ea9a0f5c35391aa930b0128ee03a0064",
+  "pcap_sha256s": [
+    "f0f8f117f7759ca0a1fec5183677fd2e9e52f034d09ab09584bae8172d15b278",
+    "f3dc1a28f6b5d3a157305411abd1232ddeb4509bbb178578a0de0170cd984483",
+    "6f9b3e9228cc60e7b1130b790c11b187c5562bee5363f34f2e2da59c133540a3",
+    "7ccdb3216007134eecaabf622eb2f2d6c09a06f2e4bbaec8b477a9906d52a7df"
+  ],
+  "packet_records_decoded_before_lock": false,
+  "model_inference_performed_before_lock": false,
+  "runs_allowed_for_claim_after_lock": 1,
+  "rerun_for_claim_improvement_permitted": false
+}
