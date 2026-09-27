@@ -1,0 +1,182 @@
+{
+  "schema_version": "v123.1",
+  "status": "PASS",
+  "gate": {
+    "minimum_total_sequences_across_all_pcaps": 32,
+    "minimum_semantic_support_fraction": 0.95,
+    "total_sequences_gate_passed": true,
+    "semantic_support_gate_passed": true,
+    "all_four_pcaps_have_valid_sequence": true,
+    "persistence_gate_passed": true,
+    "positive_improvement_gate_passed": true,
+    "finite_metrics_gate_passed": true,
+    "all_gates_passed": true
+  },
+  "dataset": {
+    "name": "Modbus Normal and Malicious Network Traffic",
+    "publisher": "Centre for Research and Technology Hellas / ZeroSWARM",
+    "zenodo_record": "15082260",
+    "doi": "10.5281/zenodo.15082260",
+    "file_count": 4,
+    "labels_accessed": false,
+    "captures": [
+      {
+        "name": "[Zero-SWARM] Flooding Attack_v1.pcap",
+        "bytes": 8760369,
+        "sha256": "f0f8f117f7759ca0a1fec5183677fd2e9e52f034d09ab09584bae8172d15b278",
+        "decoded_ipv4_packets": 69583,
+        "observed_windows": 61,
+        "contiguous_sequences": 50,
+        "semantic_supported_fraction": 1.0,
+        "behavior_envelope_supported_fraction": 1.0,
+        "behavior_median_exceedance_fraction": 0.0,
+        "parser_audit": {
+          "decoded_ipv4": 69583,
+          "full_tcp": 69546,
+          "full_udp": 27,
+          "degraded_short_ip_options": 0,
+          "degraded_short_tcp": 0,
+          "degraded_short_udp": 0,
+          "nonfirst_fragment": 0,
+          "other_protocol": 10,
+          "skipped_truncated_ethernet": 0,
+          "skipped_truncated_vlan": 0,
+          "skipped_truncated_ipv4_header": 0,
+          "non_ipv4": 26
+        }
+      },
+      {
+        "name": "[Zero-SWARM] Nmap_v1.pcap",
+        "bytes": 9417479,
+        "sha256": "f3dc1a28f6b5d3a157305411abd1232ddeb4509bbb178578a0de0170cd984483",
+        "decoded_ipv4_packets": 73187,
+        "observed_windows": 62,
+        "contiguous_sequences": 51,
+        "semantic_supported_fraction": 1.0,
+        "behavior_envelope_supported_fraction": 1.0,
+        "behavior_median_exceedance_fraction": 0.0,
+        "parser_audit": {
+          "decoded_ipv4": 73187,
+          "full_tcp": 73155,
+          "full_udp": 22,
+          "degraded_short_ip_options": 0,
+          "degraded_short_tcp": 0,
+          "degraded_short_udp": 0,
+          "nonfirst_fragment": 0,
+          "other_protocol": 10,
+          "skipped_truncated_ethernet": 0,
+          "skipped_truncated_vlan": 0,
+          "skipped_truncated_ipv4_header": 0,
+          "non_ipv4": 20
+        }
+      },
+      {
+        "name": "ZeroSWARM Normal data_v2.pcap",
+        "bytes": 232217247,
+        "sha256": "6f9b3e9228cc60e7b1130b790c11b187c5562bee5363f34f2e2da59c133540a3",
+        "decoded_ipv4_packets": 2000000,
+        "observed_windows": 1930,
+        "contiguous_sequences": 1919,
+        "semantic_supported_fraction": 1.0,
+        "behavior_envelope_supported_fraction": 1.0,
+        "behavior_median_exceedance_fraction": 0.0,
+        "parser_audit": {
+          "decoded_ipv4": 2000000,
+          "full_tcp": 2000000,
+          "full_udp": 0,
+          "degraded_short_ip_options": 0,
+          "degraded_short_tcp": 0,
+          "degraded_short_udp": 0,
+          "nonfirst_fragment": 0,
+          "other_protocol": 0,
+          "skipped_truncated_ethernet": 0,
+          "skipped_truncated_vlan": 0,
+          "skipped_truncated_ipv4_header": 0,
+          "non_ipv4": 0
+        }
+      },
+      {
+        "name": "ZeroSWARM Normal data_v2b.pcap",
+        "bytes": 18119840,
+        "sha256": "7ccdb3216007134eecaabf622eb2f2d6c09a06f2e4bbaec8b477a9906d52a7df",
+        "decoded_ipv4_packets": 195362,
+        "observed_windows": 200,
+        "contiguous_sequences": 189,
+        "semantic_supported_fraction": 1.0,
+        "behavior_envelope_supported_fraction": 1.0,
+        "behavior_median_exceedance_fraction": 0.0,
+        "parser_audit": {
+          "decoded_ipv4": 195362,
+          "full_tcp": 195362,
+          "full_udp": 0,
+          "degraded_short_ip_options": 0,
+          "degraded_short_tcp": 0,
+          "degraded_short_udp": 0,
+          "nonfirst_fragment": 0,
+          "other_protocol": 0,
+          "skipped_truncated_ethernet": 0,
+          "skipped_truncated_vlan": 0,
+          "skipped_truncated_ipv4_header": 0,
+          "non_ipv4": 0
+        }
+      }
+    ]
+  },
+  "frozen_runtime": {
+    "base_model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+    "semantic_support_contract_sha256": "2b248bdb0c9504598d8feecb5a09bdcb322db605872839c684f235c938fec564",
+    "robust_behavior_gate_sha256": "3218ff33b0ada393b1a6aa16c9d5948a848a2d6648a9f900c07bd9c91c8028c4",
+    "alpha": 0.663139650493983,
+    "raw_schema": "garuda-observed-graph-v46-ps-complete",
+    "model_schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
+    "feature_count": 34,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "max_nodes": 32
+  },
+  "capture_processing": {
+    "decoded_ipv4_packets_total": 2338132,
+    "aggregate_contiguous_sequences": 2209,
+    "packet_features_present_mean_on_observed_nodes": 1.0,
+    "cutoff_timestamps_sha256": "1b16cc2a1ef94b54b69106c2d98e94cb9728120906a551fa79139e81e4067575"
+  },
+  "state_forecasting": {
+    "metric": "raw reconstructed pooled-state MSE",
+    "base_v116_model_mse_diagnostic": 0.0003601958394843632,
+    "calibrated_v118_mse": 0.0003172616715589387,
+    "persistence_mse": 0.0003735722358382676,
+    "base_v116_improvement_vs_persistence_diagnostic": 0.03580671974695546,
+    "calibrated_improvement_vs_persistence": 0.15073541038983337,
+    "calibrated_beats_persistence": true
+  },
+  "runtime_support": {
+    "method": "V122 semantic runtime compatibility",
+    "supported_sequences": 2209,
+    "total_sequences": 2209,
+    "supported_fraction": 1.0,
+    "minimum_fraction": 0.95
+  },
+  "behavior_shift_diagnostic": {
+    "method": "robust validation envelope exceedance fraction",
+    "hard_veto": false,
+    "envelope_supported_sequences": 2209,
+    "total_sequences": 2209,
+    "envelope_supported_fraction": 1.0,
+    "interpretation": "distribution-shift diagnostic only; not attack/OOD detection and not input-contract compatibility"
+  },
+  "one_shot_integrity": {
+    "runs_allowed_for_claim": 1,
+    "model_inference_performed_once": true,
+    "retrained_on_external": false,
+    "transform_fit_on_external": false,
+    "calibration_fit_on_external": false,
+    "support_fit_on_external": false,
+    "labels_accessed": false,
+    "all_four_pcaps_processed": true,
+    "rerun_for_claim_improvement": false
+  },
+  "claim_boundary": "Fresh publisher-independent external state-transition forecasting only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is made."
+}
