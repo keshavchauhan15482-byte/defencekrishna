@@ -1,0 +1,53 @@
+{
+  "schema_version": "v119-prereg.1",
+  "status": "HASH_FROZEN_ONE_SHOT_ARMED",
+  "evaluation_permitted": true,
+  "selected_after_v118_merge_commit": "3acbea0ab53cb0f0b2bdeb7fb740b96b5e695beb",
+  "claim_boundary": "V119 is one fresh publisher-independent external state-transition forecasting test of the frozen V118 calibrated runtime only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is created.",
+  "external_holdout": {
+    "dataset": "Malware-Traffic-Analysis.net 2026-08-09 exercise",
+    "scenario": "FormBook C2 activity",
+    "publisher": "Malware-Traffic-Analysis.net",
+    "source_url": "https://www.malware-traffic-analysis.net/2026/08/09/2026-08-09-traffic-analysis-exercise.pcap.zip",
+    "archive_bytes": 12792967,
+    "archive_sha256": "676bf6b5f269a8da49e8da6b6dcb3aed0ca2629f99005dc39f4b887ad9bee822",
+    "pcap_member": "2026-08-09-traffic-analysis-exercise.pcap",
+    "pcap_bytes": 16007378,
+    "pcap_sha256": "0ea6b597732a9ce6af9a7e3adff4512c9a91b4bce27184c8fdeb746f05cce170",
+    "labels_accessed": false
+  },
+  "registered_runtime": {
+    "base_model_sha256": "1c326e66f487f5947f526c68469025ffb3410b6f0e63bfc3ee0e9f72ba81031c",
+    "support_gate_sha256": "8a7eb42d73797d59ccb84644b93253f70c5552a7be38b205530cc9fc69044fc5",
+    "relative_transform_sha256": "6d5dee6ce930ed041e9921e5f5d1e8281838eb3799c96f338ed3a9d8a7e37643",
+    "innovation_calibration_sha256": "c130d235cfcc59803cc27b29cfe67b6e8245b1b8296f98dd3acfe922d023b701",
+    "alpha": 0.663139650493983,
+    "architecture": "gnn_lstm",
+    "raw_schema": "garuda-observed-graph-v46-ps-complete",
+    "model_schema": "garuda-observed-graph-v46-ps-complete-relative-v1",
+    "feature_count": 34,
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual"
+  },
+  "one_shot_gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "pass_requires_calibrated_mse_strictly_less_than_persistence_mse": true,
+    "pass_requires_improvement_strictly_greater_than_zero": true,
+    "runs_allowed_for_claim": 1,
+    "result_improving_rerun_permitted": false
+  },
+  "acquisition_boundary": {
+    "acquisition_manifest_status": "HASH_FROZEN_NO_PACKET_DECODE",
+    "packet_decode_permitted_after_execution_lock": true,
+    "model_inference_permitted_after_execution_lock": true
+  },
+  "consumed_external_quarantine": [
+    "V99 HIKARI", "V102 MAWI", "V104 CTU-IDSEVAL-6", "V106 USTC Miuref",
+    "V111 CTU 327-1", "V113 CTU 111-1", "V114 CTU 326-1", "V117 Kitsune Mirai"
+  ]
+}
