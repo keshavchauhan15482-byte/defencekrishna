@@ -1,7 +1,11 @@
 {
   "schema_version": 1,
-  "runtime_bundle_manifest": "garuda_v3/active_runtime_bundle.json",
-  "metrics": "garuda_v3/artifacts/residual_run/metrics.json",
+  "protocol": "Garuda runtime lineage provenance",
+  "split_counts": {
+    "train": 456,
+    "validation": 158,
+    "test": 160
+  },
   "split_identities": {
     "train": [
       "68def7698d3944e6f0c6a557c059377dafcb3de22df378a77d6c3dc045bdb055",
@@ -784,6 +788,11 @@
       "27923d90ab10de5ce3556613a512b280139831c10a534bd5ddd94205d3e4c2e2"
     ]
   },
+  "split_identity_sha256": {
+    "train": "09c1b276f6e859c3354f2f85bcf50b1524350258db6ec1d666e24f8c0cd07baf",
+    "validation": "a244d3376c653fde221b9a571f1b549a5e36aa2b3d77fc04978a1ea92ee82c54",
+    "test": "1fe9d67d3951746f266e994fd443ece438e7c04d39e1c0044f9d6801e775e6c4"
+  },
   "fit_provenance": {
     "support_statistics_fit_splits": [
       "train"
@@ -795,32 +804,8 @@
       "test",
       "replay"
     ],
-    "support_gate_artifact": "garuda_v3/artifacts/residual_run/support_gate.json",
-    "lineage_provenance_artifact": "garuda_v3/artifacts/residual_run/lineage_provenance.json"
+    "support_gate_artifact": "support_gate.json"
   },
-  "reconstruction": {
-    "graph_inputs": [
-      "garuda_v3/artifacts/Thursday.npz",
-      "garuda_v3/artifacts/Friday.npz"
-    ],
-    "source_sha256": [
-      "a4443f35866a84c8c5d49f8ef2dbd6c3745d7dbd1e1da8a4465e6efb1e505947",
-      "da5fe05e12007725acb76fd9b5ffd60691d129d4155cd0a7fbedeaa55ef2be99"
-    ],
-    "history": 8,
-    "horizon": 4,
-    "stride": 8,
-    "split_manifest": null,
-    "recorded_split_counts": [
-      456,
-      158,
-      160
-    ],
-    "reconstructed_split_counts": [
-      456,
-      158,
-      160
-    ]
-  },
-  "claim_boundary": "This certifies reproducible active-runtime split/support provenance only. The underlying evaluation remains a reused development holdout; this is not fresh external validation and not verified pre-compromise evidence."
+  "support_gate_sha256": "ac0e622c9671df515a0bc30a203a63e16119db75eacb576371da549ef935e752",
+  "claim_boundary": "This artifact proves split identity and support-fit provenance only. It does not make a fresh-holdout, attack/OOD-detection, MITRE-stage, or verified pre-compromise claim."
 }
