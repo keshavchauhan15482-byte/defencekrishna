@@ -1,0 +1,55 @@
+{
+  "schema_version": "v109.1",
+  "packet_feature_gate": {
+    "status": "PASS",
+    "checks": {
+      "world_model_consumes_packet_features": true,
+      "packet_features_trained": true,
+      "ps_complete_features_trained": true,
+      "payload_distribution": true,
+      "port_scan_patterns": true,
+      "port_scan_sequencing": true,
+      "ttl_variance": true,
+      "tcp_window": true,
+      "fragmentation": true,
+      "retransmission_count": true,
+      "psh_urg": true,
+      "iat_variance": true,
+      "iat_max": true
+    },
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34,
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1"
+  },
+  "five_stage_gate": {
+    "status": "UNRESOLVED",
+    "independently_network_validated": false,
+    "artifact_present": false,
+    "metrics_complete_for_all_five": false,
+    "per_stage": {
+      "reconnaissance": {
+        "metrics_present": false,
+        "support_positive": false
+      },
+      "initial_access": {
+        "metrics_present": false,
+        "support_positive": false
+      },
+      "lateral_movement": {
+        "metrics_present": false,
+        "support_positive": false
+      },
+      "command_and_control": {
+        "metrics_present": false,
+        "support_positive": false
+      },
+      "exfiltration": {
+        "metrics_present": false,
+        "support_positive": false
+      }
+    }
+  },
+  "combined_v97_gate": "SHADOW_UNRESOLVED",
+  "claim_boundary": "Packet-feature completeness and five-stage supervised validity are separate gates. V108 may close the packet-feature gate while V97 remains unresolved until all five stages have independently validated labels and frozen per-stage precision/recall/F1/FPR/support."
+}
