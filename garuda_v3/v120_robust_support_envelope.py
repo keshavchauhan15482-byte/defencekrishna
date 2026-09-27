@@ -2,11 +2,11 @@
 
 The earlier support gate used the maximum standardized deviation over all summary
 coordinates, so one unusual feature could veto an otherwise valid forecast. V120 keeps
-fail-closed telemetry checks but replaces that single-coordinate maximum with a robust
-multi-coordinate envelope: train-only robust center/scale, validation-only per-component
-99th-percentile envelopes, and a validation-only 99th-percentile exceedance-fraction
-cutoff. Phase-2 is evaluation-only. Every consumed external holdout through V119 is
-quarantined and is never read by this module.
+fail-closed packet-telemetry capability checks but replaces that single-coordinate
+maximum with a robust multi-coordinate envelope: train-only robust center/scale,
+validation-only per-component 99th-percentile envelopes, and a validation-only
+99th-percentile exceedance-fraction cutoff. Phase-2 is evaluation-only. Every consumed
+external holdout through V119 is quarantined and is never read by this module.
 """
 from __future__ import annotations
 
@@ -35,7 +35,8 @@ EXPECTED_PRESENCE = (
     "packet_features_present", "iat_present", "tcp_window_present",
     "payload_present", "scan_sequence_present",
 )
-MIN_PRESENCE = 0.95
+REQUIRED_CAPABILITY = "packet_features_present"
+MIN_REQUIRED_CAPABILITY = 0.95
 SCALE_FLOOR = 0.05
 COMPONENT_QUANTILE = 0.99
 SEQUENCE_QUANTILE = 0.99
@@ -73,7 +74,7 @@ def fit_gate(train_x: np.ndarray, train_mask: np.ndarray, valid_x: np.ndarray, v
     exceed_fraction = (vz > component_cutoff).mean(axis=1)
     threshold = float(np.quantile(exceed_fraction, SEQUENCE_QUANTILE, method="higher"))
     return {
-        "schema_version": "v120-support.1",
+        "schema_version": "v120-support.2",
         "method": "robust validation envelope exceedance fraction",
         "target": "input support, not attack probability",
         "interpretation": "Support abstention is not attack/OOD detection.",
@@ -90,7 +91,9 @@ def fit_gate(train_x: np.ndarray, train_mask: np.ndarray, valid_x: np.ndarray, v
         "sequence_quantile": SEQUENCE_QUANTILE,
         "threshold": threshold,
         "presence_features": list(PRESENCE_NAMES),
-        "minimum_presence": MIN_PRESENCE,
+        "required_capability": REQUIRED_CAPABILITY,
+        "minimum_required_capability": MIN_REQUIRED_CAPABILITY,
+        "sparse_presence_semantics": "iat/tcp_window/payload/scan flags are observed-feature availability signals, not globally mandatory capabilities",
         "fit_provenance": {
             "center_scale": "CICAPT Phase-1 train only",
             "component_cutoffs": "CICAPT Phase-1 validation only",
@@ -113,20 +116,26 @@ def score(gate: dict, x: np.ndarray, mask: np.ndarray) -> np.ndarray:
 def decisions(gate: dict, x: np.ndarray, mask: np.ndarray):
     scores = score(gate, x, mask)
     presence = presence_coverage(x, mask)
-    telemetry_ok = (presence >= float(gate["minimum_presence"])).all(axis=1)
+    required_idx = PRESENCE_NAMES.index(str(gate["required_capability"]))
+    required_ok = presence[:, required_idx] >= float(gate["minimum_required_capability"])
+    finite_bounded = np.isfinite(presence).all(axis=1) & (presence >= -1e-6).all(axis=1) & (presence <= 1.0 + 1e-6).all(axis=1)
+    telemetry_ok = required_ok & finite_bounded
     supported = (scores <= float(gate["threshold"])) & telemetry_ok
     return scores, presence, telemetry_ok, supported
 
 
 def summary_row(gate: dict, x: np.ndarray, mask: np.ndarray) -> dict:
     scores, presence, telemetry_ok, supported = decisions(gate, x, mask)
+    required_idx = PRESENCE_NAMES.index(str(gate["required_capability"]))
+    means = presence.mean(axis=0) if len(presence) else np.zeros(len(PRESENCE_NAMES), dtype=np.float64)
     return {
         "supported_sequences": int(supported.sum()),
         "total_sequences": int(len(supported)),
         "supported_fraction": float(supported.mean()) if len(supported) else 0.0,
         "telemetry_compatible_sequences": int(telemetry_ok.sum()),
         "telemetry_compatible_fraction": float(telemetry_ok.mean()) if len(telemetry_ok) else 0.0,
-        "minimum_presence_mean": float(presence.mean(axis=0).min()) if len(presence) else 0.0,
+        "required_packet_capability_mean": float(means[required_idx]),
+        "presence_feature_means": {name: float(means[i]) for i, name in enumerate(PRESENCE_NAMES)},
         "median_exceedance_fraction": float(np.median(scores)) if len(scores) else 1.0,
         "max_exceedance_fraction": float(np.max(scores)) if len(scores) else 1.0,
         "threshold": float(gate["threshold"]),
@@ -177,6 +186,8 @@ def main() -> int:
         "phase2_supported_fraction_at_least_0_95": bool(phase2["supported_fraction"] >= 0.95),
         "validation_telemetry_compatibility_at_least_0_99": bool(validation["telemetry_compatible_fraction"] >= 0.99),
         "phase2_telemetry_compatibility_at_least_0_99": bool(phase2["telemetry_compatible_fraction"] >= 0.99),
+        "validation_packet_capability_at_least_0_95": bool(validation["required_packet_capability_mean"] >= 0.95),
+        "phase2_packet_capability_at_least_0_95": bool(phase2["required_packet_capability_mean"] >= 0.95),
         "support_threshold_finite": bool(np.isfinite(gate["threshold"])),
         "all_consumed_external_holdouts_excluded_from_fit": True,
     }
@@ -187,7 +198,7 @@ def main() -> int:
     gate_path.write_text(json.dumps(gate,indent=2,allow_nan=False)+'\n')
     gate_sha=file_hash(gate_path)
     report={
-        "schema_version":"v120.1",
+        "schema_version":"v120.2",
         "status":"DEV_ROBUST_SUPPORT_PASS" if passed else "DEV_ROBUST_SUPPORT_FAIL",
         "recovery_gate_passed":passed,
         "claim_boundary":"Development-only support-contract recovery. V119 and all earlier external holdouts remain quarantined; no new external, attack, stage, or precompromise claim is created.",
@@ -206,7 +217,7 @@ def main() -> int:
             "phase2":{"capture":PHASE2_NAME,"sha256":p2sha,"decoded_ipv4_packets":int(n2),"parser_audit":audit2,"sequences":int(len(sx2)),"used_for_fit":False},
         },
         "support_design":{
-            "reason":"Replace brittle single-coordinate maximum veto with validation-fitted multi-coordinate envelope while retaining hard packet/sensor presence requirements.",
+            "reason":"Replace brittle single-coordinate maximum veto with validation-fitted multi-coordinate envelope; require packet telemetry capability while treating feature-specific presence flags according to their sparse semantics.",
             "v119_statistics_used_for_fit_or_thresholding":False,
             "consumed_external_bytes_read":False,
             "gate":gate,
