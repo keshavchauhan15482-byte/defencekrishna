@@ -37,7 +37,7 @@ def is_ignorable_packaging_metadata(filename: str) -> bool:
     """
     path = PurePosixPath(filename)
     parts = path.parts
-    if not parts or parts[0] != '__MACOSX__':
+    if not parts or parts[0] != '__MACOSX':
         return False
     basename = path.name
     return basename.startswith('._') or basename == '.DS_Store'
