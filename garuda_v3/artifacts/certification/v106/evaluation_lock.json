@@ -1,0 +1,17 @@
+{
+  "adapter_contract_sha256": "1f705e4427f65507ae5d71dd353fbe58966e2882bff7acc182f45fad99fb5e7f",
+  "capture": "Malware/Miuref.pcap",
+  "capture_sha256": "ec2476c9fb34a202b11d1138286143ad2cd7055fbc9401baf150b3d513c3d0ae",
+  "dataset": "USTC-TFC2016",
+  "evaluator_sha256": "36d9db439fd7faff8834e45bf1bc428e37591252b5abe42e941b9b9ba350e512",
+  "github_run_id": "36311260652",
+  "github_sha_before_lock": "1685a12c2aab3c435d3c0a5b82de02a5cf6e2726",
+  "model_inference_before_lock": false,
+  "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+  "packet_records_decoded_before_lock": false,
+  "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+  "rerun_for_claim_improvement_permitted": false,
+  "schema_version": "v106-lock.1",
+  "status": "ONE_SHOT_CONSUMED_BEFORE_PACKET_DECODE",
+  "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3"
+}

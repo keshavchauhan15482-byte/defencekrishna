@@ -1,0 +1,27 @@
+name: V106 USTC-TFC2016 Miuref acquisition freeze (sealed)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-sealed-acquisition:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify acquisition is already hash-frozen
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v106/preregistration.json').read_text())
+          a=json.loads(Path('garuda_v3/artifacts/certification/v106/acquisition_manifest.json').read_text())
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED'
+          assert p['external_holdout']['sha256']==a['sha256']
+          assert p['external_holdout']['md5']==a['md5']
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          print('V106 acquisition sealed; no download/decode/inference performed by this workflow.')
+          PY

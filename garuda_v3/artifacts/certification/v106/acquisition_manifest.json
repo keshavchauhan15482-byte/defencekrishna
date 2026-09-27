@@ -1,0 +1,16 @@
+{
+  "bytes": 17196739,
+  "capture": "Malware/Miuref.pcap",
+  "dataset": "USTC-TFC2016",
+  "graph_windows_constructed": false,
+  "labels_accessed": false,
+  "md5": "7a21246187cfe0c4b7ff82be798d836d",
+  "model_inference_performed": false,
+  "next_step": "Pin SHA-256/MD5 into preregistration before any packet decode.",
+  "packet_records_decoded": false,
+  "publisher_git_blob_sha1": "070174d3486e74f04fccdc96504e6f4c60bf8333",
+  "schema_version": "v106-acquisition.1",
+  "sha256": "ec2476c9fb34a202b11d1138286143ad2cd7055fbc9401baf150b3d513c3d0ae",
+  "status": "HASH_FROZEN_MODEL_NOT_RUN",
+  "support_scoring_performed": false
+}

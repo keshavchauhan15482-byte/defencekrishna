@@ -1,0 +1,70 @@
+{
+  "schema_version": "v106-prereg.3",
+  "status": "HASH_FROZEN_ONE_SHOT_ARMED",
+  "selected_after_v105_merge_commit": "53adc745ea107e6e3ccc36c12ca366f1e2429989",
+  "claim_boundary": "V106 is a single fresh external state-transition forecasting test only. It does not certify attack recall/FPR, MITRE stages, or warning before successful compromise.",
+  "external_holdout": {
+    "dataset": "USTC-TFC2016",
+    "capture": "Malware/Miuref.pcap",
+    "publisher_repository": "davidyslu/USTC-TFC2016",
+    "publisher_branch": "master",
+    "publisher_commit_sha": "4bc9683b996f582c3843815b68da8e4dce9c7e1e",
+    "publisher_tree_sha": "fba77dcee81c1a6046eaf2f4de64c13ed4a3a1f8",
+    "source_url": "https://raw.githubusercontent.com/davidyslu/USTC-TFC2016/master/Malware/Miuref.pcap",
+    "expected_bytes": 17196739,
+    "publisher_git_blob_sha1": "070174d3486e74f04fccdc96504e6f4c60bf8333",
+    "sha256": "ec2476c9fb34a202b11d1138286143ad2cd7055fbc9401baf150b3d513c3d0ae",
+    "md5": "7a21246187cfe0c4b7ff82be798d836d",
+    "labels_required_or_accessed": false,
+    "metadata_correction_before_decode": {
+      "previous_unverified_blob_sha1": "7a69acdb1b90f99e8f50377dc0970405de6a4b2f",
+      "corrected_from_authoritative_master_tree": true,
+      "packet_decode_had_occurred": false,
+      "model_inference_had_occurred": false
+    },
+    "repo_history_audit": {
+      "miuref_match_found_before_selection": false,
+      "ustc_tfc2016_match_found_before_selection": false,
+      "selected_before_any_packet_decode": true
+    }
+  },
+  "registered_candidate": {
+    "model_file": "garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz",
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_file": "garuda_v3/artifacts/certification/v101/support_gate.json",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "pcap_reader_sha256": "3b5a4d01b9f6881b726787cd990e341aed0af625775b4f823c14d3981c69bfad",
+    "adapter_contract_sha256": "1f705e4427f65507ae5d71dd353fbe58966e2882bff7acc182f45fad99fb5e7f",
+    "architecture": "gnn_lstm",
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual"
+  },
+  "one_shot_runner": {
+    "path": "garuda_v3/v106_ustctfc_miuref_one_shot.py",
+    "sha256": "36d9db439fd7faff8834e45bf1bc428e37591252b5abe42e941b9b9ba350e512"
+  },
+  "consumed_external_quarantine": [
+    "HIKARI-2021/V99",
+    "MAWI-200601011400/V102",
+    "CTU-IDSEVAL-6/V104"
+  ],
+  "one_shot_gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "pass_requires_model_mse_strictly_less_than_persistence_mse": true,
+    "pass_requires_improvement_vs_persistence_strictly_greater_than": 0.0,
+    "unsupported_or_incompatible_is_not_pass": true,
+    "result_improving_rerun_permitted": false
+  },
+  "acquisition": {
+    "metadata_hash_freeze_required_before_decode": true,
+    "packet_decode_permitted": true,
+    "model_inference_permitted": true,
+    "acquisition_manifest": "garuda_v3/artifacts/certification/v106/acquisition_manifest.json"
+  },
+  "evaluation_permitted": true
+}
