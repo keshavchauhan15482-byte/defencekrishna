@@ -1,0 +1,56 @@
+{
+  "schema_version": "v111-prereg.1",
+  "status": "HASH_FROZEN_ONE_SHOT_ARMED",
+  "claim_boundary": "Single fresh external state-transition forecasting test only. This does not certify attack recall/FPR, MITRE stages, or warning before successful compromise.",
+  "selected_after_active_commit": "9eedfe3d30625cb02cfcd5ff34bb28a55f0f2ad6",
+  "external_holdout": {
+    "publisher": "Stratosphere Laboratory Malware Capture Facility Project",
+    "dataset": "CTU-Malware-Capture-Botnet-327-1",
+    "capture": "capture_win11.pcap",
+    "malware_family": "Trickbot",
+    "source_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-1/capture_win11.pcap",
+    "publisher_index_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-1/",
+    "labels_required_or_accessed_for_scoring": false,
+    "repo_history_audit": {
+      "exact_capture_name_match_found_before_selection": false,
+      "dataset_327_1_match_found_before_selection": false,
+      "generic_327_match_found_before_selection": false,
+      "selection_occurred_before_packet_decode": true,
+      "selection_occurred_before_model_inference": true
+    },
+    "bytes": 206480954,
+    "sha256": "cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3",
+    "md5": "4e50500534da222c945795b767ad744b"
+  },
+  "registered_candidate": {
+    "model_file": "garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz",
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_file": "garuda_v3/artifacts/certification/v108/support_gate.json",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "adapter_contract_sha256": "2cc3aff90c525e29fc37e1fe5364913afd2180b747fb6d675a4d0d856a6a2173",
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34,
+    "architecture": "gnn_lstm",
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual"
+  },
+  "one_shot_gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "pass_requires_model_mse_strictly_less_than_persistence_mse": true,
+    "pass_requires_improvement_vs_persistence_strictly_greater_than": 0.0,
+    "unsupported_or_incompatible_is_not_pass": true,
+    "result_improving_rerun_permitted": false
+  },
+  "acquisition": {
+    "manifest": "garuda_v3/artifacts/certification/v111/acquisition_manifest.json",
+    "packet_decode_had_occurred": false,
+    "model_inference_had_occurred": false,
+    "labels_had_been_accessed": false
+  },
+  "evaluation_permitted": true
+}

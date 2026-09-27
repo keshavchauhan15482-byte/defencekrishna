@@ -1,0 +1,13 @@
+{
+  "schema_version": "v111-acquisition.1",
+  "status": "HASH_FROZEN_NO_DECODE",
+  "dataset": "CTU-Malware-Capture-Botnet-327-1",
+  "capture": "capture_win11.pcap",
+  "source_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-1/capture_win11.pcap",
+  "bytes": 206480954,
+  "sha256": "cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3",
+  "md5": "4e50500534da222c945795b767ad744b",
+  "packet_records_decoded": false,
+  "model_inference_performed": false,
+  "labels_accessed": false
+}

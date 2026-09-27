@@ -1,0 +1,57 @@
+name: V111 failure postmortem no inference
+
+on:
+  push:
+    branches: [feat/v111-ctu3271-fresh-one-shot]
+    paths:
+      - 'garuda_v3/v111_failure_postmortem.py'
+      - '.github/workflows/v111-failure-postmortem.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  postmortem:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'numpy<2.1'
+      - name: Download exact already-consumed frozen bytes
+        run: |
+          mkdir -p /tmp/v111
+          curl --fail --location --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 1200 \
+            'https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-327-1/capture_win11.pcap' \
+            -o /tmp/v111/capture_win11.pcap
+          echo 'cf478922f789926dab81f212a1a64d604b849068908c5c8885f42cdc32206ae3  /tmp/v111/capture_win11.pcap' | sha256sum -c -
+      - name: Run no-inference postmortem only
+        run: |
+          rm -f garuda_v3/artifacts/certification/v111/failure_postmortem.json
+          python -m garuda_v3.v111_failure_postmortem \
+            --pcap /tmp/v111/capture_win11.pcap \
+            --model garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v108/support_gate.json \
+            --output garuda_v3/artifacts/certification/v111/failure_postmortem.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('garuda_v3/artifacts/certification/v111/failure_postmortem.json').read_text())
+          assert r['model_inference_performed'] is False
+          assert r['state_metric_computed'] is False
+          assert r['support_metric_computed'] is False
+          print(json.dumps(r,indent=2))
+          PY
+      - name: Commit immutable postmortem
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v111/failure_postmortem.json
+          git commit -m 'evidence(v111): record no-inference failed-run postmortem'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
