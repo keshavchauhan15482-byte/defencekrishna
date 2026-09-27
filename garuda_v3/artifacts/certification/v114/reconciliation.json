@@ -1,0 +1,66 @@
+{
+  "schema_version": "v114-reconciliation.1",
+  "status": "IMMUTABLE_EXTERNAL_FAIL_RECONCILED",
+  "reason_for_reconciliation": "A concurrent evidence branch assigned V113 to CTU-Malware-Capture-Botnet-111-1 and merged it before the already-running Dridex one-shot completed. The Dridex run is not rerun or reinterpreted; V114 records its originally frozen V113 evidence by immutable commit/blob identity.",
+  "source_evidence": {
+    "branch": "feat/v113-dridex-fresh-one-shot",
+    "result_commit": "924187fd29a80f0ca73fad412221bb53e215910b",
+    "workflow_run_id": 36313967394,
+    "selection_freeze_blob_sha1": "26c186c00c12b2f8d011a93a635981ce997f7caf",
+    "acquisition_manifest_blob_sha1": "f6a53ece6edc089c7511ab0443f15bc552b217c0",
+    "preregistration_blob_sha1": "9d158ff5e8ac969372521593e9a75d6babaa2e90",
+    "one_shot_result_blob_sha1": "85a17abd0efcd7b520b8cb19d59d1ff8f8b2d982",
+    "original_schema_version": "v113.1",
+    "source_schema_preserved": true
+  },
+  "external_holdout": {
+    "dataset": "CTU-Malware-Capture-Botnet-326-1",
+    "capture": "2018-01-30_win10.pcap",
+    "malware_family": "Dridex",
+    "bytes": 202194456,
+    "sha256": "5ec0ad15e4eac30c4155fc9fe9ab66d1dd561f23e8eba029eda08ce9ad36aa48",
+    "md5": "fd87e6c90b2316b52972d9f67102be04",
+    "labels_accessed": false,
+    "consumed_and_quarantined": true
+  },
+  "frozen_runtime": {
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "adapter_contract_sha256": "2c48468ed2e608377c226137bb432ee85efb27cfcb4ba7052f893816976e2e8c",
+    "schema": "garuda-observed-graph-v46-ps-complete",
+    "feature_count": 34
+  },
+  "observed_result": {
+    "status": "FAIL",
+    "failure_class": "METRIC_OR_SUPPORT_GATE_FAIL",
+    "decoded_ipv4_packets": 330204,
+    "observed_windows": 88401,
+    "contiguous_sequences": 71,
+    "packet_features_present_mean_on_observed_nodes": 1.0,
+    "skipped_truncated_ethernet": 1,
+    "model_mse": 0.04367527226735926,
+    "persistence_mse": 0.03747135653166067,
+    "improvement_vs_persistence": -0.16556421517477532,
+    "beats_persistence": false,
+    "supported_sequences": 0,
+    "total_sequences": 71,
+    "supported_fraction": 0.0,
+    "support_threshold": 8.80609323395997,
+    "support_median_score": 18.333334140479582,
+    "support_max_score": 39.58333372138441,
+    "all_gates_passed": false
+  },
+  "integrity": {
+    "model_inference_performed_once": true,
+    "state_metric_computed": true,
+    "support_metric_computed": true,
+    "retrained_on_external": false,
+    "normalization_fit_on_external": false,
+    "support_fit_on_external": false,
+    "threshold_fit_on_external": false,
+    "adapter_changed_after_external_acquisition": false,
+    "rerun_for_claim_improvement": false
+  },
+  "claim_boundary": "This is sequential external recovery evidence from the same MCFP publisher family of captures, not publisher-independent replication. It is an immutable FAIL and does not certify unseen generalisation, attack recall/FPR, MITRE stages, or warning before successful compromise.",
+  "recovery_implication": "The tolerant parser resolved the V111 ingestion incompatibility, but the unchanged V108 state model and support contract still do not generalize to this external network distribution. Future recovery must be designed using development-only data and evaluated on a different untouched holdout selected after freeze."
+}
