@@ -1,0 +1,48 @@
+name: V124 exact-native five-stage certification
+on:
+  push:
+    branches: [feat/v124-native-five-stage-certification]
+    paths:
+      - 'garuda_v3/v124_native_five_stage_train.py'
+      - '.github/workflows/v124-native-five-stage-train.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - name: Install dependencies
+        run: python -m pip install 'numpy<2.1' scikit-learn
+      - name: Run exact-native five-stage certification
+        run: python -m garuda_v3.v124_native_five_stage_train --output garuda_v3/artifacts/certification/v124/five_stage_result.json
+      - name: Verify evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('garuda_v3/artifacts/certification/v124/five_stage_result.json')
+          r=json.loads(p.read_text())
+          assert r['schema_version']=='v124-five-stage.1'
+          assert r['proxy_mapping_used'] is False
+          assert len(r['stages'])==5
+          assert set(r['stages'])=={'Reconnaissance','Initial Access','Lateral Movement','Command and Control','Exfiltration'}
+          assert all(v['test']>=1 for v in r['source'].values())
+          print(json.dumps({'status':r['status'],'winner':r['selection']['winner'],'test':r['test'],'gates':r['gates']},indent=2))
+          PY
+      - name: Record immutable V124 result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v124/five_stage_result.json
+          git commit -m 'evidence(v124): record exact-native five-stage certification result'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v124-five-stage-evidence
+          path: garuda_v3/artifacts/certification/v124/five_stage_result.json
+          retention-days: 30
