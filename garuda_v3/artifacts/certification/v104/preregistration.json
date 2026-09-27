@@ -1,0 +1,89 @@
+{
+  "schema_version": "v104-prereg.1",
+  "status": "ACQUISITION_ONLY_HASH_PENDING",
+  "evaluation_permitted": false,
+  "registered_before_external_packet_decode": true,
+  "registered_candidate": {
+    "model_file": "garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz",
+    "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+    "support_gate_file": "garuda_v3/artifacts/certification/v101/support_gate.json",
+    "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3",
+    "adapter_contract_sha256": "65052c50704ad371ff7ad84fec6b74c7530d546a7916722c96a255b9b7c93841",
+    "pcap_reader_sha256": "91c978b54c5ca32fb9e30cde75e8abe7e7c9fc24655f49ea40291762feddab71",
+    "source_commit": "72c1eaf0f79754a3d8c5454b574ea201d3f9e68c",
+    "architecture": "gnn_lstm",
+    "schema": "garuda-observed-graph-v3.1",
+    "history_windows": 8,
+    "forecast_windows": 4,
+    "window_seconds": 10,
+    "mode": "service",
+    "max_nodes": 32,
+    "decoder": "residual",
+    "truncated_capture_mode": true
+  },
+  "external_holdout": {
+    "dataset": "CTU-IDSEVAL-6",
+    "version": "v1",
+    "publisher": "Stratosphere Laboratory, AIC, FEL, CTU in Prague",
+    "zenodo_record": "21027042",
+    "doi": "10.5281/zenodo.21027042",
+    "published_date": "2026-06-29",
+    "archive_filename": "pcap.zip",
+    "source_url": "https://zenodo.org/records/21027042/files/pcap.zip?download=1",
+    "official_archive_md5": "bb4476af2b9d4b8ce875dda88a0cca7b",
+    "publisher_archive_size_mb": 38.4,
+    "publisher_capture_count": 6,
+    "publisher_packet_count": 1106116,
+    "publisher_description": "one benign user capture, two malware captures, and three port-scan captures",
+    "archive_sha256": null,
+    "pcap_entries": null,
+    "freshness_audit": {
+      "repository_search_terms": ["CTU-IDSEVAL", "21027042"],
+      "prior_repository_use_found": false,
+      "selected_after_v103_freeze": true,
+      "ctu13_dataset": false,
+      "hikari": false,
+      "mawi": false,
+      "explicitly_disqualified_prior_fresh_datasets": [
+        "CIC-IDS-2018", "CICAPT-IIoT2024", "X-IIoTID", "CTU-13", "UNSW-NB15",
+        "IoT-23", "RT-IoT2022", "ToN-IoT", "HIKARI-2021", "MAWI-200601011400"
+      ]
+    }
+  },
+  "acquisition_rules": {
+    "allowed_before_hash_pin": [
+      "download exact registered pcap.zip URL",
+      "verify official archive MD5",
+      "compute archive SHA-256",
+      "inspect ZIP central-directory metadata only",
+      "record sorted entry names, compressed/uncompressed byte counts, and CRC values"
+    ],
+    "forbidden_before_hash_pin": [
+      "extract PCAP packet bytes",
+      "decode packet records",
+      "construct graph windows",
+      "run support scoring",
+      "run model inference",
+      "read labels.zip or Zeek labels",
+      "change model weights",
+      "change support threshold",
+      "change adapter mapping based on external traffic",
+      "select or drop captures based on external traffic"
+    ]
+  },
+  "one_shot_rules_after_hash_pin": {
+    "runs_allowed": 1,
+    "evaluation_unit": "all six PCAP captures in the registered archive, no cherry-picking",
+    "primary_gate": "aggregate element-weighted state forecast MSE across all compatible registered captures must be lower than aggregate persistence MSE",
+    "per_capture_metrics_reported": true,
+    "all_compatible_captures_included": true,
+    "retuning_after_result": false,
+    "rerun_for_claim_improvement": false,
+    "support_is_diagnostic_not_attack_detection": true,
+    "labels_accessed": false,
+    "risk_recall_fpr_claim": false,
+    "mitre_stage_claim": false,
+    "successful_compromise_warning_claim": false
+  },
+  "claim_boundary": "V104 is preregistered only for fresh external state-transition forecasting. No CTU-IDSEVAL-6 packet records or labels may be inspected until archive identity and entry metadata are frozen."
+}
