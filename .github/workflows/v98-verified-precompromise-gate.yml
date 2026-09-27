@@ -1,0 +1,86 @@
+name: V98 Verified Pre-Compromise Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/v67-ps9plus-evidence
+    paths:
+      - 'garuda_v3/v98_verified_precompromise_gate.py'
+      - 'garuda_v3/tests/test_v98_verified_precompromise_gate.py'
+      - 'garuda_v3/artifacts/certification/v98/**'
+      - '.github/workflows/v98-verified-precompromise-gate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verified-precompromise:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install test dependency
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Run V98 verifier tests
+        run: python -m pytest -q garuda_v3/tests/test_v98_verified_precompromise_gate.py
+
+      - name: Materialize independently verified V98 report
+        run: |
+          python garuda_v3/v98_verified_precompromise_gate.py \
+            --repo-root . \
+            --manifest garuda_v3/artifacts/certification/v98/verified_precompromise_manifest.json \
+            --output garuda_v3/artifacts/certification/v98/verified_precompromise_report.json \
+            --require-declared-match
+
+      - name: Enforce fail-closed report contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path(
+              'garuda_v3/artifacts/certification/v98/verified_precompromise_manifest.json'
+          ).read_text(encoding='utf-8'))
+          report = json.loads(Path(
+              'garuda_v3/artifacts/certification/v98/verified_precompromise_report.json'
+          ).read_text(encoding='utf-8'))
+
+          assert report['status'] == manifest['declared_status'], (
+              report['status'], manifest['declared_status']
+          )
+          assert report['v93_attack_step_lead_time_is_successful_compromise_evidence'] is False
+
+          if report['status'] == 'PASS':
+              assert report['lead_time_seconds'] is not None
+              assert report['lead_time_seconds'] > 0
+              assert report['campaign_id']
+              print(
+                  'V98 PASS: verified positive lead time to objective successful compromise:',
+                  report['lead_time_seconds'],
+                  'seconds; campaign=',
+                  report['campaign_id'],
+              )
+          else:
+              assert report['status'] == 'SHADOW_UNRESOLVED'
+              assert report['reasons'], 'unresolved state must explain why it is unresolved'
+              print('V98 correctly remains SHADOW_UNRESOLVED:')
+              for reason in report['reasons']:
+                  print('-', reason)
+          PY
+
+      - name: Upload V98 report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v98-verified-precompromise-report
+          path: garuda_v3/artifacts/certification/v98/verified_precompromise_report.json
+          if-no-files-found: error
