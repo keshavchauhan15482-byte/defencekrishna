@@ -1,0 +1,104 @@
+{
+  "aggregate_uncompressed_pcap_bytes": 112119601,
+  "archive_bytes": 38413013,
+  "archive_extracted": false,
+  "archive_filename": "pcap.zip",
+  "archive_md5": "bb4476af2b9d4b8ce875dda88a0cca7b",
+  "archive_sha256": "fa1da03ac3797f70747c62b89f12cc31305cc260f74162c6b8060aeb2e74c518",
+  "evaluation_performed": false,
+  "graph_windows_constructed": false,
+  "ignored_packaging_metadata_count": 1,
+  "ignored_packaging_metadata_entries": [
+    {
+      "compressed_bytes": 86,
+      "crc32_hex": "53ddcc7a",
+      "filename": "__MACOSX/._pcap",
+      "uncompressed_bytes": 163
+    }
+  ],
+  "labels_accessed": false,
+  "member_policy": "all 12 PCAP members are frozen for the one-shot; no PCAP selection/drop permitted",
+  "model_inference_performed": false,
+  "next_step": "Pin archive SHA-256 and the full sorted 12-member manifest into preregistration before any extraction or packet decode.",
+  "packaging_metadata_policy": "ignore only __MACOSX AppleDouble (._*) or .DS_Store central-directory entries; fail on every other non-PCAP payload",
+  "packet_records_decoded": false,
+  "pcap_entries": [
+    {
+      "compressed_bytes": 86,
+      "crc32_hex": "53ddcc7a",
+      "filename": "__MACOSX/pcap/._ctu-idseval-6-benign-user-traffic-1.pcap",
+      "uncompressed_bytes": 163
+    },
+    {
+      "compressed_bytes": 86,
+      "crc32_hex": "53ddcc7a",
+      "filename": "__MACOSX/pcap/._ctu-idseval-6-malicious-malware-1.pcap",
+      "uncompressed_bytes": 163
+    },
+    {
+      "compressed_bytes": 86,
+      "crc32_hex": "53ddcc7a",
+      "filename": "__MACOSX/pcap/._ctu-idseval-6-malicious-malware-2.pcap",
+      "uncompressed_bytes": 163
+    },
+    {
+      "compressed_bytes": 86,
+      "crc32_hex": "53ddcc7a",
+      "filename": "__MACOSX/pcap/._ctu-idseval-6-malicious-portscan-1.pcap",
+      "uncompressed_bytes": 163
+    },
+    {
+      "compressed_bytes": 86,
+      "crc32_hex": "53ddcc7a",
+      "filename": "__MACOSX/pcap/._ctu-idseval-6-malicious-portscan-2.pcap",
+      "uncompressed_bytes": 163
+    },
+    {
+      "compressed_bytes": 86,
+      "crc32_hex": "53ddcc7a",
+      "filename": "__MACOSX/pcap/._ctu-idseval-6-malicious-portscan-3.pcap",
+      "uncompressed_bytes": 163
+    },
+    {
+      "compressed_bytes": 8859346,
+      "crc32_hex": "5dc419e9",
+      "filename": "pcap/ctu-idseval-6-benign-user-traffic-1.pcap",
+      "uncompressed_bytes": 16753738
+    },
+    {
+      "compressed_bytes": 2383469,
+      "crc32_hex": "de688885",
+      "filename": "pcap/ctu-idseval-6-malicious-malware-1.pcap",
+      "uncompressed_bytes": 15598906
+    },
+    {
+      "compressed_bytes": 24706622,
+      "crc32_hex": "61628edb",
+      "filename": "pcap/ctu-idseval-6-malicious-malware-2.pcap",
+      "uncompressed_bytes": 69890363
+    },
+    {
+      "compressed_bytes": 36349,
+      "crc32_hex": "d75c05ca",
+      "filename": "pcap/ctu-idseval-6-malicious-portscan-1.pcap",
+      "uncompressed_bytes": 148670
+    },
+    {
+      "compressed_bytes": 3839,
+      "crc32_hex": "d277a240",
+      "filename": "pcap/ctu-idseval-6-malicious-portscan-2.pcap",
+      "uncompressed_bytes": 15246
+    },
+    {
+      "compressed_bytes": 2419484,
+      "crc32_hex": "1c9e9235",
+      "filename": "pcap/ctu-idseval-6-malicious-portscan-3.pcap",
+      "uncompressed_bytes": 9711700
+    }
+  ],
+  "pcap_entry_count": 12,
+  "publisher_logical_capture_count": 6,
+  "schema_version": "v104-acquisition.2",
+  "status": "HASH_AND_ENTRY_METADATA_FROZEN_MODEL_NOT_RUN",
+  "support_scoring_performed": false
+}
