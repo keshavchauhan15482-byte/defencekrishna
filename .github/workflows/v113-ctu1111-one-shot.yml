@@ -1,0 +1,175 @@
+name: V113 CTU 111-1 frozen one-shot
+
+on:
+  push:
+    branches: [feat/v113-ctu1111-fresh-one-shot]
+    paths:
+      - 'garuda_v3/v113_ctu1111_one_shot.py'
+      - 'garuda_v3/artifacts/certification/v113/selection_freeze.json'
+      - '.github/workflows/v113-ctu1111-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install runtime dependency
+        run: python -m pip install 'numpy<2.1'
+
+      - name: Verify frozen V112 candidate and pre-acquisition selection
+        run: |
+          python -m compileall -q garuda_v3/v113_ctu1111_one_shot.py
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          def sha(p):
+              h=hashlib.sha256()
+              with Path(p).open('rb') as f:
+                  for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+              return h.hexdigest()
+          s=json.loads(Path('garuda_v3/artifacts/certification/v113/selection_freeze.json').read_text())
+          v112=json.loads(Path('garuda_v3/artifacts/certification/v112/summary.json').read_text())
+          assert s['status']=='SELECTED_BEFORE_ACQUISITION'
+          assert s['selected_after_v112_merge_commit']=='94c791c0d4750c2fbc26abe4b652f53423e6591a'
+          assert s['external_holdout']['dataset']=='CTU-Malware-Capture-Botnet-111-1'
+          assert s['external_holdout']['capture']=='2015-03-09_capture-win10.pcap'
+          assert v112['status']=='DEV_TOLERANT_RUNTIME_PASS' and v112['recovery_gate_passed'] is True
+          assert v112['freeze']['new_external_holdout_selected'] is False
+          assert v112['adapter_contract_sha256']=='2c48468ed2e608377c226137bb432ee85efb27cfcb4ba7052f893816976e2e8c'
+          assert sha('garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz')=='f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed'
+          assert sha('garuda_v3/artifacts/certification/v108/support_gate.json')=='7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1'
+          assert not Path('garuda_v3/artifacts/certification/v113/acquisition_manifest.json').exists()
+          assert not Path('garuda_v3/artifacts/certification/v113/preregistration.json').exists()
+          assert not Path('garuda_v3/artifacts/certification/v113/one_shot_result.json').exists()
+          PY
+
+      - name: Acquire bytes and hash-freeze before any decode
+        run: |
+          mkdir -p /tmp/v113
+          URL='https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-111-1/2015-03-09_capture-win10.pcap'
+          curl --fail --location --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 1200 "$URL" -o /tmp/v113/2015-03-09_capture-win10.pcap
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v113'); root.mkdir(parents=True,exist_ok=True)
+          cap=Path('/tmp/v113/2015-03-09_capture-win10.pcap')
+          def digest(path,algo):
+              h=hashlib.new(algo)
+              with path.open('rb') as f:
+                  for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+              return h.hexdigest()
+          sha256=digest(cap,'sha256'); md5=digest(cap,'md5'); size=cap.stat().st_size
+          selection=json.loads((root/'selection_freeze.json').read_text())
+          acq={
+            'schema_version':'v113-acquisition.1','status':'HASH_FROZEN_NO_DECODE',
+            'dataset':selection['external_holdout']['dataset'],'capture':selection['external_holdout']['capture'],
+            'source_url':selection['external_holdout']['source_url'],'bytes':size,'sha256':sha256,'md5':md5,
+            'packet_records_decoded':False,'model_inference_performed':False,'labels_accessed':False
+          }
+          reg=json.loads(json.dumps(selection['registered_candidate']))
+          reg['one_shot_runner']='garuda_v3/v113_ctu1111_one_shot.py'
+          reg['one_shot_runner_sha256']=digest(Path(reg['one_shot_runner']),'sha256')
+          reg['pcap_reader_sha256']=digest(Path('garuda_v3/pcap_reader.py'),'sha256')
+          prereg={
+            'schema_version':'v113-prereg.1','status':'HASH_FROZEN_ONE_SHOT_ARMED',
+            'selected_after_v112_merge_commit':selection['selected_after_v112_merge_commit'],
+            'claim_boundary':selection['claim_boundary'],
+            'external_holdout':dict(selection['external_holdout'],bytes=size,sha256=sha256,md5=md5),
+            'registered_candidate':reg,'one_shot_gate':selection['one_shot_gate'],
+            'consumed_external_quarantine':selection['consumed_external_quarantine'],
+            'acquisition':{'manifest':'garuda_v3/artifacts/certification/v113/acquisition_manifest.json',
+                           'packet_decode_had_occurred':False,'model_inference_had_occurred':False,'labels_had_been_accessed':False},
+            'evaluation_permitted':True
+          }
+          (root/'acquisition_manifest.json').write_text(json.dumps(acq,indent=2)+'\n')
+          (root/'preregistration.json').write_text(json.dumps(prereg,indent=2)+'\n')
+          print(json.dumps({'bytes':size,'sha256':sha256,'md5':md5},indent=2))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add garuda_v3/artifacts/certification/v113/acquisition_manifest.json garuda_v3/artifacts/certification/v113/preregistration.json
+          git commit -m 'evidence(v113): hash-freeze CTU 111-1 before decode'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Run frozen one-shot exactly once
+        id: score
+        continue-on-error: true
+        run: |
+          python -m garuda_v3.v113_ctu1111_one_shot \
+            --pcap /tmp/v113/2015-03-09_capture-win10.pcap \
+            --model garuda_v3/artifacts/certification/v108/gnn_lstm_ps_complete_candidate.npz \
+            --support-gate garuda_v3/artifacts/certification/v108/support_gate.json \
+            --prereg garuda_v3/artifacts/certification/v113/preregistration.json \
+            --acquisition garuda_v3/artifacts/certification/v113/acquisition_manifest.json \
+            --output garuda_v3/artifacts/certification/v113/one_shot_result.json
+
+      - name: Seal immutable execution outcome
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v113')
+          result=root/'one_shot_result.json'
+          if result.exists():
+              r=json.loads(result.read_text())
+              execution={'schema_version':'v113-execution.1','status':'SCORING_COMPLETED','one_shot_status':r['status'],
+                         'model_inference_completed':True,'result_file':result.name,'result_improving_rerun_permitted':False}
+          else:
+              execution={'schema_version':'v113-execution.1','status':'SCORING_EXECUTION_FAILED',
+                         'model_inference_completed':False,'result_file':None,
+                         'claim_boundary':'No PASS is created. Inspect the original exactly-once workflow log; the holdout is consumed after packet decode began.',
+                         'result_improving_rerun_permitted':False}
+          (root/'execution_manifest.json').write_text(json.dumps(execution,indent=2)+'\n')
+          print(json.dumps(execution,indent=2))
+          PY
+          git add garuda_v3/artifacts/certification/v113
+          if git diff --cached --quiet; then
+            echo 'V113 outcome already sealed'
+          else
+            git commit -m 'evidence(v113): seal immutable CTU 111-1 one-shot outcome'
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Verify a non-pass cannot be silently promoted
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v113')
+          e=json.loads((root/'execution_manifest.json').read_text())
+          assert e['result_improving_rerun_permitted'] is False
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          assert p['external_holdout']['sha256']==a['sha256']
+          assert p['external_holdout']['md5']==a['md5']
+          assert p['external_holdout']['bytes']==a['bytes']
+          if e['status']=='SCORING_COMPLETED':
+              r=json.loads((root/'one_shot_result.json').read_text())
+              assert r['status'] in {'PASS','FAIL'}
+              assert r['one_shot_integrity']['rerun_for_claim_improvement'] is False
+          PY
+
+      - name: Upload immutable V113 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v113-ctu1111-one-shot-evidence
+          path: garuda_v3/artifacts/certification/v113/*
+          if-no-files-found: error
+          retention-days: 30

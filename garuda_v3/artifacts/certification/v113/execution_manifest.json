@@ -1,0 +1,8 @@
+{
+  "schema_version": "v113-execution.1",
+  "status": "SCORING_COMPLETED",
+  "one_shot_status": "FAIL",
+  "model_inference_completed": true,
+  "result_file": "one_shot_result.json",
+  "result_improving_rerun_permitted": false
+}

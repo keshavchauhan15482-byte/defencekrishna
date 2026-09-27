@@ -1,0 +1,94 @@
+{
+  "schema_version": "v113.1",
+  "status": "FAIL",
+  "gate": {
+    "minimum_total_sequences": 32,
+    "minimum_supported_fraction": 0.5,
+    "requires_model_mse_strictly_less_than_persistence_mse": true,
+    "requires_improvement_strictly_greater_than_zero": true,
+    "total_sequences_gate_passed": true,
+    "support_gate_passed": false,
+    "persistence_gate_passed": false,
+    "positive_improvement_gate_passed": false,
+    "all_gates_passed": false
+  },
+  "dataset": {
+    "name": "CTU-Malware-Capture-Botnet-111-1",
+    "capture": "2015-03-09_capture-win10.pcap",
+    "bytes": 98935111,
+    "sha256": "510e9bc5237b037e240c0064bcba3c073e2363abaecf6a20478c361f5f6ec613",
+    "md5": "30d9d94a9362d5e812963ccdeee90c46",
+    "source_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-111-1/2015-03-09_capture-win10.pcap",
+    "labels_accessed": false
+  },
+  "frozen_runtime": {
+    "model_sha256": "f063ae8c890f9e805c913c02c92b8174cc1d58552514484ea2ef723611258fed",
+    "support_gate_sha256": "7006671148e0dba3be55a2fe27a2fd17d3a7ece030dbcddd599c7aaa7f5368c1",
+    "adapter_contract_sha256": "2c48468ed2e608377c226137bb432ee85efb27cfcb4ba7052f893816976e2e8c",
+    "contract": {
+      "architecture": "gnn_lstm",
+      "history": 8,
+      "horizon": 4,
+      "decoder": "residual",
+      "mode": "service",
+      "window_seconds": 10,
+      "max_nodes": 32,
+      "schema": "garuda-observed-graph-v46-ps-complete",
+      "feature_count": 34
+    },
+    "packet_features_trained": true,
+    "ps_complete_features_trained": true,
+    "adapter_mode": "pre-existing V112 allow_truncated=True audited decoder"
+  },
+  "capture_processing": {
+    "decoded_ipv4_packets": 201750,
+    "packet_limit": 2000000,
+    "observed_windows": 1645,
+    "contiguous_sequences": 198,
+    "first_window_epoch": 10,
+    "last_window_epoch": 428280,
+    "cutoff_timestamps_sha256": "44b7a56b1611b748016fc8499647037375a6abf5bb8fb2a4f1523d0fd0f62ecc",
+    "packet_features_present_mean_on_observed_nodes": 1.0,
+    "parser_audit": {
+      "decoded_ipv4": 201750,
+      "full_tcp": 199220,
+      "full_udp": 2452,
+      "degraded_short_ip_options": 0,
+      "degraded_short_tcp": 0,
+      "degraded_short_udp": 0,
+      "nonfirst_fragment": 0,
+      "other_protocol": 78,
+      "skipped_truncated_ethernet": 0,
+      "skipped_truncated_vlan": 0,
+      "skipped_truncated_ipv4_header": 0,
+      "non_ipv4": 1130
+    }
+  },
+  "state_forecasting": {
+    "model_mse": 0.02790009458490505,
+    "persistence_mse": 0.024904883948358096,
+    "improvement_vs_persistence": -0.12026599452371338,
+    "beats_persistence": false
+  },
+  "runtime_support": {
+    "method": "max robust standardized history-summary deviation",
+    "threshold": 8.80609323395997,
+    "supported_sequences": 0,
+    "total_sequences": 198,
+    "supported_fraction": 0.0,
+    "median_score": 45.513727089696985,
+    "max_score": 49.76274114503133,
+    "interpretation": "training-support diagnostic only; outside support is not attack/OOD detection"
+  },
+  "one_shot_integrity": {
+    "runs_allowed_for_claim": 1,
+    "retrained_on_external": false,
+    "normalization_fit_on_external": false,
+    "support_fit_on_external": false,
+    "threshold_fit_on_external": false,
+    "adapter_changed_after_external_packet_decode": false,
+    "labels_accessed": false,
+    "rerun_for_claim_improvement": false
+  },
+  "claim_boundary": "Fresh external one-shot state-transition forecasting only. No attack recall/FPR, MITRE-stage, or successful-compromise warning claim is made."
+}
