@@ -1,0 +1,32 @@
+{
+  "schema_version": "v104-closure.1",
+  "status": "INCOMPATIBLE_AFTER_CONSUMPTION",
+  "dataset": "CTU-IDSEVAL-6",
+  "zenodo_record": "21027042",
+  "archive_sha256": "fa1da03ac3797f70747c62b89f12cc31305cc260f74162c6b8060aeb2e74c518",
+  "github_run_id": 36308945792,
+  "result_commit": "96e06525a2eef088f9feee470dcfb7ef458ec70b",
+  "external_holdout_consumed": true,
+  "rerun_permitted_for_claim_improvement": false,
+  "performance_gate_evaluated": false,
+  "labels_accessed": false,
+  "registered_real_pcap_members": 6,
+  "failure": {
+    "type": "external parser compatibility failure",
+    "message": "Truncated Ethernet frame",
+    "location": "garuda_v3/pcap_reader.py::_decode_ipv4",
+    "graph_state_forecasting_metrics_produced": false
+  },
+  "quarantine": {
+    "forbid_training_or_finetuning": true,
+    "forbid_normalization_fit": true,
+    "forbid_support_fit": true,
+    "forbid_threshold_fit": true,
+    "forbid_parser_or_adapter_selection": true,
+    "forbid_checkpoint_or_hyperparameter_selection": true,
+    "forbid_claim_improving_rerun": true,
+    "postmortem_only": true
+  },
+  "next_gate": "Develop parser hardening from protocol specifications plus synthetic or non-consumed development captures only; freeze model/parser/adapter/support contracts; then select a different genuinely untouched external holdout for exactly one evaluation.",
+  "claim_boundary": "V104 is compatibility evidence only. It does not certify fresh external state-transition generalisation, attack recall/FPR, MITRE-stage accuracy, or warning before successful compromise."
+}

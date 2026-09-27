@@ -1,0 +1,30 @@
+name: V104 CTU-IDSEVAL-6 acquisition freeze (archived)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  archived-acquisition-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify acquisition phase is already frozen
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('garuda_v3/artifacts/certification/v104/acquisition_manifest.json').read_text())
+          assert a['schema_version']=='v104-acquisition.3'
+          assert a['status']=='HASH_AND_ENTRY_METADATA_FROZEN_MODEL_NOT_RUN'
+          assert a['archive_md5']=='bb4476af2b9d4b8ce875dda88a0cca7b'
+          assert a['archive_sha256']=='fa1da03ac3797f70747c62b89f12cc31305cc260f74162c6b8060aeb2e74c518'
+          assert a['pcap_entry_count']==6
+          assert a['ignored_packaging_metadata_count']==7
+          assert a['archive_extracted'] is False
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          print('V104 acquisition evidence is frozen; use the one-shot workflow for the next stage.')
+          PY

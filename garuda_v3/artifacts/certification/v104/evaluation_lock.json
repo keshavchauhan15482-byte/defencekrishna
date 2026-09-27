@@ -1,0 +1,18 @@
+{
+  "adapter_contract_sha256": "65052c50704ad371ff7ad84fec6b74c7530d546a7916722c96a255b9b7c93841",
+  "archive_sha256": "fa1da03ac3797f70747c62b89f12cc31305cc260f74162c6b8060aeb2e74c518",
+  "dataset": "CTU-IDSEVAL-6",
+  "evaluator_git_blob_sha1": "515d0fea5608065ac0a4bcbe8c7dff6a4c714623",
+  "github_run_id": "36308945792",
+  "github_sha_before_lock": "d09bb97985a4e1b615f489098db009b9081e7e59",
+  "model_inference_before_lock": false,
+  "model_sha256": "30694adf0819e6ffd79079512a348059195dcc651d7f0b4d5049e278b4d7cb79",
+  "packet_members_extracted_before_lock": false,
+  "packet_records_decoded_before_lock": false,
+  "pcap_reader_sha256": "91c978b54c5ca32fb9e30cde75e8abe7e7c9fc24655f49ea40291762feddab71",
+  "registered_real_pcap_members": 6,
+  "rerun_for_claim_improvement_permitted": false,
+  "schema_version": "v104-lock.1",
+  "status": "ONE_SHOT_CONSUMED_BEFORE_MEMBER_EXTRACTION",
+  "support_gate_sha256": "2f281593f163ba3e4bbed592ea41eeaa1c8d5e3dfe49de933473b15fe6c17df3"
+}
