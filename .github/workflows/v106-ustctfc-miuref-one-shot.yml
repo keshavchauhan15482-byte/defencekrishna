@@ -1,0 +1,193 @@
+name: V106 USTC-TFC2016 Miuref frozen external one-shot
+
+on:
+  push:
+    branches: [feat/v106-ustctfc-miuref-preregister]
+    paths:
+      - '.github/workflows/v106-ustctfc-miuref-one-shot.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v106-ustctfc-miuref-one-shot
+  cancel-in-progress: false
+
+jobs:
+  frozen-one-shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: 1
+      OMP_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
+      PYTHONHASHSEED: 0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Verify frozen runtime and evaluator before external decode
+        run: |
+          python -m pip install 'numpy<2.1'
+          python -m compileall -q garuda_v3/v106_ustctfc_miuref_one_shot.py
+          test ! -e garuda_v3/artifacts/certification/v106/evaluation_lock.json
+          test ! -e garuda_v3/artifacts/certification/v106/one_shot_result.json
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v106')
+          p=json.loads((root/'preregistration.json').read_text())
+          a=json.loads((root/'acquisition_manifest.json').read_text())
+          assert p['schema_version']=='v106-prereg.3'
+          assert p['status']=='HASH_FROZEN_ONE_SHOT_ARMED'
+          assert p['evaluation_permitted'] is True
+          assert a['status']=='HASH_FROZEN_MODEL_NOT_RUN'
+          assert a['packet_records_decoded'] is False
+          assert a['model_inference_performed'] is False
+          def sha256(path):
+              h=hashlib.sha256()
+              with open(path,'rb') as f:
+                  for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+              return h.hexdigest()
+          assert sha256(p['registered_candidate']['model_file'])==p['registered_candidate']['model_sha256']
+          assert sha256(p['registered_candidate']['support_gate_file'])==p['registered_candidate']['support_gate_sha256']
+          assert sha256('garuda_v3/pcap_reader.py')==p['registered_candidate']['pcap_reader_sha256']
+          assert sha256(p['one_shot_runner']['path'])==p['one_shot_runner']['sha256']
+          print('V106 model, support gate, adapter reader and evaluator identities verified')
+          PY
+
+      - name: Download and verify exact hash-frozen Miuref capture
+        run: |
+          mkdir -p datasets/v106
+          curl -L --fail --retry 4 --retry-all-errors --retry-delay 3 --connect-timeout 30 \
+            -o datasets/v106/Miuref.pcap \
+            'https://raw.githubusercontent.com/davidyslu/USTC-TFC2016/master/Malware/Miuref.pcap'
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=json.loads(Path('garuda_v3/artifacts/certification/v106/preregistration.json').read_text())
+          f=Path('datasets/v106/Miuref.pcap')
+          data=f.read_bytes()
+          assert len(data)==p['external_holdout']['expected_bytes']
+          assert hashlib.sha256(data).hexdigest()==p['external_holdout']['sha256']
+          assert hashlib.md5(data).hexdigest()==p['external_holdout']['md5']
+          print('Exact V106 capture identity verified; packet decode has not started')
+          PY
+
+      - name: Consume one-shot before packet decode
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v106')
+          assert not (root/'evaluation_lock.json').exists()
+          assert not (root/'one_shot_result.json').exists()
+          p=json.loads((root/'preregistration.json').read_text())
+          lock={
+            'schema_version':'v106-lock.1',
+            'status':'ONE_SHOT_CONSUMED_BEFORE_PACKET_DECODE',
+            'github_run_id':os.environ.get('GITHUB_RUN_ID'),
+            'github_sha_before_lock':os.environ.get('GITHUB_SHA'),
+            'dataset':'USTC-TFC2016',
+            'capture':'Malware/Miuref.pcap',
+            'capture_sha256':p['external_holdout']['sha256'],
+            'model_sha256':p['registered_candidate']['model_sha256'],
+            'support_gate_sha256':p['registered_candidate']['support_gate_sha256'],
+            'adapter_contract_sha256':p['registered_candidate']['adapter_contract_sha256'],
+            'pcap_reader_sha256':p['registered_candidate']['pcap_reader_sha256'],
+            'evaluator_sha256':p['one_shot_runner']['sha256'],
+            'packet_records_decoded_before_lock':False,
+            'model_inference_before_lock':False,
+            'rerun_for_claim_improvement_permitted':False
+          }
+          (root/'evaluation_lock.json').write_text(json.dumps(lock,indent=2,sort_keys=True)+'\n')
+          PY
+          git add -f garuda_v3/artifacts/certification/v106/evaluation_lock.json
+          git commit -m 'evidence(v106): consume Miuref one-shot before packet decode'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Execute single frozen external evaluation
+        run: |
+          python - <<'PY'
+          import json,subprocess,sys
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v106')
+          output=root/'one_shot_result.json'
+          cmd=[
+            sys.executable,'-m','garuda_v3.v106_ustctfc_miuref_one_shot',
+            '--pcap','datasets/v106/Miuref.pcap',
+            '--model','garuda_v3/artifacts/certification/v101/gnn_lstm_packet_candidate.npz',
+            '--support-gate','garuda_v3/artifacts/certification/v101/support_gate.json',
+            '--prereg',str(root/'preregistration.json'),
+            '--acquisition',str(root/'acquisition_manifest.json'),
+            '--output',str(output),
+          ]
+          proc=subprocess.run(cmd,text=True,capture_output=True)
+          if proc.stdout: print(proc.stdout)
+          if proc.stderr: print(proc.stderr,file=sys.stderr)
+          if proc.returncode != 0:
+            assert not output.exists(), 'Evaluator failed after writing unexpected result'
+            p=json.loads((root/'preregistration.json').read_text())
+            lock=json.loads((root/'evaluation_lock.json').read_text())
+            report={
+              'schema_version':'v106.1',
+              'status':'INCOMPATIBLE',
+              'performance_gate_evaluated':False,
+              'external_holdout_consumed':True,
+              'rerun_permitted_for_claim_improvement':False,
+              'dataset':{'name':'USTC-TFC2016','capture':'Malware/Miuref.pcap','sha256':p['external_holdout']['sha256'],'labels_accessed':False},
+              'frozen_runtime':{'model_sha256':p['registered_candidate']['model_sha256'],'support_gate_sha256':p['registered_candidate']['support_gate_sha256'],'adapter_contract_sha256':p['registered_candidate']['adapter_contract_sha256'],'pcap_reader_sha256':p['registered_candidate']['pcap_reader_sha256'],'evaluator_sha256':p['one_shot_runner']['sha256']},
+              'one_shot_lock':lock,
+              'failure':{'return_code':proc.returncode,'stderr_tail':proc.stderr[-4000:]},
+              'claim_boundary':'Consumed fresh external compatibility result only; no generalisation performance claim.'
+            }
+            output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
+          PY
+
+      - name: Verify immutable result boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('garuda_v3/artifacts/certification/v106')
+          d=json.loads((root/'one_shot_result.json').read_text())
+          lock=json.loads((root/'evaluation_lock.json').read_text())
+          assert d['schema_version']=='v106.1'
+          assert d['status'] in {'PASS','FAIL','INCOMPATIBLE'}
+          assert lock['status']=='ONE_SHOT_CONSUMED_BEFORE_PACKET_DECODE'
+          if d['status'] in {'PASS','FAIL'}:
+            g=d['gate']
+            expected=bool(g['total_sequences_gate_passed'] and g['support_gate_passed'] and g['persistence_gate_passed'])
+            assert g['all_gates_passed']==expected
+            assert (d['status']=='PASS')==expected
+            assert d['dataset']['labels_accessed'] is False
+            assert d['one_shot_integrity']['rerun_for_claim_improvement'] is False
+          else:
+            assert d['performance_gate_evaluated'] is False
+            assert d['external_holdout_consumed'] is True
+            assert d['rerun_permitted_for_claim_improvement'] is False
+          print(json.dumps(d,indent=2))
+          PY
+
+      - name: Record immutable V106 result
+        run: |
+          git add -f garuda_v3/artifacts/certification/v106/one_shot_result.json
+          git commit -m 'evidence(v106): record first frozen USTC-TFC2016 Miuref one-shot'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Upload V106 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v106-ustctfc-miuref-one-shot-evidence
+          path: |
+            garuda_v3/artifacts/certification/v106/preregistration.json
+            garuda_v3/artifacts/certification/v106/acquisition_manifest.json
+            garuda_v3/artifacts/certification/v106/evaluation_lock.json
+            garuda_v3/artifacts/certification/v106/one_shot_result.json
+          if-no-files-found: error
+          retention-days: 30
