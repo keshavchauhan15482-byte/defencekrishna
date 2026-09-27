@@ -1,9 +1,10 @@
 """Krishna Defence integrated server: Garuda runtime + evidence/policy bridge.
 
-The live checkpoint is resolved through a fail-closed, integrity-pinned runtime bundle
-manifest.  The model itself is additionally SHA-256 checked by ForecastService.  Newer
-research evidence may decorate the runtime, but it does not silently replace the live
-checkpoint until a compatible bundle is explicitly pinned.
+The live risk/response checkpoint is resolved through a fail-closed, integrity-pinned
+runtime bundle manifest.  V127 additionally exposes the V123-qualified PS-complete
+state forecaster as a second, state-only runtime for PCAP analysis.  The two runtimes
+are deliberately not conflated: V123 has no trained risk or stage head, so it cannot
+silently replace the risk/response checkpoint.
 """
 from __future__ import annotations
 
@@ -15,6 +16,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from .bundle_manifest import bundle_public_metadata, resolve_active_bundle
+from .latest_state_runtime import LatestStateForecastService, LatestStateRuntimeError
 from .response import ResponseCoordinator
 from .server import App, Handler, Server
 from .ui_contract import harden_ui_asset
@@ -71,6 +73,9 @@ class IntegratedApp(App):
         super().__init__(artifacts, runtime, reader_token, operator_token, policy_key, allowed_cidrs, enforce, lab_automation)
         self.bundle_metadata = dict(bundle_metadata or {})
         self.v15 = V15EvidenceBridge()
+        # V127 dual-runtime integration. Startup fails closed if any V116/V118/V122
+        # pin drifts or the V123 evidence is no longer PASS.
+        self.latest_state = LatestStateForecastService()
         self.response = ResponseCoordinator(
             self.policy,
             lab_automation,
@@ -91,17 +96,44 @@ class IntegratedApp(App):
             forecast['stage_status'] = 'Unresolved: V94 runtime support gate did not validate this telemetry for stage-specific or autonomous interpretation.'
         forecast = self.v15.decorate_forecast(forecast)
         forecast['runtime_bundle'] = self.bundle_metadata
+        forecast['latest_state_runtime'] = self.latest_state.public_status()
         forecast['defence_signal'] = self.response.observe(forecast, payload)
         forecast['automatic_containment'] = forecast['defence_signal'].get('policy', {}).get('status') == 'active'
         forecast['containment_scope'] = 'armed_lab_only; V94 runtime support and latest unknown-forecast evidence gates must both approve autonomous containment'
         forecast['krishna_system'] = {
-            'garuda_runtime_model': 'integrity-pinned graph forecaster',
-            'garuda_latest_evidence': 'research evidence is separate from the pinned runtime checkpoint',
+            'garuda_risk_runtime': 'integrity-pinned legacy graph forecaster for risk/response compatibility',
+            'garuda_state_runtime': 'V123-qualified 34-feature packet GraphSAGE+LSTM state forecaster; PCAP analysis path',
+            'runtime_separation': 'V123 state model has no trained risk/stage head and cannot authorize containment',
             'arjuna': 'reviewed exact-memory / known-rule path; autonomous action suppressed when runtime support is unresolved',
             'krishna': 'unknown forecast triage; shadow unless runtime-support and evidence gates approve autonomy',
             'sudarshana': 'operator-scoped signed containment / breach escalation; forecast-driven autonomy is support-gated',
         }
         return forecast
+
+    def analyze(self, content, kind, mode):
+        result = super().analyze(content, kind, mode)
+        if kind == 'pcap' and mode == 'service':
+            try:
+                result['latest_state_forecast'] = self.latest_state.analyze_pcap(content)
+            except (LatestStateRuntimeError, ValueError, KeyError, TypeError, OSError) as exc:
+                # The legacy risk analysis can still be shown. The latest state path
+                # fails closed and never turns parser/runtime failure into a clean result.
+                result['latest_state_forecast'] = {
+                    'status': 'UNAVAILABLE',
+                    'reason': str(exc),
+                    'automatic_containment': False,
+                    'risk_probability': None,
+                    'mitre_stage': None,
+                }
+        else:
+            result['latest_state_forecast'] = {
+                'status': 'NOT_APPLICABLE',
+                'reason': 'V123 live state runtime currently requires service-mode raw PCAP packet telemetry.',
+                'automatic_containment': False,
+                'risk_probability': None,
+                'mitre_stage': None,
+            }
+        return result
 
     def integrated_status(self):
         support_gate_present = self.service.support_gate is not None
@@ -109,6 +141,12 @@ class IntegratedApp(App):
             'runtime_bundle': self.bundle_metadata,
             'runtime_model': self.service.meta,
             'runtime_model_sha256': self.service.model_hash,
+            'latest_state_runtime': self.latest_state.public_status(),
+            'runtime_architecture': {
+                'risk_response_runtime': 'legacy pinned checkpoint; risk/response compatibility',
+                'state_forecast_runtime': 'V116+V118+V122 runtime qualified by V123 fresh external PASS',
+                'outputs_are_not_conflated': True,
+            },
             'runtime_support_gate': {
                 'present': support_gate_present,
                 'policy': 'validation-fitted support gate required for forecast-driven autonomous action',
@@ -171,7 +209,7 @@ def main():
     server = Server(('127.0.0.1', args.port), app)
     server.RequestHandlerClass = IntegratedHandler
     print(
-        f"Krishna Defence + Garuda pinned bundle {bundle_metadata.get('bundle_id')}: "
+        f"Krishna Defence + Garuda dual runtime {bundle_metadata.get('bundle_id')} + V123 state: "
         f"http://127.0.0.1:{server.server_port}. Dry-run by default.",
         flush=True,
     )
