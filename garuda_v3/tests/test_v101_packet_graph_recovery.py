@@ -49,7 +49,7 @@ def test_support_fit_centers_packet_presence_from_training_only():
 
     gate = fit_support_gate(x_train, mask, x_valid, mask)
     assert gate["center"][idx] == pytest.approx(1.0)
-    assert gate["scale"][idx] >= 0.02
+    assert gate["scale"][idx] == pytest.approx(0.02, rel=1e-6, abs=1e-9)
     assert np.isfinite(gate["threshold"])
 
 
