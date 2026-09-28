@@ -11,7 +11,7 @@ import start_local
 ROOT = Path(__file__).resolve().parent
 ENGINE_URL = "http://127.0.0.1:8090"
 CONSOLE_URL = "http://127.0.0.1:8091/console.html"
-EXPECTED_BUILD = "v131-main-console"
+EXPECTED_BUILD = "v132-nationals-console"
 
 
 def console_is_current() -> bool:
