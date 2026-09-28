@@ -1,5 +1,5 @@
 @echo off
 cd /d "%~dp0"
-py -3 start_local.py
-if errorlevel 1 python start_local.py
+py -3 start_main_console.py
+if errorlevel 1 python start_main_console.py
 pause
