@@ -1,7 +1,7 @@
 """Serve the actual orange/charcoal console.html as the main Krishna Defence site.
 
 This wraps the existing localhost bridge but guarantees that console.html is the UI surface,
-then applies the V131 nationals presentation overlay after the legacy integration assets.
+then applies the nationals presentation overlays after the legacy integration assets.
 """
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from urllib.parse import urlsplit
 
 from . import legacy_console as legacy
 
-CONSOLE_BUILD = "v131-main-console"
+CONSOLE_BUILD = "v132-nationals-console"
 
 
 def _inject_console() -> bytes:
@@ -20,6 +20,7 @@ def _inject_console() -> bytes:
     tags = [
         '<link rel="stylesheet" href="/console-integrated.css">',
         '<link rel="stylesheet" href="/console-v131-overlay.css">',
+        '<link rel="stylesheet" href="/console-v132-extra.css">',
     ]
     for tag in tags:
         if tag not in html:
@@ -27,6 +28,7 @@ def _inject_console() -> bytes:
     scripts = [
         '<script src="/console-integrated.js"></script>',
         '<script src="/console-v131-overlay.js"></script>',
+        '<script src="/console-v132-extra.js"></script>',
     ]
     for tag in scripts:
         if tag not in html:
@@ -35,7 +37,7 @@ def _inject_console() -> bytes:
 
 
 class MainConsoleHandler(legacy.LegacyConsoleHandler):
-    server_version = "KrishnaMainConsole/131"
+    server_version = "KrishnaMainConsole/132"
 
     def do_GET(self) -> None:
         url = urlsplit(self.path)
@@ -48,6 +50,10 @@ class MainConsoleHandler(legacy.LegacyConsoleHandler):
                 return self._send(200, (legacy.UI / "console-v131-overlay.js").read_bytes(), "application/javascript")
             if url.path == "/console-v131-overlay.css":
                 return self._send(200, (legacy.UI / "console-v131-overlay.css").read_bytes(), "text/css")
+            if url.path == "/console-v132-extra.js":
+                return self._send(200, (legacy.UI / "console-v132-extra.js").read_bytes(), "application/javascript")
+            if url.path == "/console-v132-extra.css":
+                return self._send(200, (legacy.UI / "console-v132-extra.css").read_bytes(), "text/css")
             if url.path == "/health":
                 return self._json(200, {
                     "status": "alive",
