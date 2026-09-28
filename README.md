@@ -1,36 +1,43 @@
 # Krishna Defence System — Garuda AI
 
 > **Smart India Hackathon 2026 · SIH26153**  
-> **AI-based Network Attack Forecasting from Network Traffic Data**
+> **Forecast-first cyber defence using network-state world modelling**
 
 [![Krishna Defence CI](https://github.com/keshavchauhan15482-byte/defencekrishna/actions/workflows/krishna-integration-ci.yml/badge.svg)](https://github.com/keshavchauhan15482-byte/defencekrishna/actions/workflows/krishna-integration-ci.yml)
-[![V48 Unseen-Family Benchmark](https://github.com/keshavchauhan15482-byte/defencekrishna/actions/workflows/v48-unseen-fusion.yml/badge.svg)](https://github.com/keshavchauhan15482-byte/defencekrishna/actions/workflows/v48-unseen-fusion.yml)
-[![V52 Timeline Audit](https://github.com/keshavchauhan15482-byte/defencekrishna/actions/workflows/v52-recovered-timeline.yml/badge.svg)](https://github.com/keshavchauhan15482-byte/defencekrishna/actions/workflows/v52-recovered-timeline.yml)
 
-**Krishna Defence** is an offline-first cyber-defence research prototype that learns evolving network state, forecasts malicious progression before the next observed traffic state, and routes evidence into three defensive lanes:
+**Krishna Defence System** is an offline-first SIH research prototype that models evolving network behaviour, forecasts future network state over multiple horizons, and turns those predicted trajectories into explainable risk evidence for defensive decision support.
 
-- **Arjuna** — reviewed known-threat detection and blocking.
-- **Krishna** — novel / unsupported threat investigation, evidence retention and learning.
-- **Sudarshana** — scoped, operator-approved lockdown controls with expiry and auditability.
+It is designed to answer one question:
 
-The forecasting core, **Garuda AI**, is an autoregressive network-state world-model approximation built around temporal and graph learning. The project is designed around a simple question:
-
-> **Can we move from reacting to an attack after it is obvious to forecasting dangerous network evolution early enough to act?**
+> **Can we see dangerous network evolution before a conventional reactive IDS would only label the present traffic?**
 
 ---
 
-## Why this project matters
+## Evaluator quick path
 
-Traditional IDS/WAF pipelines primarily classify what traffic **is now**. SIH26153 asks for something harder: model the evolving network state and forecast what is likely to happen **next**.
+If you are reviewing this repository for SIH, use this order:
 
-Krishna Defence therefore separates four jobs that are often incorrectly collapsed into one score:
+1. **Run the main demo** — follow [Quick Setup](#quick-setup--main-demo).
+2. **See the architecture** — read [System Architecture](#system-architecture).
+3. **Check the strongest verified results** — open [`docs/release/FINAL_SIH_EVIDENCE.md`](docs/release/FINAL_SIH_EVIDENCE.md).
+4. **Inspect the forecasting implementation** — open [`garuda_v3/`](garuda_v3/).
+5. **See the complete document map** — open [`docs/README.md`](docs/README.md).
 
-1. **Observe** network telemetry and construct time-ordered state representations.
-2. **Forecast** future network state over multiple steps.
-3. **Estimate risk / progression** from the predicted trajectory.
-4. **Respond safely** through reviewed, scoped and auditable controls.
+The front-facing SIH dashboard is **`console.html`**, served through the local main-console bridge on port **8091** and connected to the Garuda inference engine on port **8090**.
 
-This separation lets the repository report forecasting evidence, unseen-family generalisation, stage/timeline readiness and enforcement readiness independently instead of presenting one inflated “accuracy” number.
+---
+
+## What makes Krishna different?
+
+| Traditional IDS / classifier | Krishna Defence / Garuda AI |
+|---|---|
+| Classifies current traffic | Models how network state evolves |
+| Per-flow or per-window reaction | Multi-step future-state rollout |
+| Primarily reactive | Forecast-first decision support |
+| One score can hide uncertainty | Forecast, support, stage and response evidence are separated |
+| Often cloud/service dependent | Primary SIH demo runs locally |
+
+The system deliberately keeps **forecasting quality**, **attack-warning evidence**, **stage evidence**, **runtime support**, and **response authorization** as separate claim lanes.
 
 ---
 
@@ -38,94 +45,94 @@ This separation lets the repository report forecasting evidence, unseen-family g
 
 ```mermaid
 flowchart LR
-    A[PCAP / CSV / Flow Telemetry] --> B[Feature + Graph Builder]
-    B --> C[Observed State Sequence S_t]
-    C --> D[Garuda AI\nLSTM + Graph Dynamics]
-    D --> E[K-step Future State Forecast]
-    E --> F[Risk + Transition Evidence]
-    F --> G{Defence Router}
-    G --> H[Arjuna\nKnown Threat Response]
-    G --> I[Krishna\nNovel / Unsupported Analysis]
-    G --> J[Sudarshana\nScoped Lockdown]
-    E --> K[Explainability + Timeline]
-    F --> K
-    H --> L[Audit / Evidence]
-    I --> L
-    J --> L
+    A[PCAP / Flow Telemetry] --> B[Feature Extraction]
+    B --> C[10 s Network Graph State]
+    C --> D[GraphSAGE / GNN Encoder]
+    D --> E[Garuda Temporal Model\nLSTM State Dynamics]
+    E --> F[Autoregressive Rollout\n+10 / +20 / +30 / +40 s]
+    F --> G[Risk + Trajectory Evidence]
+    G --> H[Explainability / Support / Stage]
+    H --> I{Defence Router}
+    I --> J[Arjuna\nKnown / Reviewed Threat Response]
+    I --> K[Krishna Investigate\nUnknown / Unsupported Triage]
+    I --> L[Sudarshana\nScoped Authorized Containment]
+    J --> M[Audit Trail]
+    K --> M
+    L --> M
 ```
 
 ### Garuda AI in one line
 
-**8 observed network windows → autoregressive future-state rollout → multi-horizon risk evidence → defensive decision support.**
+**Observed network history → graph-aware temporal state model → K-step future-state rollout → explainable risk evidence → controlled defence routing.**
 
-The reference Garuda v3 implementation uses directed graph message passing plus recurrent temporal modelling and an autoregressive decoder. It is intentionally CPU-friendly for an offline SIH demonstration.
+### Main runtime contract
 
----
-
-## Strongest current measured evidence
-
-The current release evidence is indexed in [`RELEASE_EVIDENCE.md`](RELEASE_EVIDENCE.md). The strongest controlled unseen-family result is the frozen **V48 X-IIoTID reserve-family benchmark**.
-
-`exploitation` and `c&c` were excluded from V48 model fitting, calibration, policy selection and fusion-score development. The reserve result was then evaluated across seeds **42 / 43 / 44**.
-
-| Held-out reserve family | Recall mean ± SD | FPR mean ± SD | Precision | F1 | Gate |
-|---|---:|---:|---:|---:|---|
-| **Exploitation** | **91.88% ± 0.60 pp** | **0.390% ± 0.042 pp** | 97.08% | 94.41% | **PASS 3/3** |
-| **Command & Control** | **87.63% ± 2.69 pp** | **0.366%** | 97.02% | 92.08% | **PASS 3/3** |
-
-**Project release gate:** FPR ≤ **1%** and recall ≥ **80%** on every seed, while the validation state model also beats persistence.
-
-The frozen V48 fusion uses:
-
-- 75% known-attack transfer evidence
-- 25% world-model transition energy
-- 0.25% benign policy budget
-- reserve metrics **not used** for score selection
-
-See [`docs/release/V48_RESULTS.md`](docs/release/V48_RESULTS.md) for the full split, leakage controls, frozen configuration hash and invalidated exploratory run history.
-
-### What V48 proves
-
-It supports the controlled claim that a frozen Garuda alert fusion **generalised to two public-dataset attack families excluded from V48 development while meeting the project’s low-FPR / high-recall gate across three seeds**.
-
-It does **not** claim that an undisclosed real-world zero-day has been defeated.
+- **Snapshot interval:** 10 seconds
+- **Observed context:** up to ~80 seconds
+- **Forecast horizons:** +10 / +20 / +30 / +40 seconds
+- **Inputs:** flow-level and packet-derived network telemetry
+- **Primary runtime:** local CPU-friendly Python / NumPy reference implementation
+- **UI:** premium evaluator dashboard in `console.html`
 
 ---
 
-## Temporal / early-warning evidence track
+## Defence stack
 
-V52 adds strict timestamp and provenance machinery for measuring whether a frozen warning occurs **before an independently recorded attack step**.
+| Component | Role |
+|---|---|
+| **Garuda AI** | Forecasts future network state and risk trajectory |
+| **Arjuna** | Response path for validated known / reviewed attack evidence |
+| **Krishna Investigate** | Unknown or unsupported-threat triage, evidence retention and controlled learning |
+| **Sudarshana** | Scoped, explicitly authorized quarantine / lockdown controls |
 
-The current CICAPT development timeline is a commit-pinned third-party recovered copy with an independently corroborated Sandcat event. It is intentionally marked:
-
-- `publisher_verified = false`
-- development-grade attack-step timeline evidence
-- **not** a verified successful-compromise timestamp
-- **not** automatic containment approval
-
-See [`docs/release/V52_CICAPT_TIMELINE.md`](docs/release/V52_CICAPT_TIMELINE.md).
-
-This distinction matters: **forecast horizon ≠ measured lead time**, and **attack-step onset ≠ successful compromise**.
+> **Naming note:** *Krishna Defence System* is the complete platform. *Krishna Investigate* is the unknown-threat investigation lane inside that platform.
 
 ---
 
-# Setup Instructions
+## Strongest current verified evidence
 
-## Fastest path — local SIH demo
+The judge-facing source of truth is [`docs/release/FINAL_SIH_EVIDENCE.md`](docs/release/FINAL_SIH_EVIDENCE.md). Results from different datasets are **not blended into one synthetic score**.
 
-### Requirements
+| Evidence lane | Verified result | Meaning |
+|---|---:|---|
+| **CICAPT-IIoT2024 state forecasting** | **~27.5% lower state MSE than persistence** across 3 seeds | Learned future-state dynamics beat a persistence baseline in this experiment |
+| **UNSW-NB15 independent-source replication** | **~98.7% recall**, **~0.29% FPR**, **~94.8% F1** | High recall with low false-positive rate on the frozen same-input protocol |
+| **Same-input Logistic Regression baseline** | 100% recall, **~11.65% FPR** | LR had higher recall but substantially more false positives |
+| **Compatible CPU runtime** | **~2.9–3.0 ms** mean forecast latency | In-process lab benchmark for the compatible local checkpoint |
+| **Runtime safety** | **21 focused + 188 full Garuda tests passed** | Unsupported / unverified runtime support fails closed into advisory mode |
 
-- **Python 3.10+**; the reference environment is tested on **Python 3.12.14**.
-- Internet access is needed only for the first dependency installation.
-- The integrated Garuda demo itself runs locally on `127.0.0.1`.
+### Important evidence boundaries
 
-### Windows
+- The project does **not** claim 100% accuracy or universal zero-day detection.
+- Current runtime support can be `UNVERIFIED_RUNTIME_SUPPORT / SHADOW_UNRESOLVED`; unsupported inputs are not silently promoted to confident automated action.
+- Current timing evidence measures lead to **labelled attack-step onset**, not verified successful compromise.
+- Robust unseen-subtype MITRE-stage progression is **not yet release-supported**.
+- Automatic enterprise containment is not claimed from forecast confidence alone.
 
-Clone the repository, enter it, then run:
+These boundaries are intentional: the project prefers reproducible evidence over inflated claims.
 
-```bat
-START_LOCAL.bat
+---
+
+# Quick Setup — Main Demo
+
+## Requirements
+
+- **Python 3.10+**
+- Reference environment: **Python 3.12.14**
+- Around 1 GB free disk space is recommended for the virtual environment, dependencies and runtime artifacts.
+- Internet is needed on the **first run** if Python packages are not already cached. After setup, the primary demo runs locally.
+- **Node.js is not required** for the primary Garuda + main-console demo.
+
+Python dependencies are intentionally small and pinned in [`garuda_v3/requirements.txt`](garuda_v3/requirements.txt): NumPy, scikit-learn, pandas and pytest.
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/keshavchauhan15482-byte/defencekrishna.git
+cd defencekrishna
 ```
+
+## 2. Start the main SIH console
 
 ### macOS / Linux
 
@@ -133,103 +140,215 @@ START_LOCAL.bat
 ./START_LOCAL.command
 ```
 
-or, on any platform with Python available:
+If execute permission is missing:
 
 ```bash
-python3 start_local.py
+chmod +x START_LOCAL.command
+./START_LOCAL.command
 ```
 
-The launcher automatically:
+### Windows
 
-1. creates `.venv` if required;
-2. installs `garuda_v3/requirements.txt`;
-3. starts `python -m garuda_v3.integrated_server`;
-4. waits for the health endpoint;
-5. opens the dashboard when healthy.
+Double-click:
 
-Open manually if needed:
+```text
+START_LOCAL.bat
+```
 
-**http://127.0.0.1:8090**
+or run it from Command Prompt / PowerShell:
 
-Runtime logs are written to `garuda_v3/runtime/localhost.log`. Local access credentials are generated under `garuda_v3/runtime/access.json`; the runtime directory is not intended for submission packaging.
+```bat
+START_LOCAL.bat
+```
+
+### Cross-platform Python fallback
+
+```bash
+python3 start_main_console.py
+```
+
+On Windows, if `python3` is unavailable:
+
+```bat
+py -3 start_main_console.py
+```
+
+## 3. Open the evaluator dashboard
+
+The launcher opens the browser automatically. If needed, open:
+
+```text
+http://127.0.0.1:8091/console.html
+```
+
+Expected services:
+
+| Service | Address | Purpose |
+|---|---|---|
+| **Main SIH console** | `http://127.0.0.1:8091/console.html` | Premium evaluator-facing dashboard |
+| **Garuda engine** | `http://127.0.0.1:8090` | Local inference / analysis backend |
+| **Engine health** | `http://127.0.0.1:8090/health` | Runtime health check |
+| **Console health** | `http://127.0.0.1:8091/health` | Main-console build / bridge health |
+
+Current main-console build identity: **`v132-nationals-console`**.
+
+Keep the launcher terminal open while using the demo. Press **Ctrl+C** to stop both services.
 
 ---
 
-## Manual setup
+## What the launcher does automatically
+
+`start_main_console.py`:
+
+1. checks whether ports **8090 / 8091** are already occupied;
+2. creates `.venv` when needed;
+3. installs / validates `garuda_v3/requirements.txt`;
+4. starts the Garuda integrated engine on **8090**;
+5. starts the premium `console.html` bridge on **8091**;
+6. waits for both health endpoints;
+7. verifies the expected main-console build;
+8. opens the correct evaluator dashboard.
+
+Runtime logs are written under:
+
+```text
+garuda_v3/runtime/
+```
+
+---
+
+## 60-second demo check
+
+After the page opens, verify these four things before presenting:
+
+1. Header shows **`V132 · NATIONALS CONSOLE`**.
+2. Threat trajectory / live counters are moving and backend status is healthy.
+3. Offline telemetry analysis can call the local bridge and return forecast cards.
+4. Architecture, MITRE progression, explainability, benchmark and enterprise/CII sections are visible on the same `console.html` page.
+
+For the actual 2-minute presentation flow, see [`sih_submission/DEMO_SCRIPT.md`](sih_submission/DEMO_SCRIPT.md).
+
+---
+
+## Troubleshooting
+
+### “An older/different localhost service is using 8090/8091”
+
+An old server is still running. Stop the previous terminal/process, then launch again.
+
+macOS / Linux quick check:
 
 ```bash
-git clone https://github.com/keshavchauhan15482-byte/defencekrishna.git
-cd defencekrishna
+lsof -i :8090
+lsof -i :8091
+```
 
+Windows quick check:
+
+```bat
+netstat -ano | findstr :8090
+netstat -ano | findstr :8091
+```
+
+### Browser still shows an older UI
+
+Stop the existing server, pull the latest branch, relaunch, then hard-refresh the page.
+
+```bash
+git pull
+./START_LOCAL.command
+```
+
+### Dependency installation fails
+
+Verify Python first:
+
+```bash
+python3 --version
+```
+
+Then install manually if required:
+
+```bash
 python3 -m venv .venv
-source .venv/bin/activate        # Windows PowerShell: .venv\Scripts\Activate.ps1
+source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r garuda_v3/requirements.txt
-
-python -m garuda_v3.integrated_server
+python start_main_console.py
 ```
 
-Then open:
+Windows activation:
+
+```bat
+.venv\Scripts\activate
+python -m pip install --upgrade pip
+python -m pip install -r garuda_v3\requirements.txt
+python start_main_console.py
+```
+
+### Need logs
+
+Check:
 
 ```text
-http://127.0.0.1:8090
-```
-
-The Python reference requirements are intentionally small:
-
-- NumPy — inference / numerical model runtime
-- scikit-learn — training and evaluation utilities
-
-Node.js is only required for the retained legacy WAF/control-plane runtime and is **not required** to launch the primary integrated Garuda demo.
-
----
-
-## Smoke-test the local demo
-
-The launcher can verify startup and exit automatically:
-
-```bash
-python3 start_local.py --smoke
-```
-
-A healthy launch checks both:
-
-```text
-http://127.0.0.1:8090/
-http://127.0.0.1:8090/health
+garuda_v3/runtime/localhost.log
+garuda_v3/runtime/main_console.log
 ```
 
 ---
 
-## Run the primary regression suite
+## Repository map
+
+The repository is intentionally split into a small evaluator path and deeper engineering / audit material.
+
+| Path | What is here | Evaluator priority |
+|---|---|---|
+| `README.md` | Start here: project story + setup | **Start here** |
+| `console.html` | Main premium SIH dashboard | **High** |
+| `garuda_v3/` | Current forecasting, inference, training, evaluation and runtime code | **High** |
+| `docs/release/FINAL_SIH_EVIDENCE.md` | Authoritative current evidence / claim boundaries | **High** |
+| `RELEASE_EVIDENCE.md` | Short evidence index | High |
+| `sih_submission/` | Submission / demo material | High |
+| `datasets/` | Dataset provenance, prepared data and manifests | Engineering |
+| `tests/` + `garuda_v3/tests/` | Regression / integration validation | Engineering |
+| `security_validation/` | Defensive validation evidence | Engineering |
+| `.github/workflows/` | Reproducibility and experiment CI | Engineering |
+| `docs/archive/` | Historical / failed / superseded experiments kept for auditability | Archive |
+| root JS modules | Earlier defence-stack / WAF integration path retained for compatibility and research history | Advanced |
+
+For a cleaner documentation index, see [`docs/README.md`](docs/README.md).
+
+---
+
+## Run the core regression tests
+
+Primary Python/Garuda suite:
 
 ```bash
 OPENBLAS_NUM_THREADS=1 python -m unittest discover -s garuda_v3/tests -v
+```
+
+Additional repository checks:
+
+```bash
 python ntro-world-model/tests/test_data_integrity.py
 python tests/test_proxy_exposure.py
 ```
 
-For the integrated project contract:
+The broader retained defence-stack test path requires Node.js:
 
 ```bash
 npm install
 npm run test:all
-npm run test:v11
-npm run test:v15
 ```
 
-The public GitHub Actions workflows provide the release-facing reproducibility path:
-
-- `.github/workflows/krishna-integration-ci.yml`
-- `.github/workflows/v48-unseen-fusion.yml`
-- `.github/workflows/v52-cicapt-timeline.yml`
-- `.github/workflows/v52-recovered-timeline.yml`
+Node is optional for the primary SIH demo but required for the retained legacy/control-plane JS suite.
 
 ---
 
 ## Reproduce the reference Garuda training path
 
-After installing `garuda_v3/requirements.txt`:
+Create prepared graph data:
 
 ```bash
 python -m garuda_v3.data \
@@ -239,7 +358,11 @@ python -m garuda_v3.data \
 python -m garuda_v3.data \
   ntro-world-model/cicids2018_data/Friday-02-03-2018_Infiltration_REAL.csv \
   --output garuda_v3/artifacts/Friday.npz
+```
 
+Train into a **new** output directory:
+
+```bash
 OPENBLAS_NUM_THREADS=1 python -m garuda_v3.train \
   --graphs garuda_v3/artifacts/Thursday.npz garuda_v3/artifacts/Friday.npz \
   --epochs 20 \
@@ -248,95 +371,42 @@ OPENBLAS_NUM_THREADS=1 python -m garuda_v3.train \
   --output garuda_v3/artifacts/reproduced
 ```
 
-Then serve the reproduced checkpoint with:
-
-```bash
-python -m garuda_v3.server --artifacts garuda_v3/artifacts/reproduced
-```
-
-Use a new output directory instead of overwriting published artifacts. See [`garuda_v3/V3_README.md`](garuda_v3/V3_README.md) for the model card, schema rules and evaluation interpretation.
-
----
-
-## Demo flow for judges
-
-A clean nationals demonstration can be shown in this order:
-
-1. **Live / recorded network state** — show observed telemetry and the current graph/state representation.
-2. **Garuda forecast** — show the next-state trajectory and risk evolution rather than only a static class label.
-3. **Explainability** — show which observed features drove the forecast.
-4. **Unknown-family evidence** — present the frozen V48 reserve benchmark and its low FPR.
-5. **Defence routing** — explain Arjuna / Krishna / Sudarshana and why forecast confidence does not automatically authorize containment.
-6. **Evidence discipline** — show that failed historical experiments remain archived instead of being hidden.
-
-For presentation numbers, always use [`RELEASE_EVIDENCE.md`](RELEASE_EVIDENCE.md) as the authoritative index.
-
----
-
-## Repository map
-
-| Path | Purpose |
-|---|---|
-| `garuda_v3/` | Forecasting models, inference, training, evaluation, artifacts and tests |
-| `datasets/` | Dataset provenance, manifests, prepared data and recovered evidence |
-| `docs/release/` | Current release-facing V48 / V52 evidence |
-| `docs/archive/` | Superseded, exploratory and failed research retained for auditability |
-| `sih_submission/` | SIH architecture, demo and submission material |
-| `security_validation/` | Defensive validation material |
-| `.github/workflows/` | Current reproducibility and release CI |
-| `proxy.js` + root JS modules | Retained WAF/control runtime used by legacy / defensive integration paths |
+Do not overwrite published evidence artifacts when reproducing experiments.
 
 ---
 
 ## Engineering principles
 
-Krishna Defence follows a few fail-closed evidence rules:
+Krishna Defence uses fail-closed evidence rules:
 
-- Unknown labels are not silently converted to benign labels.
-- Final reserve families are not used for threshold or fusion selection.
-- Forecasting quality and attack-warning quality are reported separately.
-- Failed experiments remain auditable under `docs/archive/`.
-- GNN superiority over LSTM is not claimed where it was not demonstrated.
-- Timeline annotations are evaluation evidence, never runtime model features.
-- Automatic containment is not approved merely because forecast confidence is high.
-
-These constraints make the numbers less flashy, but substantially more defensible.
+- Unknown labels are not silently converted to benign.
+- Test / reserve evidence is not used for validation threshold fitting.
+- Forecasting, warning, stage and containment claims are reported separately.
+- Unsupported telemetry is advisory / shadow-mode rather than force-fit into a confident claim.
+- GNN superiority is not claimed where the measured evidence does not demonstrate it.
+- Failed external-domain experiments remain preserved in the evidence record.
+- Forecast confidence alone does not authorize autonomous containment.
 
 ---
 
-## Current limitations
+## Current scope
 
-This repository is a strong **research / SIH prototype**, not a certified production IPS.
+This is a **research / SIH prototype**, not a certified production IPS.
 
-Open evidence and deployment gates include:
+The strongest demonstrated value is the combination of:
 
-- publisher-authenticated attack timelines and verified successful-compromise timestamps;
-- more independent, previously unseen campaigns with clean pre-event histories;
-- fully supervised and externally validated MITRE stage progression;
-- endpoint-preserving / packet-derived training at broader scale;
-- production identity, TLS, tenant isolation, protected model signing and external audit;
-- independent security review and customer-network integration.
+**forecast-first architecture + learned state-dynamics evidence + low-FPR independent-source replication + millisecond-scale compatible inference + explainability + layered response + explicit uncertainty governance.**
 
-The project therefore uses the term **autoregressive state-dynamics world-model approximation** rather than claiming a fully causal world model.
-
----
-
-## Evidence & documentation
-
-- **Release evidence index:** [`RELEASE_EVIDENCE.md`](RELEASE_EVIDENCE.md)
-- **V48 unseen-family results:** [`docs/release/V48_RESULTS.md`](docs/release/V48_RESULTS.md)
-- **V52 timeline / lead-time evidence:** [`docs/release/V52_CICAPT_TIMELINE.md`](docs/release/V52_CICAPT_TIMELINE.md)
-- **Garuda model card / developer guide:** [`garuda_v3/V3_README.md`](garuda_v3/V3_README.md)
-- **Historical research record:** [`docs/archive/`](docs/archive/)
+Remaining research gates include broader cross-domain portability, robust unseen-subtype stage progression, verified successful-compromise timestamps for true pre-compromise evidence, and production-grade identity/TLS/tenant isolation/external security review.
 
 ---
 
 ## Responsible use
 
-Krishna Defence is intended for defensive cybersecurity research, owned-lab testing and authorized network protection. Do not use the project to attack systems you do not own or have explicit permission to test.
+This repository is intended for **defensive cybersecurity research, owned-lab testing and explicitly authorized network protection**. Do not use it to attack systems you do not own or have permission to test.
 
 ---
 
 ### SIH26153 · Krishna Defence System
 
-**Forecast the network state. Detect dangerous progression early. Respond with evidence, not guesswork.**
+**See the threat before the impact — with evidence, not guesswork.**
