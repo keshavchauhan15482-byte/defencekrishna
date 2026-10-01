@@ -1,0 +1,5391 @@
+{
+  "schema": "garuda-causal-native-result-1",
+  "protocol_sha256": "f7678a40260b7a99a1361c5ca3c38d40f133e4bacb03290f528d3a0080b6d53c",
+  "freeze_sha256": "6c4e64b03a4338b2642777eb93a0967e6c0dd89dc642edd39e4598da2d3e461c",
+  "sources": {
+    "train": [
+      {
+        "id": "UWF-ZeekData24_2024-02-25",
+        "sha256": "4d833656b31d4d360691c2178c5c4d1b3c31f01db12c59f6779a08d55e5f0cc7",
+        "rows": 255443,
+        "flattened_duplicate_rows_merged": 3826,
+        "windows": 5877,
+        "unique_flows": 251617,
+        "native_label_counts": {
+          "Initial Access": 2172,
+          "Defense Evasion": 1251,
+          "Privilege Escalation": 1251,
+          "Persistence": 1251,
+          "Reconnaissance": 12762,
+          "Exfiltration": 50,
+          "Credential Access": 236706
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 0,
+        "quality_excluded": "No contiguous 80s+40s complete observations"
+      },
+      {
+        "id": "UWF-ZeekData24_2024-03-03",
+        "sha256": "5a085f2749556f2c711af6f9c2bca9d43b3f19bb43696ef9194869f4ea69eb21",
+        "rows": 50444,
+        "flattened_duplicate_rows_merged": 1049,
+        "windows": 1533,
+        "unique_flows": 49395,
+        "native_label_counts": {
+          "Initial Access": 576,
+          "Defense Evasion": 336,
+          "Privilege Escalation": 336,
+          "Persistence": 336,
+          "Reconnaissance": 3339,
+          "Credential Access": 45491,
+          "Exfiltration": 30
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 0,
+        "quality_excluded": "No contiguous 80s+40s complete observations"
+      },
+      {
+        "id": "UWF-ZeekDataFall24-2_2024-10-27",
+        "release": "UWF-ZeekDataFall24-2",
+        "week": "2024-10-27 - 2024-11-03",
+        "sha256": "32317f64d899ba9f4f792b45231e100d4e191615bc6ca1f541f9663ce477bea0",
+        "benign_source_sha256": "d43a418ecb9c6981c57015674f86042dcd90d408709d34a90b9479f391954ff3",
+        "rows": 54203,
+        "flattened_duplicate_rows_merged": 22,
+        "unbounded_completion_rows": 1,
+        "windows_censored_after_unknown_completion": 42,
+        "windows": 87,
+        "unique_flows": 54181,
+        "native_label_counts": {
+          "Lateral Movement": 24,
+          "Discovery": 22376,
+          "Reconnaissance": 31782
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 16,
+        "available_sequences": 16,
+        "observed_days": 2,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 64
+        },
+        "future_native_stage_support": {
+          "Reconnaissance": 60,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        }
+      },
+      {
+        "id": "UWF-ZeekData22_2021-12-12",
+        "sha256": "a4158d14b8bca292a4a68e7171e5e1505f4170e83a5abf6d400fb6f439bc3b3d",
+        "sequences": 0,
+        "quality_excluded": "No valid completed-flow windows after unknown-completion censoring"
+      },
+      {
+        "id": "UWF-ZeekData22_2021-12-19",
+        "release": "UWF-ZeekData22",
+        "week": "2021-12-19 - 2021-12-26",
+        "sha256": "58649166d828161d860ff5ef2c2370e0e4bc63a8b5855c5a8faea4d3ca4c8f0a",
+        "benign_source_sha256": null,
+        "rows": 1757069,
+        "flattened_duplicate_rows_merged": 845714,
+        "windows": 60435,
+        "unique_flows": 911355,
+        "native_label_counts": {
+          "none": 911355
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 999,
+        "available_sequences": 59940,
+        "observed_days": 8,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 3996,
+          "1": 0
+        },
+        "future_native_stage_support": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        }
+      },
+      {
+        "id": "UWF-ZeekData22_2022-01-09",
+        "release": "UWF-ZeekData22",
+        "week": "2022-01-09 - 2022-01-16",
+        "sha256": "91082b85e6be170e5bbd37f23c40c6c992a3c2d098f78a638d5cf604f9370fde",
+        "benign_source_sha256": null,
+        "rows": 2579855,
+        "flattened_duplicate_rows_merged": 1242058,
+        "unbounded_completion_rows": 2,
+        "windows_censored_after_unknown_completion": 39395,
+        "windows": 20332,
+        "unique_flows": 1337797,
+        "native_label_counts": {
+          "none": 1337795
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 961,
+        "available_sequences": 19215,
+        "observed_days": 3,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 3844,
+          "1": 0
+        },
+        "future_native_stage_support": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        }
+      }
+    ],
+    "validation": [
+      {
+        "id": "UWF-ZeekDataFall24-2_2024-11-10",
+        "release": "UWF-ZeekDataFall24-2",
+        "week": "2024-11-10 - 2024-11-17",
+        "sha256": "a5d91707f5eda89ed93ec208d937809a9b22118eea7a1d13de710f15f5f98b99",
+        "benign_source_sha256": "d43a418ecb9c6981c57015674f86042dcd90d408709d34a90b9479f391954ff3",
+        "rows": 16618,
+        "flattened_duplicate_rows_merged": 8309,
+        "windows": 12,
+        "unique_flows": 8309,
+        "native_label_counts": {
+          "Defense Evasion": 8309,
+          "Privilege Escalation": 8309
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 1,
+        "available_sequences": 1,
+        "observed_days": 1,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 4
+        },
+        "future_native_stage_support": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        }
+      },
+      {
+        "id": "UWF-ZeekData22_2022-01-02",
+        "release": "UWF-ZeekData22",
+        "week": "2022-01-02 - 2022-01-09",
+        "sha256": "ce3f7e94cc4c41ea62d8faf5f6e30ed94443217b1d0a45961928f1628a8e0acd",
+        "benign_source_sha256": null,
+        "rows": 2403853,
+        "flattened_duplicate_rows_merged": 1157091,
+        "unbounded_completion_rows": 11,
+        "windows_censored_after_unknown_completion": 31605,
+        "windows": 28173,
+        "unique_flows": 1246762,
+        "native_label_counts": {
+          "none": 1246751
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 5498,
+        "available_sequences": 27488,
+        "observed_days": 4,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 21992,
+          "1": 0
+        },
+        "future_native_stage_support": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        }
+      },
+      {
+        "id": "UWF-ZeekData22_2022-02-06",
+        "release": "UWF-ZeekData22",
+        "week": "2022-02-06 - 2022-02-13",
+        "sha256": "5e5dcd03421f0f28fa256e83e4dc75d45bac1c916d2aab833b7c7b5ab1cc5486",
+        "benign_source_sha256": null,
+        "rows": 9280806,
+        "flattened_duplicate_rows_merged": 9242475,
+        "windows": 740,
+        "unique_flows": 38331,
+        "native_label_counts": {
+          "Discovery": 2086,
+          "Reconnaissance": 36245
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 616,
+        "available_sequences": 616,
+        "observed_days": 2,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 2464
+        },
+        "future_native_stage_support": {
+          "Reconnaissance": 2464,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        }
+      }
+    ],
+    "test": [
+      {
+        "id": "UWF-ZeekDataSum25-1_2025-06-15",
+        "sha256": "c20dc97187b4a2ef5f74933017a825f52d62b9188c5d71dacda0d745b3b5ff32",
+        "rows": 11213,
+        "flattened_duplicate_rows_merged": 3532,
+        "windows": 66,
+        "unique_flows": 7681,
+        "native_label_counts": {
+          "Defense Evasion": 3532,
+          "Privilege Escalation": 3532,
+          "Discovery": 108,
+          "Reconnaissance": 4041
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 0,
+        "quality_excluded": "No contiguous 80s+40s complete observations"
+      },
+      {
+        "id": "UWF-ZeekDataSum25-1_2025-07-13",
+        "sha256": "ae3e7aeb0bb758e80cc62f6445a176b8a07ebe6847ad42ff570a205c2b4ea22c",
+        "sequences": 0,
+        "quality_excluded": "No valid completed-flow windows after unknown-completion censoring"
+      },
+      {
+        "id": "UWF-ZeekDataSum25-1_2025-05-25",
+        "release": "UWF-ZeekDataSum25-1",
+        "week": "2025-05-25 - 2025-06-01",
+        "sha256": "c63993e5569b7b1deb8cc8e3a155cf51d8900add2cb4ae2c78f18f0c73e90254",
+        "benign_source_sha256": "734cfd796923710127a01bd360835c281d122485819899ea8dfaa44d365fc127",
+        "rows": 188211,
+        "flattened_duplicate_rows_merged": 8903,
+        "windows": 55965,
+        "unique_flows": 179308,
+        "native_label_counts": {
+          "none": 179308
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 24135,
+        "available_sequences": 24135,
+        "observed_days": 7,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 96540,
+          "1": 0
+        },
+        "future_native_stage_support": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        }
+      },
+      {
+        "id": "UWF-ZeekDataSum25-1_2025-06-01",
+        "release": "UWF-ZeekDataSum25-1",
+        "week": "2025-06-01 - 2025-06-08",
+        "sha256": "fca7702d08ffe19647a3abb340e0fe737208f066ae60460e5d20628fa07509c8",
+        "benign_source_sha256": "734cfd796923710127a01bd360835c281d122485819899ea8dfaa44d365fc127",
+        "rows": 318010,
+        "flattened_duplicate_rows_merged": 15264,
+        "windows": 54479,
+        "unique_flows": 302746,
+        "native_label_counts": {
+          "none": 302746
+        },
+        "packet_features_available": false,
+        "host_topology_claim": false,
+        "availability": "ts+duration; completed-flow export delay is not independently known",
+        "unknown_labels_preserved": true,
+        "partial_terminal_window_dropped": true,
+        "sequences": 17453,
+        "available_sequences": 17453,
+        "observed_days": 7,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 69812,
+          "1": 0
+        },
+        "future_native_stage_support": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        }
+      }
+    ]
+  },
+  "feature_order": [
+    "completed_flow_count_log",
+    "orig_packets_log",
+    "resp_packets_log",
+    "ip_bytes_log",
+    "mean_duration_ms_log",
+    "backward_packet_fraction",
+    "tcp_flow_fraction",
+    "udp_flow_fraction",
+    "unique_destination_ports_log",
+    "unique_peer_count_log",
+    "origin_byte_fraction",
+    "active",
+    "destination_port_mean_scaled",
+    "ssh_flow_fraction",
+    "dns_flow_fraction",
+    "web_flow_fraction",
+    "smb_flow_fraction",
+    "rdp_flow_fraction",
+    "ftp_flow_fraction"
+  ],
+  "graph_nodes": [
+    "protocol:tcp",
+    "protocol:udp",
+    "protocol:other",
+    "service:20",
+    "service:21",
+    "service:22",
+    "service:25",
+    "service:53",
+    "service:80",
+    "service:110",
+    "service:123",
+    "service:135",
+    "service:139",
+    "service:143",
+    "service:443",
+    "service:445",
+    "service:3389",
+    "service:8080",
+    "service:other"
+  ],
+  "summary": {
+    "lstm": {
+      "state_improvement_mean": 0.11073942979176839,
+      "state_improvement_seed_sd": 0.025004763467936873,
+      "state_gates_passed": 3,
+      "risk_gates_passed": 0,
+      "five_stage_gates_passed": 0,
+      "risk_per_horizon": {
+        "10": {
+          "precision_mean": 0.0,
+          "recall_mean": null,
+          "fpr_mean": 0.18199160014106633,
+          "f1_mean": null,
+          "precision_seed_sd": 0.0,
+          "recall_seed_sd": null,
+          "fpr_seed_sd": 0.3129724075686287,
+          "f1_seed_sd": null
+        },
+        "20": {
+          "precision_mean": 0.0,
+          "recall_mean": null,
+          "fpr_mean": 0.21826809015421114,
+          "f1_mean": null,
+          "precision_seed_sd": 0.0,
+          "recall_seed_sd": null,
+          "fpr_seed_sd": 0.24771114316668616,
+          "f1_seed_sd": null
+        },
+        "30": {
+          "precision_mean": 0.0,
+          "recall_mean": null,
+          "fpr_mean": 0.1400003206053028,
+          "f1_mean": null,
+          "precision_seed_sd": 0.0,
+          "recall_seed_sd": null,
+          "fpr_seed_sd": 0.17089231853186554,
+          "f1_seed_sd": null
+        },
+        "40": {
+          "precision_mean": 0.0,
+          "recall_mean": null,
+          "fpr_mean": 0.13863774806835305,
+          "f1_mean": null,
+          "precision_seed_sd": 0.0,
+          "recall_seed_sd": null,
+          "fpr_seed_sd": 0.238919840676101,
+          "f1_seed_sd": null
+        }
+      }
+    },
+    "gnn_lstm": {
+      "state_improvement_mean": 0.08798585335413615,
+      "state_improvement_seed_sd": 0.02102137799318617,
+      "state_gates_passed": 3,
+      "risk_gates_passed": 0,
+      "five_stage_gates_passed": 0,
+      "risk_per_horizon": {
+        "10": {
+          "precision_mean": 0.0,
+          "recall_mean": null,
+          "fpr_mean": 0.00011221185598409797,
+          "f1_mean": null,
+          "precision_seed_sd": 0.0,
+          "recall_seed_sd": null,
+          "fpr_seed_sd": 0.00010842670368430543,
+          "f1_seed_sd": null
+        },
+        "20": {
+          "precision_mean": 0.0,
+          "recall_mean": null,
+          "fpr_mean": 0.00022442371196819595,
+          "f1_mean": null,
+          "precision_seed_sd": 0.0,
+          "recall_seed_sd": null,
+          "fpr_seed_sd": 0.0002908731254468285,
+          "f1_seed_sd": null
+        },
+        "30": {
+          "precision_mean": 0.0,
+          "recall_mean": null,
+          "fpr_mean": 0.0056586835946266555,
+          "f1_mean": null,
+          "precision_seed_sd": 0.0,
+          "recall_seed_sd": null,
+          "fpr_seed_sd": 0.009530484711504405,
+          "f1_seed_sd": null
+        },
+        "40": {
+          "precision_mean": 0.0,
+          "recall_mean": null,
+          "fpr_mean": 0.0030697957744221086,
+          "f1_mean": null,
+          "precision_seed_sd": 0.0,
+          "recall_seed_sd": null,
+          "fpr_seed_sd": 0.0049853093691344065,
+          "f1_seed_sd": null
+        }
+      }
+    }
+  },
+  "models": [
+    {
+      "architecture": "lstm",
+      "seed": 42,
+      "checkpoint": "lstm_seed42.npz",
+      "checkpoint_sha256": "7aa86dd95e325fb671f9edc8c5ba67ebafe772514f6e6885e2a6699a6a0b5988",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.010768470354378223,
+      "state_epoch_validation_mse": [
+        0.013942736200988293,
+        0.013366352766752243,
+        0.013012347742915154,
+        0.012831122614443302,
+        0.012624876573681831,
+        0.012308916077017784,
+        0.011848379857838154,
+        0.011647146195173264,
+        0.010967524722218513,
+        0.010768470354378223
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 2.7547036959085,
+          "b": 3.6628716871094
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 4.7862915382144084,
+          "b": 7.7488172845588315
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 5.574162671849127,
+          "b": 9.059706521931373
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 5.9241275956827675,
+          "b": 9.563049213312745
+        }
+      ],
+      "risk_thresholds": [
+        0.1201476901769638,
+        0.14588895440101624,
+        0.1626487374305725,
+        0.16970306634902954
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 1976,
+      "state_validation": {
+        "mse": 0.010768470354378223,
+        "persistence_mse": 0.014242720790207386,
+        "relative_improvement": 0.24393165111541748,
+        "paired_source_day_bootstrap_95": [
+          0.1916873227419065,
+          0.2535396208085386
+        ],
+        "source_days": 7,
+        "sequences": 6115,
+        "per_horizon_mse": [
+          0.014988250099122524,
+          0.012525231577455997,
+          0.006127544678747654,
+          0.009432950057089329
+        ],
+        "gate_passed": true
+      },
+      "test_state": {
+        "mse": 0.006428239401429892,
+        "persistence_mse": 0.007081096060574055,
+        "relative_improvement": 0.09219712018966675,
+        "paired_source_day_bootstrap_95": [
+          0.08943154019204304,
+          0.09446379691780603
+        ],
+        "source_days": 14,
+        "sequences": 41588,
+        "per_horizon_mse": [
+          0.006859859451651573,
+          0.006534934975206852,
+          0.005958688911050558,
+          0.006359484512358904
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 108,
+          "fn": 0,
+          "tn": 41480,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.002596902952774839,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0021515725553299747,
+            0.0031341178960397004
+          ],
+          "gate_passed": false,
+          "brier": 0.011374050413447538,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 27,
+          "fn": 0,
+          "tn": 41561,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0006492257381937097,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0004462423399756002,
+            0.0009444534737918768
+          ],
+          "gate_passed": false,
+          "brier": 0.007052519633996144,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 27,
+          "fn": 0,
+          "tn": 41561,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0006492257381937097,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0004462423399756002,
+            0.0009444534737918768
+          ],
+          "gate_passed": false,
+          "brier": 0.00442882589825463,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 27,
+          "fn": 0,
+          "tn": 41561,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0006492257381937097,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0004462423399756002,
+            0.0009444534737918768
+          ],
+          "gate_passed": false,
+          "brier": 0.00342275189678821,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 108,
+            "fn": 0,
+            "tn": 41480,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.002596902952774839,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0021515725553299747,
+              0.0031341178960397004
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 108,
+            "fn": 0,
+            "tn": 41480,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.002596902952774839,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0021515725553299747,
+              0.0031341178960397004
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 108,
+            "fn": 0,
+            "tn": 41480,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.002596902952774839,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0021515725553299747,
+              0.0031341178960397004
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 108,
+            "fn": 0,
+            "tn": 41480,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.002596902952774839,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0021515725553299747,
+              0.0031341178960397004
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 108,
+            "fn": 0,
+            "tn": 41480,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.002596902952774839,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0021515725553299747,
+              0.0031341178960397004
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 27,
+            "fn": 0,
+            "tn": 41561,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0006492257381937097,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004462423399756002,
+              0.0009444534737918768
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 164488,
+          "fn": 0,
+          "tn": 1864,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.9887948446667307,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.9882776075719606,
+            0.9892895066086571
+          ],
+          "gate_passed": false,
+          "supported_in_development": true,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 108,
+          "fn": 0,
+          "tn": 41480,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.002596902952774839,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0021515725553299747,
+            0.0031341178960397004
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 27,
+          "fn": 0,
+          "tn": 41561,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0006492257381937097,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0004462423399756002,
+            0.0009444534737918768
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 27,
+          "fn": 0,
+          "tn": 41561,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0006492257381937097,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0004462423399756002,
+            0.0009444534737918768
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 27,
+          "fn": 0,
+          "tn": 41561,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0006492257381937097,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0004462423399756002,
+            0.0009444534737918768
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false
+    },
+    {
+      "architecture": "lstm",
+      "seed": 43,
+      "checkpoint": "lstm_seed43.npz",
+      "checkpoint_sha256": "2ca8bf4258a6f3bd11869183768e6879dba9d608f7afca80bb050722772e7a78",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.010545238852500916,
+      "state_epoch_validation_mse": [
+        0.013978653587400913,
+        0.013431457802653313,
+        0.013085453771054745,
+        0.012810573913156986,
+        0.01250947080552578,
+        0.012139882892370224,
+        0.011764518916606903,
+        0.01137476321309805,
+        0.010844019241631031,
+        0.010545238852500916
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.8023097324932698,
+          "b": 1.6155490121734157
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 4.483425237357408,
+          "b": 7.012833297898557
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.8710331843838587,
+          "b": -0.4305358365937211
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -4.631623207119996,
+          "b": -11.57516205598416
+        }
+      ],
+      "risk_thresholds": [
+        0.12627367675304413,
+        0.1381872594356537,
+        0.10651647299528122,
+        0.12661319971084595
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.1,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 1976,
+      "state_validation": {
+        "mse": 0.010545240715146065,
+        "persistence_mse": 0.014242720790207386,
+        "relative_improvement": 0.25960487127304077,
+        "paired_source_day_bootstrap_95": [
+          0.18894109490268018,
+          0.2739592821955971
+        ],
+        "source_days": 7,
+        "sequences": 6115,
+        "per_horizon_mse": [
+          0.014765433967113495,
+          0.011957102455198765,
+          0.006559300236403942,
+          0.00889923982322216
+        ],
+        "gate_passed": true
+      },
+      "test_state": {
+        "mse": 0.006095565855503082,
+        "persistence_mse": 0.007081096060574055,
+        "relative_improvement": 0.1391776204109192,
+        "paired_source_day_bootstrap_95": [
+          0.13659352298478394,
+          0.14218504868782272
+        ],
+        "source_days": 14,
+        "sequences": 41588,
+        "per_horizon_mse": [
+          0.006794847548007965,
+          0.006336630322039127,
+          0.00564563600346446,
+          0.005605180282145739
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 22598,
+          "fn": 0,
+          "tn": 18990,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.5433778974704242,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.5385866906203822,
+            0.5481610911849804
+          ],
+          "gate_passed": false,
+          "brier": 0.01602244187125312,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 20288,
+          "fn": 0,
+          "tn": 21300,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.48783302875829565,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.48303025881055806,
+            0.4926380462928158
+          ],
+          "gate_passed": false,
+          "brier": 0.01933183733799861,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 3688,
+          "fn": 0,
+          "tn": 37900,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.08867942675771857,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.08598503865926395,
+            0.09144979750341274
+          ],
+          "gate_passed": false,
+          "brier": 0.011044450829243942,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 31,
+          "fn": 0,
+          "tn": 41557,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0007454073290372223,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0005252047925780166,
+            0.0010578364353920383
+          ],
+          "gate_passed": false,
+          "brier": 0.00635088649056685,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 22598,
+            "fn": 0,
+            "tn": 18990,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.5433778974704242,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.5385866906203822,
+              0.5481610911849804
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 22598,
+            "fn": 0,
+            "tn": 18990,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.5433778974704242,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.5385866906203822,
+              0.5481610911849804
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 22598,
+            "fn": 0,
+            "tn": 18990,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.5433778974704242,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.5385866906203822,
+              0.5481610911849804
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 22598,
+            "fn": 0,
+            "tn": 18990,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.5433778974704242,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.5385866906203822,
+              0.5481610911849804
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 22598,
+            "fn": 0,
+            "tn": 18990,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.5433778974704242,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.5385866906203822,
+              0.5481610911849804
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 20288,
+            "fn": 0,
+            "tn": 21300,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.48783302875829565,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.48303025881055806,
+              0.4926380462928158
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 20288,
+            "fn": 0,
+            "tn": 21300,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.48783302875829565,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.48303025881055806,
+              0.4926380462928158
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 20288,
+            "fn": 0,
+            "tn": 21300,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.48783302875829565,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.48303025881055806,
+              0.4926380462928158
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 20288,
+            "fn": 0,
+            "tn": 21300,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.48783302875829565,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.48303025881055806,
+              0.4926380462928158
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 20288,
+            "fn": 0,
+            "tn": 21300,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.48783302875829565,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.48303025881055806,
+              0.4926380462928158
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3688,
+            "fn": 0,
+            "tn": 37900,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.08867942675771857,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.08598503865926395,
+              0.09144979750341274
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3688,
+            "fn": 0,
+            "tn": 37900,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.08867942675771857,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.08598503865926395,
+              0.09144979750341274
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3688,
+            "fn": 0,
+            "tn": 37900,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.08867942675771857,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.08598503865926395,
+              0.09144979750341274
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3688,
+            "fn": 0,
+            "tn": 37900,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.08867942675771857,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.08598503865926395,
+              0.09144979750341274
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3688,
+            "fn": 0,
+            "tn": 37900,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.08867942675771857,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.08598503865926395,
+              0.09144979750341274
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 31,
+            "fn": 0,
+            "tn": 41557,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0007454073290372223,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0005252047925780166,
+              0.0010578364353920383
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 31,
+            "fn": 0,
+            "tn": 41557,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0007454073290372223,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0005252047925780166,
+              0.0010578364353920383
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 31,
+            "fn": 0,
+            "tn": 41557,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0007454073290372223,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0005252047925780166,
+              0.0010578364353920383
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 31,
+            "fn": 0,
+            "tn": 41557,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0007454073290372223,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0005252047925780166,
+              0.0010578364353920383
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 31,
+            "fn": 0,
+            "tn": 41557,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0007454073290372223,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0005252047925780166,
+              0.0010578364353920383
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": true,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 22598,
+          "fn": 0,
+          "tn": 18990,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.5433778974704242,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.5385866906203822,
+            0.5481610911849804
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 20288,
+          "fn": 0,
+          "tn": 21300,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.48783302875829565,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.48303025881055806,
+            0.4926380462928158
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 3688,
+          "fn": 0,
+          "tn": 37900,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.08867942675771857,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.08598503865926395,
+            0.09144979750341274
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 31,
+          "fn": 0,
+          "tn": 41557,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0007454073290372223,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0005252047925780166,
+            0.0010578364353920383
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false
+    },
+    {
+      "architecture": "lstm",
+      "seed": 44,
+      "checkpoint": "lstm_seed44.npz",
+      "checkpoint_sha256": "c96a8358d8573a1f891481e70e90ab687332d56eb55269b8d4aadf2c11e3b61a",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.010266409255564213,
+      "state_epoch_validation_mse": [
+        0.014030734077095985,
+        0.013499638997018337,
+        0.012886406853795052,
+        0.012512854300439358,
+        0.011968715116381645,
+        0.011384312994778156,
+        0.010865673422813416,
+        0.010520732961595058,
+        0.010499759577214718,
+        0.010266409255564213
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -3.3274182889586053,
+          "b": -12.242977734981922
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 2.6554922961002414,
+          "b": 5.9117217487669595
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 6.413364364824453,
+          "b": 17.31301298543229
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 7.542933637338904,
+          "b": 20.687411721347495
+        }
+      ],
+      "risk_thresholds": [
+        0.14010149240493774,
+        0.14087148010730743,
+        0.19655439257621765,
+        0.20477022230625153
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 1976,
+      "state_validation": {
+        "mse": 0.010266409255564213,
+        "persistence_mse": 0.014242720790207386,
+        "relative_improvement": 0.2791820168495178,
+        "paired_source_day_bootstrap_95": [
+          0.18899526859244528,
+          0.29670937047244844
+        ],
+        "source_days": 7,
+        "sequences": 6115,
+        "per_horizon_mse": [
+          0.014123721048235893,
+          0.011120247654616833,
+          0.007290735375136137,
+          0.00853115227073431
+        ],
+        "gate_passed": true
+      },
+      "test_state": {
+        "mse": 0.006367013324052095,
+        "persistence_mse": 0.007081096060574055,
+        "relative_improvement": 0.10084354877471924,
+        "paired_source_day_bootstrap_95": [
+          0.0972193237513829,
+          0.10346356228074995
+        ],
+        "source_days": 14,
+        "sequences": 41588,
+        "per_horizon_mse": [
+          0.006848675664514303,
+          0.006543084979057312,
+          0.0060385167598724365,
+          0.006037694402039051
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 41588,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            9.236426790007778e-05
+          ],
+          "gate_passed": false,
+          "brier": 0.0047964817181571666,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 6917,
+          "fn": 0,
+          "tn": 34671,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.16632201596614407,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.16277399708767584,
+            0.1699316746900316
+          ],
+          "gate_passed": false,
+          "brier": 0.01662537188954895,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 13752,
+          "fn": 0,
+          "tn": 27836,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.33067230931999614,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.32616654941026035,
+            0.33520934888610165
+          ],
+          "gate_passed": false,
+          "brier": 0.029612593617953153,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 17239,
+          "fn": 0,
+          "tn": 24349,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.41451861113782823,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.4097919297778843,
+            0.41926108334957485
+          ],
+          "gate_passed": false,
+          "brier": 0.03285548808146417,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 6917,
+            "fn": 0,
+            "tn": 34671,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.16632201596614407,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.16277399708767584,
+              0.1699316746900316
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 6917,
+            "fn": 0,
+            "tn": 34671,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.16632201596614407,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.16277399708767584,
+              0.1699316746900316
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 6917,
+            "fn": 0,
+            "tn": 34671,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.16632201596614407,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.16277399708767584,
+              0.1699316746900316
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 6917,
+            "fn": 0,
+            "tn": 34671,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.16632201596614407,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.16277399708767584,
+              0.1699316746900316
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 6917,
+            "fn": 0,
+            "tn": 34671,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.16632201596614407,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.16277399708767584,
+              0.1699316746900316
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13752,
+            "fn": 0,
+            "tn": 27836,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.33067230931999614,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.32616654941026035,
+              0.33520934888610165
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13752,
+            "fn": 0,
+            "tn": 27836,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.33067230931999614,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.32616654941026035,
+              0.33520934888610165
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13752,
+            "fn": 0,
+            "tn": 27836,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.33067230931999614,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.32616654941026035,
+              0.33520934888610165
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13752,
+            "fn": 0,
+            "tn": 27836,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.33067230931999614,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.32616654941026035,
+              0.33520934888610165
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13752,
+            "fn": 0,
+            "tn": 27836,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.33067230931999614,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.32616654941026035,
+              0.33520934888610165
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17239,
+            "fn": 0,
+            "tn": 24349,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.41451861113782823,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.4097919297778843,
+              0.41926108334957485
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17239,
+            "fn": 0,
+            "tn": 24349,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.41451861113782823,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.4097919297778843,
+              0.41926108334957485
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17239,
+            "fn": 0,
+            "tn": 24349,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.41451861113782823,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.4097919297778843,
+              0.41926108334957485
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17239,
+            "fn": 0,
+            "tn": 24349,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.41451861113782823,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.4097919297778843,
+              0.41926108334957485
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17239,
+            "fn": 0,
+            "tn": 24349,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.41451861113782823,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.4097919297778843,
+              0.41926108334957485
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 166352,
+          "fn": 0,
+          "tn": 0,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 1.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.999976907333322,
+            1
+          ],
+          "gate_passed": false,
+          "supported_in_development": true,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 41588,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            9.236426790007778e-05
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 6917,
+          "fn": 0,
+          "tn": 34671,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.16632201596614407,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.16277399708767584,
+            0.1699316746900316
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 13752,
+          "fn": 0,
+          "tn": 27836,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.33067230931999614,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.32616654941026035,
+            0.33520934888610165
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 17239,
+          "fn": 0,
+          "tn": 24349,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.41451861113782823,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.4097919297778843,
+            0.41926108334957485
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 42,
+      "checkpoint": "gnn_lstm_seed42.npz",
+      "checkpoint_sha256": "8bc8133cfdcaf53c5e6384506c11f0b45312062bf2206a0b85aef7d4cb32dbcf",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.01057885866612196,
+      "state_epoch_validation_mse": [
+        0.01397055946290493,
+        0.013381498865783215,
+        0.012995046563446522,
+        0.012790724635124207,
+        0.012608673423528671,
+        0.012347782030701637,
+        0.011944216676056385,
+        0.011526442132890224,
+        0.010955081321299076,
+        0.01057885866612196
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 8.0654996955894,
+          "b": 18.001388046787135
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 7.196669252283331,
+          "b": 14.369011974267027
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 8.292192687080044,
+          "b": 16.100644892225144
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 9.689519733301566,
+          "b": 18.613054696095986
+        }
+      ],
+      "risk_thresholds": [
+        0.24043379724025726,
+        0.24191205203533173,
+        0.24372892081737518,
+        0.24113427102565765
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 1976,
+      "state_validation": {
+        "mse": 0.010578859597444534,
+        "persistence_mse": 0.014242720790207386,
+        "relative_improvement": 0.2572444677352905,
+        "paired_source_day_bootstrap_95": [
+          0.19410590004670028,
+          0.2685530845718362
+        ],
+        "source_days": 7,
+        "sequences": 6115,
+        "per_horizon_mse": [
+          0.014482195489108562,
+          0.011923521757125854,
+          0.0064675575122237206,
+          0.009442131966352463
+        ],
+        "gate_passed": true
+      },
+      "test_state": {
+        "mse": 0.006629315670579672,
+        "persistence_mse": 0.007081096060574055,
+        "relative_improvement": 0.06380093097686768,
+        "paired_source_day_bootstrap_95": [
+          0.06059468492726103,
+          0.06678971275091604
+        ],
+        "source_days": 14,
+        "sequences": 41588,
+        "per_horizon_mse": [
+          0.006850568577647209,
+          0.006613170728087425,
+          0.006270950194448233,
+          0.0067826067097485065
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "tn": 41583,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00012022698855439069,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            5.135408429798085e-05,
+            0.000281441951355319
+          ],
+          "gate_passed": false,
+          "brier": 0.0012544696449233105,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "tn": 41583,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00012022698855439069,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            5.135408429798085e-05,
+            0.000281441951355319
+          ],
+          "gate_passed": false,
+          "brier": 0.000596561870916967,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "tn": 41583,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00012022698855439069,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            5.135408429798085e-05,
+            0.000281441951355319
+          ],
+          "gate_passed": false,
+          "brier": 0.0004704653041906822,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 13,
+          "fn": 0,
+          "tn": 41575,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0003125901702414158,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0001826944029303498,
+            0.0005347924611281054
+          ],
+          "gate_passed": false,
+          "brier": 0.0003814226113576237,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 41583,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00012022698855439069,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              5.135408429798085e-05,
+              0.000281441951355319
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13,
+            "fn": 0,
+            "tn": 41575,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0003125901702414158,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0001826944029303498,
+              0.0005347924611281054
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13,
+            "fn": 0,
+            "tn": 41575,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0003125901702414158,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0001826944029303498,
+              0.0005347924611281054
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13,
+            "fn": 0,
+            "tn": 41575,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0003125901702414158,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0001826944029303498,
+              0.0005347924611281054
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13,
+            "fn": 0,
+            "tn": 41575,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0003125901702414158,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0001826944029303498,
+              0.0005347924611281054
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 13,
+            "fn": 0,
+            "tn": 41575,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0003125901702414158,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0001826944029303498,
+              0.0005347924611281054
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 19201,
+          "fn": 0,
+          "tn": 147151,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.11542392036164278,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.11389726591905097,
+            0.11696833657867337
+          ],
+          "gate_passed": false,
+          "supported_in_development": true,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "tn": 41583,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00012022698855439069,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            5.135408429798085e-05,
+            0.000281441951355319
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "tn": 41583,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00012022698855439069,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            5.135408429798085e-05,
+            0.000281441951355319
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "tn": 41583,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00012022698855439069,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            5.135408429798085e-05,
+            0.000281441951355319
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 13,
+          "fn": 0,
+          "tn": 41575,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0003125901702414158,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0001826944029303498,
+            0.0005347924611281054
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 43,
+      "checkpoint": "gnn_lstm_seed43.npz",
+      "checkpoint_sha256": "02090333d52e829525663c43a91ecc370a6349844d51dd44d72a1da103151e36",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.011417672969400883,
+      "state_epoch_validation_mse": [
+        0.013975247740745544,
+        0.013425511308014393,
+        0.013126718811690807,
+        0.012942755594849586,
+        0.012806660495698452,
+        0.012673336081206799,
+        0.012480980716645718,
+        0.012211654335260391,
+        0.011835269629955292,
+        0.011417672969400883
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 11.081684623682436,
+          "b": 20.84062100686566
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 11.856628735108387,
+          "b": 21.348951238405473
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -0.2568042393675738,
+          "b": -2.652307731070188
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -1.5737670888151971,
+          "b": -4.753474035732612
+        }
+      ],
+      "risk_thresholds": [
+        0.17802093923091888,
+        0.1489281952381134,
+        0.10517845302820206,
+        0.13812418282032013
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 1976,
+      "state_validation": {
+        "mse": 0.011417673900723457,
+        "persistence_mse": 0.014242720790207386,
+        "relative_improvement": 0.19835025072097778,
+        "paired_source_day_bootstrap_95": [
+          0.163152432922198,
+          0.21317417829296756
+        ],
+        "source_days": 7,
+        "sequences": 6115,
+        "per_horizon_mse": [
+          0.015095842070877552,
+          0.01327422633767128,
+          0.005935157649219036,
+          0.011365316808223724
+        ],
+        "gate_passed": true
+      },
+      "test_state": {
+        "mse": 0.006385129410773516,
+        "persistence_mse": 0.007081096060574055,
+        "relative_improvement": 0.09828513860702515,
+        "paired_source_day_bootstrap_95": [
+          0.09622193638734973,
+          0.10086255096446385
+        ],
+        "source_days": 14,
+        "sequences": 41588,
+        "per_horizon_mse": [
+          0.0068711042404174805,
+          0.006564947310835123,
+          0.005960478913038969,
+          0.006143931765109301
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 9,
+          "fn": 0,
+          "tn": 41579,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00021640857939790324,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.00011385946772882142,
+            0.0004112819821270561
+          ],
+          "gate_passed": false,
+          "brier": 0.003738485351014871,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 23,
+          "fn": 0,
+          "tn": 41565,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0005530441473501972,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.00036856439897190363,
+            0.0008297860005929959
+          ],
+          "gate_passed": false,
+          "brier": 0.003570632498901878,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 693,
+          "fn": 0,
+          "tn": 40895,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.01666346061363855,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.015477065675256947,
+            0.01793914160323971
+          ],
+          "gate_passed": false,
+          "brier": 0.010409449464483562,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 367,
+          "fn": 0,
+          "tn": 41221,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.008824660959892277,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.007970056519779351,
+            0.009769999501207226
+          ],
+          "gate_passed": false,
+          "brier": 0.011324605962593652,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 9,
+            "fn": 0,
+            "tn": 41579,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00021640857939790324,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00011385946772882142,
+              0.0004112819821270561
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 9,
+            "fn": 0,
+            "tn": 41579,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00021640857939790324,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00011385946772882142,
+              0.0004112819821270561
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 9,
+            "fn": 0,
+            "tn": 41579,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00021640857939790324,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00011385946772882142,
+              0.0004112819821270561
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 9,
+            "fn": 0,
+            "tn": 41579,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00021640857939790324,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00011385946772882142,
+              0.0004112819821270561
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 9,
+            "fn": 0,
+            "tn": 41579,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00021640857939790324,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00011385946772882142,
+              0.0004112819821270561
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 23,
+            "fn": 0,
+            "tn": 41565,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005530441473501972,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00036856439897190363,
+              0.0008297860005929959
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 23,
+            "fn": 0,
+            "tn": 41565,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005530441473501972,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00036856439897190363,
+              0.0008297860005929959
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 23,
+            "fn": 0,
+            "tn": 41565,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005530441473501972,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00036856439897190363,
+              0.0008297860005929959
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 23,
+            "fn": 0,
+            "tn": 41565,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005530441473501972,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00036856439897190363,
+              0.0008297860005929959
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 23,
+            "fn": 0,
+            "tn": 41565,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005530441473501972,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00036856439897190363,
+              0.0008297860005929959
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 693,
+            "fn": 0,
+            "tn": 40895,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01666346061363855,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015477065675256947,
+              0.01793914160323971
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 693,
+            "fn": 0,
+            "tn": 40895,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01666346061363855,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015477065675256947,
+              0.01793914160323971
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 693,
+            "fn": 0,
+            "tn": 40895,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01666346061363855,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015477065675256947,
+              0.01793914160323971
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 693,
+            "fn": 0,
+            "tn": 40895,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01666346061363855,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015477065675256947,
+              0.01793914160323971
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 693,
+            "fn": 0,
+            "tn": 40895,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01666346061363855,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015477065675256947,
+              0.01793914160323971
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 367,
+            "fn": 0,
+            "tn": 41221,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.008824660959892277,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.007970056519779351,
+              0.009769999501207226
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 367,
+            "fn": 0,
+            "tn": 41221,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.008824660959892277,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.007970056519779351,
+              0.009769999501207226
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 367,
+            "fn": 0,
+            "tn": 41221,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.008824660959892277,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.007970056519779351,
+              0.009769999501207226
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 367,
+            "fn": 0,
+            "tn": 41221,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.008824660959892277,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.007970056519779351,
+              0.009769999501207226
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 367,
+            "fn": 0,
+            "tn": 41221,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.008824660959892277,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.007970056519779351,
+              0.009769999501207226
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 3,
+          "fn": 0,
+          "tn": 166349,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 1.8034048283158603e-05,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            6.133111387256556e-06,
+            5.302681894848706e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": true,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 9,
+          "fn": 0,
+          "tn": 41579,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00021640857939790324,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.00011385946772882142,
+            0.0004112819821270561
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 23,
+          "fn": 0,
+          "tn": 41565,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0005530441473501972,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.00036856439897190363,
+            0.0008297860005929959
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 693,
+          "fn": 0,
+          "tn": 40895,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.01666346061363855,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.015477065675256947,
+            0.01793914160323971
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 367,
+          "fn": 0,
+          "tn": 41221,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.008824660959892277,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.007970056519779351,
+            0.009769999501207226
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 44,
+      "checkpoint": "gnn_lstm_seed44.npz",
+      "checkpoint_sha256": "8951f6c9713b50f495ff5327637e85feb841efcadb507e4b5a8ad123583a19c3",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.011049795895814896,
+      "state_epoch_validation_mse": [
+        0.013941624201834202,
+        0.013386588543653488,
+        0.013033854775130749,
+        0.012918945401906967,
+        0.012844288721680641,
+        0.012738781981170177,
+        0.012455510906875134,
+        0.012071511708199978,
+        0.011667030863463879,
+        0.011049795895814896
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.895845981848316,
+          "b": -0.09637347707146156
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.4758970757927378,
+          "b": -0.9236304752629835
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -0.10782083258731845,
+          "b": -2.50328411111577
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -0.611300374018149,
+          "b": -4.097330176932059
+        }
+      ],
+      "risk_thresholds": [
+        0.1882603019475937,
+        0.1496403068304062,
+        0.10725970566272736,
+        0.13275232911109924
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.1,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 1976,
+      "state_validation": {
+        "mse": 0.011049795895814896,
+        "persistence_mse": 0.014242720790207386,
+        "relative_improvement": 0.2241794466972351,
+        "paired_source_day_bootstrap_95": [
+          0.18422077498272663,
+          0.23517384773643588
+        ],
+        "source_days": 7,
+        "sequences": 6115,
+        "per_horizon_mse": [
+          0.014804304577410221,
+          0.012728639878332615,
+          0.005993375554680824,
+          0.010672856122255325
+        ],
+        "gate_passed": true
+      },
+      "test_state": {
+        "mse": 0.006359734106808901,
+        "persistence_mse": 0.007081096060574055,
+        "relative_improvement": 0.10187149047851562,
+        "paired_source_day_bootstrap_95": [
+          0.10015775598303532,
+          0.10385810683059005
+        ],
+        "source_days": 14,
+        "sequences": 41588,
+        "per_horizon_mse": [
+          0.006831041537225246,
+          0.006504165939986706,
+          0.005953660700470209,
+          0.006150001659989357
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 41588,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            9.236426790007778e-05
+          ],
+          "gate_passed": false,
+          "brier": 0.004904727799758074,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 41588,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            9.236426790007778e-05
+          ],
+          "gate_passed": false,
+          "brier": 0.009066707161871891,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 8,
+          "fn": 0,
+          "tn": 41580,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0001923631816870251,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            9.747714805115546e-05,
+            0.00037957794825407766
+          ],
+          "gate_passed": false,
+          "brier": 0.01003578743982198,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 3,
+          "fn": 0,
+          "tn": 41585,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 7.213619313263441e-05,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            2.4532667834381656e-05,
+            0.00021209066071762938
+          ],
+          "gate_passed": false,
+          "brier": 0.008500490153155554,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 41588,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              9.236426790007778e-05
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 41580,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0001923631816870251,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.747714805115546e-05,
+              0.00037957794825407766
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 41580,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0001923631816870251,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.747714805115546e-05,
+              0.00037957794825407766
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 41580,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0001923631816870251,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.747714805115546e-05,
+              0.00037957794825407766
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 41580,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0001923631816870251,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.747714805115546e-05,
+              0.00037957794825407766
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 41580,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0001923631816870251,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.747714805115546e-05,
+              0.00037957794825407766
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "tn": 41585,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 7.213619313263441e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              2.4532667834381656e-05,
+              0.00021209066071762938
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "tn": 41585,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 7.213619313263441e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              2.4532667834381656e-05,
+              0.00021209066071762938
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "tn": 41585,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 7.213619313263441e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              2.4532667834381656e-05,
+              0.00021209066071762938
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "tn": 41585,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 7.213619313263441e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              2.4532667834381656e-05,
+              0.00021209066071762938
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 41588,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "tn": 41585,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 7.213619313263441e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              2.4532667834381656e-05,
+              0.00021209066071762938
+            ],
+            "gate_passed": false,
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": true,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 166352,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 166352,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            2.309266667795812e-05
+          ],
+          "gate_passed": false,
+          "supported_in_development": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 41588,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            9.236426790007778e-05
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 41588,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            9.236426790007778e-05
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 8,
+          "fn": 0,
+          "tn": 41580,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0001923631816870251,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            9.747714805115546e-05,
+            0.00037957794825407766
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 41588,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 3,
+          "fn": 0,
+          "tn": 41585,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 7.213619313263441e-05,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            2.4532667834381656e-05,
+            0.00021209066071762938
+          ],
+          "gate_passed": false,
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false
+    }
+  ],
+  "equal_history_logistic_baseline": {
+    "same_observed_history": true,
+    "normalization_fit": "train_only",
+    "class_balancing": false,
+    "per_horizon": {
+      "10": {
+        "positive_support": 0,
+        "negative_support": 41588,
+        "unknown_support": 0,
+        "tp": 0,
+        "fp": 120,
+        "fn": 0,
+        "tn": 41468,
+        "precision": 0.0,
+        "recall": null,
+        "fpr": 0.0028854477253053767,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0.0024138196253452155,
+          0.0034489070686321926
+        ],
+        "gate_passed": false,
+        "threshold": 0.00015371093240632513,
+        "threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+        "brier": 6.329152709603064e-08,
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+      },
+      "20": {
+        "positive_support": 0,
+        "negative_support": 41588,
+        "unknown_support": 0,
+        "tp": 0,
+        "fp": 120,
+        "fn": 0,
+        "tn": 41468,
+        "precision": 0.0,
+        "recall": null,
+        "fpr": 0.0028854477253053767,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0.0024138196253452155,
+          0.0034489070686321926
+        ],
+        "gate_passed": false,
+        "threshold": 0.00015371093240632513,
+        "threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+        "brier": 6.329152709603064e-08,
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+      },
+      "30": {
+        "positive_support": 0,
+        "negative_support": 41588,
+        "unknown_support": 0,
+        "tp": 0,
+        "fp": 120,
+        "fn": 0,
+        "tn": 41468,
+        "precision": 0.0,
+        "recall": null,
+        "fpr": 0.0028854477253053767,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0.0024138196253452155,
+          0.0034489070686321926
+        ],
+        "gate_passed": false,
+        "threshold": 0.00015371093240632513,
+        "threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+        "brier": 6.329152709603064e-08,
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+      },
+      "40": {
+        "positive_support": 0,
+        "negative_support": 41588,
+        "unknown_support": 0,
+        "tp": 0,
+        "fp": 120,
+        "fn": 0,
+        "tn": 41468,
+        "precision": 0.0,
+        "recall": null,
+        "fpr": 0.0028854477253053767,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0.0024138196253452155,
+          0.0034489070686321926
+        ],
+        "gate_passed": false,
+        "threshold": 0.00015371093240632513,
+        "threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+        "brier": 6.329152709603064e-08,
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT"
+      }
+    },
+    "checkpoint": "logistic_frozen.npz",
+    "checkpoint_sha256": "08e09230e3598c0d390808dd1488dcf32e3fe8aa75e235e6177aeea581d11cff"
+  },
+  "automatic_promotion": false,
+  "automatic_containment": false,
+  "claim_boundary": "Native flow-record sequence diagnostic on a held-out publisher release using an earliest session-end proxy. Actual exporter availability is unverified. Flow-only; no packet, causal live warning or successful-compromise certification. Bootstrap clusters are source days, not independent enterprises.",
+  "record_availability_certified": false,
+  "timing_basis": "earliest ts+duration proxy; exporter receipts and trailing TCP packet times are unavailable",
+  "metric_reporting_correction": "Undefined attack recall/F1 are null when positive support is zero; frozen predictions, confusion counts and model weights are unchanged."
+}

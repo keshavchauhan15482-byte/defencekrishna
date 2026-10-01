@@ -56,7 +56,7 @@ python -m garuda_v3.campaign_evidence --manifest independently-reviewed-campaign
 
 The manifest contains V107 `provenance` and a `campaigns` array. Each campaign contains `campaign_id`, `graph_path`, `graph_sha256`, `objective_events_path`, `objective_events_sha256`. Objective-event JSON is a list of independently sourced V107 successful-compromise events, not Attack_info attack steps. Window graph metadata must identify its campaign and explicitly set `risk_labels_reviewed: true` after review.
 
-The evaluator uses observed history only, excludes unknown/non-clean histories, accounts for every supplied campaign including misses, selects the first objective success event and delegates hash-pinned pair verification to V110/V107. It reports retrospective event recall and lead time. Retrospective replay is **not a live warning claim**.
+The evaluator uses observed history only, excludes unknown/non-clean histories, accounts for every supplied campaign including misses, selects the first objective success event and delegates hash-pinned pair verification to V110/V107. It reports campaign-first-success recall and lead time. Event recall is reported only when each campaign has exactly one objective success record. Timestamp ordering alone is not forecast accuracy. Retrospective replay is **not a live warning claim**.
 
 No available same-campaign objective successful-compromise/model-warning pair was found in the current release evidence. Therefore this remains **insufficient objective evidence**, not PASS. An attack-step CSV cannot close that gap.
 
