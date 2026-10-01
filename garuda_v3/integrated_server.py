@@ -16,6 +16,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from .bundle_manifest import bundle_public_metadata, resolve_active_bundle
+from .console_routes import handle_console
 from .latest_state_runtime import LatestStateForecastService, LatestStateRuntimeError
 from .response import ResponseCoordinator
 from .server import App, Handler, Server
@@ -48,8 +49,25 @@ class IntegratedHandler(Handler):
             return False
         return True
 
+    def respond(self, status, data, mime="application/json"):
+        self.console_nonce = None
+        if mime.startswith("text/html") and urlsplit(self.path).path in ("/", "/console.html", "/index.html"):
+            self.console_nonce = secrets.token_urlsafe(24)
+            data = data.replace(b"<script", ('<script nonce="' + self.console_nonce + '"').encode())
+        return super().respond(status, data, mime)
+
+    def send_header(self, keyword, value):
+        nonce = getattr(self, "console_nonce", None)
+        if keyword.lower() == "content-security-policy" and nonce:
+            value = "default-src 'self'; script-src 'self' 'nonce-" + nonce + "'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'"
+        return super().send_header(keyword, value)
+
     def handle_request(self):
+        if handle_console(self):
+            return None
         url = urlsplit(self.path)
+        if url.path in ("/selection.html", "/legacy-premium.html", "/platform.html", "/technology.html", "/defence.html", "/evidence.html"):
+            return self.respond(404, {"error": "Use the unified console at /console.html"})
         if self.command == 'GET' and url.path in self.V94_SCRIPT_ASSETS:
             if not self._static_request_allowed():
                 return None
@@ -146,6 +164,17 @@ class IntegratedApp(App):
                 'risk_response_runtime': 'legacy pinned checkpoint; risk/response compatibility',
                 'state_forecast_runtime': 'V116+V118+V122 runtime qualified by V123 fresh external PASS',
                 'outputs_are_not_conflated': True,
+            },
+            'forecast_head_training': {
+                'entrypoint': 'python -m garuda_v3.coupled_heads',
+                'contract': '34 packet/flow features; 80s history; 10/20/30/40s reviewed future targets',
+                'promotion': 'three seeds, validation-only thresholds and per-family/stage final gates required',
+                'trained_latest_heads_available': False,
+            },
+            'objective_lead_time': {
+                'status': 'INSUFFICIENT_OBJECTIVE_EVIDENCE',
+                'entrypoint': 'python -m garuda_v3.campaign_evidence',
+                'attack_onset_is_compromise': False,
             },
             'runtime_support_gate': {
                 'present': support_gate_present,

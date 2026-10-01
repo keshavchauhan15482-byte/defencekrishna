@@ -1,0 +1,122 @@
+[
+  {
+    "capture": "Friday-02-03-2018.pcap",
+    "status": "SUPPORTED_STATE_FORECAST",
+    "horizons": [
+      10,
+      20,
+      30,
+      40
+    ],
+    "finite_states": true,
+    "ingestion": {
+      "decoded_ipv4_packets": 246901,
+      "observed_windows": 2752,
+      "parser_audit": {
+        "decoded_ipv4": 246901,
+        "full_tcp": 235715,
+        "full_udp": 11095,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 91,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 3076
+      },
+      "packet_limit": 250000
+    }
+  },
+  {
+    "capture": "Friday-23-02-2018.pcap",
+    "status": "SUPPORTED_STATE_FORECAST",
+    "horizons": [
+      10,
+      20,
+      30,
+      40
+    ],
+    "finite_states": true,
+    "ingestion": {
+      "decoded_ipv4_packets": 51732,
+      "observed_windows": 2714,
+      "parser_audit": {
+        "decoded_ipv4": 51732,
+        "full_tcp": 44220,
+        "full_udp": 3750,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 3762,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 3366
+      },
+      "packet_limit": 250000
+    }
+  },
+  {
+    "capture": "Thursday-01-03-2018.pcap",
+    "status": "SUPPORTED_STATE_FORECAST",
+    "horizons": [
+      10,
+      20,
+      30,
+      40
+    ],
+    "finite_states": true,
+    "ingestion": {
+      "decoded_ipv4_packets": 120921,
+      "observed_windows": 193,
+      "parser_audit": {
+        "decoded_ipv4": 120921,
+        "full_tcp": 93296,
+        "full_udp": 27365,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 260,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 295
+      },
+      "packet_limit": 250000
+    }
+  },
+  {
+    "capture": "Thursday-22-02-2018.pcap",
+    "status": "SUPPORTED_STATE_FORECAST",
+    "horizons": [
+      10,
+      20,
+      30,
+      40
+    ],
+    "finite_states": true,
+    "ingestion": {
+      "decoded_ipv4_packets": 44222,
+      "observed_windows": 2664,
+      "parser_audit": {
+        "decoded_ipv4": 44222,
+        "full_tcp": 36794,
+        "full_udp": 3709,
+        "degraded_short_ip_options": 0,
+        "degraded_short_tcp": 0,
+        "degraded_short_udp": 0,
+        "nonfirst_fragment": 0,
+        "other_protocol": 3719,
+        "skipped_truncated_ethernet": 0,
+        "skipped_truncated_vlan": 0,
+        "skipped_truncated_ipv4_header": 0,
+        "non_ipv4": 3490
+      },
+      "packet_limit": 250000
+    }
+  }
+]

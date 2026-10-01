@@ -27,8 +27,7 @@
 | **Inspect the forecasting code** | [`garuda_v3/`](garuda_v3/) |
 | **See all documentation** | [`docs/README.md`](docs/README.md) |
 
-> **Main evaluator surface:** `console.html` on **127.0.0.1:8091**  
-> **Garuda inference engine:** **127.0.0.1:8090**
+> **Unified evaluator surface + Garuda backend:** `http://127.0.0.1:8090/console.html` (one process, one port).
 
 ---
 
@@ -184,10 +183,10 @@ The launcher opens the browser automatically. If needed:
 
 | Service | Address |
 |---|---|
-| **Main SIH console** | `http://127.0.0.1:8091/console.html` |
+| **Main SIH console** | `http://127.0.0.1:8090/console.html` |
 | **Garuda engine** | `http://127.0.0.1:8090` |
 | **Engine health** | `http://127.0.0.1:8090/health` |
-| **Console health** | `http://127.0.0.1:8091/health` |
+| **Console health** | `http://127.0.0.1:8090/health` |
 
 Current evaluator-console build identity: **`v132-nationals-console`**.
 
@@ -376,3 +375,14 @@ This repository is intended for **defensive cybersecurity research, owned-lab te
 **Forecast the network state. Explain the trajectory. Respond with evidence.**
 
 </div>
+
+## Audited runtime fixes
+
+See [the audit and limits](docs/release/audit_runtime_fixes/README.md). Prepare the bundled captures before uploading; original malformed recordings remain strict-parser inputs, not clean telemetry:
+
+```bash
+python -m garuda_v3.pcap_packaging --output-dir datasets/ids2018/prepared
+python start_local.py
+```
+
+The prepared files retain original packet bytes and remove whole contaminated/terminal 10-second windows. Upload them to the charcoal/orange console. The latest packet model's state trajectory is displayed separately from the legacy risk trajectory.
