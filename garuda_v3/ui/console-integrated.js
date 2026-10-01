@@ -184,7 +184,7 @@ async function proofStatus(){
 
 $('analyze-file').onclick=async()=>{
  const file=$('capture-file').files[0];
- if(!file||file.size>8*1024*1024){text('upload-status','Select a CSV or PCAP of at most 8 MiB.');return;}
+ if(!file||file.size>72*1024*1024){text('upload-status','Select a CSV or PCAP of at most 72 MiB.');return;}
  if(busy){text('upload-status','Wait for the active forecast to finish.');return;}
  let kind=file.name.split('.').pop().toLowerCase();
  if($('upload-model').value==='v48')kind='v48csv';
@@ -193,6 +193,7 @@ $('analyze-file').onclick=async()=>{
   const r=await fetch('/bridge/analyze?kind='+encodeURIComponent(kind),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:file});
   const d=await r.json();if(!r.ok)throw Error(d.error||'Upload failed');
   if(d.lane==='v48_joint_shadow'){text('upload-status',d.status+' · shadow only · evidence scores, not probabilities');text('upload-result',JSON.stringify(d,null,2));return;}
+  renderLatestState(d.latest_state_forecast);
   text('upload-status',d.status+' · '+d.windows+' windows · '+d.forecasts.length+' forecasts');
   text('upload-result',JSON.stringify({input_sha256:d.input_sha256,model_sha256:d.model_sha256,scope:d.scope,withheld:d.withheld,forecasts:d.forecasts.map(f=>({cutoff:f.cutoff_epoch_seconds,trajectory:f.trajectory.map(p=>({horizon_seconds:p.horizon_seconds,risk:p.malicious_flow_probability})),stage:f.predicted_attack_stage||'Insufficient evidence',features:f.explanation.feature_attributions.slice(0,5),nodes:f.explanation.node_importance}))},null,2));
   for(const f of d.forecasts)render(f);
@@ -200,6 +201,16 @@ $('analyze-file').onclick=async()=>{
  }catch(e){text('upload-status',e.message)}
  finally{busy=false;locked(false);$('analyze-file').disabled=false}
 };
+
+function renderLatestState(state){
+ if(!state)return;
+ text('latest-state-status',state.status+' · state-only model; risk and future-stage heads are not promoted');
+ const horizons=state.trajectory||[];
+ const feature=(state.feature_names||[]).indexOf('bytes_log');
+ const svg=$('latest-state-line');
+ if(svg)svg.setAttribute('d',horizons.map((p,i)=>{const value=Number(p.state_vector[feature]);return (i?'L':'M')+(40+i*240)+','+(210-Math.max(0,Math.min(1,value))*180)}).join(' '));
+ text('latest-state-detail',JSON.stringify({model:state.model,model_sha256:state.model_sha256,cutoff:state.cutoff_epoch_seconds,observed:state.ingestion,candidate_decision_forecast:state.candidate_decision_forecast,horizons:horizons.map(p=>({seconds:p.horizon_seconds,bytes_log:p.state_vector[feature]})),reason:state.reason,automatic_containment:state.automatic_containment},null,2));
+}
 
 startLiveGraph();
 counters();proofStatus();replay();

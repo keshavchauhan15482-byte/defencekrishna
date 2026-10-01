@@ -74,16 +74,9 @@ class MainConsoleServer(ThreadingHTTPServer):
 
 
 def main() -> None:
-    port = int(os.environ.get("GARUDA_LEGACY_PORT", "8091"))
-    server = MainConsoleServer(("127.0.0.1", port), MainConsoleHandler)
-    print(
-        f"Krishna MAIN console.html: http://127.0.0.1:{port} — build {CONSOLE_BUILD}; engine {legacy.ENGINE}",
-        flush=True,
-    )
-    try:
-        server.serve_forever()
-    finally:
-        server.server_close()
+    # All supported console launch commands use the unified runtime.
+    from .integrated_server import main as integrated_main
+    integrated_main()
 
 
 if __name__ == "__main__":

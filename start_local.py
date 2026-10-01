@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import socket
 import subprocess
@@ -14,8 +15,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 VENV = ROOT / ".venv"
 ENGINE_URL = "http://127.0.0.1:8090"
-CONSOLE_URL = "http://127.0.0.1:8091"
-PREMIUM_URL = CONSOLE_URL
+CONSOLE_URL = ENGINE_URL
+PREMIUM_URL = ENGINE_URL
 ENGINE_HEALTH_URL = ENGINE_URL + "/health"
 CONSOLE_HEALTH_URL = CONSOLE_URL + "/health"
 ENGINE_LOG = ROOT / "garuda_v3" / "runtime" / "localhost.log"
@@ -59,6 +60,15 @@ def http_ok(url: str) -> bool:
         return False
 
 
+def unified_health_ok() -> bool:
+    try:
+        with urllib.request.urlopen(ENGINE_HEALTH_URL, timeout=1.5) as response:
+            data = json.loads(response.read())
+        return data.get('surface') == 'console.html' and data.get('single_port') is True
+    except Exception:
+        return False
+
+
 def tail_log(path: Path, lines: int = 40) -> str:
     try:
         text = path.read_text(errors="replace").splitlines()
@@ -79,7 +89,7 @@ def wait_until_ready(processes: list[subprocess.Popen], timeout: float = 45.0) -
                 print("--- Premium console log ---", flush=True)
                 print(tail_log(CONSOLE_LOG), flush=True)
                 return False
-        if http_ok(ENGINE_HEALTH_URL) and http_ok(CONSOLE_HEALTH_URL) and http_ok(PREMIUM_URL):
+        if unified_health_ok() and http_ok(PREMIUM_URL):
             return True
         time.sleep(0.4)
     print("[Krishna Defence] Local services did not become healthy in time.", flush=True)
@@ -93,7 +103,6 @@ def wait_until_ready(processes: list[subprocess.Popen], timeout: float = 45.0) -
 def start_services(py: Path) -> tuple[list[subprocess.Popen], list[object]]:
     ENGINE_LOG.parent.mkdir(parents=True, exist_ok=True)
     engine_log = ENGINE_LOG.open("w")
-    console_log = CONSOLE_LOG.open("w")
     engine = subprocess.Popen(
         [str(py), "-m", "garuda_v3.integrated_server"],
         cwd=ROOT,
@@ -101,14 +110,7 @@ def start_services(py: Path) -> tuple[list[subprocess.Popen], list[object]]:
         stderr=subprocess.STDOUT,
         text=True,
     )
-    console = subprocess.Popen(
-        [str(py), "-m", "garuda_v3.legacy_console"],
-        cwd=ROOT,
-        stdout=console_log,
-        stderr=subprocess.STDOUT,
-        text=True,
-    )
-    return [engine, console], [engine_log, console_log]
+    return [engine], [engine_log]
 
 
 def stop_service(proc: subprocess.Popen) -> None:
@@ -124,7 +126,7 @@ def stop_service(proc: subprocess.Popen) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Launch Krishna Defence premium console + Garuda engine")
-    parser.add_argument("--smoke", action="store_true", help="verify both localhost services and exit")
+    parser.add_argument("--smoke", action="store_true", help="verify the unified localhost service and exit")
     parser.add_argument("--skip-install", action="store_true", help="do not install requirements")
     parser.add_argument("--current-python", action="store_true", help="use the current Python instead of .venv")
     parser.add_argument("--no-browser", action="store_true", help="do not open the default browser")
@@ -132,9 +134,9 @@ def main() -> int:
 
     os.chdir(ROOT)
     engine_open = port_is_open(8090)
-    console_open = port_is_open(8091)
+    console_open = False
     if engine_open or console_open:
-        if http_ok(ENGINE_HEALTH_URL) and http_ok(CONSOLE_HEALTH_URL) and http_ok(PREMIUM_URL):
+        if unified_health_ok() and http_ok(PREMIUM_URL):
             print(f"[Krishna Defence] Premium console is running at {PREMIUM_URL}", flush=True)
             print(f"[Krishna Defence] Garuda engine is running at {ENGINE_URL}", flush=True)
             if not args.smoke and not args.no_browser:
@@ -154,7 +156,7 @@ def main() -> int:
         print(f"[Krishna Defence] Setup failed: {exc}", flush=True)
         return 2
 
-    print("[Krishna Defence] Starting Garuda engine on 8090 + premium console on 8091...", flush=True)
+    print("[Krishna Defence] Starting unified console + Garuda runtime on 8090...", flush=True)
     processes, log_handles = start_services(py)
     try:
         if not wait_until_ready(processes):
@@ -171,7 +173,7 @@ def main() -> int:
                 print("[Krishna Defence] Browser launch requested for the premium console.", flush=True)
             else:
                 print(f"[Krishna Defence] Browser could not be opened automatically. Open {PREMIUM_URL} manually.", flush=True)
-        print("[Krishna Defence] Keep this window open. Press Ctrl+C to stop both services.", flush=True)
+        print("[Krishna Defence] Keep this window open. Press Ctrl+C to stop the unified service.", flush=True)
         while all(proc.poll() is None for proc in processes):
             time.sleep(0.5)
         print("[Krishna Defence] A localhost service stopped unexpectedly.", flush=True)

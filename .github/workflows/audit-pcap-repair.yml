@@ -1,0 +1,46 @@
+name: Restore hash-pinned bundled PCAP
+
+on:
+  push:
+    branches: [fix/audit-runtime-integration]
+
+permissions:
+  contents: write
+
+jobs:
+  restore-official-member:
+    if: github.repository == 'keshavchauhan15482-byte/defencekrishna' && github.ref == 'refs/heads/fix/audit-runtime-integration'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/audit-runtime-integration
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore exact publisher bytes and verify previously pinned hash
+        run: |
+          python - <<'PY'
+          import hashlib, json, shutil, tempfile
+          from pathlib import Path
+          from garuda_v3.ids2018_stream_fetch import fetch
+          target = Path('datasets/ids2018/raw/Friday-02-03-2018.pcap')
+          expected = '56fc8375d9104615ec08952bf811cc17e0579af5d2fc98e54dea669cc9d5d58e'
+          if hashlib.sha256(target.read_bytes()).hexdigest() != expected:
+              with tempfile.TemporaryDirectory() as td:
+                  recovered = Path(td) / 'official.pcap'
+                  fetch('datasets/ids2018/catalog/Friday-02-03-2018.members.json', 'pcap/capEC2AMAZ-O4EL3NG-172.31.69.23', recovered)
+                  assert hashlib.sha256(recovered.read_bytes()).hexdigest() == expected
+                  shutil.copyfile(recovered, target)
+          assert target.stat().st_size == 104272064
+          PY
+      - name: Commit verified restoration on the audit branch only
+        run: |
+          git add datasets/ids2018/raw/Friday-02-03-2018.pcap
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Restore official IDS2018 member with pinned SHA-256 and CRC'
+            git push origin HEAD:fix/audit-runtime-integration
+          fi

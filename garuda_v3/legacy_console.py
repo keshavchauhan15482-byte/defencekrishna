@@ -102,16 +102,17 @@ def _variant_payload(key: str, nonce: int = 0) -> dict:
     return payload
 
 
-def _forecast(payload: dict) -> dict:
-    return _engine_json("/api/forecast", method="POST", body=payload, operator=False)
+def _forecast(payload: dict, engine=None) -> dict:
+    return (engine or _engine_json)("/api/forecast", method="POST", body=payload, operator=False)
 
 
-def _simulate(key: str) -> dict:
+def _simulate(key: str, engine=None) -> dict:
+    engine = engine or _engine_json
     if key not in SCENARIOS:
         raise ValueError("Unknown network-lab scenario")
     scenario = SCENARIOS[key]
     if scenario["mode"] == "clean":
-        forecast = _forecast(_variant_payload(key))
+        forecast = _forecast(_variant_payload(key), engine)
         return {
             "scenario": scenario,
             "scenario_key": key,
@@ -121,12 +122,12 @@ def _simulate(key: str) -> dict:
 
     nonce = 0 if scenario["mode"] == "known" else time.time_ns()
     payload = _variant_payload(key, nonce)
-    first = _forecast(payload)
+    first = _forecast(payload, engine)
 
     if scenario["mode"] == "known":
         signal = first.get("defence_signal") or {}
         if signal.get("route") != "arjuna" and first.get("alert") and signal.get("id"):
-            _engine_json(
+            engine(
                 "/api/response/approve",
                 method="POST",
                 operator=True,
@@ -136,7 +137,7 @@ def _simulate(key: str) -> dict:
                     "evidence": "Operator-approved local network-lab replay for exact-memory route validation.",
                 },
             )
-            forecast = _forecast(payload)
+            forecast = _forecast(payload, engine)
         else:
             forecast = first
     else:
@@ -261,17 +262,9 @@ class LegacyConsoleServer(ThreadingHTTPServer):
 
 
 def main() -> None:
-    port = int(os.environ.get("GARUDA_LEGACY_PORT", "8091"))
-    server = LegacyConsoleServer(("127.0.0.1", port), LegacyConsoleHandler)
-    print(
-        f"Garuda integrated console: http://127.0.0.1:{port} — engine {ENGINE}; "
-        f"bundle {BUNDLE_METADATA.get('bundle_id')}. Network lab only; Sudarshana follows runtime authorization gates.",
-        flush=True,
-    )
-    try:
-        server.serve_forever()
-    finally:
-        server.server_close()
+    # Backwards-compatible command; no separate 8091 listener is started.
+    from .integrated_server import main as integrated_main
+    integrated_main()
 
 
 if __name__ == "__main__":

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import tempfile
 from pathlib import Path
 
@@ -85,6 +86,12 @@ class LatestStateForecastService:
             raise LatestStateRuntimeError('Invalid V118 innovation calibration')
         for p in self.model.parameters():
             p.requires_grad = False
+        self.experimental_heads = None
+        head_folder = os.environ.get('GARUDA_COUPLED_HEAD_EXPERIMENT')
+        if head_folder:
+            from .coupled_heads import ShadowReadout
+            self.experimental_heads = ShadowReadout(head_folder, self.model)
+
 
     def _relative_history(self, raw_x: np.ndarray, mask: np.ndarray):
         raw_x = np.asarray(raw_x, dtype=np.float32)
@@ -139,7 +146,7 @@ class LatestStateForecastService:
                 'horizon_seconds': (k + 1) * WINDOW_SECONDS,
                 'state_vector': state.astype(float).tolist(),
             })
-        return {
+        result = {
             'status': 'SUPPORTED_STATE_FORECAST',
             'supported': True,
             'model': 'V116 GraphSAGE+LSTM + V118 innovation calibration',
@@ -165,6 +172,9 @@ class LatestStateForecastService:
             'automatic_containment': False,
             'claim_boundary': 'Future network-state forecasting only; this state-only checkpoint does not emit attack probability, MITRE stage, or autonomous containment.',
         }
+        if self.experimental_heads is not None:
+            result['candidate_decision_forecast'] = self.experimental_heads.forecast(model_x, ba, bm)
+        return result
 
     def analyze_pcap(self, raw: bytes, packet_limit: int = 250_000):
         if not raw:
@@ -201,6 +211,7 @@ class LatestStateForecastService:
             'forecast_windows': HORIZON,
             'window_seconds': WINDOW_SECONDS,
             'packet_features_trained': True,
+            'shadow_heads_enabled': self.experimental_heads is not None,
             'risk_head_trained': False,
             'stage_head_trained': False,
             'semantic_support_contract': 'V122 FROZEN',

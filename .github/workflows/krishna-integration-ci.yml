@@ -33,7 +33,9 @@ jobs:
       - name: Compile Garuda Python modules
         run: python -m compileall -q garuda_v3
       - name: Python Garuda regression
-        run: python -m unittest discover -s garuda_v3/tests -v
+        run: python -m pytest garuda_v3/tests -q
+      - name: Bundled PCAP preparation and real state inference
+        run: PYTHONPATH=. python tests/test_bundled_pcap_smoke.py
       - name: NTRO data integrity regression
         run: python ntro-world-model/tests/test_data_integrity.py
       - name: Proxy exposure regression

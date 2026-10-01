@@ -21,3 +21,7 @@ yarn-error.log*
 # Large binary PCAP files exceeding GitHub 100MB limit (reassemble from .part_* using ./reassemble_pcaps.sh)
 datasets/ids2018/fresh_holdout/Thursday-15-02-2018.pcap
 datasets/ids2018/fresh_holdout/clean/Thursday-15-02-2018.pcap
+
+# Reproducible audited derivatives: python -m garuda_v3.pcap_packaging
+datasets/ids2018/prepared/
+garuda_v3/runtime/

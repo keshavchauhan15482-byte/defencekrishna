@@ -11,7 +11,9 @@ def test_approved_homepage_assets_are_served_by_local_server():
         "/reference-live.js": "reference-live.js",
     }
     for url, filename in required.items():
-        assert f"'{url}': ('{filename}'" in SERVER or f'"{url}": ("{filename}"' in SERVER
+        assert (f"'{url}': ('{filename}'" in SERVER or
+                f'"{url}": ("{filename}"' in SERVER or
+                f"'{url}': '{filename}'" in SERVER)
         assert f'href="{url}"' in INDEX or f'src="{url}"' in INDEX
 
 
