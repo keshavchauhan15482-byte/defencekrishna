@@ -1,0 +1,4 @@
+-r requirements.txt
+# Publisher parquet acquisition/causal sequence preparation only.
+# Offline checkpoint inference does not import Arrow.
+pyarrow==25.0.1

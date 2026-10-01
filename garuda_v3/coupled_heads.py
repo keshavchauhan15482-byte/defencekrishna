@@ -156,7 +156,9 @@ class ShadowReadout:
         return {'status':'EXPERIMENTAL_SHADOW_ONLY', 'trajectory':trajectory,
             'model_sha256':self.model_sha256, 'same_frozen_state_backbone':True,
             'calibrated_probability':False, 'automatic_containment':False,
-            'independent_gates_passed':self.report['all_seed_gates_passed']}
+            'any_horizon_alert':bool(r.data[0].max()>=self.row.get('any_horizon_threshold_validation_only',1.000001)),
+            'any_horizon_gate_verified':self.row.get('any_horizon_metrics',{}).get('gate_passed',False),
+            'independent_gates_passed':self.report['all_seed_gates_passed'] and self.row.get('any_horizon_metrics',{}).get('gate_passed',False)}
 
 
 def objective(model, data, ids):
@@ -204,6 +206,21 @@ def select_thresholds(y, scores):
         feasible = [(m, t) for m, t in feasible if m['fpr'] <= .01]
         thresholds.append(max(feasible, key=lambda v: (v[0]['recall'], v[1]))[1])
     return thresholds
+
+
+def future_any_target(y):
+    """Unknown future windows cannot silently become a negative 40s outcome."""
+    y=np.asarray(y)
+    if y.ndim!=2 or not np.isin(y,[-1,0,1]).all():raise ValueError('Reviewed multi-horizon labels required')
+    return np.where((y==1).any(1),1,np.where((y<0).any(1),-1,0))
+
+
+def select_any_horizon_threshold(y,scores):
+    target=future_any_target(y);score=np.asarray(scores).max(1)
+    candidates=np.unique(np.r_[score,1.000001])
+    feasible=[(binary_metrics(target,score,float(t)),float(t)) for t in candidates]
+    feasible=[(m,t) for m,t in feasible if m['fpr']<=.01]
+    return max(feasible,key=lambda v:(v[0]['recall'],v[1]))[1]
 
 
 def main():
@@ -258,6 +275,9 @@ def main():
                 raise RuntimeError('Frozen state backbone changed')
         vr, _ = predict(model, sets['validation'])
         thresholds = select_thresholds(sets['validation']['risk_y'], vr)
+        # Control the actual any-horizon alert, rather than OR-ing four separate
+        # 1% rules and accidentally multiplying the operational false-alert rate.
+        joint_threshold=select_any_horizon_threshold(sets['validation']['risk_y'],vr)
         tr, ts = predict(model, sets['test'])
         risk_report = {str(h+1): {str(f): binary_metrics(sets['test']['risk_y'][family['test']==f, h], tr[family['test']==f, h], thresholds[h]) for f in np.unique(family['test'])} for h in range(HORIZON)}
         sy = sets['test']['stage_y']; sp = ts.argmax(axis=-1)
@@ -267,9 +287,12 @@ def main():
             actual, predicted = int((sy == i).sum()), int(((sp == i) & (sy >= 0)).sum())
             precision, recall = tp/max(1, predicted), tp/max(1, actual)
             stage_report[name] = {'support': actual, 'precision': precision, 'recall': recall, 'f1': 2*precision*recall/max(1e-12,precision+recall)}
-        passed = all(m['gate_passed'] for row in risk_report.values() for m in row.values()) and all(m['support']>=30 and m['recall']>=.8 for m in stage_report.values())
+        joint_metrics=binary_metrics(future_any_target(sets['test']['risk_y']),tr.max(1),joint_threshold)
+        passed = joint_metrics['gate_passed'] and all(m['gate_passed'] for row in risk_report.values() for m in row.values()) and all(m['support']>=30 and m['recall']>=.8 for m in stage_report.values())
         model.save(args.output / f'heads_seed{seed}.npz', {'schema': RAW_SCHEMA, 'base_model_sha256': EXPECTED['model'], 'features': FEATURES, 'risk_head_trained': True, 'stage_head_trained': True, 'shadow_only': True})
         reports.append({'seed': seed, 'checkpoint_sha256': _sha256(args.output / f'heads_seed{seed}.npz'), 'thresholds_validation_only': thresholds,
+            'any_horizon_threshold_validation_only':joint_threshold,
+            'any_horizon_metrics':binary_metrics(future_any_target(sets['test']['risk_y']),tr.max(1),joint_threshold),
             'per_family_per_horizon': risk_report, 'per_stage': stage_report, 'gate_passed': passed})
     report = {'base_model_sha256': EXPECTED['model'], 'manifest_sha256': _sha256(args.manifest),
         'state_backbone_unchanged': True, 'seeds': reports,

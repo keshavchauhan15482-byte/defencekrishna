@@ -24,6 +24,7 @@
 | **Run the main demo** | [Quick Setup](#quick-setup--main-demo) |
 | **Understand the system** | [Architecture](#system-architecture) |
 | **Check verified results** | [`docs/release/FINAL_SIH_EVIDENCE.md`](docs/release/FINAL_SIH_EVIDENCE.md) |
+| **Inspect the latest 3-seed research diagnostic and its limits** | [`docs/release/causal_native_forecast/README.md`](docs/release/causal_native_forecast/README.md) |
 | **Inspect the forecasting code** | [`garuda_v3/`](garuda_v3/) |
 | **See all documentation** | [`docs/README.md`](docs/README.md) |
 

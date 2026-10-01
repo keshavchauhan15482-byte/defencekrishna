@@ -101,10 +101,18 @@ def evaluate(manifest_path, output, artifacts=None):
     leads = [r['lead_time_seconds'] for r in reports if r['hit']]
     result = {'evaluation_mode': 'retrospective_replay', 'live_warning_claim': False,
         'model_sha256': service.model_hash, 'manifest_sha256': sha(manifest_path),
-        'campaigns': reports, 'event_recall': sum(r['hit'] for r in reports)/len(reports),
+        'campaigns': reports,
+        'campaign_first_success_recall': sum(r['hit'] for r in reports)/len(reports),
+        # The predeclared V110 statistic concerns FIRST success per campaign.
+        # It cannot count repeated compromise records as independent incidents.
+        'event_recall': (sum(r['hit'] for r in reports)/len(reports)
+            if all(len(events)==1 for _,_,_,events in loaded) else None),
+        'objective_success_records_available': sum(len(events) for _,_,_,events in loaded),
+        'compromise_statistic': 'first objective success per campaign',
         'median_hit_lead_time_seconds': float(np.median(leads)) if leads else None,
         'all_campaigns_reported': True, 'automatic_containment': False,
-        'claim_boundary': 'Objective timestamp lead time in retrospective clean-history replay; not a live pilot or production certification.'}
+        'forecast_accuracy_established_by_timestamp_ordering': False,
+        'claim_boundary': 'Objective timestamp ordering in retrospective clean-history replay; campaign-first-success recall. Ordering alone does not establish forecast precision, causal attribution or live-pilot performance.'}
     (output/'report.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
 

@@ -1,0 +1,88 @@
+{
+  "architecture": "gnn_lstm",
+  "seed": 43,
+  "checkpoint": "gnn_lstm_seed43.npz",
+  "checkpoint_sha256": "02090333d52e829525663c43a91ecc370a6349844d51dd44d72a1da103151e36",
+  "state_validation_selected": true,
+  "state_validation_mse": 0.011417672969400883,
+  "state_epoch_validation_mse": [
+    0.013975247740745544,
+    0.013425511308014393,
+    0.013126718811690807,
+    0.012942755594849586,
+    0.012806660495698452,
+    0.012673336081206799,
+    0.012480980716645718,
+    0.012211654335260391,
+    0.011835269629955292,
+    0.011417672969400883
+  ],
+  "heads_leave_state_unchanged": true,
+  "stage_supported_in_development": [
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "risk_calibration": [
+    {
+      "status": "VALIDATION_ONLY_PLATT",
+      "a": 11.081684623682436,
+      "b": 20.84062100686566
+    },
+    {
+      "status": "VALIDATION_ONLY_PLATT",
+      "a": 11.856628735108387,
+      "b": 21.348951238405473
+    },
+    {
+      "status": "VALIDATION_ONLY_PLATT",
+      "a": -0.2568042393675738,
+      "b": -2.652307731070188
+    },
+    {
+      "status": "VALIDATION_ONLY_PLATT",
+      "a": -1.5737670888151971,
+      "b": -4.753474035732612
+    }
+  ],
+  "risk_thresholds": [
+    0.17802093923091888,
+    0.1489281952381134,
+    0.10517845302820206,
+    0.13812418282032013
+  ],
+  "risk_threshold_status": [
+    "VALIDATION_ONLY_1_PERCENT_FPR",
+    "VALIDATION_ONLY_1_PERCENT_FPR",
+    "VALIDATION_ONLY_1_PERCENT_FPR",
+    "VALIDATION_ONLY_1_PERCENT_FPR"
+  ],
+  "stage_thresholds": [
+    0.05,
+    1.000001,
+    1.000001,
+    1.000001,
+    1.000001
+  ],
+  "fit_sequences": 1976,
+  "state_validation": {
+    "mse": 0.011417673900723457,
+    "persistence_mse": 0.014242720790207386,
+    "relative_improvement": 0.19835025072097778,
+    "paired_source_day_bootstrap_95": [
+      0.163152432922198,
+      0.21317417829296756
+    ],
+    "source_days": 7,
+    "sequences": 6115,
+    "per_horizon_mse": [
+      0.015095842070877552,
+      0.01327422633767128,
+      0.005935157649219036,
+      0.011365316808223724
+    ],
+    "gate_passed": true
+  }
+}

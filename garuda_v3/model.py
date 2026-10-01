@@ -10,7 +10,8 @@ from .data import FEATURES, SCHEMA
 
 PS_COMPLETE_SCHEMA = 'garuda-observed-graph-v46-ps-complete'
 RELATIVE_PS_COMPLETE_SCHEMA = 'garuda-observed-graph-v46-ps-complete-relative-v1'
-SUPPORTED_SCHEMAS = {SCHEMA, PS_COMPLETE_SCHEMA, RELATIVE_PS_COMPLETE_SCHEMA}
+CAUSAL_FLOW_SCHEMA = 'garuda-uwf-closed-flow-v1'
+SUPPORTED_SCHEMAS = {SCHEMA, PS_COMPLETE_SCHEMA, RELATIVE_PS_COMPLETE_SCHEMA, CAUSAL_FLOW_SCHEMA}
 
 
 class GraphWorldModel:

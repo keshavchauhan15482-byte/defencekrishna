@@ -1,0 +1,49 @@
+{
+  "verified_at_utc": "2026-10-01T20:19:08.419507+00:00",
+  "method": "Frozen evaluation repeated from published initial freeze using final source amendment; no model refit",
+  "model_metrics_reproduced_exactly": true,
+  "summary_reproduced_exactly": true,
+  "logistic_baseline_reproduced_exactly": true,
+  "checkpoints_byte_identical": [
+    {
+      "architecture": "lstm",
+      "seed": 42,
+      "sha256": "7aa86dd95e325fb671f9edc8c5ba67ebafe772514f6e6885e2a6699a6a0b5988"
+    },
+    {
+      "architecture": "lstm",
+      "seed": 43,
+      "sha256": "2ca8bf4258a6f3bd11869183768e6879dba9d608f7afca80bb050722772e7a78"
+    },
+    {
+      "architecture": "lstm",
+      "seed": 44,
+      "sha256": "c96a8358d8573a1f891481e70e90ab687332d56eb55269b8d4aadf2c11e3b61a"
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 42,
+      "sha256": "8bc8133cfdcaf53c5e6384506c11f0b45312062bf2206a0b85aef7d4cb32dbcf"
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 43,
+      "sha256": "02090333d52e829525663c43a91ecc370a6349844d51dd44d72a1da103151e36"
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 44,
+      "sha256": "8951f6c9713b50f495ff5327637e85feb841efcadb507e4b5a8ad123583a19c3"
+    }
+  ],
+  "usable_final_sequences": 41588,
+  "future_attack_positive_support": 0,
+  "record_availability_certified": false,
+  "certified_live_warning": false,
+  "automatic_containment": false,
+  "local_regression": {
+    "passed": 325,
+    "skipped": 3
+  },
+  "published_report_sha256": "346754666195a183174a01ba1ae8a31857bcd05c59048f838cf5644c2762bd68"
+}

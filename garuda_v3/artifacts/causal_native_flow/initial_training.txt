@@ -1,0 +1,87 @@
+{"prepared": "UWF-ZeekData24_2024-02-25", "split": "train", "sequences": 0}
+{"prepared": "UWF-ZeekData24_2024-03-03", "split": "train", "sequences": 0}
+{"prepared": "UWF-ZeekDataFall24-2_2024-10-27", "split": "train", "sequences": 16}
+{"prepared": "UWF-ZeekData22_2021-12-12", "split": "train", "sequences": 0}
+{"prepared": "UWF-ZeekData22_2021-12-19", "split": "train", "sequences": 999}
+{"prepared": "UWF-ZeekData22_2022-01-09", "split": "train", "sequences": 961}
+{"prepared": "UWF-ZeekDataFall24-2_2024-11-10", "split": "validation", "sequences": 1}
+{"prepared": "UWF-ZeekData22_2022-01-02", "split": "validation", "sequences": 5498}
+{"prepared": "UWF-ZeekData22_2022-02-06", "split": "validation", "sequences": 616}
+{"arch": "lstm", "seed": 42, "state_epoch": 1, "validation_mse": 0.013942736200988293}
+{"arch": "lstm", "seed": 42, "state_epoch": 2, "validation_mse": 0.013366352766752243}
+{"arch": "lstm", "seed": 42, "state_epoch": 3, "validation_mse": 0.013012347742915154}
+{"arch": "lstm", "seed": 42, "state_epoch": 4, "validation_mse": 0.012831122614443302}
+{"arch": "lstm", "seed": 42, "state_epoch": 5, "validation_mse": 0.012624876573681831}
+{"arch": "lstm", "seed": 42, "state_epoch": 6, "validation_mse": 0.012308916077017784}
+{"arch": "lstm", "seed": 42, "state_epoch": 7, "validation_mse": 0.011848379857838154}
+{"arch": "lstm", "seed": 42, "state_epoch": 8, "validation_mse": 0.011647146195173264}
+{"arch": "lstm", "seed": 42, "state_epoch": 9, "validation_mse": 0.010967524722218513}
+{"arch": "lstm", "seed": 42, "state_epoch": 10, "validation_mse": 0.010768470354378223}
+{"arch": "lstm", "seed": 43, "state_epoch": 1, "validation_mse": 0.013978653587400913}
+{"arch": "lstm", "seed": 43, "state_epoch": 2, "validation_mse": 0.013431457802653313}
+{"arch": "lstm", "seed": 43, "state_epoch": 3, "validation_mse": 0.013085453771054745}
+{"arch": "lstm", "seed": 43, "state_epoch": 4, "validation_mse": 0.012810573913156986}
+{"arch": "lstm", "seed": 43, "state_epoch": 5, "validation_mse": 0.01250947080552578}
+{"arch": "lstm", "seed": 43, "state_epoch": 6, "validation_mse": 0.012139882892370224}
+{"arch": "lstm", "seed": 43, "state_epoch": 7, "validation_mse": 0.011764518916606903}
+{"arch": "lstm", "seed": 43, "state_epoch": 8, "validation_mse": 0.01137476321309805}
+{"arch": "lstm", "seed": 43, "state_epoch": 9, "validation_mse": 0.010844019241631031}
+{"arch": "lstm", "seed": 43, "state_epoch": 10, "validation_mse": 0.010545238852500916}
+{"arch": "lstm", "seed": 44, "state_epoch": 1, "validation_mse": 0.014030734077095985}
+{"arch": "lstm", "seed": 44, "state_epoch": 2, "validation_mse": 0.013499638997018337}
+{"arch": "lstm", "seed": 44, "state_epoch": 3, "validation_mse": 0.012886406853795052}
+{"arch": "lstm", "seed": 44, "state_epoch": 4, "validation_mse": 0.012512854300439358}
+{"arch": "lstm", "seed": 44, "state_epoch": 5, "validation_mse": 0.011968715116381645}
+{"arch": "lstm", "seed": 44, "state_epoch": 6, "validation_mse": 0.011384312994778156}
+{"arch": "lstm", "seed": 44, "state_epoch": 7, "validation_mse": 0.010865673422813416}
+{"arch": "lstm", "seed": 44, "state_epoch": 8, "validation_mse": 0.010520732961595058}
+{"arch": "lstm", "seed": 44, "state_epoch": 9, "validation_mse": 0.010499759577214718}
+{"arch": "lstm", "seed": 44, "state_epoch": 10, "validation_mse": 0.010266409255564213}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 1, "validation_mse": 0.01397055946290493}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 2, "validation_mse": 0.013381498865783215}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 3, "validation_mse": 0.012995046563446522}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 4, "validation_mse": 0.012790724635124207}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 5, "validation_mse": 0.012608673423528671}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 6, "validation_mse": 0.012347782030701637}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 7, "validation_mse": 0.011944216676056385}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 8, "validation_mse": 0.011526442132890224}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 9, "validation_mse": 0.010955081321299076}
+{"arch": "gnn_lstm", "seed": 42, "state_epoch": 10, "validation_mse": 0.01057885866612196}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 1, "validation_mse": 0.013975247740745544}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 2, "validation_mse": 0.013425511308014393}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 3, "validation_mse": 0.013126718811690807}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 4, "validation_mse": 0.012942755594849586}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 5, "validation_mse": 0.012806660495698452}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 6, "validation_mse": 0.012673336081206799}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 7, "validation_mse": 0.012480980716645718}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 8, "validation_mse": 0.012211654335260391}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 9, "validation_mse": 0.011835269629955292}
+{"arch": "gnn_lstm", "seed": 43, "state_epoch": 10, "validation_mse": 0.011417672969400883}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 1, "validation_mse": 0.013941624201834202}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 2, "validation_mse": 0.013386588543653488}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 3, "validation_mse": 0.013033854775130749}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 4, "validation_mse": 0.012918945401906967}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 5, "validation_mse": 0.012844288721680641}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 6, "validation_mse": 0.012738781981170177}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 7, "validation_mse": 0.012455510906875134}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 8, "validation_mse": 0.012071511708199978}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 9, "validation_mse": 0.011667030863463879}
+{"arch": "gnn_lstm", "seed": 44, "state_epoch": 10, "validation_mse": 0.011049795895814896}
+{"prepared": "UWF-ZeekDataSum25-1_2025-06-15", "split": "test", "sequences": 0}
+{"prepared": "UWF-ZeekDataSum25-1_2025-07-13", "split": "test", "sequences": 0}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/scratch/ca9f1b3a363b/forecast-evidence/garuda_v3/causal_stage_forecast.py", line 547, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/scratch/ca9f1b3a363b/forecast-evidence/garuda_v3/causal_stage_forecast.py", line 544, in main
+    args=ap.parse_args();run(args.protocol,args.cache,args.output)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/ca9f1b3a363b/forecast-evidence/garuda_v3/causal_stage_forecast.py", line 519, in run
+    test,ea=load_group(sources,'test')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/ca9f1b3a363b/forecast-evidence/garuda_v3/causal_stage_forecast.py", line 288, in load_group
+    if not arrays: raise ValueError('Empty '+split)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Empty test

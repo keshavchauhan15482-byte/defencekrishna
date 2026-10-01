@@ -1,0 +1,170 @@
+{
+  "schema": "garuda-causal-native-protocol-1",
+  "frozen_before_test_metrics": true,
+  "frozen_at": "2026-10-01T18:47:35.049551+00:00",
+  "base_commit": "be60c12a3a5f88966aac85fdb0eb347ae4d226b8",
+  "task": "Forecast future completed-flow states and native MITRE tactic labels; not successful compromise.",
+  "window_seconds": 10,
+  "history": 8,
+  "horizon": 4,
+  "features": "closed-flow-only; no flags/TTL/window values fabricated",
+  "availability": "flow start plus duration, only in fully closed 10-second buckets",
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "state_epochs": 10,
+  "head_epochs": 20,
+  "graph_dim": 12,
+  "hidden": 24,
+  "batch_size": 128,
+  "max_train_sequences": 6000,
+  "training_sampling": "per-source uniform fixed stride before tensor construction; no positive oversampling",
+  "min_risk_positive_support": 30,
+  "min_risk_negative_support": 300,
+  "max_fpr": 0.01,
+  "min_recall": 0.8,
+  "min_stage_support": 30,
+  "min_state_improvement": 0,
+  "test_selection": "two publisher shards selected by calendar before inspecting their labels",
+  "source_isolation": "independent summer 2025 dataset release held out from all fitting/calibration/threshold selection; validation day separated within development exercise",
+  "automatic_promotion": false,
+  "raw_packet_proof": false,
+  "objective_compromise_proof": false,
+  "sources": [
+    {
+      "split": "train",
+      "release": "UWF-ZeekData24",
+      "week": "2024-02-25 - 2024-03-03",
+      "id": "UWF-ZeekData24_2024-02-25",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/parquet/2024-02-25%20-%202024-03-03/part-00000-8b838a85-76eb-4896-a0b6-2fc425e828c2-c000.snappy.parquet",
+      "expected_bytes": 18779592,
+      "sha256": "4d833656b31d4d360691c2178c5c4d1b3c31f01db12c59f6779a08d55e5f0cc7"
+    },
+    {
+      "split": "train",
+      "release": "UWF-ZeekData24",
+      "week": "2024-03-03 - 2024-03-10",
+      "id": "UWF-ZeekData24_2024-03-03",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/parquet/2024-03-03%20-%202024-03-10/part-00000-0955ed97-8460-41bd-872a-7375a7f0207e-c000.snappy.parquet",
+      "expected_bytes": 3733862,
+      "sha256": "5a085f2749556f2c711af6f9c2bca9d43b3f19bb43696ef9194869f4ea69eb21"
+    },
+    {
+      "split": "train",
+      "release": "UWF-ZeekDataFall24-2",
+      "week": "2024-10-27 - 2024-11-03",
+      "id": "UWF-ZeekDataFall24-2_2024-10-27",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/parquet/2024-10-27%20-%202024-11-03/part-00000-e0469268-a9e0-458d-beec-4e95db2677fc-c000.snappy.parquet",
+      "expected_bytes": 3592190,
+      "sha256": "32317f64d899ba9f4f792b45231e100d4e191615bc6ca1f541f9663ce477bea0"
+    },
+    {
+      "split": "validation",
+      "release": "UWF-ZeekDataFall24-2",
+      "week": "2024-11-10 - 2024-11-17",
+      "id": "UWF-ZeekDataFall24-2_2024-11-10",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/parquet/2024-11-10%20-%202024-11-17/part-00000-7f01bb0b-25b4-4353-a7c2-7418346e3cbb-c000.snappy.parquet",
+      "expected_bytes": 718184,
+      "sha256": "a5d91707f5eda89ed93ec208d937809a9b22118eea7a1d13de710f15f5f98b99"
+    },
+    {
+      "split": "test",
+      "release": "UWF-ZeekDataSum25-1",
+      "week": "2025-06-15 - 2025-06-22",
+      "id": "UWF-ZeekDataSum25-1_2025-06-15",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-1/parquet/2025-06-15%20-%202025-06-22/part-00000-f5b79446-d311-4f4e-aa58-d40e9917f1fe-c000.snappy.parquet",
+      "expected_bytes": 626141,
+      "sha256": "c20dc97187b4a2ef5f74933017a825f52d62b9188c5d71dacda0d745b3b5ff32"
+    },
+    {
+      "split": "test",
+      "release": "UWF-ZeekDataSum25-1",
+      "week": "2025-07-13 - 2025-07-20",
+      "id": "UWF-ZeekDataSum25-1_2025-07-13",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-1/parquet/2025-07-13%20-%202025-07-20/part-00000-0025d004-4dce-4510-b353-9d4dcd486f56-c000.snappy.parquet",
+      "expected_bytes": 31883249,
+      "sha256": "ae3e7aeb0bb758e80cc62f6445a176b8a07ebe6847ad42ff570a205c2b4ea22c"
+    },
+    {
+      "split": "train",
+      "release": "UWF-ZeekData22",
+      "week": "2021-12-12 - 2021-12-19",
+      "id": "UWF-ZeekData22_2021-12-12",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2021-12-12%20-%202021-12-19/part-00000-7c2e9adb-5430-4792-a42b-10ff5bbd46e8-c000.snappy.parquet",
+      "expected_bytes": 25872433,
+      "sha256": "a4158d14b8bca292a4a68e7171e5e1505f4170e83a5abf6d400fb6f439bc3b3d"
+    },
+    {
+      "split": "train",
+      "release": "UWF-ZeekData22",
+      "week": "2021-12-19 - 2021-12-26",
+      "id": "UWF-ZeekData22_2021-12-19",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2021-12-19%20-%202021-12-26/part-00000-3f86626a-1225-47f9-a5a2-0170b737e404-c000.snappy.parquet",
+      "expected_bytes": 109771100,
+      "sha256": "58649166d828161d860ff5ef2c2370e0e4bc63a8b5855c5a8faea4d3ca4c8f0a"
+    },
+    {
+      "split": "validation",
+      "release": "UWF-ZeekData22",
+      "week": "2022-01-02 - 2022-01-09",
+      "id": "UWF-ZeekData22_2022-01-02",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2022-01-02%20-%202022-01-09/part-00000-26e9208e-7819-451b-b23f-2e47f6d1e834-c000.snappy.parquet",
+      "expected_bytes": 145347005,
+      "sha256": "ce3f7e94cc4c41ea62d8faf5f6e30ed94443217b1d0a45961928f1628a8e0acd"
+    },
+    {
+      "split": "train",
+      "release": "UWF-ZeekData22",
+      "week": "2022-01-09 - 2022-01-16",
+      "id": "UWF-ZeekData22_2022-01-09",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2022-01-09%20-%202022-01-16/part-00000-36240b61-b84f-4164-a873-d7973e652780-c000.snappy.parquet",
+      "expected_bytes": 150286656,
+      "sha256": "91082b85e6be170e5bbd37f23c40c6c992a3c2d098f78a638d5cf604f9370fde"
+    },
+    {
+      "split": "validation",
+      "release": "UWF-ZeekData22",
+      "week": "2022-02-06 - 2022-02-13",
+      "id": "UWF-ZeekData22_2022-02-06",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2022-02-06%20-%202022-02-13/part-00000-df678a79-4a73-452b-8e72-d624b2732f17-c000.snappy.parquet",
+      "expected_bytes": 7013316,
+      "sha256": "5e5dcd03421f0f28fa256e83e4dc75d45bac1c916d2aab833b7c7b5ab1cc5486"
+    }
+  ],
+  "publisher_duplicate_policy": "one telemetry record per uid+timestamp+network tuple; union native tactics; conflicting labels remain unknown",
+  "stage_target": "multilabel, no forced single-stage ordering",
+  "gaps": "no empty-window benign imputation; all twelve windows must have valid observed records",
+  "benign_sources": [
+    {
+      "release": "UWF-ZeekData24",
+      "role": "time_matched_benign",
+      "id": "UWF-ZeekData24_benign",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/csv/Benign/part-00000-b039213f-1208-4f1b-b71d-5e8e3a4a2939-c000.csv",
+      "expected_bytes": 10163424,
+      "sha256": "272677c8c7bbe7ab57b040f63ed8bbf92d0b5716adb05444258274eed000ab3f",
+      "annotation": "publisher_benign_folder"
+    },
+    {
+      "release": "UWF-ZeekDataFall24-2",
+      "role": "time_matched_benign",
+      "id": "UWF-ZeekDataFall24-2_benign",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Benign/part-00000-70d13bea-4727-426b-97af-a2b1d3ca4184-c000.csv",
+      "expected_bytes": 14172382,
+      "sha256": "d43a418ecb9c6981c57015674f86042dcd90d408709d34a90b9479f391954ff3",
+      "annotation": "publisher_benign_folder"
+    },
+    {
+      "release": "UWF-ZeekDataSum25-1",
+      "role": "time_matched_benign",
+      "id": "UWF-ZeekDataSum25-1_benign",
+      "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-1/csv/Benign/part-00000-2ac3ee1a-f94a-44bb-9413-dbfa36b751da-c000.csv",
+      "expected_bytes": 6029295,
+      "sha256": "734cfd796923710127a01bd360835c281d122485819899ea8dfaa44d365fc127",
+      "annotation": "publisher_benign_folder"
+    }
+  ],
+  "development_source_amendment": "Before any final labels/metrics: weekly UWF24 attack shards omit benign flows and some lack complete 12-window sequences. Add older complete UWF22 flow shards; keep final sources fixed.",
+  "telemetry_semantics": "Explicit destination port and service fractions; no IP identities, timestamp/date features, labels or future-record statistics as inputs."
+}
