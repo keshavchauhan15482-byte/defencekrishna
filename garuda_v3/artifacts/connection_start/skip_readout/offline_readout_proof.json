@@ -1,0 +1,324 @@
+{
+  "status": "EXPERIMENTAL_SHADOW_ONLY",
+  "retrospective_forecast_origin_utc_epoch": 1747975110,
+  "computed_at_utc": "2026-10-02T05:32:15.653112+00:00",
+  "live_warning_claim": false,
+  "observed_history_seconds": 80,
+  "trajectory": [
+    {
+      "horizon_seconds": 10,
+      "future_attack_score": 0.9911161844569308,
+      "seed_score_sd": 1.3597399555105182e-16,
+      "predicted_tactics": [
+        "insufficient evidence"
+      ],
+      "state_mean": [
+        0.22600620985031128,
+        0.4766729176044464,
+        0.5781888961791992,
+        0.0,
+        0.0,
+        0.46081995964050293,
+        0.7232418656349182,
+        0.6809217929840088,
+        0.00017462670803070068,
+        0.08366715908050537,
+        0.0,
+        0.0,
+        0.15027688443660736,
+        0.0,
+        0.5923137068748474,
+        0.4024333953857422,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "state_mixture_sigma": [
+        0.15394556522369385,
+        0.05789399892091751,
+        0.11702438443899155,
+        0.10624665766954422,
+        0.02915768511593342,
+        0.4525684714317322,
+        0.42374077439308167,
+        0.4357704222202301,
+        0.25537633895874023,
+        0.157266303896904,
+        0.02512630820274353,
+        0.059813689440488815,
+        0.4347095191478729,
+        0.0396268256008625,
+        0.26560771465301514,
+        0.09333022683858871,
+        0.1031939908862114,
+        0.04079972580075264,
+        0.030537869781255722
+      ]
+    },
+    {
+      "horizon_seconds": 20,
+      "future_attack_score": 0.9988878340663968,
+      "seed_score_sd": 1.3597399555105182e-16,
+      "predicted_tactics": [
+        "insufficient evidence"
+      ],
+      "state_mean": [
+        0.26099246740341187,
+        0.45403584837913513,
+        0.6525335311889648,
+        0.0,
+        0.0,
+        0.39298832416534424,
+        0.6495751738548279,
+        0.595729649066925,
+        0.0,
+        0.07144752889871597,
+        0.0,
+        0.0,
+        0.23513154685497284,
+        0.0,
+        0.6823528409004211,
+        0.30590853095054626,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "state_mixture_sigma": [
+        0.1449739784002304,
+        0.06811575591564178,
+        0.1340552419424057,
+        0.11653634905815125,
+        0.03142520412802696,
+        0.4473906457424164,
+        0.4216116964817047,
+        0.40868568420410156,
+        0.26553645730018616,
+        0.16200484335422516,
+        0.028560953214764595,
+        0.07026723027229309,
+        0.42073652148246765,
+        0.04381358623504639,
+        0.2677637040615082,
+        0.10351575165987015,
+        0.11047616600990295,
+        0.042833153158426285,
+        0.03389403969049454
+      ]
+    },
+    {
+      "horizon_seconds": 30,
+      "future_attack_score": 0.9942111448979797,
+      "seed_score_sd": 0.0,
+      "predicted_tactics": [
+        "insufficient evidence"
+      ],
+      "state_mean": [
+        0.2865550220012665,
+        0.4319019317626953,
+        0.7233257293701172,
+        0.0,
+        0.0,
+        0.3474337160587311,
+        0.5945454239845276,
+        0.5205829739570618,
+        0.0,
+        0.05177547410130501,
+        0.0,
+        0.0,
+        0.3131255805492401,
+        0.0,
+        0.7698885798454285,
+        0.21039199829101562,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "state_mixture_sigma": [
+        0.14164502918720245,
+        0.07703765481710434,
+        0.1353224515914917,
+        0.11566103994846344,
+        0.032957352697849274,
+        0.44793573021888733,
+        0.42102810740470886,
+        0.3925336003303528,
+        0.27545636892318726,
+        0.16312234103679657,
+        0.03189850598573685,
+        0.07146290689706802,
+        0.4146537184715271,
+        0.04535647854208946,
+        0.2633245587348938,
+        0.10919944941997528,
+        0.11065874248743057,
+        0.04116120561957359,
+        0.034001123160123825
+      ]
+    },
+    {
+      "horizon_seconds": 40,
+      "future_attack_score": 0.9947238349864748,
+      "seed_score_sd": 0.0,
+      "predicted_tactics": [
+        "insufficient evidence"
+      ],
+      "state_mean": [
+        0.30329689383506775,
+        0.4106654226779938,
+        0.7918329238891602,
+        0.0,
+        0.0,
+        0.32356804609298706,
+        0.5590953826904297,
+        0.4578962028026581,
+        0.0,
+        0.027594268321990967,
+        0.0,
+        0.0,
+        0.3816564977169037,
+        0.0,
+        0.8555548787117004,
+        0.11563766002655029,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "state_mixture_sigma": [
+        0.13940618932247162,
+        0.08174171298742294,
+        0.13479429483413696,
+        0.11414077132940292,
+        0.033676497638225555,
+        0.4514584541320801,
+        0.4263840913772583,
+        0.39126354455947876,
+        0.27984681725502014,
+        0.16182470321655273,
+        0.034251391887664795,
+        0.06830418854951859,
+        0.41701868176460266,
+        0.04516053572297096,
+        0.2634454071521759,
+        0.11202593892812729,
+        0.10662340372800827,
+        0.038341205567121506,
+        0.033449333161115646
+      ]
+    }
+  ],
+  "driving_features": [
+    {
+      "feature": "active",
+      "sensitivity_share": 0.2614615857601166
+    },
+    {
+      "feature": "udp_start_fraction",
+      "sensitivity_share": 0.2121567577123642
+    },
+    {
+      "feature": "dns_start_fraction",
+      "sensitivity_share": 0.13656409084796906
+    },
+    {
+      "feature": "tcp_start_fraction",
+      "sensitivity_share": 0.08071549981832504
+    },
+    {
+      "feature": "web_start_fraction",
+      "sensitivity_share": 0.061712101101875305
+    }
+  ],
+  "attribution_method": "absolute gradient times input sensitivity; not a causal explanation",
+  "model_sha256s": [
+    "c990cc9271f64c0c50a1c63231a28a62549e573fc6bf635fd945e75a768b208e",
+    "e0bafe4b797585eddb75371e01ffa4a6cbd3c3cfa5d471bc300ad1870c474b91",
+    "93834ada25e6ac3722728545731d0677e9019acedf3d069b6ac900650f1af954"
+  ],
+  "input_sha256": "c883a88614ac32b0cfd918d8f3c2301f038751c600110732c6b9c9e2a2b3baa7",
+  "independent_risk_gates_passed": false,
+  "domain_support_certified": false,
+  "precompromise_certified": false,
+  "record_availability_certified": false,
+  "automatic_containment": false,
+  "defender_decision": "shadow review only",
+  "claim_boundary": "Native-labelled connection-start scores from network-only first-packet fields. Missing observations remain unknown. No packet statistics, successful-compromise probability, live sensor certification or autonomous containment claim.",
+  "future_target": "native-labelled connection starts",
+  "observed_history_windows": 8,
+  "missing_history_windows": 0,
+  "observations_complete": true,
+  "seed_alert_decisions": [
+    {
+      "seed": 42,
+      "alert": true,
+      "validation_threshold": 0.9900924300609556,
+      "independent_joint_gate_passed": false
+    },
+    {
+      "seed": 43,
+      "alert": true,
+      "validation_threshold": 0.9900924300609556,
+      "independent_joint_gate_passed": false
+    },
+    {
+      "seed": 44,
+      "alert": true,
+      "validation_threshold": 0.9900924300609556,
+      "independent_joint_gate_passed": false
+    }
+  ],
+  "risk_readout_sha256s": [
+    "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+    "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+    "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac"
+  ],
+  "risk_readout_kinds_by_seed": [
+    {
+      "seed": 42,
+      "kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ]
+    },
+    {
+      "seed": 43,
+      "kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ]
+    },
+    {
+      "seed": 44,
+      "kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ]
+    }
+  ],
+  "learned_rollouts_selected_for_risk": false,
+  "fresh_reserve_support": [
+    {
+      "seed": 42,
+      "positive": 35,
+      "negative": 0
+    },
+    {
+      "seed": 43,
+      "positive": 35,
+      "negative": 0
+    },
+    {
+      "seed": 44,
+      "positive": 35,
+      "negative": 0
+    }
+  ],
+  "shadow_alert": true,
+  "successful_compromise_time": null,
+  "live_sensor_availability_certified": false
+}

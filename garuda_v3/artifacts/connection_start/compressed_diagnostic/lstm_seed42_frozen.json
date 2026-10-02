@@ -1,0 +1,136 @@
+{
+  "architecture": "lstm",
+  "seed": 42,
+  "checkpoint": "lstm_seed42.npz",
+  "checkpoint_sha256": "8bbaa105954c204bc8aade1a631ce5ea4d3426de324f7b2cec8b3c752d83eb9c",
+  "state_validation_selected": true,
+  "state_validation_mse": 0.038539609894535636,
+  "state_epoch_validation_mse": [
+    0.052668899535806855,
+    0.04987331253339975,
+    0.04289341122219849,
+    0.040384104907569406,
+    0.039845589189924056,
+    0.039557513273131784,
+    0.03926324115183783,
+    0.03913906087593828,
+    0.03880001250259479,
+    0.038539609894535636
+  ],
+  "heads_leave_state_unchanged": true,
+  "stage_supported_in_development": [
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "risk_calibration": [
+    {
+      "status": "VALIDATION_ONLY_PLATT",
+      "a": -4.010088097274386,
+      "b": -7.929473853596998
+    },
+    {
+      "status": "VALIDATION_ONLY_PLATT",
+      "a": -3.7257100748946526,
+      "b": -9.066719857691117
+    },
+    {
+      "status": "VALIDATION_ONLY_PLATT",
+      "a": -2.7216668994276088,
+      "b": -7.596633887021628
+    },
+    {
+      "status": "VALIDATION_ONLY_PLATT",
+      "a": -2.0463309876955176,
+      "b": -6.264653565269471
+    }
+  ],
+  "risk_thresholds": [
+    0.5025327205657959,
+    0.6780447959899902,
+    0.5248680710792542,
+    0.4145931601524353
+  ],
+  "risk_threshold_status": [
+    "VALIDATION_ONLY_1_PERCENT_FPR",
+    "VALIDATION_ONLY_1_PERCENT_FPR",
+    "VALIDATION_ONLY_1_PERCENT_FPR",
+    "VALIDATION_ONLY_1_PERCENT_FPR"
+  ],
+  "stage_thresholds": [
+    0.2,
+    1.000001,
+    1.000001,
+    1.000001,
+    1.000001
+  ],
+  "fit_sequences": 4645,
+  "state_validation": {
+    "mse": 0.038539609894535636,
+    "persistence_mse": 0.055887112967074846,
+    "relative_improvement": 0.3104025624433179,
+    "paired_source_day_bootstrap_95": [
+      0.2856776273029757,
+      0.31876712143094704
+    ],
+    "source_days": 10,
+    "sequences": 3290,
+    "per_horizon_mse": [
+      0.05200303804958088,
+      0.04561739265736231,
+      0.025068717393048,
+      0.03123677836686537
+    ],
+    "gate_passed": true
+  },
+  "any_horizon_threshold": 0.6782121658325195,
+  "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+  "feature_order": [
+    "connection_count_log",
+    "tcp_start_fraction",
+    "udp_start_fraction",
+    "icmp_start_fraction",
+    "minimum_endpoint_port_mean_scaled",
+    "unique_minimum_endpoint_port_fraction",
+    "unique_endpoint_one_fraction",
+    "unique_endpoint_two_fraction",
+    "start_iat_mean_log",
+    "start_iat_std_log",
+    "sequential_minimum_port_fraction",
+    "random_minimum_port_fraction",
+    "same_peer_start_fraction",
+    "ssh_start_fraction",
+    "dns_start_fraction",
+    "web_start_fraction",
+    "smb_start_fraction",
+    "ftp_start_fraction",
+    "active"
+  ],
+  "model_schema": "garuda-connection-start-v1",
+  "future_target": "native-labelled connection starts, not successful compromise",
+  "any_horizon_validation": {
+    "positive_support": 664,
+    "negative_support": 2589,
+    "unknown_support": 37,
+    "tp": 0,
+    "fp": 25,
+    "fn": 664,
+    "tn": 2564,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fpr": 0.009656237929702587,
+    "f1": 0.0,
+    "recall_wilson_95": [
+      4.336808689942018e-19,
+      0.0057522622130756745
+    ],
+    "fpr_wilson_95": [
+      0.00654913747114504,
+      0.014216342379224534
+    ],
+    "attack_performance_status": "MEASURABLE",
+    "gate_passed": false
+  }
+}

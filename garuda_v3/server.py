@@ -144,6 +144,10 @@ class Handler(BaseHTTPRequestHandler):
                     obj=json.loads(content)
                     if not isinstance(obj,dict):raise ValueError('JSON object required')
                     if url.path=='/api/forecast':result=app.forecast(obj)
+                    elif url.path=='/api/connection-start/forecast':
+                        if not hasattr(app,'connection_start_forecast') or getattr(app,'connection_start',None) is None:
+                            return self.respond(503,{'error':'Connection-start shadow bundle unavailable'})
+                        result=app.connection_start_forecast(obj)
                     elif url.path=='/api/response/arm':result=app.response.arm(obj['target'],obj.get('ttl',30),obj.get('duration',120))
                     elif url.path=='/api/response/disarm':result=app.response.disarm()
                     elif url.path=='/api/response/approve':result=app.response.approve(obj['id'],obj['attack_type'],obj['evidence'])

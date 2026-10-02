@@ -1,0 +1,22 @@
+{"prepared": "UWF-ZeekData24_2024-02-25", "split": "train", "sequences": 0, "future_risk_counts": null}
+{"prepared": "UWF-ZeekData24_2024-03-03", "split": "train", "sequences": 0, "future_risk_counts": null}
+{"prepared": "UWF-ZeekDataFall24-2_2024-10-27", "split": "train", "sequences": 27, "future_risk_counts": {"-1": 0, "0": 0, "1": 108}}
+{"prepared": "UWF-ZeekData22_2021-12-12", "split": "train", "sequences": 1224, "future_risk_counts": {"-1": 0, "0": 4896, "1": 0}}
+{"prepared": "UWF-ZeekData22_2021-12-19", "split": "train", "sequences": 1332, "future_risk_counts": {"-1": 0, "0": 5328, "1": 0}}
+{"prepared": "UWF-ZeekData22_2022-01-09", "split": "train", "sequences": 1332, "future_risk_counts": {"-1": 0, "0": 5328, "1": 0}}
+{"prepared": "UWF-ZeekDataFall24-2_2024-11-10", "split": "validation", "sequences": 1, "future_risk_counts": {"-1": 0, "0": 0, "1": 4}}
+{"prepared": "UWF-ZeekData22_2022-01-02", "split": "validation", "sequences": 2629, "future_risk_counts": {"-1": 0, "0": 10516, "1": 0}}
+{"prepared": "UWF-ZeekData22_2022-02-06", "split": "validation", "sequences": 614, "future_risk_counts": {"-1": 0, "0": 0, "1": 2456}}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/scratch/ca9f1b3a363b/forecast-positive/garuda_v3/connection_experiment.py", line 194, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/scratch/ca9f1b3a363b/forecast-positive/garuda_v3/connection_experiment.py", line 191, in main
+    args=parser.parse_args();run(args.protocol,args.cache,args.output)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/ca9f1b3a363b/forecast-positive/garuda_v3/connection_experiment.py", line 142, in run
+    if set(train['day'])&set(val['day']):raise ValueError('Development observation days overlap')
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Development observation days overlap

@@ -1,0 +1,45 @@
+{
+  "schema": "garuda-connection-start-verification-1",
+  "python_regression": {
+    "passed": 339,
+    "skipped": 3
+  },
+  "bundled_pcap_packets": {
+    "Friday-02-03-2018.pcap": 246901,
+    "Friday-23-02-2018.pcap": 51732,
+    "Thursday-01-03-2018.pcap": 120921,
+    "Thursday-22-02-2018.pcap": 44222
+  },
+  "native_data_integrity_tests": 7,
+  "premium_ui_tests": 7,
+  "proxy_exposure": "PASS",
+  "v11_enforcement": "PASS",
+  "single_port_launcher": "PASS",
+  "actual_trained_bundle_http": {
+    "status": 200,
+    "same_port": true,
+    "future_horizons_seconds": [
+      10,
+      20,
+      30,
+      40
+    ],
+    "enforcement_calls": 0,
+    "automatic_containment": false,
+    "active_policies": 0,
+    "model_sha256s": [
+      "c990cc9271f64c0c50a1c63231a28a62549e573fc6bf635fd945e75a768b208e",
+      "e0bafe4b797585eddb75371e01ffa4a6cbd3c3cfa5d471bc300ad1870c474b91",
+      "93834ada25e6ac3722728545731d0677e9019acedf3d069b6ac900650f1af954"
+    ],
+    "input_sha256": "c883a88614ac32b0cfd918d8f3c2301f038751c600110732c6b9c9e2a2b3baa7",
+    "head_sha256s": [
+      "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+      "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+      "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac"
+    ]
+  },
+  "precompromise_certified": false,
+  "autonomous_release_approved": false,
+  "readout_claim": "shadow investigation only"
+}

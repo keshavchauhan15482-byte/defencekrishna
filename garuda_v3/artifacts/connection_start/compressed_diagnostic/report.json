@@ -1,0 +1,6237 @@
+{
+  "schema": "garuda-connection-start-result-1",
+  "status": "COMPLETE_RESEARCH_EVALUATION",
+  "protocol_sha256": "cf792cbe400d879a03a9ec6fa02e6bef7bcce5266ad2634979b900f30173fb25",
+  "freeze_sha256": "861c93072bdbae8ccf9d0ebb592206af749c16a3396434ca0ad5bc812202f9c3",
+  "feature_order": [
+    "connection_count_log",
+    "tcp_start_fraction",
+    "udp_start_fraction",
+    "icmp_start_fraction",
+    "minimum_endpoint_port_mean_scaled",
+    "unique_minimum_endpoint_port_fraction",
+    "unique_endpoint_one_fraction",
+    "unique_endpoint_two_fraction",
+    "start_iat_mean_log",
+    "start_iat_std_log",
+    "sequential_minimum_port_fraction",
+    "random_minimum_port_fraction",
+    "same_peer_start_fraction",
+    "ssh_start_fraction",
+    "dns_start_fraction",
+    "web_start_fraction",
+    "smb_start_fraction",
+    "ftp_start_fraction",
+    "active"
+  ],
+  "graph_nodes": [
+    "protocol:tcp",
+    "protocol:udp",
+    "protocol:other",
+    "service:20",
+    "service:21",
+    "service:22",
+    "service:25",
+    "service:53",
+    "service:80",
+    "service:110",
+    "service:123",
+    "service:135",
+    "service:139",
+    "service:143",
+    "service:443",
+    "service:445",
+    "service:3389",
+    "service:8080",
+    "service:other"
+  ],
+  "model_schema": "garuda-connection-start-v1",
+  "sources": {
+    "train": [
+      {
+        "rows": 255443,
+        "duplicate_label_copies_merged": 3826,
+        "unique_start_events": 251617,
+        "observed_windows": 5532,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 5532
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 1413,
+          "Initial Access": 2103,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 50
+        },
+        "id": "UWF-ZeekData24_2024-02-25",
+        "sha256": "4d833656b31d4d360691c2178c5c4d1b3c31f01db12c59f6779a08d55e5f0cc7",
+        "sequences": 574,
+        "available_sequences": 574,
+        "future_risk_counts": {
+          "-1": 1387,
+          "0": 0,
+          "1": 909
+        },
+        "missing_observation_buckets": 27568,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.39590592334494773,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 50444,
+        "duplicate_label_copies_merged": 1049,
+        "unique_start_events": 49395,
+        "observed_windows": 1351,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 1351
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 377,
+          "Initial Access": 560,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 30
+        },
+        "id": "UWF-ZeekData24_2024-03-03",
+        "sha256": "5a085f2749556f2c711af6f9c2bca9d43b3f19bb43696ef9194869f4ea69eb21",
+        "sequences": 83,
+        "available_sequences": 83,
+        "future_risk_counts": {
+          "-1": 217,
+          "0": 0,
+          "1": 115
+        },
+        "missing_observation_buckets": 7287,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.3463855421686747,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 54203,
+        "duplicate_label_copies_merged": 22,
+        "unique_start_events": 54181,
+        "observed_windows": 131,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 131
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 70,
+          "Initial Access": 0,
+          "Lateral Movement": 4,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekDataFall24-2_2024-10-27",
+        "sha256": "32317f64d899ba9f4f792b45231e100d4e191615bc6ca1f541f9663ce477bea0",
+        "sequences": 88,
+        "available_sequences": 88,
+        "future_risk_counts": {
+          "-1": 81,
+          "0": 0,
+          "1": 271
+        },
+        "missing_observation_buckets": 17670,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.7698863636363636,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 365783,
+        "duplicate_label_copies_merged": 176096,
+        "unique_start_events": 189687,
+        "observed_windows": 12591,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 12591,
+          "1": 0
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekData22_2021-12-12",
+        "sha256": "a4158d14b8bca292a4a68e7171e5e1505f4170e83a5abf6d400fb6f439bc3b3d",
+        "sequences": 1258,
+        "available_sequences": 12580,
+        "future_risk_counts": {
+          "-1": 1,
+          "0": 5031,
+          "1": 0
+        },
+        "missing_observation_buckets": 4,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.9998012718600954,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 1694348,
+        "duplicate_label_copies_merged": 815503,
+        "unique_start_events": 878845,
+        "observed_windows": 58276,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 58276,
+          "1": 0
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekData22_2021-12-19",
+        "sha256": "58649166d828161d860ff5ef2c2370e0e4bc63a8b5855c5a8faea4d3ca4c8f0a",
+        "sequences": 1325,
+        "available_sequences": 58265,
+        "future_risk_counts": {
+          "-1": 4,
+          "0": 5296,
+          "1": 0
+        },
+        "missing_observation_buckets": 43,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.999245283018868,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 2487421,
+        "duplicate_label_copies_merged": 1197565,
+        "unique_start_events": 1289856,
+        "observed_windows": 57926,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 57926,
+          "1": 0
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekData22_2022-01-09",
+        "sha256": "91082b85e6be170e5bbd37f23c40c6c992a3c2d098f78a638d5cf604f9370fde",
+        "sequences": 1317,
+        "available_sequences": 57911,
+        "future_risk_counts": {
+          "-1": 3,
+          "0": 5265,
+          "1": 0
+        },
+        "missing_observation_buckets": 393,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.9994305239179955,
+        "clean_future_positive_sequences": 0
+      }
+    ],
+    "validation": [
+      {
+        "rows": 16618,
+        "duplicate_label_copies_merged": 8309,
+        "unique_start_events": 8309,
+        "observed_windows": 12,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 12
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekDataFall24-2_2024-11-10",
+        "sha256": "a5d91707f5eda89ed93ec208d937809a9b22118eea7a1d13de710f15f5f98b99",
+        "sequences": 1,
+        "available_sequences": 1,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 4
+        },
+        "missing_observation_buckets": 0,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 1.0,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 2320853,
+        "duplicate_label_copies_merged": 1117171,
+        "unique_start_events": 1203682,
+        "observed_windows": 57769,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 57769,
+          "1": 0
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekData22_2022-01-02",
+        "sha256": "ce3f7e94cc4c41ea62d8faf5f6e30ed94443217b1d0a45961928f1628a8e0acd",
+        "sequences": 2626,
+        "available_sequences": 57754,
+        "future_risk_counts": {
+          "-1": 43,
+          "0": 10461,
+          "1": 0
+        },
+        "missing_observation_buckets": 550,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.9959063214013709,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 9280806,
+        "duplicate_label_copies_merged": 9242475,
+        "unique_start_events": 38331,
+        "observed_windows": 734,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 734
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 730,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekData22_2022-02-06",
+        "sha256": "5e5dcd03421f0f28fa256e83e4dc75d45bac1c916d2aab833b7c7b5ab1cc5486",
+        "sequences": 663,
+        "available_sequences": 663,
+        "future_risk_counts": {
+          "-1": 49,
+          "0": 0,
+          "1": 2603
+        },
+        "missing_observation_buckets": 20982,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.9815233785822021,
+        "clean_future_positive_sequences": 0
+      }
+    ],
+    "test": [
+      {
+        "rows": 256565,
+        "duplicate_label_copies_merged": 12188,
+        "unique_start_events": 244377,
+        "observed_windows": 15616,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 15616,
+          "1": 0
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 0,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekDataSum25-2_2025-05-18_00000",
+        "sha256": "f5d20cf8b398285721e49573ff19568efdb24863a95df0fd66b5a1845b93baad",
+        "sequences": 15605,
+        "available_sequences": 15605,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 62420,
+          "1": 0
+        },
+        "missing_observation_buckets": 0,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 1.0,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 1180610,
+        "duplicate_label_copies_merged": 34483,
+        "unique_start_events": 1146127,
+        "observed_windows": 42940,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 42894,
+          "1": 46
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 46,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekDataSum25-2_2025-05-25_00000",
+        "sha256": "e80c7cb07588bc7d639b19339fcfe111825cfdd7ed5cdfb143f7f5f0bfc81540",
+        "sequences": 42917,
+        "available_sequences": 42917,
+        "future_risk_counts": {
+          "-1": 18,
+          "0": 171494,
+          "1": 156
+        },
+        "missing_observation_buckets": 6239,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 0.9998951464454645,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "rows": 478173,
+        "unique_start_events": 478173,
+        "observed_windows": 115,
+        "invalid_only_windows_removed": 0,
+        "contaminated_windows_removed": 0,
+        "empty_windows_imputed": 0,
+        "finished_flow_statistics_used": false,
+        "record_export_availability_certified": false,
+        "risk_window_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 115
+        },
+        "native_stage_windows": {
+          "Reconnaissance": 5,
+          "Initial Access": 0,
+          "Lateral Movement": 0,
+          "Command and Control": 0,
+          "Exfiltration": 0
+        },
+        "id": "UWF-ZeekDataSum25-2_2025-06-01_00000",
+        "sha256": "41beff1e5f7e036cdcb2401524490f802ab97e93fe5595ba0f3d9aeef2222096",
+        "sequences": 103,
+        "available_sequences": 103,
+        "future_risk_counts": {
+          "-1": 0,
+          "0": 0,
+          "1": 412
+        },
+        "missing_observation_buckets": 7416,
+        "minimum_observed_history_windows": 4,
+        "origin_window_must_be_observed": true,
+        "future_state_observed_fraction": 1.0,
+        "clean_future_positive_sequences": 0
+      },
+      {
+        "id": "UWF-ZeekDataSum25-2_2025-06-08_00000",
+        "sha256": "476a98f94f2d8bd5c3e70258a848e942662bc8853a4271c1c50909b734da2196",
+        "sequences": 0,
+        "quality_excluded": "No valid first-packet event windows"
+      }
+    ]
+  },
+  "models": [
+    {
+      "architecture": "lstm",
+      "seed": 42,
+      "checkpoint": "lstm_seed42.npz",
+      "checkpoint_sha256": "8bbaa105954c204bc8aade1a631ce5ea4d3426de324f7b2cec8b3c752d83eb9c",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.038539609894535636,
+      "state_epoch_validation_mse": [
+        0.052668899535806855,
+        0.04987331253339975,
+        0.04289341122219849,
+        0.040384104907569406,
+        0.039845589189924056,
+        0.039557513273131784,
+        0.03926324115183783,
+        0.03913906087593828,
+        0.03880001250259479,
+        0.038539609894535636
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -4.010088097274386,
+          "b": -7.929473853596998
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -3.7257100748946526,
+          "b": -9.066719857691117
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.7216668994276088,
+          "b": -7.596633887021628
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.0463309876955176,
+          "b": -6.264653565269471
+        }
+      ],
+      "risk_thresholds": [
+        0.5025327205657959,
+        0.6780447959899902,
+        0.5248680710792542,
+        0.4145931601524353
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.2,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.038539609894535636,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.3104025624433179,
+        "paired_source_day_bootstrap_95": [
+          0.2856776273029757,
+          0.31876712143094704
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.05200303804958088,
+          0.04561739265736231,
+          0.025068717393048,
+          0.03123677836686537
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.6782121658325195,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 0,
+        "fp": 25,
+        "fn": 664,
+        "tn": 2564,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.009656237929702587,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          4.336808689942018e-19,
+          0.0057522622130756745
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "test_state": {
+        "mse": 0.0123281885773432,
+        "persistence_mse": 0.014290567583274743,
+        "relative_improvement": 0.13731987861897477,
+        "paired_source_day_bootstrap_95": [
+          0.11076230098312372,
+          0.15676756318936988
+        ],
+        "source_days": 9,
+        "sequences": 58625,
+        "per_horizon_mse": [
+          0.011434552613606076,
+          0.011287607867993245,
+          0.012586375069769933,
+          0.014004917282743832
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 142,
+          "negative_support": 58483,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 788,
+          "fn": 142,
+          "tn": 57695,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.013474000991741189,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.012571018323159584,
+            0.014440896780835362
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.0918605849146843
+        },
+        "20": {
+          "positive_support": 142,
+          "negative_support": 58480,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 34,
+          "fn": 142,
+          "tn": 58446,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0005813953488372093,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.0004160999237357497,
+            0.0008123009137359118
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.11991916596889496
+        },
+        "30": {
+          "positive_support": 142,
+          "negative_support": 58477,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 48,
+          "fn": 142,
+          "tn": 58429,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0008208355421789763,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.0006192090176128683,
+            0.0010880441146676354
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.11916334182024002
+        },
+        "40": {
+          "positive_support": 142,
+          "negative_support": 58474,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 586,
+          "fn": 142,
+          "tn": 57888,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.010021548038444437,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.009245784236035963,
+            0.010861688403651886
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.10808213800191879
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 788,
+            "fn": 39,
+            "tn": 57695,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.013474000991741189,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.012571018323159584,
+              0.014440896780835362
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 788,
+            "fn": 0,
+            "tn": 57695,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.013474000991741189,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.012571018323159584,
+              0.014440896780835362
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 788,
+            "fn": 0,
+            "tn": 57695,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.013474000991741189,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.012571018323159584,
+              0.014440896780835362
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 788,
+            "fn": 0,
+            "tn": 57695,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.013474000991741189,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.012571018323159584,
+              0.014440896780835362
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 788,
+            "fn": 0,
+            "tn": 57695,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.013474000991741189,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.012571018323159584,
+              0.014440896780835362
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 34,
+            "fn": 39,
+            "tn": 58446,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0005813953488372093,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.0004160999237357497,
+              0.0008123009137359118
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 34,
+            "fn": 0,
+            "tn": 58446,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005813953488372093,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004160999237357497,
+              0.0008123009137359118
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 34,
+            "fn": 0,
+            "tn": 58446,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005813953488372093,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004160999237357497,
+              0.0008123009137359118
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 34,
+            "fn": 0,
+            "tn": 58446,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005813953488372093,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004160999237357497,
+              0.0008123009137359118
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 34,
+            "fn": 0,
+            "tn": 58446,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0005813953488372093,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0004160999237357497,
+              0.0008123009137359118
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 48,
+            "fn": 39,
+            "tn": 58429,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0008208355421789763,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.0006192090176128683,
+              0.0010880441146676354
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 48,
+            "fn": 0,
+            "tn": 58429,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0008208355421789763,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0006192090176128683,
+              0.0010880441146676354
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 48,
+            "fn": 0,
+            "tn": 58429,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0008208355421789763,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0006192090176128683,
+              0.0010880441146676354
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 48,
+            "fn": 0,
+            "tn": 58429,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0008208355421789763,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0006192090176128683,
+              0.0010880441146676354
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 48,
+            "fn": 0,
+            "tn": 58429,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0008208355421789763,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0006192090176128683,
+              0.0010880441146676354
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 586,
+            "fn": 39,
+            "tn": 57888,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.010021548038444437,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.009245784236035963,
+              0.010861688403651886
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 586,
+            "fn": 0,
+            "tn": 57888,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.010021548038444437,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.009245784236035963,
+              0.010861688403651886
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 586,
+            "fn": 0,
+            "tn": 57888,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.010021548038444437,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.009245784236035963,
+              0.010861688403651886
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 586,
+            "fn": 0,
+            "tn": 57888,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.010021548038444437,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.009245784236035963,
+              0.010861688403651886
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 586,
+            "fn": 0,
+            "tn": 57888,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.010021548038444437,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.009245784236035963,
+              0.010861688403651886
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 156,
+          "negative_support": 234326,
+          "unknown_support": 18,
+          "tp": 156,
+          "fp": 234020,
+          "fn": 0,
+          "tn": 306,
+          "precision": 0.0006661656190215906,
+          "recall": 1.0,
+          "fpr": 0.9986941269854818,
+          "f1": 0.0013314442756431047,
+          "recall_wilson_95": [
+            0.9759662065444789,
+            0.9999999999999999
+          ],
+          "fpr_wilson_95": [
+            0.9985395022750431,
+            0.9988324005274553
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "supported_in_development": true
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 58475,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 788,
+          "fn": 0,
+          "tn": 57687,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.01347584437793929,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.012572738931312407,
+            0.014442871446304925
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 58472,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 34,
+          "fn": 0,
+          "tn": 58438,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0005814748939663429,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.00041615685746574835,
+            0.000812412035846255
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 58469,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 48,
+          "fn": 0,
+          "tn": 58421,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0008209478527082727,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0006192937480166124,
+            0.001088192963215838
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 58466,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 586,
+          "fn": 0,
+          "tn": 57880,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.010022919303526836,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.009247049827664094,
+            0.01086317397017154
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false,
+      "any_horizon_test": {
+        "positive_support": 142,
+        "negative_support": 58474,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 47,
+        "fn": 142,
+        "tn": 58427,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0008037760372131204,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          0,
+          0.02634090684688045
+        ],
+        "fpr_wilson_95": [
+          0.0006045447339147177,
+          0.0010685949942793543
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "clean_history_any_horizon": {
+        "positive_support": 0,
+        "negative_support": 58466,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 47,
+        "fn": 0,
+        "tn": 58419,
+        "precision": 0.0,
+        "recall": null,
+        "fpr": 0.0008038860192248487,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0.0006046274618563395,
+          0.001068741189787143
+        ],
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+        "gate_passed": false
+      },
+      "advance_connection_warnings": {
+        "target": "first future native-labelled malicious connection from clean observed history",
+        "eligible_events": 0,
+        "hits": 0,
+        "misses": 0,
+        "event_recall": null,
+        "median_hit_lead_seconds": null,
+        "lead_p05_p95_seconds": null,
+        "precompromise_claim": false,
+        "retrospective_reconstruction": true,
+        "events": []
+      },
+      "state_gate_passed": true,
+      "automatic_promotion": false
+    },
+    {
+      "architecture": "lstm",
+      "seed": 43,
+      "checkpoint": "lstm_seed43.npz",
+      "checkpoint_sha256": "712e6add387d4861643e39a6cc4e34dfd3a03a86b637835d8dcc8e865b894ced",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.03941225514281173,
+      "state_epoch_validation_mse": [
+        0.05293711692023385,
+        0.05316146993163922,
+        0.05035321946545309,
+        0.04516351670842394,
+        0.0416186918030589,
+        0.04113195569443752,
+        0.041174175805898654,
+        0.03988679607602328,
+        0.03979794501199358,
+        0.03941225514281173
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -1.9898911848883514,
+          "b": -4.897401259850009
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -3.6981682999347036,
+          "b": -9.422051537522798
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -3.311890004618791,
+          "b": -9.081948199794986
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -3.106940400599156,
+          "b": -8.833609885194987
+        }
+      ],
+      "risk_thresholds": [
+        0.32148051261901855,
+        0.508844256401062,
+        0.4831807315349579,
+        0.44974052906036377
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.03941225514281173,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.29478813539659965,
+        "paired_source_day_bootstrap_95": [
+          0.2668459812693184,
+          0.3042530906551596
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.05254172405746967,
+          0.0460476662144658,
+          0.025345171297981153,
+          0.03347559869837571
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.5090286731719971,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 0,
+        "fp": 25,
+        "fn": 664,
+        "tn": 2564,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.009656237929702587,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          4.336808689942018e-19,
+          0.0057522622130756745
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "test_state": {
+        "mse": 0.012851489930423593,
+        "persistence_mse": 0.014290567583274743,
+        "relative_improvement": 0.10070122438911411,
+        "paired_source_day_bootstrap_95": [
+          0.07888958837078962,
+          0.11722360566447874
+        ],
+        "source_days": 9,
+        "sequences": 58625,
+        "per_horizon_mse": [
+          0.011785490446761727,
+          0.011934801042923838,
+          0.013032237099625869,
+          0.014654359209662784
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 142,
+          "negative_support": 58483,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 142,
+          "tn": 58482,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 1.7098986030128415e-05,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            3.018319634811766e-06,
+            9.686055636864128e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.06009463220834732
+        },
+        "20": {
+          "positive_support": 142,
+          "negative_support": 58480,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 17,
+          "fn": 142,
+          "tn": 58463,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.00029069767441860465,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.00018151200366631562,
+            0.0004655316748050384
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.1196700930595398
+        },
+        "30": {
+          "positive_support": 142,
+          "negative_support": 58477,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 1,
+          "fn": 142,
+          "tn": 58476,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 1.710074046206201e-05,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            3.018629328470342e-06,
+            9.68704940182087e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.10478116571903229
+        },
+        "40": {
+          "positive_support": 142,
+          "negative_support": 58474,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 0,
+          "fn": 142,
+          "tn": 58474,
+          "precision": null,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0,
+            6.569325910277783e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.08545584976673126
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 39,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 1.7098986030128415e-05,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.7098986030128415e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.7098986030128415e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.7098986030128415e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.7098986030128415e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17,
+            "fn": 39,
+            "tn": 58463,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.00029069767441860465,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.00018151200366631562,
+              0.0004655316748050384
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17,
+            "fn": 0,
+            "tn": 58463,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00029069767441860465,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00018151200366631562,
+              0.0004655316748050384
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17,
+            "fn": 0,
+            "tn": 58463,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00029069767441860465,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00018151200366631562,
+              0.0004655316748050384
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17,
+            "fn": 0,
+            "tn": 58463,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00029069767441860465,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00018151200366631562,
+              0.0004655316748050384
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 17,
+            "fn": 0,
+            "tn": 58463,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00029069767441860465,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.00018151200366631562,
+              0.0004655316748050384
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 39,
+            "tn": 58476,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 1.710074046206201e-05,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              3.018629328470342e-06,
+              9.68704940182087e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58476,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.710074046206201e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018629328470342e-06,
+              9.68704940182087e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58476,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.710074046206201e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018629328470342e-06,
+              9.68704940182087e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58476,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.710074046206201e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018629328470342e-06,
+              9.68704940182087e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58476,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.710074046206201e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018629328470342e-06,
+              9.68704940182087e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 39,
+            "tn": 58474,
+            "precision": null,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58474,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58474,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58474,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58474,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 156,
+          "negative_support": 234326,
+          "unknown_support": 18,
+          "tp": 156,
+          "fp": 234326,
+          "fn": 0,
+          "tn": 0,
+          "precision": 0.0006652962700761679,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "f1": 0.0013297078904525269,
+          "recall_wilson_95": [
+            0.9759662065444789,
+            0.9999999999999999
+          ],
+          "fpr_wilson_95": [
+            0.9999836060146085,
+            1
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "supported_in_development": true
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 58475,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "tn": 58474,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 1.7101325352714836e-05,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            3.0187325738130033e-06,
+            9.687380702122574e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 58472,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 17,
+          "fn": 0,
+          "tn": 58455,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00029073744698317146,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.00018153683874969512,
+            0.000465595360883324
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 58469,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "tn": 58468,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 1.7103080264755683e-05,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            3.019042352220661e-06,
+            9.688374739008596e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 58466,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 58466,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            6.570224743006656e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false,
+      "any_horizon_test": {
+        "positive_support": 142,
+        "negative_support": 58474,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 17,
+        "fn": 142,
+        "tn": 58457,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0002907275028217669,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          0,
+          0.02634090684688045
+        ],
+        "fpr_wilson_95": [
+          0.0001815306293417433,
+          0.000465579437730226
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "clean_history_any_horizon": {
+        "positive_support": 0,
+        "negative_support": 58466,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 17,
+        "fn": 0,
+        "tn": 58449,
+        "precision": 0.0,
+        "recall": null,
+        "fpr": 0.0002907672835494133,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0.00018155546952258828,
+          0.0004656431368782883
+        ],
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+        "gate_passed": false
+      },
+      "advance_connection_warnings": {
+        "target": "first future native-labelled malicious connection from clean observed history",
+        "eligible_events": 0,
+        "hits": 0,
+        "misses": 0,
+        "event_recall": null,
+        "median_hit_lead_seconds": null,
+        "lead_p05_p95_seconds": null,
+        "precompromise_claim": false,
+        "retrospective_reconstruction": true,
+        "events": []
+      },
+      "state_gate_passed": true,
+      "automatic_promotion": false
+    },
+    {
+      "architecture": "lstm",
+      "seed": 44,
+      "checkpoint": "lstm_seed44.npz",
+      "checkpoint_sha256": "502401b9cf744b59cc6609eae9e32c6c58e47f1803e7246cfbec7af59a4c59e1",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.03964311307048803,
+      "state_epoch_validation_mse": [
+        0.05268565805291798,
+        0.053086638808879795,
+        0.050814891137746974,
+        0.04619783045512434,
+        0.041655462334916536,
+        0.041013749686798176,
+        0.04074067928464693,
+        0.040341214435263194,
+        0.04009445498032871,
+        0.03964311307048803
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -3.0298160401420366,
+          "b": -7.836926944006188
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.9449663437394697,
+          "b": -8.908857613315549
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.6356074376564176,
+          "b": -8.590576582734442
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.3250006632950884,
+          "b": -7.977142261874237
+        }
+      ],
+      "risk_thresholds": [
+        0.5347374081611633,
+        0.53275066614151,
+        0.4810643494129181,
+        0.4341692328453064
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.03964311307048803,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.29065734539117727,
+        "paired_source_day_bootstrap_95": [
+          0.27073699140674146,
+          0.29909186432023693
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.052849148845468895,
+          0.046635223033599016,
+          0.026191066095443947,
+          0.032763178841165794
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.5394971966743469,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 0,
+        "fp": 25,
+        "fn": 664,
+        "tn": 2564,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.009656237929702587,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          4.336808689942018e-19,
+          0.0057522622130756745
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "test_state": {
+        "mse": 0.012465180067693009,
+        "persistence_mse": 0.014290567583274743,
+        "relative_improvement": 0.12773373100436647,
+        "paired_source_day_bootstrap_95": [
+          0.10208250102384546,
+          0.1465576678151072
+        ],
+        "source_days": 9,
+        "sequences": 58625,
+        "per_horizon_mse": [
+          0.011855193896588486,
+          0.011778526388144063,
+          0.012483575619479713,
+          0.013744203784349623
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 142,
+          "negative_support": 58483,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 200,
+          "fn": 142,
+          "tn": 58283,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0034197972060256827,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.002978158157868853,
+            0.003926670158249349
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.1201818585395813
+        },
+        "20": {
+          "positive_support": 142,
+          "negative_support": 58480,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 960,
+          "fn": 142,
+          "tn": 57520,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.016415868673050615,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.015417289495962244,
+            0.017477977767055577
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.14053019881248474
+        },
+        "30": {
+          "positive_support": 142,
+          "negative_support": 58477,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 1349,
+          "fn": 142,
+          "tn": 57128,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.02306889888332165,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.02188309389257631,
+            0.02431736297636177
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.1306949257850647
+        },
+        "40": {
+          "positive_support": 142,
+          "negative_support": 58474,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 954,
+          "fn": 142,
+          "tn": 57520,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.01631494339364504,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.015319437663800166,
+            0.017373998818985478
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.12056241929531097
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 200,
+            "fn": 39,
+            "tn": 58283,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0034197972060256827,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.002978158157868853,
+              0.003926670158249349
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 200,
+            "fn": 0,
+            "tn": 58283,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0034197972060256827,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.002978158157868853,
+              0.003926670158249349
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 200,
+            "fn": 0,
+            "tn": 58283,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0034197972060256827,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.002978158157868853,
+              0.003926670158249349
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 200,
+            "fn": 0,
+            "tn": 58283,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0034197972060256827,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.002978158157868853,
+              0.003926670158249349
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 200,
+            "fn": 0,
+            "tn": 58283,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0034197972060256827,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.002978158157868853,
+              0.003926670158249349
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 960,
+            "fn": 39,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.016415868673050615,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.015417289495962244,
+              0.017477977767055577
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 960,
+            "fn": 0,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.016415868673050615,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015417289495962244,
+              0.017477977767055577
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 960,
+            "fn": 0,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.016415868673050615,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015417289495962244,
+              0.017477977767055577
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 960,
+            "fn": 0,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.016415868673050615,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015417289495962244,
+              0.017477977767055577
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 960,
+            "fn": 0,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.016415868673050615,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015417289495962244,
+              0.017477977767055577
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1349,
+            "fn": 39,
+            "tn": 57128,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.02306889888332165,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.02188309389257631,
+              0.02431736297636177
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1349,
+            "fn": 0,
+            "tn": 57128,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.02306889888332165,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.02188309389257631,
+              0.02431736297636177
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1349,
+            "fn": 0,
+            "tn": 57128,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.02306889888332165,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.02188309389257631,
+              0.02431736297636177
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1349,
+            "fn": 0,
+            "tn": 57128,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.02306889888332165,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.02188309389257631,
+              0.02431736297636177
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1349,
+            "fn": 0,
+            "tn": 57128,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.02306889888332165,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.02188309389257631,
+              0.02431736297636177
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 954,
+            "fn": 39,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.01631494339364504,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.015319437663800166,
+              0.017373998818985478
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 954,
+            "fn": 0,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01631494339364504,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015319437663800166,
+              0.017373998818985478
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 954,
+            "fn": 0,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01631494339364504,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015319437663800166,
+              0.017373998818985478
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 954,
+            "fn": 0,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01631494339364504,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015319437663800166,
+              0.017373998818985478
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 954,
+            "fn": 0,
+            "tn": 57520,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.01631494339364504,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.015319437663800166,
+              0.017373998818985478
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 156,
+          "negative_support": 234326,
+          "unknown_support": 18,
+          "tp": 156,
+          "fp": 234326,
+          "fn": 0,
+          "tn": 0,
+          "precision": 0.0006652962700761679,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "f1": 0.0013297078904525269,
+          "recall_wilson_95": [
+            0.9759662065444789,
+            0.9999999999999999
+          ],
+          "fpr_wilson_95": [
+            0.9999836060146085,
+            1
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "supported_in_development": true
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 58475,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 200,
+          "fn": 0,
+          "tn": 58275,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.003420265070542967,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.002978565685521699,
+            0.00392720722226449
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 58472,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 960,
+          "fn": 0,
+          "tn": 57512,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.016418114653167327,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.015419399889618823,
+            0.01748036772997196
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 58469,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 1349,
+          "fn": 0,
+          "tn": 57120,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.023072055277155414,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.021886089807429995,
+            0.024320688007178556
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 58466,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 953,
+          "fn": 0,
+          "tn": 57513,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.016300071836622996,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.015304961192828563,
+            0.017358742825141615
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false,
+      "any_horizon_test": {
+        "positive_support": 142,
+        "negative_support": 58474,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 501,
+        "fn": 142,
+        "tn": 57973,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.008567910524335602,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          0,
+          0.02634090684688045
+        ],
+        "fpr_wilson_95": [
+          0.007852481971688153,
+          0.009347906628153739
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "clean_history_any_horizon": {
+        "positive_support": 0,
+        "negative_support": 58466,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 501,
+        "fn": 0,
+        "tn": 57965,
+        "precision": 0.0,
+        "recall": null,
+        "fpr": 0.00856908288577977,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0.007853556810548484,
+          0.0093491851924331
+        ],
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+        "gate_passed": false
+      },
+      "advance_connection_warnings": {
+        "target": "first future native-labelled malicious connection from clean observed history",
+        "eligible_events": 0,
+        "hits": 0,
+        "misses": 0,
+        "event_recall": null,
+        "median_hit_lead_seconds": null,
+        "lead_p05_p95_seconds": null,
+        "precompromise_claim": false,
+        "retrospective_reconstruction": true,
+        "events": []
+      },
+      "state_gate_passed": true,
+      "automatic_promotion": false
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 42,
+      "checkpoint": "gnn_lstm_seed42.npz",
+      "checkpoint_sha256": "c990cc9271f64c0c50a1c63231a28a62549e573fc6bf635fd945e75a768b208e",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.0391615467816297,
+      "state_epoch_validation_mse": [
+        0.05272924016333485,
+        0.05197366261375896,
+        0.04903347097264589,
+        0.04422278948404931,
+        0.04110642762453795,
+        0.040291252915619254,
+        0.03992146980368027,
+        0.04019557451328548,
+        0.03939162028067255,
+        0.0391615467816297
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -0.11010052163881252,
+          "b": -1.4333164847480295
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.12424953294729925,
+          "b": -1.3220640230489313
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.3276523887276843,
+          "b": -1.225381398796913
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.4646696688372114,
+          "b": -1.1873281247096896
+        }
+      ],
+      "risk_thresholds": [
+        0.23181234300136566,
+        0.22279410064220428,
+        0.25843286514282227,
+        0.27956414222717285
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.0391615467816297,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.29927411343110166,
+        "paired_source_day_bootstrap_95": [
+          0.274675222758472,
+          0.3093981586536743
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.05224559552283196,
+          0.04640980315807036,
+          0.02563490123789697,
+          0.03214752505996489
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.2799713909626007,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 12,
+        "fp": 25,
+        "fn": 652,
+        "tn": 2564,
+        "precision": 0.32432432432432434,
+        "recall": 0.018072289156626505,
+        "fpr": 0.009656237929702587,
+        "f1": 0.034236804564907276,
+        "recall_wilson_95": [
+          0.010367691072191789,
+          0.03132123636209801
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "test_state": {
+        "mse": 0.013171050330596184,
+        "persistence_mse": 0.014290567583274743,
+        "relative_improvement": 0.0783395933125014,
+        "paired_source_day_bootstrap_95": [
+          0.033927431123647656,
+          0.10912645819274482
+        ],
+        "source_days": 9,
+        "sequences": 58625,
+        "per_horizon_mse": [
+          0.011686516149720149,
+          0.012125747522927612,
+          0.013576029844538994,
+          0.015296734028531565
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 142,
+          "negative_support": 58483,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 142,
+          "tn": 58483,
+          "precision": null,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0,
+            6.56831501737307e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.03857545927166939
+        },
+        "20": {
+          "positive_support": 142,
+          "negative_support": 58480,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 285,
+          "fn": 142,
+          "tn": 58195,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0048734610123119014,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0.0043406361606988806,
+            0.005471332142012615
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.044828906655311584
+        },
+        "30": {
+          "positive_support": 142,
+          "negative_support": 58477,
+          "unknown_support": 6,
+          "tp": 1,
+          "fp": 183,
+          "fn": 141,
+          "tn": 58294,
+          "precision": 0.005434782608695652,
+          "recall": 0.007042253521126761,
+          "fpr": 0.003129435504557347,
+          "f1": 0.006134969325153374,
+          "recall_wilson_95": [
+            0.0012441822045132188,
+            0.03881023299663651
+          ],
+          "fpr_wilson_95": [
+            0.002708208955295075,
+            0.003615940798391095
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.048916660249233246
+        },
+        "40": {
+          "positive_support": 142,
+          "negative_support": 58474,
+          "unknown_support": 9,
+          "tp": 1,
+          "fp": 112,
+          "fn": 141,
+          "tn": 58362,
+          "precision": 0.008849557522123894,
+          "recall": 0.007042253521126761,
+          "fpr": 0.0019153811950610527,
+          "f1": 0.00784313725490196,
+          "recall_wilson_95": [
+            0.0012441822045132188,
+            0.03881023299663651
+          ],
+          "fpr_wilson_95": [
+            0.0015922125813968941,
+            0.0023039914125617335
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.04990283027291298
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 39,
+            "tn": 58483,
+            "precision": null,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58483,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58483,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58483,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58483,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 285,
+            "fn": 39,
+            "tn": 58195,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0048734610123119014,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0.0043406361606988806,
+              0.005471332142012615
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 285,
+            "fn": 0,
+            "tn": 58195,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0048734610123119014,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0043406361606988806,
+              0.005471332142012615
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 285,
+            "fn": 0,
+            "tn": 58195,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0048734610123119014,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0043406361606988806,
+              0.005471332142012615
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 285,
+            "fn": 0,
+            "tn": 58195,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0048734610123119014,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0043406361606988806,
+              0.005471332142012615
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 285,
+            "fn": 0,
+            "tn": 58195,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0048734610123119014,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0043406361606988806,
+              0.005471332142012615
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 1,
+            "fp": 183,
+            "fn": 38,
+            "tn": 58294,
+            "precision": 0.005434782608695652,
+            "recall": 0.02564102564102564,
+            "fpr": 0.003129435504557347,
+            "f1": 0.008968609865470852,
+            "recall_wilson_95": [
+              0.00454058606523737,
+              0.13181286478627147
+            ],
+            "fpr_wilson_95": [
+              0.002708208955295075,
+              0.003615940798391095
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 183,
+            "fn": 0,
+            "tn": 58294,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.003129435504557347,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.002708208955295075,
+              0.003615940798391095
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 183,
+            "fn": 0,
+            "tn": 58294,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.003129435504557347,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.002708208955295075,
+              0.003615940798391095
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 183,
+            "fn": 0,
+            "tn": 58294,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.003129435504557347,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.002708208955295075,
+              0.003615940798391095
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 183,
+            "fn": 0,
+            "tn": 58294,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.003129435504557347,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.002708208955295075,
+              0.003615940798391095
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 1,
+            "fp": 112,
+            "fn": 38,
+            "tn": 58362,
+            "precision": 0.008849557522123894,
+            "recall": 0.02564102564102564,
+            "fpr": 0.0019153811950610527,
+            "f1": 0.013157894736842105,
+            "recall_wilson_95": [
+              0.00454058606523737,
+              0.13181286478627147
+            ],
+            "fpr_wilson_95": [
+              0.0015922125813968941,
+              0.0023039914125617335
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 112,
+            "fn": 0,
+            "tn": 58362,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0019153811950610527,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0015922125813968941,
+              0.0023039914125617335
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 112,
+            "fn": 0,
+            "tn": 58362,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0019153811950610527,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0015922125813968941,
+              0.0023039914125617335
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 112,
+            "fn": 0,
+            "tn": 58362,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0019153811950610527,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0015922125813968941,
+              0.0023039914125617335
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 112,
+            "fn": 0,
+            "tn": 58362,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.0019153811950610527,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0.0015922125813968941,
+              0.0023039914125617335
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 156,
+          "negative_support": 234326,
+          "unknown_support": 18,
+          "tp": 156,
+          "fp": 127863,
+          "fn": 0,
+          "tn": 106463,
+          "precision": 0.0012185691186464508,
+          "recall": 1.0,
+          "fpr": 0.5456628799194285,
+          "f1": 0.0024341720304271505,
+          "recall_wilson_95": [
+            0.9759662065444789,
+            0.9999999999999999
+          ],
+          "fpr_wilson_95": [
+            0.5436461169795747,
+            0.5476781456661096
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "supported_in_development": true
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 58475,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 58475,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            6.569213573478171e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 58472,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 283,
+          "fn": 0,
+          "tn": 58189,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.004839923382131618,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0043089990987468674,
+            0.005435907249039669
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 58469,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 182,
+          "fn": 0,
+          "tn": 58287,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.003112760608185534,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0026927091844081152,
+            0.003598101898732404
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 58466,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 111,
+          "fn": 0,
+          "tn": 58355,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.0018985393219991106,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0.0015769036100840871,
+            0.0022856278047436213
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false,
+      "any_horizon_test": {
+        "positive_support": 142,
+        "negative_support": 58474,
+        "unknown_support": 9,
+        "tp": 1,
+        "fp": 93,
+        "fn": 141,
+        "tn": 58381,
+        "precision": 0.010638297872340425,
+        "recall": 0.007042253521126761,
+        "fpr": 0.0015904504566131956,
+        "f1": 0.00847457627118644,
+        "recall_wilson_95": [
+          0.0012441822045132188,
+          0.03881023299663651
+        ],
+        "fpr_wilson_95": [
+          0.0012985578111355642,
+          0.0019478273974457318
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "clean_history_any_horizon": {
+        "positive_support": 0,
+        "negative_support": 58466,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 92,
+        "fn": 0,
+        "tn": 58374,
+        "precision": 0.0,
+        "recall": null,
+        "fpr": 0.0015735641227380016,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0.0012833622847144824,
+          0.0019292614347929087
+        ],
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+        "gate_passed": false
+      },
+      "advance_connection_warnings": {
+        "target": "first future native-labelled malicious connection from clean observed history",
+        "eligible_events": 0,
+        "hits": 0,
+        "misses": 0,
+        "event_recall": null,
+        "median_hit_lead_seconds": null,
+        "lead_p05_p95_seconds": null,
+        "precompromise_claim": false,
+        "retrospective_reconstruction": true,
+        "events": []
+      },
+      "state_gate_passed": true,
+      "automatic_promotion": false
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 43,
+      "checkpoint": "gnn_lstm_seed43.npz",
+      "checkpoint_sha256": "e0bafe4b797585eddb75371e01ffa4a6cbd3c3cfa5d471bc300ad1870c474b91",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.039934093385957006,
+      "state_epoch_validation_mse": [
+        0.05302171748921887,
+        0.05365210467204781,
+        0.05286303385297212,
+        0.050918236180723345,
+        0.047351425883447255,
+        0.04250033140167892,
+        0.041984817780516964,
+        0.04069546270347172,
+        0.04093731777592593,
+        0.039934093385957006
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.016430122944407127,
+          "b": -1.3702941248130924
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.08562728275283488,
+          "b": -1.314144792813126
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.2704095102679808,
+          "b": -1.1148196204809324
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.06584436565785645,
+          "b": -1.3143948511216872
+        }
+      ],
+      "risk_thresholds": [
+        0.20157752931118011,
+        0.21025651693344116,
+        0.24252480268478394,
+        0.21040020883083344
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.1,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.039934093385957006,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.28545077271242036,
+        "paired_source_day_bootstrap_95": [
+          0.24636430757852,
+          0.2990633050220848
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.052883791930798466,
+          0.04675142529984595,
+          0.025806940226623554,
+          0.03403540961512899
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.2425336390733719,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 1,
+        "fp": 25,
+        "fn": 663,
+        "tn": 2564,
+        "precision": 0.038461538461538464,
+        "recall": 0.0015060240963855422,
+        "fpr": 0.009656237929702587,
+        "f1": 0.002898550724637681,
+        "recall_wilson_95": [
+          0.0002658928795698824,
+          0.008481091435273638
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "test_state": {
+        "mse": 0.01253689050972038,
+        "persistence_mse": 0.014290567583274743,
+        "relative_improvement": 0.1227157048406401,
+        "paired_source_day_bootstrap_95": [
+          0.09970513654425518,
+          0.13877728626319752
+        ],
+        "source_days": 9,
+        "sequences": 58625,
+        "per_horizon_mse": [
+          0.01177834634028518,
+          0.01183870258352773,
+          0.012642035458852932,
+          0.013889115423236616
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 142,
+          "negative_support": 58483,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 142,
+          "tn": 58483,
+          "precision": null,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0,
+            6.56831501737307e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.04172912612557411
+        },
+        "20": {
+          "positive_support": 142,
+          "negative_support": 58480,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 0,
+          "fn": 142,
+          "tn": 58480,
+          "precision": null,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0,
+            6.568651947104651e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.040863316506147385
+        },
+        "30": {
+          "positive_support": 142,
+          "negative_support": 58477,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 0,
+          "fn": 142,
+          "tn": 58477,
+          "precision": null,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0,
+            6.568988911404449e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.03991078957915306
+        },
+        "40": {
+          "positive_support": 142,
+          "negative_support": 58474,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 0,
+          "fn": 142,
+          "tn": 58474,
+          "precision": null,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            0,
+            6.569325910277783e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.040201716125011444
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 39,
+            "tn": 58483,
+            "precision": null,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58483,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58483,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58483,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58483,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.56831501737307e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 39,
+            "tn": 58480,
+            "precision": null,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0,
+              6.568651947104651e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58480,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.568651947104651e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58480,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.568651947104651e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58480,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.568651947104651e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58480,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.568651947104651e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 39,
+            "tn": 58477,
+            "precision": null,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0,
+              6.568988911404449e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58477,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.568988911404449e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58477,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.568988911404449e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58477,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.568988911404449e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58477,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.568988911404449e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 39,
+            "tn": 58474,
+            "precision": null,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58474,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58474,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58474,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 58474,
+            "precision": null,
+            "recall": null,
+            "fpr": 0.0,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              0,
+              6.569325910277783e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 156,
+          "negative_support": 234326,
+          "unknown_support": 18,
+          "tp": 22,
+          "fp": 131851,
+          "fn": 134,
+          "tn": 102475,
+          "precision": 0.00016682717463013656,
+          "recall": 0.14102564102564102,
+          "fpr": 0.5626819046968753,
+          "f1": 0.0003332601170954866,
+          "recall_wilson_95": [
+            0.09501044890064092,
+            0.20429586434947666
+          ],
+          "fpr_wilson_95": [
+            0.5606723738947061,
+            0.5646893802865847
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "supported_in_development": true
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 58475,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 58475,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            6.569213573478171e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 58472,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 58472,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            6.569550595403487e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 58469,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 58469,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            6.569887651911207e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 58466,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 58466,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            6.570224743006656e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false,
+      "any_horizon_test": {
+        "positive_support": 142,
+        "negative_support": 58474,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 0,
+        "fn": 142,
+        "tn": 58474,
+        "precision": null,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          0,
+          0.02634090684688045
+        ],
+        "fpr_wilson_95": [
+          0,
+          6.569325910277783e-05
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "clean_history_any_horizon": {
+        "positive_support": 0,
+        "negative_support": 58466,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 58466,
+        "precision": null,
+        "recall": null,
+        "fpr": 0.0,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0,
+          6.570224743006656e-05
+        ],
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+        "gate_passed": false
+      },
+      "advance_connection_warnings": {
+        "target": "first future native-labelled malicious connection from clean observed history",
+        "eligible_events": 0,
+        "hits": 0,
+        "misses": 0,
+        "event_recall": null,
+        "median_hit_lead_seconds": null,
+        "lead_p05_p95_seconds": null,
+        "precompromise_claim": false,
+        "retrospective_reconstruction": true,
+        "events": []
+      },
+      "state_gate_passed": true,
+      "automatic_promotion": false
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 44,
+      "checkpoint": "gnn_lstm_seed44.npz",
+      "checkpoint_sha256": "93834ada25e6ac3722728545731d0677e9019acedf3d069b6ac900650f1af954",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.03898539732638727,
+      "state_epoch_validation_mse": [
+        0.05271322575394457,
+        0.045468466246210516,
+        0.0416771701712536,
+        0.04053172518174926,
+        0.040073422579577286,
+        0.0399132415514629,
+        0.039998168877529765,
+        0.03947800503112611,
+        0.03898539732638727,
+        0.039261121061201686
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.389784515653247,
+          "b": -5.98600115563827
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.1477178280104683,
+          "b": -5.525620578216448
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.331899632891255,
+          "b": -5.366237423533255
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": -2.2112521695133975,
+          "b": -4.907167376260286
+        }
+      ],
+      "risk_thresholds": [
+        0.571200430393219,
+        0.5751706957817078,
+        0.5167772173881531,
+        0.4938129186630249
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.03898539732638727,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.3024259931022918,
+        "paired_source_day_bootstrap_95": [
+          0.25067334023751425,
+          0.318912682241039
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.05185736480703578,
+          0.046495688742680265,
+          0.02588113918649321,
+          0.03152461844233192
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.5849080085754395,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 0,
+        "fp": 25,
+        "fn": 664,
+        "tn": 2564,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.009656237929702587,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          4.336808689942018e-19,
+          0.0057522622130756745
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "test_state": {
+        "mse": 0.01354730939310489,
+        "persistence_mse": 0.014290567583274743,
+        "relative_improvement": 0.052010403774286895,
+        "paired_source_day_bootstrap_95": [
+          0.005536929575608212,
+          0.08588351377649929
+        ],
+        "source_days": 9,
+        "sequences": 58625,
+        "per_horizon_mse": [
+          0.012192483800306504,
+          0.012559179176079906,
+          0.014002297193396126,
+          0.015436135259903972
+        ],
+        "gate_passed": true
+      },
+      "test_risk_per_horizon": {
+        "10": {
+          "positive_support": 142,
+          "negative_support": 58483,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 142,
+          "tn": 58482,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 1.7098986030128415e-05,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            3.018319634811766e-06,
+            9.686055636864128e-05
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.07523411512374878
+        },
+        "20": {
+          "positive_support": 142,
+          "negative_support": 58480,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 2,
+          "fn": 142,
+          "tn": 58478,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 3.419972640218878e-05,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            9.378652316232386e-06,
+            0.00012470282703720323
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.11197998374700546
+        },
+        "30": {
+          "positive_support": 142,
+          "negative_support": 58477,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 8,
+          "fn": 142,
+          "tn": 58469,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.00013680592369649607,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            6.932370447558563e-05,
+            0.00026996005849953537
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.09421119838953018
+        },
+        "40": {
+          "positive_support": 142,
+          "negative_support": 58474,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 5,
+          "fn": 142,
+          "tn": 58469,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 8.550808906522557e-05,
+          "f1": 0.0,
+          "recall_wilson_95": [
+            0,
+            0.02634090684688045
+          ],
+          "fpr_wilson_95": [
+            3.652394130140053e-05,
+            0.00020017426132172772
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "brier": 0.08181948214769363
+        }
+      },
+      "test_risk_per_native_tactic": {
+        "10": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 39,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 1.7098986030128415e-05,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.7098986030128415e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.7098986030128415e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.7098986030128415e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58483,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "tn": 58482,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 1.7098986030128415e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.018319634811766e-06,
+              9.686055636864128e-05
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "20": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 2,
+            "fn": 39,
+            "tn": 58478,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 3.419972640218878e-05,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              9.378652316232386e-06,
+              0.00012470282703720323
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "tn": 58478,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 3.419972640218878e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.378652316232386e-06,
+              0.00012470282703720323
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "tn": 58478,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 3.419972640218878e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.378652316232386e-06,
+              0.00012470282703720323
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "tn": 58478,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 3.419972640218878e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.378652316232386e-06,
+              0.00012470282703720323
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58480,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "tn": 58478,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 3.419972640218878e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              9.378652316232386e-06,
+              0.00012470282703720323
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "30": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 39,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.00013680592369649607,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              6.932370447558563e-05,
+              0.00026996005849953537
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00013680592369649607,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              6.932370447558563e-05,
+              0.00026996005849953537
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00013680592369649607,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              6.932370447558563e-05,
+              0.00026996005849953537
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00013680592369649607,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              6.932370447558563e-05,
+              0.00026996005849953537
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58477,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 8,
+            "fn": 0,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 0.00013680592369649607,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              6.932370447558563e-05,
+              0.00026996005849953537
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        },
+        "40": {
+          "Reconnaissance": {
+            "positive_support": 39,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 39,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 8.550808906522557e-05,
+            "f1": 0.0,
+            "recall_wilson_95": [
+              0,
+              0.08966985360023902
+            ],
+            "fpr_wilson_95": [
+              3.652394130140053e-05,
+              0.00020017426132172772
+            ],
+            "attack_performance_status": "MEASURABLE",
+            "gate_passed": false
+          },
+          "Initial Access": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 8.550808906522557e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.652394130140053e-05,
+              0.00020017426132172772
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Lateral Movement": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 8.550808906522557e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.652394130140053e-05,
+              0.00020017426132172772
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Command and Control": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 8.550808906522557e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.652394130140053e-05,
+              0.00020017426132172772
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          },
+          "Exfiltration": {
+            "positive_support": 0,
+            "negative_support": 58474,
+            "unknown_support": 0,
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "tn": 58469,
+            "precision": 0.0,
+            "recall": null,
+            "fpr": 8.550808906522557e-05,
+            "f1": null,
+            "recall_wilson_95": null,
+            "fpr_wilson_95": [
+              3.652394130140053e-05,
+              0.00020017426132172772
+            ],
+            "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+            "gate_passed": false
+          }
+        }
+      },
+      "test_stage_multilabel": {
+        "Reconnaissance": {
+          "positive_support": 156,
+          "negative_support": 234326,
+          "unknown_support": 18,
+          "tp": 156,
+          "fp": 234326,
+          "fn": 0,
+          "tn": 0,
+          "precision": 0.0006652962700761679,
+          "recall": 1.0,
+          "fpr": 1.0,
+          "f1": 0.0013297078904525269,
+          "recall_wilson_95": [
+            0.9759662065444789,
+            0.9999999999999999
+          ],
+          "fpr_wilson_95": [
+            0.9999836060146085,
+            1
+          ],
+          "attack_performance_status": "MEASURABLE",
+          "gate_passed": false,
+          "supported_in_development": true
+        },
+        "Initial Access": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Lateral Movement": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Command and Control": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        },
+        "Exfiltration": {
+          "positive_support": 0,
+          "negative_support": 234482,
+          "unknown_support": 18,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 234482,
+          "precision": null,
+          "recall": null,
+          "fpr": 0.0,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            0,
+            1.6383078712928142e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false,
+          "supported_in_development": false
+        }
+      },
+      "test_clean_observed_history": {
+        "10": {
+          "positive_support": 0,
+          "negative_support": 58475,
+          "unknown_support": 0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "tn": 58474,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 1.7101325352714836e-05,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            3.0187325738130033e-06,
+            9.687380702122574e-05
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "20": {
+          "positive_support": 0,
+          "negative_support": 58472,
+          "unknown_support": 3,
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "tn": 58470,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 3.4204405527431934e-05,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            9.379935487996373e-06,
+            0.0001247198873694484
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "30": {
+          "positive_support": 0,
+          "negative_support": 58469,
+          "unknown_support": 6,
+          "tp": 0,
+          "fp": 8,
+          "fn": 0,
+          "tn": 58461,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 0.00013682464211804547,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            6.933318988195676e-05,
+            0.0002699969924227117
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        },
+        "40": {
+          "positive_support": 0,
+          "negative_support": 58466,
+          "unknown_support": 9,
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "tn": 58461,
+          "precision": 0.0,
+          "recall": null,
+          "fpr": 8.551978927923922e-05,
+          "f1": null,
+          "recall_wilson_95": null,
+          "fpr_wilson_95": [
+            3.652893900630587e-05,
+            0.00020020164929752834
+          ],
+          "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+          "gate_passed": false
+        }
+      },
+      "timeline_examples": [],
+      "risk_gate_passed": false,
+      "five_stage_gate_passed": false,
+      "any_horizon_test": {
+        "positive_support": 142,
+        "negative_support": 58474,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 0,
+        "fn": 142,
+        "tn": 58474,
+        "precision": null,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "f1": 0.0,
+        "recall_wilson_95": [
+          0,
+          0.02634090684688045
+        ],
+        "fpr_wilson_95": [
+          0,
+          6.569325910277783e-05
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "clean_history_any_horizon": {
+        "positive_support": 0,
+        "negative_support": 58466,
+        "unknown_support": 9,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 58466,
+        "precision": null,
+        "recall": null,
+        "fpr": 0.0,
+        "f1": null,
+        "recall_wilson_95": null,
+        "fpr_wilson_95": [
+          0,
+          6.570224743006656e-05
+        ],
+        "attack_performance_status": "NO_FUTURE_POSITIVE_SUPPORT",
+        "gate_passed": false
+      },
+      "advance_connection_warnings": {
+        "target": "first future native-labelled malicious connection from clean observed history",
+        "eligible_events": 0,
+        "hits": 0,
+        "misses": 0,
+        "event_recall": null,
+        "median_hit_lead_seconds": null,
+        "lead_p05_p95_seconds": null,
+        "precompromise_claim": false,
+        "retrospective_reconstruction": true,
+        "events": []
+      },
+      "state_gate_passed": true,
+      "automatic_promotion": false
+    }
+  ],
+  "summary": {
+    "lstm": {
+      "state_improvement_mean": 0.12191827800415178,
+      "state_improvement_seed_sd": 0.018989367540805633,
+      "state_gates_passed": 3,
+      "risk_gates_passed": 0,
+      "five_stage_gates_passed": 0,
+      "any_horizon": {
+        "recall": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        },
+        "fpr": {
+          "mean": 0.0032208046881234964,
+          "seed_sd": 0.004637829267814896
+        },
+        "f1": {
+          "mean": 0.0,
+          "seed_sd": 0.0
+        }
+      }
+    },
+    "gnn_lstm": {
+      "state_improvement_mean": 0.08435523397580946,
+      "state_improvement_seed_sd": 0.03573444905358757,
+      "state_gates_passed": 3,
+      "risk_gates_passed": 0,
+      "five_stage_gates_passed": 0,
+      "any_horizon": {
+        "recall": {
+          "mean": 0.002347417840375587,
+          "seed_sd": 0.004065846966124126
+        },
+        "precision": {
+          "mean": 0.010638297872340425,
+          "seed_sd": null
+        },
+        "fpr": {
+          "mean": 0.0005301501522043986,
+          "seed_sd": 0.0009182469992583917
+        },
+        "f1": {
+          "mean": 0.002824858757062147,
+          "seed_sd": 0.0048927988914375066
+        }
+      }
+    }
+  },
+  "equal_history_logistic_baseline": {
+    "same_observed_history": true,
+    "normalization_fit": "train_only",
+    "class_balancing": false,
+    "per_horizon": {
+      "10": {
+        "positive_support": 142,
+        "negative_support": 58483,
+        "unknown_support": 0,
+        "tp": 142,
+        "fp": 181,
+        "fn": 0,
+        "tn": 58302,
+        "precision": 0.43962848297213625,
+        "recall": 1.0,
+        "fpr": 0.003094916471453243,
+        "f1": 0.610752688172043,
+        "recall_wilson_95": [
+          0.9736590931531194,
+          0.9999999999999999
+        ],
+        "fpr_wilson_95": [
+          0.0026762012705594373,
+          0.0035789082547940396
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": true,
+        "threshold": 0.00953670129884502,
+        "threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+        "brier": 0.0006849265399939334
+      },
+      "20": {
+        "positive_support": 142,
+        "negative_support": 58480,
+        "unknown_support": 3,
+        "tp": 142,
+        "fp": 156,
+        "fn": 0,
+        "tn": 58324,
+        "precision": 0.47651006711409394,
+        "recall": 1.0,
+        "fpr": 0.002667578659370725,
+        "f1": 0.6454545454545455,
+        "recall_wilson_95": [
+          0.9736590931531194,
+          0.9999999999999999
+        ],
+        "fpr_wilson_95": [
+          0.0022809332867998536,
+          0.0031195601034975434
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": true,
+        "threshold": 0.006133591385160324,
+        "threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+        "brier": 0.0004328709767460866
+      },
+      "30": {
+        "positive_support": 142,
+        "negative_support": 58477,
+        "unknown_support": 6,
+        "tp": 142,
+        "fp": 180,
+        "fn": 0,
+        "tn": 58297,
+        "precision": 0.4409937888198758,
+        "recall": 1.0,
+        "fpr": 0.0030781332831711613,
+        "f1": 0.6120689655172413,
+        "recall_wilson_95": [
+          0.9736590931531194,
+          0.9999999999999999
+        ],
+        "fpr_wilson_95": [
+          0.00266061452419758,
+          0.0035609375267906867
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": true,
+        "threshold": 0.009277608840343815,
+        "threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+        "brier": 0.000668849722902534
+      },
+      "40": {
+        "positive_support": 142,
+        "negative_support": 58474,
+        "unknown_support": 9,
+        "tp": 142,
+        "fp": 138,
+        "fn": 0,
+        "tn": 58336,
+        "precision": 0.5071428571428571,
+        "recall": 1.0,
+        "fpr": 0.0023600232582002257,
+        "f1": 0.6729857819905213,
+        "recall_wilson_95": [
+          0.9736590931531194,
+          0.9999999999999999
+        ],
+        "fpr_wilson_95": [
+          0.0019980751826063634,
+          0.0027873545176580862
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": true,
+        "threshold": 0.0026119872031925653,
+        "threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+        "brier": 0.0001538312900017072
+      }
+    },
+    "checkpoint": "logistic_frozen.npz",
+    "checkpoint_sha256": "a6171523c99cfa760d031c76592696ee79afacbe9cf5048e6c01c5b0ffbed637"
+  },
+  "all_state_and_risk_gates_passed": false,
+  "future_target": "next 10/20/30/40s native-labelled connection starts",
+  "live_sensor_availability_certified": false,
+  "packet_features_used": false,
+  "precompromise_certified": false,
+  "automatic_promotion": false,
+  "automatic_containment": false,
+  "claim_boundary": "Retrospective first-packet event reconstruction; no completed-flow feature leakage. Publisher conn.log export latency is unknown. Native flow tactics are labels of connection starts, not verified host-compromise times. Same-publisher release holdout, not independent enterprise or zero-day proof."
+}

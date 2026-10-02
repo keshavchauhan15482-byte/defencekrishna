@@ -1,0 +1,162 @@
+[
+  {
+    "split": "train",
+    "release": "UWF-ZeekData24",
+    "week": "2024-02-25 - 2024-03-03",
+    "id": "UWF-ZeekData24_2024-02-25",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/parquet/2024-02-25%20-%202024-03-03/part-00000-8b838a85-76eb-4896-a0b6-2fc425e828c2-c000.snappy.parquet",
+    "expected_bytes": 18779592,
+    "sha256": "4d833656b31d4d360691c2178c5c4d1b3c31f01db12c59f6779a08d55e5f0cc7",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekData24_2024-02-25.parquet"
+  },
+  {
+    "split": "train",
+    "release": "UWF-ZeekData24",
+    "week": "2024-03-03 - 2024-03-10",
+    "id": "UWF-ZeekData24_2024-03-03",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/parquet/2024-03-03%20-%202024-03-10/part-00000-0955ed97-8460-41bd-872a-7375a7f0207e-c000.snappy.parquet",
+    "expected_bytes": 3733862,
+    "sha256": "5a085f2749556f2c711af6f9c2bca9d43b3f19bb43696ef9194869f4ea69eb21",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekData24_2024-03-03.parquet"
+  },
+  {
+    "split": "train",
+    "release": "UWF-ZeekDataFall24-2",
+    "week": "2024-10-27 - 2024-11-03",
+    "id": "UWF-ZeekDataFall24-2_2024-10-27",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/parquet/2024-10-27%20-%202024-11-03/part-00000-e0469268-a9e0-458d-beec-4e95db2677fc-c000.snappy.parquet",
+    "expected_bytes": 3592190,
+    "sha256": "32317f64d899ba9f4f792b45231e100d4e191615bc6ca1f541f9663ce477bea0",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekDataFall24-2_2024-10-27.parquet"
+  },
+  {
+    "split": "validation",
+    "release": "UWF-ZeekDataFall24-2",
+    "week": "2024-11-10 - 2024-11-17",
+    "id": "UWF-ZeekDataFall24-2_2024-11-10",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/parquet/2024-11-10%20-%202024-11-17/part-00000-7f01bb0b-25b4-4353-a7c2-7418346e3cbb-c000.snappy.parquet",
+    "expected_bytes": 718184,
+    "sha256": "a5d91707f5eda89ed93ec208d937809a9b22118eea7a1d13de710f15f5f98b99",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekDataFall24-2_2024-11-10.parquet"
+  },
+  {
+    "split": "train",
+    "release": "UWF-ZeekData22",
+    "week": "2021-12-12 - 2021-12-19",
+    "id": "UWF-ZeekData22_2021-12-12",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2021-12-12%20-%202021-12-19/part-00000-7c2e9adb-5430-4792-a42b-10ff5bbd46e8-c000.snappy.parquet",
+    "expected_bytes": 25872433,
+    "sha256": "a4158d14b8bca292a4a68e7171e5e1505f4170e83a5abf6d400fb6f439bc3b3d",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekData22_2021-12-12.parquet"
+  },
+  {
+    "split": "train",
+    "release": "UWF-ZeekData22",
+    "week": "2021-12-19 - 2021-12-26",
+    "id": "UWF-ZeekData22_2021-12-19",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2021-12-19%20-%202021-12-26/part-00000-3f86626a-1225-47f9-a5a2-0170b737e404-c000.snappy.parquet",
+    "expected_bytes": 109771100,
+    "sha256": "58649166d828161d860ff5ef2c2370e0e4bc63a8b5855c5a8faea4d3ca4c8f0a",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekData22_2021-12-19.parquet"
+  },
+  {
+    "split": "validation",
+    "release": "UWF-ZeekData22",
+    "week": "2022-01-02 - 2022-01-09",
+    "id": "UWF-ZeekData22_2022-01-02",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2022-01-02%20-%202022-01-09/part-00000-26e9208e-7819-451b-b23f-2e47f6d1e834-c000.snappy.parquet",
+    "expected_bytes": 145347005,
+    "sha256": "ce3f7e94cc4c41ea62d8faf5f6e30ed94443217b1d0a45961928f1628a8e0acd",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekData22_2022-01-02.parquet"
+  },
+  {
+    "split": "train",
+    "release": "UWF-ZeekData22",
+    "week": "2022-01-09 - 2022-01-16",
+    "id": "UWF-ZeekData22_2022-01-09",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2022-01-09%20-%202022-01-16/part-00000-36240b61-b84f-4164-a873-d7973e652780-c000.snappy.parquet",
+    "expected_bytes": 150286656,
+    "sha256": "91082b85e6be170e5bbd37f23c40c6c992a3c2d098f78a638d5cf604f9370fde",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekData22_2022-01-09.parquet"
+  },
+  {
+    "split": "validation",
+    "release": "UWF-ZeekData22",
+    "week": "2022-02-06 - 2022-02-13",
+    "id": "UWF-ZeekData22_2022-02-06",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData22/parquet/2022-02-06%20-%202022-02-13/part-00000-df678a79-4a73-452b-8e72-d624b2732f17-c000.snappy.parquet",
+    "expected_bytes": 7013316,
+    "sha256": "5e5dcd03421f0f28fa256e83e4dc75d45bac1c916d2aab833b7c7b5ab1cc5486",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekData22_2022-02-06.parquet"
+  },
+  {
+    "id": "UWF-ZeekDataSum25-2_2025-05-18_00000",
+    "release": "UWF-ZeekDataSum25-2",
+    "week": "2025-05-18 - 2025-05-25",
+    "split": "test",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-2/parquet/2025-05-18%20-%202025-05-25/part-00000-4a30e497-f66c-48fe-8821-1562e55976ab-c000.snappy.parquet",
+    "sha256": "f5d20cf8b398285721e49573ff19568efdb24863a95df0fd66b5a1845b93baad",
+    "expected_bytes": 17663583,
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekDataSum25-2_2025-05-18_00000.parquet"
+  },
+  {
+    "id": "UWF-ZeekDataSum25-2_2025-05-25_00000",
+    "release": "UWF-ZeekDataSum25-2",
+    "week": "2025-05-25 - 2025-06-01",
+    "split": "test",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-2/parquet/2025-05-25%20-%202025-06-01/part-00000-8739111d-8a2e-49ff-b5fa-101462488c2e-c000.snappy.parquet",
+    "sha256": "e80c7cb07588bc7d639b19339fcfe111825cfdd7ed5cdfb143f7f5f0bfc81540",
+    "expected_bytes": 80731967,
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekDataSum25-2_2025-05-25_00000.parquet"
+  },
+  {
+    "id": "UWF-ZeekDataSum25-2_2025-06-01_00000",
+    "release": "UWF-ZeekDataSum25-2",
+    "week": "2025-06-01 - 2025-06-08",
+    "split": "test",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-2/parquet/2025-06-01%20-%202025-06-08/part-00000-b268f002-6ca8-4262-9922-9f42869ae327-c000.snappy.parquet",
+    "sha256": "41beff1e5f7e036cdcb2401524490f802ab97e93fe5595ba0f3d9aeef2222096",
+    "expected_bytes": 32559430,
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekDataSum25-2_2025-06-01_00000.parquet"
+  },
+  {
+    "id": "UWF-ZeekDataSum25-2_2025-06-08_00000",
+    "release": "UWF-ZeekDataSum25-2",
+    "week": "2025-06-08 - 2025-06-15",
+    "split": "test",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-2/parquet/2025-06-08%20-%202025-06-15/part-00000-5cc4cb38-e483-4d93-90fa-23067bcbd3f6-c000.snappy.parquet",
+    "sha256": "476a98f94f2d8bd5c3e70258a848e942662bc8853a4271c1c50909b734da2196",
+    "expected_bytes": 7801,
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekDataSum25-2_2025-06-08_00000.parquet"
+  },
+  {
+    "release": "UWF-ZeekData24",
+    "role": "time_matched_benign",
+    "id": "UWF-ZeekData24_benign",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekData24/csv/Benign/part-00000-b039213f-1208-4f1b-b71d-5e8e3a4a2939-c000.csv",
+    "expected_bytes": 10163424,
+    "sha256": "272677c8c7bbe7ab57b040f63ed8bbf92d0b5716adb05444258274eed000ab3f",
+    "annotation": "publisher_benign_folder",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekData24_benign.csv"
+  },
+  {
+    "release": "UWF-ZeekDataFall24-2",
+    "role": "time_matched_benign",
+    "id": "UWF-ZeekDataFall24-2_benign",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekDataFall24-2/csv/Benign/part-00000-70d13bea-4727-426b-97af-a2b1d3ca4184-c000.csv",
+    "expected_bytes": 14172382,
+    "sha256": "d43a418ecb9c6981c57015674f86042dcd90d408709d34a90b9479f391954ff3",
+    "annotation": "publisher_benign_folder",
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekDataFall24-2_benign.csv"
+  },
+  {
+    "id": "UWF-ZeekDataSum25-2_benign_00000",
+    "release": "UWF-ZeekDataSum25-2",
+    "role": "time_matched_benign",
+    "annotation": "publisher_benign_folder",
+    "url": "https://datasets.uwf.edu/data/UWF-ZeekDataSum25-2/csv/Benign/part-00000-dbbf2445-0a2a-4f90-909b-464726e9453f-c000.csv",
+    "sha256": "65d7e0ee40423663bf12ffe1ef442b126795734b17f4cb58ea38597aa7edea3e",
+    "expected_bytes": 10040391,
+    "path": "garuda_v3/runtime/connection-start/sources/UWF-ZeekDataSum25-2_benign_00000.csv"
+  }
+]
