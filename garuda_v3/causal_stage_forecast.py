@@ -340,7 +340,13 @@ def predict(model, d, batch_size=128):
 def state_objective(model, d, ids):
     mean, sigma, _ = model.forward(d['x'][ids], d['adj'][ids], d['mask'][ids], HORIZON)
     error = mean-d['future'][ids]
-    return 10*error.power(2).mean() + .01*((error/sigma).power(2)*.5 + sigma.log()).mean()
+    if 'future_observed' not in d:
+        return 10*error.power(2).mean() + .01*((error/sigma).power(2)*.5 + sigma.log()).mean()
+    known=d['future_observed'][ids].astype(np.float32)
+    denominator=np.maximum(known.sum(1),1)
+    mse=((error.power(2).sum(2)/model.f)*known).sum(1)/denominator
+    nll=((((error/sigma).power(2)*.5+sigma.log()).sum(2)/model.f)*known).sum(1)/denominator
+    return 10*mse.mean()+.01*nll.mean()
 
 
 def head_objective(model, d, ids, stage_supported):
@@ -408,8 +414,17 @@ def brier(y, score):
 
 def state_metrics(d, mean):
     pooled=(d['x']*d['mask'][...,None]).sum(2)/np.maximum(d['mask'].sum(2,keepdims=True),1)
-    pred_error=((mean-d['future'])**2).mean((1,2))
-    base_error=((pooled[:,-1,None,:]-d['future'])**2).mean((1,2))
+    known=d.get('future_observed',np.ones(d['future'].shape[:2],bool))
+    if 'future_observed' not in d:
+        pred_error=((mean-d['future'])**2).mean((1,2))
+        base_error=((pooled[:,-1,None,:]-d['future'])**2).mean((1,2))
+        horizon_mse=((mean-d['future'])**2).mean((0,2))
+    else:
+        if not known.any(1).all():raise ValueError('Every forecast needs an observed future state target')
+        denominator=np.maximum(known.sum(1),1)
+        pred_error=(((mean-d['future'])**2).mean(2)*known).sum(1)/denominator
+        base_error=(((pooled[:,-1,None,:]-d['future'])**2).mean(2)*known).sum(1)/denominator
+        horizon_mse=(((mean-d['future'])**2).mean(2)*known).sum(0)/np.maximum(known.sum(0),1)
     groups=np.unique(np.char.add(d['source'].astype(str),d['day'].astype(str)))
     identity=np.char.add(d['source'].astype(str),d['day'].astype(str))
     stats=[(pred_error[identity==g].sum(),base_error[identity==g].sum(),int((identity==g).sum())) for g in groups]
@@ -423,18 +438,23 @@ def state_metrics(d, mean):
     return {'mse':float(pred_error.mean()),'persistence_mse':float(base_error.mean()),
         'relative_improvement':improvement,'paired_source_day_bootstrap_95':ci,
         'source_days':len(groups),'sequences':len(pred_error),
-        'per_horizon_mse':((mean-d['future'])**2).mean((0,2)).tolist(),
+        'per_horizon_mse':[float(v) if known[:,h].any() else None for h,v in enumerate(horizon_mse)],
         'gate_passed':improvement>0 and ci is not None and ci[0]>0}
 
 
-def train_candidate(arch, seed, train, val, p, out):
-    model=GraphWorldModel(architecture=arch,feature_dim=len(FEATURES),graph_dim=p['graph_dim'],
-        hidden=p['hidden'],seed=seed,decoder='residual',stage_count=5,schema=CAUSAL_FLOW_SCHEMA)
+def train_candidate(arch, seed, train, val, p, out, *, feature_names=None, model_schema=CAUSAL_FLOW_SCHEMA):
+    feature_names=FEATURES if feature_names is None else list(feature_names)
+    if len(feature_names)!=train['x'].shape[-1] or len(set(feature_names))!=len(feature_names):
+        raise ValueError('Explicit unique training feature identity required')
+    model=GraphWorldModel(architecture=arch,feature_dim=len(feature_names),graph_dim=p['graph_dim'],
+        hidden=p['hidden'],seed=seed,decoder='residual',stage_count=5,schema=model_schema)
     ids=np.arange(len(train['x']))
     if len(ids)>p['max_train_sequences']: ids=ids[::math.ceil(len(ids)/p['max_train_sequences'])]
     rng=np.random.default_rng(seed); batch=p['batch_size']
     pooled=(val['x']*val['mask'][...,None]).sum(2)/np.maximum(val['mask'].sum(2,keepdims=True),1)
-    best=float(np.mean((pooled[:,-1,None,:]-val['future'])**2)); selected=None; state_logs=[]
+    best=(state_metrics(val,np.repeat(pooled[:,-1,None,:],HORIZON,axis=1))['mse']
+        if 'future_observed' in val else float(np.mean((pooled[:,-1,None,:]-val['future'])**2)))
+    selected=None; state_logs=[]
     state_params=[v for k,v in model.params.items() if k not in HEADS]
     for k,v in model.params.items(): v.requires_grad=k not in HEADS
     opt=Adam(state_params,lr=.001)
@@ -442,7 +462,9 @@ def train_candidate(arch, seed, train, val, p, out):
     for epoch in range(p['state_epochs']):
         order=rng.permutation(ids)
         for start in range(0,len(order),batch): state_objective(model,train,order[start:start+batch]).backward();opt.step()
-        mean,_,_,_=predict(model,val,batch); mse=float(np.mean((mean-val['future'])**2)); state_logs.append(mse)
+        mean,_,_,_=predict(model,val,batch)
+        mse=state_metrics(val,mean)['mse'] if 'future_observed' in val else float(np.mean((mean-val['future'])**2))
+        state_logs.append(mse)
         if mse<best: best=mse;selected={k:v.data.copy() for k,v in model.params.items()}
         print(json.dumps({'arch':arch,'seed':seed,'state_epoch':epoch+1,'validation_mse':mse}),flush=True)
     for k,v in (selected or initial).items(): model.params[k].data=v.copy()
@@ -472,7 +494,7 @@ def train_candidate(arch, seed, train, val, p, out):
         t=max(candidates,key=lambda t:binary_metrics(val['stage'][...,i],vs[...,i],t)['f1'])
         stage_thresholds.append(float(t))
     path=out/f'{arch}_seed{seed}.npz'
-    model.save(path,{'features':FEATURES,'schema':CAUSAL_FLOW_SCHEMA,'risk_head_trained':True,
+    model.save(path,{'features':feature_names,'schema':model_schema,'risk_head_trained':True,
         'stage_head_supported':supported.tolist(),'shadow_only':True,'packet_features_available':False})
     record={'architecture':arch,'seed':seed,'checkpoint':path.name,'checkpoint_sha256':sha(path),
         'state_validation_selected':selected is not None,'state_validation_mse':best,

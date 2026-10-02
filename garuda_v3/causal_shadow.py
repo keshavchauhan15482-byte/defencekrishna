@@ -18,12 +18,29 @@ from .model import CAUSAL_FLOW_SCHEMA, GraphWorldModel
 
 
 class CausalShadowService:
+    expected_features=FEATURES
+    expected_model_schema=CAUSAL_FLOW_SCHEMA
+    expected_report_schema='garuda-causal-native-result-1'
+    minimum_observed_history_windows=HISTORY
+    claim_boundary='Future completed-flow scores. No packet features, verified compromise probability or live enforcement claim.'
+
+    def risk_scores(self,model,row,x,adj,mask,mean=None,raw=None):
+        if raw is None:_,_,raw=model.forward(x,adj,mask,HORIZON)
+        values=raw.data if isinstance(raw,Tensor) else raw
+        return np.stack([calibrate(values[:,h],row['risk_calibration'][h]) for h in range(HORIZON)],1)
+
+    def risk_sensitivity(self,model,row,x,adj,mask,h):
+        observed=Tensor(x,requires_grad=True)
+        _,_,raw,_=model.forward(observed,adj,mask,HORIZON,return_stages=True)
+        raw[0,h].backward()
+        return np.abs(observed.grad*observed.data).sum((0,1,2))
+
     def __init__(self, bundle):
         self.bundle = Path(bundle)
         self.report = json.loads((self.bundle/'report.json').read_text())
-        if self.report.get('schema') != 'garuda-causal-native-result-1' or 'models' not in self.report:
+        if self.report.get('schema') != self.expected_report_schema or 'models' not in self.report:
             raise ValueError('Scored frozen experiment required')
-        if self.report['feature_order'] != FEATURES or self.report['graph_nodes'] != SERVICE_NODES:
+        if self.report['feature_order'] != self.expected_features or self.report['graph_nodes'] != SERVICE_NODES:
             raise ValueError('Flow feature/node identity mismatch')
         if self.report.get('automatic_promotion') is not False or self.report.get('automatic_containment') is not False:
             raise ValueError('Only an explicitly shadow-only bundle is supported')
@@ -36,7 +53,7 @@ class CausalShadowService:
             path=self.bundle/name
             if sha(path)!=r['checkpoint_sha256']:raise ValueError('Checkpoint hash mismatch')
             model,meta=GraphWorldModel.load(path)
-            if model.schema!=CAUSAL_FLOW_SCHEMA or meta.get('features')!=FEATURES or meta.get('shadow_only') is not True or meta.get('risk_head_trained') is not True:
+            if model.schema!=self.expected_model_schema or meta.get('features')!=self.expected_features or meta.get('shadow_only') is not True or meta.get('risk_head_trained') is not True:
                 raise ValueError('Causal observed-flow checkpoint required')
             for p in model.parameters():p.requires_grad=False
             self.models.append(model)
@@ -44,7 +61,7 @@ class CausalShadowService:
     def forecast(self,payload):
         allowed={'schema','features','mode','window_seconds','times','x','adj','mask'}
         if set(payload)!=allowed:raise ValueError('Observed graphs only; labels/future targets/extra fields are forbidden')
-        if payload['schema']!=CAUSAL_FLOW_SCHEMA or payload['features']!=FEATURES or payload['mode']!='service' or payload['window_seconds']!=STEP:
+        if payload['schema']!=self.expected_model_schema or payload['features']!=self.expected_features or payload['mode']!='service' or payload['window_seconds']!=STEP:
             raise ValueError('Causal flow/service/10-second contract mismatch')
         times=np.asarray(payload['times'])
         if times.shape!=(HISTORY,) or not np.issubdtype(times.dtype,np.number) or not np.isfinite(times).all():
@@ -53,27 +70,28 @@ class CausalShadowService:
             raise ValueError('Contiguous UTC 10-second buckets required')
         x,adj,mask=[np.asarray(payload[k],np.float32) for k in ('x','adj','mask')]
         n=len(SERVICE_NODES)
-        if x.shape!=(HISTORY,n,len(FEATURES)) or adj.shape!=(HISTORY,n,n) or mask.shape!=(HISTORY,n):
+        if x.shape!=(HISTORY,n,len(self.expected_features)) or adj.shape!=(HISTORY,n,n) or mask.shape!=(HISTORY,n):
             raise ValueError('Observed graph shape mismatch')
         if not all(np.isfinite(a).all() for a in (x,adj,mask)) or np.any((x<0)|(x>1)) or np.any(adj<0) or np.any(adj>1e7) or not np.isin(mask,[0,1]).all():
             raise ValueError('Invalid bounded observed features/adjacency/mask')
-        if np.any(mask.sum(1)==0) or np.any(x[mask==0]!=0):raise ValueError('Every historical window needs valid observed nodes')
+        if (mask.sum(1)>0).sum()<self.minimum_observed_history_windows or mask[-1].sum()==0 or np.any(x[mask==0]!=0):
+            raise ValueError('Insufficient observed history or invalid missing-observation features')
+        if np.any(adj[mask==0]!=0) or np.any(np.swapaxes(adj,-1,-2)[mask==0]!=0):
+            raise ValueError('Missing nodes cannot carry observed edges')
         means,sigmas,risks,stages=[],[],[],[]
         sensitivities=[]
         for model,row in zip(self.models,self.rows):
             mean,sigma,risk,stage=model.forward(x[None],adj[None],mask[None],HORIZON,return_stages=True)
             means.append(mean.data[0]);sigmas.append(sigma.data[0]);stages.append(stage.data[0])
-            score=np.asarray([calibrate(risk.data[0,h],row['risk_calibration'][h]) for h in range(HORIZON)])
+            score=self.risk_scores(model,row,x[None],adj[None],mask[None],mean.data,risk)[0]
             risks.append(score)
-            h=int(score.argmax());observed=Tensor(x[None],requires_grad=True)
-            _,_,raw,_=model.forward(observed,adj[None],mask[None],HORIZON,return_stages=True)
-            raw[0,h].backward()
-            sensitivities.append(np.abs(observed.grad*observed.data).sum((0,1,2)))
+            h=int(score.argmax())
+            sensitivities.append(self.risk_sensitivity(model,row,x[None],adj[None],mask[None],h))
         mean=np.mean(means,axis=0)
         total_sigma=np.sqrt(np.mean(np.asarray(sigmas)**2,axis=0)+np.var(means,axis=0))
         scores=np.mean(risks,axis=0);deviation=np.std(risks,axis=0,ddof=1)
         weights=np.mean(sensitivities,axis=0);order=np.argsort(-weights)[:5]
-        top=[{'feature':FEATURES[i],'sensitivity_share':float(weights[i]/max(1e-12,weights.sum()))} for i in order]
+        top=[{'feature':self.expected_features[i],'sensitivity_share':float(weights[i]/max(1e-12,weights.sum()))} for i in order]
         trajectory=[]
         for h in range(HORIZON):
             predictions=[]
@@ -96,7 +114,7 @@ class CausalShadowService:
             'domain_support_certified':False,'precompromise_certified':False,
             'record_availability_certified':False,
             'automatic_containment':False,'defender_decision':'shadow review only',
-            'claim_boundary':'Future completed-flow scores. No packet features, verified compromise probability or live enforcement claim.'}
+            'claim_boundary':self.claim_boundary}
 
 
 def main():

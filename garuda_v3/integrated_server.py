@@ -94,6 +94,13 @@ class IntegratedApp(App):
         # V127 dual-runtime integration. Startup fails closed if any V116/V118/V122
         # pin drifts or the V123 evidence is no longer PASS.
         self.latest_state = LatestStateForecastService()
+        # An explicitly selected research bundle shares this authenticated port.
+        # It never replaces the packet-state model or calls ResponseCoordinator.
+        self.connection_start = None
+        shadow_bundle = os.environ.get('GARUDA_CONNECTION_START_BUNDLE')
+        if shadow_bundle:
+            from .connection_shadow import ConnectionStartShadowService
+            self.connection_start = ConnectionStartShadowService(shadow_bundle)
         self.response = ResponseCoordinator(
             self.policy,
             lab_automation,
@@ -128,6 +135,11 @@ class IntegratedApp(App):
         }
         return forecast
 
+    def connection_start_forecast(self, payload):
+        if self.connection_start is None:
+            raise ValueError('Enable an integrity-checked connection-start shadow bundle explicitly')
+        return self.connection_start.forecast(payload)
+
     def analyze(self, content, kind, mode):
         result = super().analyze(content, kind, mode)
         if kind == 'pcap' and mode == 'service':
@@ -160,6 +172,17 @@ class IntegratedApp(App):
             'runtime_model': self.service.meta,
             'runtime_model_sha256': self.service.model_hash,
             'latest_state_runtime': self.latest_state.public_status(),
+            'connection_start_shadow': {
+                'enabled': self.connection_start is not None,
+                'endpoint': '/api/connection-start/forecast',
+                'schema': 'garuda-connection-start-v1',
+                'selection': 'GARUDA_CONNECTION_START_BUNDLE',
+                'model_sha256s': ([r['checkpoint_sha256'] for r in self.connection_start.rows]
+                                   if self.connection_start is not None else []),
+                'automatic_containment': False,
+                'live_sensor_availability_certified': False,
+                'precompromise_certified': False,
+            },
             'runtime_architecture': {
                 'risk_response_runtime': 'legacy pinned checkpoint; risk/response compatibility',
                 'state_forecast_runtime': 'V116+V118+V122 runtime qualified by V123 fresh external PASS',

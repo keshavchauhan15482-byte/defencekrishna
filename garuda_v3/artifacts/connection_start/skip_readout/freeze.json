@@ -1,0 +1,2298 @@
+{
+  "protocol_sha256": "69935d050e30b0cf004962329e2f61798bc2c68bdd5b3a41f9cd82d0250f1933",
+  "frozen_at_utc_epoch": 1790918827.9255185,
+  "test_records_parsed": false,
+  "original_backbone_freeze_sha256": "861c93072bdbae8ccf9d0ebb592206af749c16a3396434ca0ad5bc812202f9c3",
+  "models": [
+    {
+      "architecture": "lstm",
+      "seed": 42,
+      "checkpoint": "lstm_seed42.npz",
+      "checkpoint_sha256": "8bbaa105954c204bc8aade1a631ce5ea4d3426de324f7b2cec8b3c752d83eb9c",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.038539609894535636,
+      "state_epoch_validation_mse": [
+        0.052668899535806855,
+        0.04987331253339975,
+        0.04289341122219849,
+        0.040384104907569406,
+        0.039845589189924056,
+        0.039557513273131784,
+        0.03926324115183783,
+        0.03913906087593828,
+        0.03880001250259479,
+        0.038539609894535636
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.866104517778233,
+          "b": 6.766816586948204
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3489126710661092,
+          "b": 11.387411852195104
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.9359667742712204,
+          "b": 7.420462980563445
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3241111022883563,
+          "b": 11.696638654679576
+        }
+      ],
+      "risk_thresholds": [
+        0.9396570880825292,
+        0.9892748825239112,
+        0.9547272679227238,
+        0.9786424350070458
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.2,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.038539609894535636,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.3104025624433179,
+        "paired_source_day_bootstrap_95": [
+          0.2856776273029757,
+          0.31876712143094704
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.05200303804958088,
+          0.04561739265736231,
+          0.025068717393048,
+          0.03123677836686537
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.9900924300609556,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 52,
+        "fp": 25,
+        "fn": 612,
+        "tn": 2564,
+        "precision": 0.6753246753246753,
+        "recall": 0.0783132530120482,
+        "fpr": 0.009656237929702587,
+        "f1": 0.14035087719298245,
+        "recall_wilson_95": [
+          0.060218580924617106,
+          0.10125923058038647
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "skip_checkpoint": "lstm_seed42_skip.npz",
+      "skip_checkpoint_sha256": "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+      "risk_readout_type": "observed_history_skip_with_validation_selected_rollouts",
+      "risk_readout_kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ],
+      "skip_validation_candidates": [
+        {
+          "history_skip": {
+            "brier": 0.1297815468577488,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.1511128444808748,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.0967615010349537,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.15123160034687297,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.12641748886528212,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.1494536070662057,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.10990891030003944,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 38,
+              "fp": 26,
+              "fn": 608,
+              "tn": 2590,
+              "precision": 0.59375,
+              "recall": 0.058823529411764705,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10704225352112676,
+              "recall_wilson_95": [
+                0.04315352614693707,
+                0.0797096454321062
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14936284325513594,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 37,
+              "fp": 26,
+              "fn": 609,
+              "tn": 2590,
+              "precision": 0.5873015873015873,
+              "recall": 0.05727554179566564,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10437235543018336,
+              "recall_wilson_95": [
+                0.041835987706598764,
+                0.07794951079026571
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        }
+      ],
+      "skip_policies": [
+        {
+          "threshold": 0.9396570880825292,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9892748825239112,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9547272679227238,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9786424350070458,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        }
+      ]
+    },
+    {
+      "architecture": "lstm",
+      "seed": 43,
+      "checkpoint": "lstm_seed43.npz",
+      "checkpoint_sha256": "712e6add387d4861643e39a6cc4e34dfd3a03a86b637835d8dcc8e865b894ced",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.03941225514281173,
+      "state_epoch_validation_mse": [
+        0.05293711692023385,
+        0.05316146993163922,
+        0.05035321946545309,
+        0.04516351670842394,
+        0.0416186918030589,
+        0.04113195569443752,
+        0.041174175805898654,
+        0.03988679607602328,
+        0.03979794501199358,
+        0.03941225514281173
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.866104517778233,
+          "b": 6.766816586948204
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3489126710661092,
+          "b": 11.387411852195104
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.9359667742712204,
+          "b": 7.420462980563445
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3241111022883563,
+          "b": 11.696638654679576
+        }
+      ],
+      "risk_thresholds": [
+        0.9396570880825292,
+        0.9892748825239112,
+        0.9547272679227238,
+        0.9786424350070458
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.03941225514281173,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.29478813539659965,
+        "paired_source_day_bootstrap_95": [
+          0.2668459812693184,
+          0.3042530906551596
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.05254172405746967,
+          0.0460476662144658,
+          0.025345171297981153,
+          0.03347559869837571
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.9900924300609556,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 52,
+        "fp": 25,
+        "fn": 612,
+        "tn": 2564,
+        "precision": 0.6753246753246753,
+        "recall": 0.0783132530120482,
+        "fpr": 0.009656237929702587,
+        "f1": 0.14035087719298245,
+        "recall_wilson_95": [
+          0.060218580924617106,
+          0.10125923058038647
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "skip_checkpoint": "lstm_seed43_skip.npz",
+      "skip_checkpoint_sha256": "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+      "risk_readout_type": "observed_history_skip_with_validation_selected_rollouts",
+      "risk_readout_kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ],
+      "skip_validation_candidates": [
+        {
+          "history_skip": {
+            "brier": 0.1297815468577488,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.1474567398643858,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.0967615010349537,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14915121353998412,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.12641748886528212,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14852549008853053,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.10990891030003944,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 38,
+              "fp": 26,
+              "fn": 608,
+              "tn": 2590,
+              "precision": 0.59375,
+              "recall": 0.058823529411764705,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10704225352112676,
+              "recall_wilson_95": [
+                0.04315352614693707,
+                0.0797096454321062
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.1490228093345079,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 37,
+              "fp": 26,
+              "fn": 609,
+              "tn": 2590,
+              "precision": 0.5873015873015873,
+              "recall": 0.05727554179566564,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10437235543018336,
+              "recall_wilson_95": [
+                0.041835987706598764,
+                0.07794951079026571
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        }
+      ],
+      "skip_policies": [
+        {
+          "threshold": 0.9396570880825292,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9892748825239112,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9547272679227238,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9786424350070458,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        }
+      ]
+    },
+    {
+      "architecture": "lstm",
+      "seed": 44,
+      "checkpoint": "lstm_seed44.npz",
+      "checkpoint_sha256": "502401b9cf744b59cc6609eae9e32c6c58e47f1803e7246cfbec7af59a4c59e1",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.03964311307048803,
+      "state_epoch_validation_mse": [
+        0.05268565805291798,
+        0.053086638808879795,
+        0.050814891137746974,
+        0.04619783045512434,
+        0.041655462334916536,
+        0.041013749686798176,
+        0.04074067928464693,
+        0.040341214435263194,
+        0.04009445498032871,
+        0.03964311307048803
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.866104517778233,
+          "b": 6.766816586948204
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3489126710661092,
+          "b": 11.387411852195104
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.9359667742712204,
+          "b": 7.420462980563445
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3241111022883563,
+          "b": 11.696638654679576
+        }
+      ],
+      "risk_thresholds": [
+        0.9396570880825292,
+        0.9892748825239112,
+        0.9547272679227238,
+        0.9786424350070458
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.03964311307048803,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.29065734539117727,
+        "paired_source_day_bootstrap_95": [
+          0.27073699140674146,
+          0.29909186432023693
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.052849148845468895,
+          0.046635223033599016,
+          0.026191066095443947,
+          0.032763178841165794
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.9900924300609556,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 52,
+        "fp": 25,
+        "fn": 612,
+        "tn": 2564,
+        "precision": 0.6753246753246753,
+        "recall": 0.0783132530120482,
+        "fpr": 0.009656237929702587,
+        "f1": 0.14035087719298245,
+        "recall_wilson_95": [
+          0.060218580924617106,
+          0.10125923058038647
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "skip_checkpoint": "lstm_seed44_skip.npz",
+      "skip_checkpoint_sha256": "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+      "risk_readout_type": "observed_history_skip_with_validation_selected_rollouts",
+      "risk_readout_kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ],
+      "skip_validation_candidates": [
+        {
+          "history_skip": {
+            "brier": 0.1297815468577488,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.1525984917774697,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.0967615010349537,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14714829834394352,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.12641748886528212,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14742813405160016,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.10990891030003944,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 38,
+              "fp": 26,
+              "fn": 608,
+              "tn": 2590,
+              "precision": 0.59375,
+              "recall": 0.058823529411764705,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10704225352112676,
+              "recall_wilson_95": [
+                0.04315352614693707,
+                0.0797096454321062
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.1474298149464457,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 37,
+              "fp": 26,
+              "fn": 609,
+              "tn": 2590,
+              "precision": 0.5873015873015873,
+              "recall": 0.05727554179566564,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10437235543018336,
+              "recall_wilson_95": [
+                0.041835987706598764,
+                0.07794951079026571
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        }
+      ],
+      "skip_policies": [
+        {
+          "threshold": 0.9396570880825292,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9892748825239112,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9547272679227238,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9786424350070458,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        }
+      ]
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 42,
+      "checkpoint": "gnn_lstm_seed42.npz",
+      "checkpoint_sha256": "c990cc9271f64c0c50a1c63231a28a62549e573fc6bf635fd945e75a768b208e",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.0391615467816297,
+      "state_epoch_validation_mse": [
+        0.05272924016333485,
+        0.05197366261375896,
+        0.04903347097264589,
+        0.04422278948404931,
+        0.04110642762453795,
+        0.040291252915619254,
+        0.03992146980368027,
+        0.04019557451328548,
+        0.03939162028067255,
+        0.0391615467816297
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.866104517778233,
+          "b": 6.766816586948204
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3489126710661092,
+          "b": 11.387411852195104
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.9359667742712204,
+          "b": 7.420462980563445
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3241111022883563,
+          "b": 11.696638654679576
+        }
+      ],
+      "risk_thresholds": [
+        0.9396570880825292,
+        0.9892748825239112,
+        0.9547272679227238,
+        0.9786424350070458
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.0391615467816297,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.29927411343110166,
+        "paired_source_day_bootstrap_95": [
+          0.274675222758472,
+          0.3093981586536743
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.05224559552283196,
+          0.04640980315807036,
+          0.02563490123789697,
+          0.03214752505996489
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.9900924300609556,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 52,
+        "fp": 25,
+        "fn": 612,
+        "tn": 2564,
+        "precision": 0.6753246753246753,
+        "recall": 0.0783132530120482,
+        "fpr": 0.009656237929702587,
+        "f1": 0.14035087719298245,
+        "recall_wilson_95": [
+          0.060218580924617106,
+          0.10125923058038647
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "skip_checkpoint": "gnn_lstm_seed42_skip.npz",
+      "skip_checkpoint_sha256": "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+      "risk_readout_type": "observed_history_skip_with_validation_selected_rollouts",
+      "risk_readout_kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ],
+      "skip_validation_candidates": [
+        {
+          "history_skip": {
+            "brier": 0.1297815468577488,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14709137775189268,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.0967615010349537,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14680720164968922,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.12641748886528212,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14725385071724834,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.10990891030003944,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 38,
+              "fp": 26,
+              "fn": 608,
+              "tn": 2590,
+              "precision": 0.59375,
+              "recall": 0.058823529411764705,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10704225352112676,
+              "recall_wilson_95": [
+                0.04315352614693707,
+                0.0797096454321062
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14858665573665802,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 37,
+              "fp": 26,
+              "fn": 609,
+              "tn": 2590,
+              "precision": 0.5873015873015873,
+              "recall": 0.05727554179566564,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10437235543018336,
+              "recall_wilson_95": [
+                0.041835987706598764,
+                0.07794951079026571
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        }
+      ],
+      "skip_policies": [
+        {
+          "threshold": 0.9396570880825292,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9892748825239112,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9547272679227238,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9786424350070458,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        }
+      ]
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 43,
+      "checkpoint": "gnn_lstm_seed43.npz",
+      "checkpoint_sha256": "e0bafe4b797585eddb75371e01ffa4a6cbd3c3cfa5d471bc300ad1870c474b91",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.039934093385957006,
+      "state_epoch_validation_mse": [
+        0.05302171748921887,
+        0.05365210467204781,
+        0.05286303385297212,
+        0.050918236180723345,
+        0.047351425883447255,
+        0.04250033140167892,
+        0.041984817780516964,
+        0.04069546270347172,
+        0.04093731777592593,
+        0.039934093385957006
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.866104517778233,
+          "b": 6.766816586948204
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3489126710661092,
+          "b": 11.387411852195104
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.9359667742712204,
+          "b": 7.420462980563445
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3241111022883563,
+          "b": 11.696638654679576
+        }
+      ],
+      "risk_thresholds": [
+        0.9396570880825292,
+        0.9892748825239112,
+        0.9547272679227238,
+        0.9786424350070458
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.1,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.039934093385957006,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.28545077271242036,
+        "paired_source_day_bootstrap_95": [
+          0.24636430757852,
+          0.2990633050220848
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.052883791930798466,
+          0.04675142529984595,
+          0.025806940226623554,
+          0.03403540961512899
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.9900924300609556,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 52,
+        "fp": 25,
+        "fn": 612,
+        "tn": 2564,
+        "precision": 0.6753246753246753,
+        "recall": 0.0783132530120482,
+        "fpr": 0.009656237929702587,
+        "f1": 0.14035087719298245,
+        "recall_wilson_95": [
+          0.060218580924617106,
+          0.10125923058038647
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "skip_checkpoint": "gnn_lstm_seed43_skip.npz",
+      "skip_checkpoint_sha256": "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+      "risk_readout_type": "observed_history_skip_with_validation_selected_rollouts",
+      "risk_readout_kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ],
+      "skip_validation_candidates": [
+        {
+          "history_skip": {
+            "brier": 0.1297815468577488,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14498466360978093,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.0967615010349537,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14698163733222627,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.12641748886528212,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.1471064262995425,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.10990891030003944,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 38,
+              "fp": 26,
+              "fn": 608,
+              "tn": 2590,
+              "precision": 0.59375,
+              "recall": 0.058823529411764705,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10704225352112676,
+              "recall_wilson_95": [
+                0.04315352614693707,
+                0.0797096454321062
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14982780210209623,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 37,
+              "fp": 26,
+              "fn": 609,
+              "tn": 2590,
+              "precision": 0.5873015873015873,
+              "recall": 0.05727554179566564,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10437235543018336,
+              "recall_wilson_95": [
+                0.041835987706598764,
+                0.07794951079026571
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        }
+      ],
+      "skip_policies": [
+        {
+          "threshold": 0.9396570880825292,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9892748825239112,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9547272679227238,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9786424350070458,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        }
+      ]
+    },
+    {
+      "architecture": "gnn_lstm",
+      "seed": 44,
+      "checkpoint": "gnn_lstm_seed44.npz",
+      "checkpoint_sha256": "93834ada25e6ac3722728545731d0677e9019acedf3d069b6ac900650f1af954",
+      "state_validation_selected": true,
+      "state_validation_mse": 0.03898539732638727,
+      "state_epoch_validation_mse": [
+        0.05271322575394457,
+        0.045468466246210516,
+        0.0416771701712536,
+        0.04053172518174926,
+        0.040073422579577286,
+        0.0399132415514629,
+        0.039998168877529765,
+        0.03947800503112611,
+        0.03898539732638727,
+        0.039261121061201686
+      ],
+      "heads_leave_state_unchanged": true,
+      "stage_supported_in_development": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "risk_calibration": [
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.866104517778233,
+          "b": 6.766816586948204
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3489126710661092,
+          "b": 11.387411852195104
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 0.9359667742712204,
+          "b": 7.420462980563445
+        },
+        {
+          "status": "VALIDATION_ONLY_PLATT",
+          "a": 1.3241111022883563,
+          "b": 11.696638654679576
+        }
+      ],
+      "risk_thresholds": [
+        0.9396570880825292,
+        0.9892748825239112,
+        0.9547272679227238,
+        0.9786424350070458
+      ],
+      "risk_threshold_status": [
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR",
+        "VALIDATION_ONLY_1_PERCENT_FPR"
+      ],
+      "stage_thresholds": [
+        0.05,
+        1.000001,
+        1.000001,
+        1.000001,
+        1.000001
+      ],
+      "fit_sequences": 4645,
+      "state_validation": {
+        "mse": 0.03898539732638727,
+        "persistence_mse": 0.055887112967074846,
+        "relative_improvement": 0.3024259931022918,
+        "paired_source_day_bootstrap_95": [
+          0.25067334023751425,
+          0.318912682241039
+        ],
+        "source_days": 10,
+        "sequences": 3290,
+        "per_horizon_mse": [
+          0.05185736480703578,
+          0.046495688742680265,
+          0.02588113918649321,
+          0.03152461844233192
+        ],
+        "gate_passed": true
+      },
+      "any_horizon_threshold": 0.9900924300609556,
+      "any_horizon_threshold_status": "VALIDATION_ONLY_1_PERCENT_FPR",
+      "feature_order": [
+        "connection_count_log",
+        "tcp_start_fraction",
+        "udp_start_fraction",
+        "icmp_start_fraction",
+        "minimum_endpoint_port_mean_scaled",
+        "unique_minimum_endpoint_port_fraction",
+        "unique_endpoint_one_fraction",
+        "unique_endpoint_two_fraction",
+        "start_iat_mean_log",
+        "start_iat_std_log",
+        "sequential_minimum_port_fraction",
+        "random_minimum_port_fraction",
+        "same_peer_start_fraction",
+        "ssh_start_fraction",
+        "dns_start_fraction",
+        "web_start_fraction",
+        "smb_start_fraction",
+        "ftp_start_fraction",
+        "active"
+      ],
+      "model_schema": "garuda-connection-start-v1",
+      "future_target": "native-labelled connection starts, not successful compromise",
+      "any_horizon_validation": {
+        "positive_support": 664,
+        "negative_support": 2589,
+        "unknown_support": 37,
+        "tp": 52,
+        "fp": 25,
+        "fn": 612,
+        "tn": 2564,
+        "precision": 0.6753246753246753,
+        "recall": 0.0783132530120482,
+        "fpr": 0.009656237929702587,
+        "f1": 0.14035087719298245,
+        "recall_wilson_95": [
+          0.060218580924617106,
+          0.10125923058038647
+        ],
+        "fpr_wilson_95": [
+          0.00654913747114504,
+          0.014216342379224534
+        ],
+        "attack_performance_status": "MEASURABLE",
+        "gate_passed": false
+      },
+      "skip_checkpoint": "gnn_lstm_seed44_skip.npz",
+      "skip_checkpoint_sha256": "4d6d3c42aade803d8271b39d283c186efd99c1f202139561ccb040a78dd235ac",
+      "risk_readout_type": "observed_history_skip_with_validation_selected_rollouts",
+      "risk_readout_kinds": [
+        "history_skip",
+        "history_skip",
+        "history_skip",
+        "history_skip"
+      ],
+      "skip_validation_candidates": [
+        {
+          "history_skip": {
+            "brier": 0.1297815468577488,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14791388682316434,
+            "metrics": {
+              "positive_support": 658,
+              "negative_support": 2619,
+              "unknown_support": 13,
+              "tp": 46,
+              "fp": 26,
+              "fn": 612,
+              "tn": 2593,
+              "precision": 0.6388888888888888,
+              "recall": 0.06990881458966565,
+              "fpr": 0.009927453226422299,
+              "f1": 0.12602739726027398,
+              "recall_wilson_95": [
+                0.052818407737338896,
+                0.09199207259511527
+              ],
+              "fpr_wilson_95": [
+                0.006783728775515595,
+                0.014506767760760177
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.0967615010349537,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.1498151355797477,
+            "metrics": {
+              "positive_support": 653,
+              "negative_support": 2613,
+              "unknown_support": 24,
+              "tp": 42,
+              "fp": 26,
+              "fn": 611,
+              "tn": 2587,
+              "precision": 0.6176470588235294,
+              "recall": 0.06431852986217458,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11650485436893204,
+              "recall_wilson_95": [
+                0.047933322893404615,
+                0.0857999851065759
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.12641748886528212,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14910647664863255,
+            "metrics": {
+              "positive_support": 650,
+              "negative_support": 2613,
+              "unknown_support": 27,
+              "tp": 40,
+              "fp": 26,
+              "fn": 610,
+              "tn": 2587,
+              "precision": 0.6060606060606061,
+              "recall": 0.06153846153846154,
+              "fpr": 0.009950248756218905,
+              "f1": 0.11173184357541899,
+              "recall_wilson_95": [
+                0.04551484585617482,
+                0.08271437663441006
+              ],
+              "fpr_wilson_95": [
+                0.00679932573617888,
+                0.014539986509545126
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        },
+        {
+          "history_skip": {
+            "brier": 0.10990891030003944,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 38,
+              "fp": 26,
+              "fn": 608,
+              "tn": 2590,
+              "precision": 0.59375,
+              "recall": 0.058823529411764705,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10704225352112676,
+              "recall_wilson_95": [
+                0.04315352614693707,
+                0.0797096454321062
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          },
+          "rollout_skip": {
+            "brier": 0.14960798294740732,
+            "metrics": {
+              "positive_support": 646,
+              "negative_support": 2616,
+              "unknown_support": 28,
+              "tp": 37,
+              "fp": 26,
+              "fn": 609,
+              "tn": 2590,
+              "precision": 0.5873015873015873,
+              "recall": 0.05727554179566564,
+              "fpr": 0.009938837920489297,
+              "f1": 0.10437235543018336,
+              "recall_wilson_95": [
+                0.041835987706598764,
+                0.07794951079026571
+              ],
+              "fpr_wilson_95": [
+                0.006791518301089016,
+                0.014523358140295832
+              ],
+              "attack_performance_status": "MEASURABLE",
+              "gate_passed": false
+            }
+          }
+        }
+      ],
+      "skip_policies": [
+        {
+          "threshold": 0.9396570880825292,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9892748825239112,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9547272679227238,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        },
+        {
+          "threshold": 0.9786424350070458,
+          "status": "VALIDATION_ONLY_1_PERCENT_FPR"
+        }
+      ]
+    }
+  ],
+  "baseline": {
+    "checkpoint": "logistic_frozen.npz",
+    "checkpoint_sha256": "a6171523c99cfa760d031c76592696ee79afacbe9cf5048e6c01c5b0ffbed637"
+  }
+}

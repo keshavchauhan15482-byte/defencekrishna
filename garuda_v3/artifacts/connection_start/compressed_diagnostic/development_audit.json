@@ -1,0 +1,339 @@
+{
+  "train": [
+    {
+      "rows": 255443,
+      "duplicate_label_copies_merged": 3826,
+      "unique_start_events": 251617,
+      "observed_windows": 5532,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 0,
+        "1": 5532
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 1413,
+        "Initial Access": 2103,
+        "Lateral Movement": 0,
+        "Command and Control": 0,
+        "Exfiltration": 50
+      },
+      "id": "UWF-ZeekData24_2024-02-25",
+      "sha256": "4d833656b31d4d360691c2178c5c4d1b3c31f01db12c59f6779a08d55e5f0cc7",
+      "sequences": 574,
+      "available_sequences": 574,
+      "future_risk_counts": {
+        "-1": 1387,
+        "0": 0,
+        "1": 909
+      },
+      "missing_observation_buckets": 27568,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 0.39590592334494773,
+      "clean_future_positive_sequences": 0
+    },
+    {
+      "rows": 50444,
+      "duplicate_label_copies_merged": 1049,
+      "unique_start_events": 49395,
+      "observed_windows": 1351,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 0,
+        "1": 1351
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 377,
+        "Initial Access": 560,
+        "Lateral Movement": 0,
+        "Command and Control": 0,
+        "Exfiltration": 30
+      },
+      "id": "UWF-ZeekData24_2024-03-03",
+      "sha256": "5a085f2749556f2c711af6f9c2bca9d43b3f19bb43696ef9194869f4ea69eb21",
+      "sequences": 83,
+      "available_sequences": 83,
+      "future_risk_counts": {
+        "-1": 217,
+        "0": 0,
+        "1": 115
+      },
+      "missing_observation_buckets": 7287,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 0.3463855421686747,
+      "clean_future_positive_sequences": 0
+    },
+    {
+      "rows": 54203,
+      "duplicate_label_copies_merged": 22,
+      "unique_start_events": 54181,
+      "observed_windows": 131,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 0,
+        "1": 131
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 70,
+        "Initial Access": 0,
+        "Lateral Movement": 4,
+        "Command and Control": 0,
+        "Exfiltration": 0
+      },
+      "id": "UWF-ZeekDataFall24-2_2024-10-27",
+      "sha256": "32317f64d899ba9f4f792b45231e100d4e191615bc6ca1f541f9663ce477bea0",
+      "sequences": 88,
+      "available_sequences": 88,
+      "future_risk_counts": {
+        "-1": 81,
+        "0": 0,
+        "1": 271
+      },
+      "missing_observation_buckets": 17670,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 0.7698863636363636,
+      "clean_future_positive_sequences": 0
+    },
+    {
+      "rows": 365783,
+      "duplicate_label_copies_merged": 176096,
+      "unique_start_events": 189687,
+      "observed_windows": 12591,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 12591,
+        "1": 0
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 0,
+        "Initial Access": 0,
+        "Lateral Movement": 0,
+        "Command and Control": 0,
+        "Exfiltration": 0
+      },
+      "id": "UWF-ZeekData22_2021-12-12",
+      "sha256": "a4158d14b8bca292a4a68e7171e5e1505f4170e83a5abf6d400fb6f439bc3b3d",
+      "sequences": 1258,
+      "available_sequences": 12580,
+      "future_risk_counts": {
+        "-1": 1,
+        "0": 5031,
+        "1": 0
+      },
+      "missing_observation_buckets": 4,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 0.9998012718600954,
+      "clean_future_positive_sequences": 0
+    },
+    {
+      "rows": 1694348,
+      "duplicate_label_copies_merged": 815503,
+      "unique_start_events": 878845,
+      "observed_windows": 58276,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 58276,
+        "1": 0
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 0,
+        "Initial Access": 0,
+        "Lateral Movement": 0,
+        "Command and Control": 0,
+        "Exfiltration": 0
+      },
+      "id": "UWF-ZeekData22_2021-12-19",
+      "sha256": "58649166d828161d860ff5ef2c2370e0e4bc63a8b5855c5a8faea4d3ca4c8f0a",
+      "sequences": 1325,
+      "available_sequences": 58265,
+      "future_risk_counts": {
+        "-1": 4,
+        "0": 5296,
+        "1": 0
+      },
+      "missing_observation_buckets": 43,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 0.999245283018868,
+      "clean_future_positive_sequences": 0
+    },
+    {
+      "rows": 2487421,
+      "duplicate_label_copies_merged": 1197565,
+      "unique_start_events": 1289856,
+      "observed_windows": 57926,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 57926,
+        "1": 0
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 0,
+        "Initial Access": 0,
+        "Lateral Movement": 0,
+        "Command and Control": 0,
+        "Exfiltration": 0
+      },
+      "id": "UWF-ZeekData22_2022-01-09",
+      "sha256": "91082b85e6be170e5bbd37f23c40c6c992a3c2d098f78a638d5cf604f9370fde",
+      "sequences": 1317,
+      "available_sequences": 57911,
+      "future_risk_counts": {
+        "-1": 3,
+        "0": 5265,
+        "1": 0
+      },
+      "missing_observation_buckets": 393,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 0.9994305239179955,
+      "clean_future_positive_sequences": 0
+    }
+  ],
+  "validation": [
+    {
+      "rows": 16618,
+      "duplicate_label_copies_merged": 8309,
+      "unique_start_events": 8309,
+      "observed_windows": 12,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 0,
+        "1": 12
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 0,
+        "Initial Access": 0,
+        "Lateral Movement": 0,
+        "Command and Control": 0,
+        "Exfiltration": 0
+      },
+      "id": "UWF-ZeekDataFall24-2_2024-11-10",
+      "sha256": "a5d91707f5eda89ed93ec208d937809a9b22118eea7a1d13de710f15f5f98b99",
+      "sequences": 1,
+      "available_sequences": 1,
+      "future_risk_counts": {
+        "-1": 0,
+        "0": 0,
+        "1": 4
+      },
+      "missing_observation_buckets": 0,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 1.0,
+      "clean_future_positive_sequences": 0
+    },
+    {
+      "rows": 2320853,
+      "duplicate_label_copies_merged": 1117171,
+      "unique_start_events": 1203682,
+      "observed_windows": 57769,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 57769,
+        "1": 0
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 0,
+        "Initial Access": 0,
+        "Lateral Movement": 0,
+        "Command and Control": 0,
+        "Exfiltration": 0
+      },
+      "id": "UWF-ZeekData22_2022-01-02",
+      "sha256": "ce3f7e94cc4c41ea62d8faf5f6e30ed94443217b1d0a45961928f1628a8e0acd",
+      "sequences": 2626,
+      "available_sequences": 57754,
+      "future_risk_counts": {
+        "-1": 43,
+        "0": 10461,
+        "1": 0
+      },
+      "missing_observation_buckets": 550,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 0.9959063214013709,
+      "clean_future_positive_sequences": 0
+    },
+    {
+      "rows": 9280806,
+      "duplicate_label_copies_merged": 9242475,
+      "unique_start_events": 38331,
+      "observed_windows": 734,
+      "invalid_only_windows_removed": 0,
+      "contaminated_windows_removed": 0,
+      "empty_windows_imputed": 0,
+      "finished_flow_statistics_used": false,
+      "record_export_availability_certified": false,
+      "risk_window_counts": {
+        "-1": 0,
+        "0": 0,
+        "1": 734
+      },
+      "native_stage_windows": {
+        "Reconnaissance": 730,
+        "Initial Access": 0,
+        "Lateral Movement": 0,
+        "Command and Control": 0,
+        "Exfiltration": 0
+      },
+      "id": "UWF-ZeekData22_2022-02-06",
+      "sha256": "5e5dcd03421f0f28fa256e83e4dc75d45bac1c916d2aab833b7c7b5ab1cc5486",
+      "sequences": 663,
+      "available_sequences": 663,
+      "future_risk_counts": {
+        "-1": 49,
+        "0": 0,
+        "1": 2603
+      },
+      "missing_observation_buckets": 20982,
+      "minimum_observed_history_windows": 4,
+      "origin_window_must_be_observed": true,
+      "future_state_observed_fraction": 0.9815233785822021,
+      "clean_future_positive_sequences": 0
+    }
+  ]
+}
