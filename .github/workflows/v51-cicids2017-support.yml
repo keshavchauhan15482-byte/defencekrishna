@@ -1,0 +1,82 @@
+name: V51 CICIDS2017 campaign support audit
+
+on:
+  pull_request:
+    paths:
+      - 'garuda_v3/v51_cicids2017_support.py'
+      - 'garuda_v3/tests/test_v51_cicids2017_support.py'
+      - '.github/workflows/v51-cicids2017-support.yml'
+      - 'V51_CICIDS2017_SUPPORT.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  support-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install support-audit dependencies
+        run: python -m pip install 'numpy<2.1' 'pandas<2.3' 'kagglehub<0.4'
+      - name: Compile and test V51
+        run: |
+          python -m compileall -q garuda_v3/v51_cicids2017_support.py
+          python -m unittest garuda_v3.tests.test_v51_cicids2017_support -v
+      - name: Download CIC-IDS2017 labeled flow campaigns
+        run: |
+          mkdir -p datasets/v51/csv
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          import pandas as pd
+          import kagglehub
+          dataset='chethuhn/network-intrusion-dataset'
+          root=Path(kagglehub.dataset_download(dataset))
+          selected=[]; attempts=[]
+          def norm(x): return ''.join(ch.lower() for ch in str(x) if ch.isalnum())
+          for p in sorted(root.rglob('*.csv')):
+              try: cols=list(pd.read_csv(p,nrows=0).columns)
+              except Exception as exc:
+                  attempts.append({'file':str(p),'error':str(exc)}); continue
+              names={norm(c) for c in cols}
+              ok='timestamp' in names and 'label' in names
+              attempts.append({'file':p.name,'eligible':ok,'columns':cols[:8]})
+              if ok:
+                  dst=Path('datasets/v51/csv')/p.name
+                  shutil.copyfile(p,dst); selected.append(str(dst))
+          if len(selected) < 7:
+              raise RuntimeError('Expected >=7 CICIDS2017 labeled campaign CSVs; selected='+repr(selected)+' attempts='+json.dumps(attempts))
+          Path('datasets/v51/files.txt').write_text('\n'.join(selected)+'\n')
+          print(json.dumps({'dataset':dataset,'files':selected},indent=2))
+          PY
+      - name: Run whole-campaign support audit
+        run: |
+          mapfile -t FILES < datasets/v51/files.txt
+          python -m garuda_v3.v51_cicids2017_support \
+            --csv "${FILES[@]}" \
+            --output garuda_v3/artifacts/v51_cicids2017_support \
+            --min-positive 20 --min-negative 100 --min-clean-onset 1 --min-dev 1000
+      - name: Print compact result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('garuda_v3/artifacts/v51_cicids2017_support/support.json').read_text())
+          print(json.dumps({'eligible':d['eligible_family_campaign_pairs'],'model_training_permitted':d['model_training_permitted'],'support':d['support']},indent=2))
+          PY
+      - name: Upload V51 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v51-cicids2017-support-evidence
+          if-no-files-found: error
+          retention-days: 14
+          path: garuda_v3/artifacts/v51_cicids2017_support/support.json
