@@ -1,0 +1,98 @@
+name: V53 offline unknown-attack early-warning stress
+
+on:
+  push:
+    branches: [v53-offline-unknown-attack-stress]
+    paths:
+      - 'garuda_v3/v53_unknown_attack_stress.py'
+      - 'garuda_v3/tests/test_v53_unknown_attack_stress.py'
+      - '.github/workflows/v53-unknown-attack-stress.yml'
+      - 'V53_UNKNOWN_ATTACK_STRESS.md'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'garuda_v3/v53_unknown_attack_stress.py'
+      - 'garuda_v3/tests/test_v53_unknown_attack_stress.py'
+      - '.github/workflows/v53-unknown-attack-stress.yml'
+      - 'V53_UNKNOWN_ATTACK_STRESS.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-stress:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research dependencies
+        run: |
+          python -m pip install 'numpy<2.1' 'pandas<2.3' 'scikit-learn<1.7' 'kagglehub<0.4'
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+      - name: Compile and test V53 safety/evaluation logic
+        run: |
+          python -m compileall -q garuda_v3/v53_unknown_attack_stress.py
+          python -m unittest garuda_v3.tests.test_v53_unknown_attack_stress -v
+      - name: Download public X-IIoTID source for offline replay
+        run: |
+          mkdir -p datasets/v53
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          import pandas as pd
+          import kagglehub
+
+          root = Path(kagglehub.dataset_download('munaalhawawreh/xiiotid-iiot-intrusion-dataset'))
+          matches = []
+          for p in root.rglob('*.csv'):
+              try:
+                  cols = pd.read_csv(p, nrows=0).columns
+              except Exception:
+                  continue
+              normalized = {''.join(ch.lower() for ch in str(c) if ch.isalnum()) for c in cols}
+              if {'class1', 'class2', 'class3'} <= normalized:
+                  matches.append(p)
+          if len(matches) != 1:
+              raise RuntimeError(f'Expected exactly one X-IIoTID CSV; found {matches}')
+          src = matches[0]
+          dst = Path('datasets/v53/XIIoTID.csv')
+          shutil.copyfile(src, dst)
+          print(json.dumps({'destination': str(dst), 'bytes': dst.stat().st_size}))
+          PY
+      - name: Run zero-supervised-exposure multi-family stress test
+        run: |
+          python -m garuda_v3.v53_unknown_attack_stress \
+            --csv datasets/v53/XIIoTID.csv \
+            --output garuda_v3/artifacts/v53 \
+            --seeds 42 43 44 \
+            --epochs 12
+      - name: Print early-warning stress summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path('garuda_v3/artifacts/v53/summary.json').read_text())
+          print(json.dumps({
+              'held_out_families': d['held_out_families'],
+              'missing_requested_families': d['missing_requested_families'],
+              'group_summary': d['group_summary'],
+              'family_summary': d['family_summary'],
+              'lead_time_claim_level': d['lead_time_claim_level'],
+              'verified_compromise_lead_time_supported': d['verified_compromise_lead_time_supported'],
+          }, indent=2))
+          PY
+      - name: Upload V53 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v53-offline-unknown-attack-stress-evidence
+          retention-days: 14
+          if-no-files-found: error
+          path: garuda_v3/artifacts/v53/*.json
