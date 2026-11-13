@@ -19,6 +19,12 @@ def finite_time(value):
     return float(value)
 
 def annotate(data, document):
+    times = np.asarray(data['times'])
+    step = finite_time(data['metadata']['window_seconds'])
+    if step <= 0 or times.ndim != 1 or not np.isfinite(times).all() or np.any(np.diff(times) <= 0):
+        raise ValueError('Positive window size and finite ordered unique graph timestamps required')
+    if np.asarray(data['y']).shape != times.shape or not np.isin(data['y'], [-1,0,1]).all():
+        raise ValueError('Graph risk labels must be aligned binary values or unknown -1')
     if document.get('source_sha256') != data['metadata']['source_sha256']:
         raise ValueError('Annotation source hash does not match capture')
     if not isinstance(document.get('campaign_id'),str) or not document['campaign_id'].strip():
@@ -30,17 +36,16 @@ def annotate(data, document):
     for r in records:
         start=finite_time(r['start']);stop=finite_time(r['end'])
         if start>=stop or start<end: raise ValueError('Overlapping or invalid annotation intervals')
-        if r.get('label') not in (0,1) or not isinstance(r.get('evidence'),str) or not r['evidence'].strip():
+        if isinstance(r.get('label'), bool) or r.get('label') not in (0,1) or not isinstance(r.get('evidence'),str) or not r['evidence'].strip():
             raise ValueError('Binary reviewed label and evidence reference required')
         stages=r.get('stages',{})
-        if not isinstance(stages,dict) or any(k not in STAGES or v not in (0,1) for k,v in stages.items()):
+        if not isinstance(stages,dict) or any(k not in STAGES or isinstance(v,bool) or v not in (0,1) for k,v in stages.items()):
             raise ValueError('Invalid supervised stage label')
         if r['label']==0 and any(stages.values()): raise ValueError('Benign interval cannot contain positive attack stage')
         end=stop
     result={**data,'metadata':dict(data['metadata'])}
     y=np.full(len(data['times']),-1,dtype=np.int8)
     stage_y=np.full((len(y),len(STAGES)),-1,dtype=np.int8)
-    step=data['metadata']['window_seconds']
     for i,t in enumerate(data['times']):
         for r in records:
             if r['start']<=t and t+step<=r['end']:
@@ -59,6 +64,15 @@ def annotate(data, document):
         if not any(r['start']<=time<r['end'] and r['label']==1 for r in records):
             raise ValueError('Compromise time must fall in reviewed malicious coverage')
     result['y']=y;result['stage_y']=stage_y
+    result['metadata']['timeline_supervision'] = {
+        'labelled_windows': int((y >= 0).sum()),
+        'unknown_windows': int((y < 0).sum()),
+        'window_seconds': step,
+        'stage_positive_windows': {name: int((stage_y[:, j] == 1).sum()) for j, name in enumerate(STAGES)},
+        'stage_known_entries': {name: int((stage_y[:, j] >= 0).sum()) for j, name in enumerate(STAGES)},
+        'annotation_used_as_network_feature': False,
+        'source_authenticity': 'Evidence references supplied by reviewer; hashes bind bytes, not publisher authenticity',
+    }
     result['metadata'].update(campaign_id=document['campaign_id'],stages=STAGES,mitre_tactics=MITRE,
         annotation_sha256=hashlib.sha256(json.dumps(document,sort_keys=True).encode()).hexdigest(),
         annotation_intervals=records,incidents=incidents,annotation_status='user supplied evidence; independently verify references')

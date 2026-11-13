@@ -32,6 +32,8 @@ jobs:
         run: npm install --ignore-scripts
       - name: Compile Garuda Python modules
         run: python -m compileall -q garuda_v3
+      - name: Published evidence console regression
+        run: node --test garuda_v3/tests/test_evidence_ui.mjs
       - name: Python Garuda regression
         run: python -m pytest garuda_v3/tests -q
       - name: Bundled PCAP preparation and real state inference
