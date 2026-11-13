@@ -118,6 +118,21 @@ The authoritative judge-facing evidence is [`docs/release/FINAL_SIH_EVIDENCE.md`
 
 ### Evidence boundaries
 
+The same-input V88 comparison includes **all four classification metrics**:
+
+| V88 UNSW-NB15 two-episode macro | Precision | Recall | F1 | FPR |
+|---|---:|---:|---:|---:|
+| Logistic Regression | 51.6380% | 100.0000% | 57.6993% | 11.6544% |
+| Garuda, three seeds | 91.2083% | 98.6772% | 94.7874% | 0.2871% |
+
+Source: [`V88 RESULTS`](docs/release/v88_final_independent_source/RESULTS.md).
+These published episode-macro values are not a new reproduction, stage accuracy,
+or live-runtime metrics. The unified console exposes them at `/bridge/evidence`
+and displays them separately from its internal-holdout benchmark.
+
+For the timeline supervision contract, five-stage accounting and the unresolved
+data gates, read [`Forecast evidence fixes`](docs/release/forecast_evidence_fixes.md).
+
 - No claim of **100% accuracy** or a **universal zero-day detector**.
 - Current timing evidence is lead to **labelled attack-step onset**, not verified successful compromise.
 - Robust unseen-subtype MITRE-stage progression is **not yet release-supported**.

@@ -21,3 +21,30 @@ function boot(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
+
+// Keep the independent-source evidence separate from the reused internal holdout.
+(()=>{
+ async function loadPublishedComparison(){
+  const host=document.getElementById('benchmarks');if(!host)return;
+  const box=document.createElement('section');box.id='published-comparison';
+  const title=document.createElement('h3');title.textContent='Independent-source comparison · recorded V88 evidence';
+  const note=document.createElement('p');note.className='metric-note';
+  note.textContent='Loading the complete matched comparison. These are published experiment metrics, not live network scores.';
+  box.append(title,note);host.append(box);
+  try{
+   const response=await fetch('/bridge/evidence');if(!response.ok)throw Error('Evidence unavailable');
+   const evidence=await response.json();
+   if(evidence.schema!=='published-comparison-v1'||evidence.live_model_metrics!==false)throw Error('Unsupported evidence contract');
+   const table=document.createElement('table'),head=document.createElement('thead'),tr=document.createElement('tr');
+   for(const label of ['Model','Precision','Recall','F1','FPR']){const th=document.createElement('th');th.textContent=label;tr.append(th);}head.append(tr);table.append(head);
+   const body=document.createElement('tbody');
+   for(const [key,label]of [['logistic_regression','Logistic Regression'],['garuda','Garuda · three-seed macro']]){
+    const row=document.createElement('tr'),name=document.createElement('td');name.textContent=label;row.append(name);
+    for(const metric of ['precision','recall','f1','fpr']){const value=evidence.metrics?.[metric]?.[key];if(typeof value!=='number'||!Number.isFinite(value)||value<0||value>1)throw Error('Incomplete evidence metrics');const td=document.createElement('td');td.textContent=(value*100).toFixed(4)+'%';row.append(td);}body.append(row);
+   }
+   table.append(body);const wrap=document.createElement('div');wrap.className='benchmark-table';wrap.append(table);box.append(wrap);
+   note.textContent=evidence.scope+'. Does not establish five-stage forecasting or pre-compromise warning.';
+  }catch(error){note.textContent='Published comparison unavailable. No replacement or estimated metrics shown.';}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadPublishedComparison);else loadPublishedComparison();
+})();

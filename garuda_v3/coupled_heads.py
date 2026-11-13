@@ -13,6 +13,7 @@ import numpy as np
 from .autograd import Adam
 from .latest_state_runtime import LatestStateForecastService, EXPECTED, _sha256
 from .model import GraphWorldModel
+from .evidence_contracts import binary_metrics as counted_metrics, five_stage_report
 from .ps_complete import FEATURES
 from .v101_packet_graph_recovery import HISTORY, HORIZON, MAX_NODES
 from .v115_relative_state_world_model import RAW_SCHEMA
@@ -107,6 +108,10 @@ def validate_manifest(manifest):
         raise ValueError('Backbone development sources must be declared')
     if consumed & identities[2][1]:
         raise ValueError('Final sources were consumed by backbone development')
+    if set(manifest.get('exposed_source_sha256', [])) & identities[2][1]:
+        raise ValueError('Final sources were already exposed during development')
+    if set(manifest.get('exposed_campaign_ids', [])) & identities[2][0]:
+        raise ValueError('Final campaigns were already exposed during development')
 
 
 def attach_heads(backbone, seed):
@@ -186,21 +191,20 @@ def predict(model, data):
 
 
 def binary_metrics(y, scores, threshold):
-    valid = y >= 0; y, scores = y[valid], scores[valid]
-    positive, negative = y == 1, y == 0
-    pred = scores >= threshold
-    tp, fp = int(np.sum(pred & positive)), int(np.sum(pred & negative))
-    p, n = int(positive.sum()), int(negative.sum())
-    precision, recall = tp/max(1, tp+fp), tp/max(1, p)
-    return {'positive_support': p, 'negative_support': n, 'recall': recall,
-        'fpr': fp/max(1, n), 'precision': precision,
-        'f1': 2*precision*recall/max(1e-12, precision+recall),
-        'gate_passed': p >= 30 and n >= 300 and recall >= .8 and fp/max(1, n) <= .01}
+    y, scores = np.asarray(y), np.asarray(scores)
+    if y.shape != scores.shape or y.ndim != 1 or not np.isfinite(scores).all() or np.any((scores < 0) | (scores > 1)) or not np.isfinite(threshold):
+        raise ValueError('Aligned finite probabilities required')
+    result = counted_metrics(y, (scores >= threshold).astype(int))
+    p, n = result['positives'], result['negatives']
+    return {**result, 'positive_support': p, 'negative_support': n,
+        'gate_passed': p >= 30 and n >= 300 and result['recall'] >= .8 and result['fpr'] <= .01}
 
 
 def select_thresholds(y, scores):
     thresholds = []
     for h in range(HORIZON):
+        if not np.any(y[:, h] == 0) or not np.any(y[:, h] == 1):
+            raise ValueError('Validation horizon requires both benign and attack support')
         candidates = np.unique(np.r_[scores[:, h], 1.000001])
         feasible = [(binary_metrics(y[:, h], scores[:, h], float(t)), float(t)) for t in candidates]
         feasible = [(m, t) for m, t in feasible if m['fpr'] <= .01]
@@ -217,6 +221,8 @@ def future_any_target(y):
 
 def select_any_horizon_threshold(y,scores):
     target=future_any_target(y);score=np.asarray(scores).max(1)
+    if not np.any(target == 0) or not np.any(target == 1):
+        raise ValueError('Validation any-horizon policy requires both benign and attack support')
     candidates=np.unique(np.r_[score,1.000001])
     feasible=[(binary_metrics(target,score,float(t)),float(t)) for t in candidates]
     feasible=[(m,t) for m,t in feasible if m['fpr']<=.01]
@@ -281,19 +287,18 @@ def main():
         tr, ts = predict(model, sets['test'])
         risk_report = {str(h+1): {str(f): binary_metrics(sets['test']['risk_y'][family['test']==f, h], tr[family['test']==f, h], thresholds[h]) for f in np.unique(family['test'])} for h in range(HORIZON)}
         sy = sets['test']['stage_y']; sp = ts.argmax(axis=-1)
-        stage_report = {}
-        for i, name in enumerate(STAGES):
-            tp = int(((sp == i) & (sy == i)).sum())
-            actual, predicted = int((sy == i).sum()), int(((sp == i) & (sy >= 0)).sum())
-            precision, recall = tp/max(1, predicted), tp/max(1, actual)
-            stage_report[name] = {'support': actual, 'precision': precision, 'recall': recall, 'f1': 2*precision*recall/max(1e-12,precision+recall)}
+        stage_evaluation = five_stage_report(sy.reshape(-1), sp.reshape(-1), min_support=30)
+        stage_report = stage_evaluation['per_stage']
+        per_horizon_stage = {str(h+1): five_stage_report(sy[:, h], sp[:, h], min_support=30) for h in range(HORIZON)}
         joint_metrics=binary_metrics(future_any_target(sets['test']['risk_y']),tr.max(1),joint_threshold)
-        passed = joint_metrics['gate_passed'] and all(m['gate_passed'] for row in risk_report.values() for m in row.values()) and all(m['support']>=30 and m['recall']>=.8 for m in stage_report.values())
+        passed = joint_metrics['gate_passed'] and all(m['gate_passed'] for row in risk_report.values() for m in row.values()) and all(m['all_five_supported'] for m in per_horizon_stage.values())
         model.save(args.output / f'heads_seed{seed}.npz', {'schema': RAW_SCHEMA, 'base_model_sha256': EXPECTED['model'], 'features': FEATURES, 'risk_head_trained': True, 'stage_head_trained': True, 'shadow_only': True})
         reports.append({'seed': seed, 'checkpoint_sha256': _sha256(args.output / f'heads_seed{seed}.npz'), 'thresholds_validation_only': thresholds,
             'any_horizon_threshold_validation_only':joint_threshold,
             'any_horizon_metrics':binary_metrics(future_any_target(sets['test']['risk_y']),tr.max(1),joint_threshold),
-            'per_family_per_horizon': risk_report, 'per_stage': stage_report, 'gate_passed': passed})
+            'per_family_per_horizon': risk_report, 'per_stage': stage_report,
+            'stage_evaluation': stage_evaluation, 'per_horizon_stage': per_horizon_stage,
+            'stage_support_unit': 'correlated sequence-horizon targets, not independent incidents', 'gate_passed': passed})
     report = {'base_model_sha256': EXPECTED['model'], 'manifest_sha256': _sha256(args.manifest),
         'state_backbone_unchanged': True, 'seeds': reports,
         'all_seed_gates_passed': all(r['gate_passed'] for r in reports),

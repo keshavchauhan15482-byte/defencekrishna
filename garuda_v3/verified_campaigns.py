@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
+import re
 from pathlib import Path
 from typing import Any, Dict, Iterable, List
 
@@ -29,8 +31,8 @@ def sha256_file(path: str | Path) -> str:
 
 
 def _epoch(v: Any, name: str) -> float:
-    if isinstance(v, bool) or not isinstance(v, (int, float)):
-        raise ValueError(f"{name} must be numeric epoch seconds")
+    if isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v):
+        raise ValueError(f"{name} must be finite numeric epoch seconds")
     return float(v)
 
 
@@ -47,7 +49,7 @@ def validate_manifest(m: Dict[str, Any]) -> Dict[str, Any]:
         raise ValueError("Explicit timezone required")
     if not isinstance(m["evidence_source"], str) or len(m["evidence_source"].strip()) < 4:
         raise ValueError("Evidence source required")
-    if not isinstance(m["capture_sha256"], str) or len(m["capture_sha256"]) != 64:
+    if not isinstance(m["capture_sha256"], str) or not re.fullmatch(r'[a-fA-F0-9]{64}', m["capture_sha256"]):
         raise ValueError("capture_sha256 must be a SHA-256 hex digest")
     start, end = _epoch(m["start_epoch"], "start_epoch"), _epoch(m["end_epoch"], "end_epoch")
     if end <= start:
@@ -81,7 +83,11 @@ def validate_manifest(m: Dict[str, Any]) -> Dict[str, Any]:
             raise ValueError("Unsupported event outcome")
         if not isinstance(event.get("evidence"), str) or len(event["evidence"].strip()) < 4:
             raise ValueError("Event requires external evidence")
-        establishes = bool(event.get("establishes_compromise", False))
+        if any(a <= t < b for a, b in intervals):
+            raise ValueError("Attack event conflicts with reviewed benign coverage")
+        establishes = event.get("establishes_compromise", False)
+        if not isinstance(establishes, bool):
+            raise ValueError("establishes_compromise must be boolean")
         if establishes and event.get("outcome") != "success":
             raise ValueError("Compromise can only be established by a successful event")
     return m
@@ -118,7 +124,7 @@ def add_event(m: Dict[str, Any], *, event_id: str, epoch: float, stage: str, out
         "epoch": float(epoch),
         "stage": stage,
         "outcome": outcome,
-        "establishes_compromise": bool(establishes_compromise),
+        "establishes_compromise": establishes_compromise,
         "source_host": source_host,
         "target_host": target_host,
         "evidence": evidence,
@@ -133,10 +139,22 @@ def verified_compromise_epoch(m: Dict[str, Any]) -> float | None:
 
 
 def benign_covers(m: Dict[str, Any], start_epoch: float, end_epoch: float) -> bool:
-    """True only when one explicitly evidenced benign interval covers the full range."""
+    """Require continuous reviewed coverage; adjacent intervals may form a union."""
     validate_manifest(m)
-    a, b = float(start_epoch), float(end_epoch)
-    return any(float(x["start_epoch"]) <= a and float(x["end_epoch"]) >= b for x in m["benign_intervals"])
+    a, b = _epoch(start_epoch, 'coverage start'), _epoch(end_epoch, 'coverage end')
+    if b <= a:
+        raise ValueError('Coverage end must follow start')
+    cursor = a
+    for item in sorted(m['benign_intervals'], key=lambda x: x['start_epoch']):
+        left, right = item['start_epoch'], item['end_epoch']
+        if right <= cursor:
+            continue
+        if left > cursor:
+            return False
+        cursor = right
+        if cursor >= b:
+            return True
+    return False
 
 
 def clean_history_eligible(m: Dict[str, Any], cutoff_epoch: float, history_minutes: int = 8) -> bool:

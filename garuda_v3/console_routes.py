@@ -56,6 +56,9 @@ def handle_console(handler):
                 handler.respond(200, app.integrated_status())
             elif path == '/bridge/response':
                 handler.respond(200, app.response.status())
+            elif path == '/bridge/evidence':
+                from .ps_evidence import published_comparison
+                handler.respond(200, published_comparison())
             elif path == '/bridge/replay':
                 if not app.compute.acquire(False):
                     handler.respond(503, {'error': 'Inference busy'})
