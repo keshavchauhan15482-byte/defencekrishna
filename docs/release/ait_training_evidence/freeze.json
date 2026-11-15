@@ -1,0 +1,11 @@
+{
+  "protocol_sha256": "1c32785c77523e4ed298f03ac184de9a79dbac778042cee128948f4e802e2330",
+  "graph_sha256": {
+    "fox-graph.npz": "314dc36c93a1907843a32f1b8aeabbb93ea690a25b63c3eaa3105ac2a8921f23",
+    "harrison-graph.npz": "eed90319a968e869c025b8bbffa4d7afc2146473a70676a2aa18cf1d27d364c6",
+    "russellmitchell-graph.npz": "36f8b437022ff591c8b727d9293798918379034e3a58cb9b118089049bc90d70"
+  },
+  "scope": "Development cross-campaign diagnostic; not a new final release claim",
+  "model_results_inspected": false,
+  "automatic_containment": false
+}
