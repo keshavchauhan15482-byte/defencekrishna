@@ -105,6 +105,35 @@ incomplete restore startup rejection and low-disk readiness.
    the implementation can self-certify. Fresh forecasting qualification still
    requires untouched campaigns and independently verified incident timestamps.
 
+## Automated Python dependency audit (2026-11-16)
+
+`pip-audit 2.10.1` initially flagged the pinned pytest 8.4.2 against
+CVE-2025-71176 / GHSA-6w46-j5rx-g56g (the response duplicated the same advisory;
+this was one distinct advisory, not two independent vulnerabilities). Pytest is
+test tooling, not a remotely exploitable claim about the Garuda HTTP service.
+Updated the pin to locally tested pytest 9.2.0. CI also creates a private temporary
+root for tests rather than relying solely on a version change in shared `/tmp`.
+The upstream issue discusses residual shared-temporary-directory concerns.
+
+Re-audited both requirement files and resolved Python transitive dependencies:
+**no known vulnerabilities reported by that scan**. Exact inventory is committed
+in `pilot_dependency_audit_20261116.json`. Reproduce with:
+
+```sh
+python -m pip install pip-audit==2.10.1
+python -m pip_audit -r garuda_v3/requirements.txt -r garuda_v3/requirements-pilot.txt --format json
+```
+
+This checks advisory coverage at scan time, not custom-code safety, OS packages,
+Node dependencies, model provenance, absence of zero-days or independent security
+review. Transitive resolution may change on future installs; the report records
+the versions scanned in this run, not a fully hashed deployment lockfile.
+
+Upstream references:
+
+- https://docs.pytest.org/en/latest/changelog.html
+- https://github.com/pytest-dev/pytest/issues/13669
+
 ## Primary implementation references
 
 - https://docs.python.org/3.12/library/sqlite3.html#sqlite3.Connection.backup

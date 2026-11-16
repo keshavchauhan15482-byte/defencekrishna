@@ -35,7 +35,9 @@ jobs:
       - name: Published evidence console regression
         run: node --test garuda_v3/tests/test_evidence_ui.mjs
       - name: Python Garuda regression
-        run: python -m pytest garuda_v3/tests -q
+        run: |
+          task_tmp=$(mktemp -d "$RUNNER_TEMP/krishna-tests.XXXXXX")
+          TMPDIR="$task_tmp" PYTEST_DEBUG_TEMPROOT="$task_tmp" python -m pytest garuda_v3/tests -q
       - name: Bundled PCAP preparation and real state inference
         run: PYTHONPATH=. python tests/test_bundled_pcap_smoke.py
       - name: NTRO data integrity regression
