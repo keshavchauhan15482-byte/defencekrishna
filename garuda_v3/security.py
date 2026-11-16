@@ -12,7 +12,11 @@ from pathlib import Path
 
 class PolicyStore:
     def __init__(self,folder,key='',allowed_cidrs=(),enforce=False):
+        allowed_cidrs=tuple(allowed_cidrs)
+        if enforce and (len(key)<32 or not allowed_cidrs):
+            raise ValueError('Enforcement requires a 32+ character signing key and explicit CIDR scope')
         self.folder=Path(folder);self.folder.mkdir(parents=True,exist_ok=True)
+        os.chmod(self.folder,0o700)
         self.key=key;self.enforce=enforce;self.allowed=[ipaddress.ip_network(x) for x in allowed_cidrs]
         self.lock=threading.RLock()
         self.db=sqlite3.connect(self.folder/'audit.sqlite',check_same_thread=False)
@@ -20,7 +24,9 @@ class PolicyStore:
         self.db.execute('CREATE TABLE IF NOT EXISTS policies (id TEXT PRIMARY KEY, target TEXT, expires REAL, reason TEXT, status TEXT)')
         self.db.commit()
         os.chmod(self.folder/'audit.sqlite',0o600)
-        if not self.verify():raise ValueError('Audit integrity failure; restore and investigate')
+        if not self.verify():
+            self.db.close()
+            raise ValueError('Audit integrity failure; restore and investigate')
         self.publish()
     def verify(self):
         with self.lock:

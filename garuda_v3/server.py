@@ -7,6 +7,7 @@ import hmac
 import json
 import os
 import secrets
+import sys
 import tempfile
 import threading
 import time
@@ -19,11 +20,14 @@ from .inference import ForecastService
 from .security import PolicyStore
 from .response import ResponseCoordinator
 from .benchmark_summary import summarize
+from .runtime_guard import validate_startup, validate_bind, framing_error
 
 MAX_BODY=72*1024*1024
 class App:
     def __init__(self,artifacts,runtime,reader_token,operator_token,policy_key='',allowed_cidrs=(),enforce=False,lab_automation=False):
         if min(len(reader_token),len(operator_token))<32 or reader_token==operator_token:raise ValueError('Distinct tokens of at least 32 characters required')
+        allowed_cidrs=tuple(allowed_cidrs)
+        self.deployment_profile=validate_startup(reader_token,operator_token,policy_key,allowed_cidrs,enforce,lab_automation)
         self.reader=reader_token;self.operator=operator_token;self.service=ForecastService(artifacts)
         self.policy=PolicyStore(runtime,policy_key,allowed_cidrs,enforce)
         self.response=ResponseCoordinator(self.policy,lab_automation)
@@ -72,8 +76,37 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'")
         self.end_headers();self.wfile.write(body)
     def do_OPTIONS(self):self.respond(405,{'error':'Cross-origin requests disabled'})
-    def do_GET(self):self.handle_request()
-    def do_POST(self):self.handle_request()
+    def do_GET(self):self.dispatch_request()
+    def do_POST(self):self.dispatch_request()
+    def dispatch_request(self):
+        self.request_id=secrets.token_hex(12)
+        started=time.monotonic()
+        try:
+            error=framing_error(self.headers,self.command,MAX_BODY)
+            if error:
+                self.close_connection=True
+                return self.respond(error[0],{'error':error[1]})
+            if len(self.headers.get_all('Authorization',[]))>1:
+                self.close_connection=True
+                return self.respond(400,{'error':'Duplicate Authorization rejected'})
+            if getattr(self.server.app,'deployment_profile','local')=='pilot' and urlsplit(self.path).path!='/health':
+                auth=self.headers.get_all('Authorization',[])
+                role=self.server.app.role(auth[0][7:]) if len(auth)==1 and auth[0].startswith('Bearer ') else None
+                if not role:return self.respond(401,{'error':'Pilot profile requires authentication for all console and API routes'})
+                if self.command=='POST' and role!='operator':return self.respond(403,{'error':'Operator role required for pilot writes'})
+            return self.handle_request()
+        finally:
+            if getattr(self.server.app,'deployment_profile','local')=='pilot':
+                # No URLs, query strings, IPs, credentials, bodies or model inputs.
+                print(json.dumps(dict(event='http_request',request_id=self.request_id,
+                    method=self.command,status=getattr(self,'response_status',500),
+                    duration_ms=round((time.monotonic()-started)*1000,2))),file=sys.stderr,flush=True)
+    def send_response(self,code,message=None):
+        self.response_status=code
+        return super().send_response(code,message)
+    def end_headers(self):
+        self.send_header('X-Request-ID',getattr(self,'request_id','unavailable'))
+        return super().end_headers()
     def handle_request(self):
         app=self.server.app;url=urlsplit(self.path);method=self.command
         host=self.headers.get('Host','')
@@ -103,6 +136,11 @@ class Handler(BaseHTTPRequestHandler):
         if not role:return self.respond(401,{'error':'Bearer token required'})
         if not app.rate_ok(role):return self.respond(429,{'error':'Request quota reached; retry after one minute'})
         if method=='GET':
+            if url.path=='/api/readiness':
+                integrity=app.policy.verify()
+                return self.respond(200 if integrity else 503,dict(status='ready' if integrity else 'not_ready',
+                    audit_integrity=integrity,profile=getattr(app,'deployment_profile','local'),
+                    scope='loaded runtime and local audit only; not model qualification, gateway health or enterprise certification'))
             if url.path=='/api/status':
                 status=dict(role=role,model=app.service.meta,model_sha256=app.service.model_hash,policies=app.policy.active(),audit_integrity=app.policy.verify(),enforcement_enabled=app.policy.enforce)
                 if hasattr(app,'integrated_status'):status.update(app.integrated_status())
@@ -166,6 +204,7 @@ class Handler(BaseHTTPRequestHandler):
 class Server(ThreadingHTTPServer):
     daemon_threads=True
     def __init__(self,address,app):
+        validate_bind(address[0])
         super().__init__(address,Handler);self.app=app
         self.allowed_hosts={f'127.0.0.1:{self.server_port}',f'localhost:{self.server_port}'}
         self.slots=threading.BoundedSemaphore(16)
