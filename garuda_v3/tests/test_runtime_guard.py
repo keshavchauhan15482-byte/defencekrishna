@@ -144,7 +144,7 @@ class RuntimeGuardTests(unittest.TestCase):
 
     def test_authenticated_readiness_distinguishes_audit_failure(self):
         app = SimpleNamespace(deployment_profile='local', role=lambda token: 'viewer' if token=='reader' else None,
-            rate_ok=lambda role: True, policy=SimpleNamespace(verify=lambda: False))
+            rate_ok=lambda role: True, policy=SimpleNamespace(verify=lambda: False, folder=Path(tempfile.gettempdir())))
         server = Server(('127.0.0.1', 0), app)
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()

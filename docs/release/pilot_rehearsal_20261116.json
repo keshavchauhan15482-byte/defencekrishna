@@ -1,0 +1,62 @@
+{
+  "automatic_containment": false,
+  "created_unix": 1794827517.4967656,
+  "http": {
+    "duration_seconds": 0.0589,
+    "median_latency_ms": 4.947,
+    "p95_latency_ms": 8.463,
+    "requests": 40,
+    "statuses": {
+      "200": 40
+    },
+    "workers": 4
+  },
+  "model_sha256": "8db8fa90ffdf87cd0f94a5ed752f1e484b6b7d507e745ffd4fa3c9a9ea51bc67",
+  "operations": {
+    "capacity_rejections": 0,
+    "completed": 42,
+    "histogram_cumulative": false,
+    "in_flight": 0,
+    "latency_bucket_counts": [
+      36,
+      5,
+      1,
+      0,
+      0,
+      0
+    ],
+    "latency_bucket_upper_ms": [
+      5,
+      20,
+      100,
+      500,
+      2000,
+      null
+    ],
+    "latency_max_ms": 20.347,
+    "latency_sum_ms": 114.526,
+    "scope": "HTTP operations only; not detection or forecasting metrics",
+    "status_classes": {
+      "2xx": 41,
+      "3xx": 0,
+      "4xx": 1,
+      "5xx": 0,
+      "other": 0
+    },
+    "uptime_seconds": 0.136
+  },
+  "production_traffic": false,
+  "recorded_shadow_replay_status": 200,
+  "recovery": {
+    "backup_ms": 22.719,
+    "credentials_restored": false,
+    "encrypted_archive_bytes": 33100,
+    "original_events": 1,
+    "policies_reactivated": 0,
+    "restore_ms": 2.5,
+    "restored_audit_integrity": true
+  },
+  "schema": "krishna-pilot-rehearsal-v1",
+  "scope": "bounded localhost integration and recovery smoke, NOT enterprise capacity or forecast accuracy",
+  "unauthenticated_console_status": 401
+}

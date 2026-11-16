@@ -1,0 +1,2 @@
+# Optional encrypted operational backups; not needed for offline inference.
+cryptography==50.0.2

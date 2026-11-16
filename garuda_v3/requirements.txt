@@ -3,6 +3,6 @@ numpy==2.3.5
 # Training and evaluation dependencies.
 scikit-learn==1.8.0
 pandas==2.3.3
-pytest==8.4.2
+pytest==9.2.0
 # Serving itself remains NumPy + Python standard library; pandas/pytest are
 # required by the committed research/evaluation and full-regression suite.

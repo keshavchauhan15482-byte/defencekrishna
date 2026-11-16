@@ -21,6 +21,7 @@ from .security import PolicyStore
 from .response import ResponseCoordinator
 from .benchmark_summary import summarize
 from .runtime_guard import validate_startup, validate_bind, framing_error
+from .operations import OperationalMetrics, readiness
 
 MAX_BODY=72*1024*1024
 class App:
@@ -28,6 +29,8 @@ class App:
         if min(len(reader_token),len(operator_token))<32 or reader_token==operator_token:raise ValueError('Distinct tokens of at least 32 characters required')
         allowed_cidrs=tuple(allowed_cidrs)
         self.deployment_profile=validate_startup(reader_token,operator_token,policy_key,allowed_cidrs,enforce,lab_automation)
+        if (Path(runtime)/'restore.incomplete').exists():raise ValueError('Incomplete restore; recover into a new directory before startup')
+        self.operations=OperationalMetrics()
         self.reader=reader_token;self.operator=operator_token;self.service=ForecastService(artifacts)
         self.policy=PolicyStore(runtime,policy_key,allowed_cidrs,enforce)
         self.response=ResponseCoordinator(self.policy,lab_automation)
@@ -81,6 +84,8 @@ class Handler(BaseHTTPRequestHandler):
     def dispatch_request(self):
         self.request_id=secrets.token_hex(12)
         started=time.monotonic()
+        operations=getattr(self.server.app,'operations',None)
+        if operations:operations.begin()
         try:
             error=framing_error(self.headers,self.command,MAX_BODY)
             if error:
@@ -96,6 +101,7 @@ class Handler(BaseHTTPRequestHandler):
                 if self.command=='POST' and role!='operator':return self.respond(403,{'error':'Operator role required for pilot writes'})
             return self.handle_request()
         finally:
+            if operations:operations.finish(getattr(self,'response_status',500),(time.monotonic()-started)*1000)
             if getattr(self.server.app,'deployment_profile','local')=='pilot':
                 # No URLs, query strings, IPs, credentials, bodies or model inputs.
                 print(json.dumps(dict(event='http_request',request_id=self.request_id,
@@ -137,10 +143,9 @@ class Handler(BaseHTTPRequestHandler):
         if not app.rate_ok(role):return self.respond(429,{'error':'Request quota reached; retry after one minute'})
         if method=='GET':
             if url.path=='/api/readiness':
-                integrity=app.policy.verify()
-                return self.respond(200 if integrity else 503,dict(status='ready' if integrity else 'not_ready',
-                    audit_integrity=integrity,profile=getattr(app,'deployment_profile','local'),
-                    scope='loaded runtime and local audit only; not model qualification, gateway health or enterprise certification'))
+                report=readiness(app)
+                return self.respond(200 if report['status']=='ready' else 503,report)
+            if url.path=='/api/operations':return self.respond(200,app.operations.snapshot())
             if url.path=='/api/status':
                 status=dict(role=role,model=app.service.meta,model_sha256=app.service.model_hash,policies=app.policy.active(),audit_integrity=app.policy.verify(),enforcement_enabled=app.policy.enforce)
                 if hasattr(app,'integrated_status'):status.update(app.integrated_status())
@@ -209,7 +214,10 @@ class Server(ThreadingHTTPServer):
         self.allowed_hosts={f'127.0.0.1:{self.server_port}',f'localhost:{self.server_port}'}
         self.slots=threading.BoundedSemaphore(16)
     def process_request(self,request,client_address):
-        if not self.slots.acquire(False):request.close();return
+        if not self.slots.acquire(False):
+            operations=getattr(self.app,'operations',None)
+            if operations:operations.reject_capacity()
+            request.close();return
         try:super().process_request(request,client_address)
         except Exception:self.slots.release();raise
     def process_request_thread(self,request,client_address):
