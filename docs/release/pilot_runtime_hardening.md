@@ -54,8 +54,9 @@ No gateway or public deployment is claimed by this change.
 1. TLS/SSO gateway and tenant isolation: **not implemented** by this patch. Use a
    separate process, runtime directory and credentials for each pilot/customer;
    this does not make the runtime a multi-tenant SaaS.
-2. Rehearse encrypted SQLite backups using SQLite's online backup mechanism,
-   restore in a separate offline instance and check audit integrity. Hash chaining
+2. Encrypted SQLite backup/restore and bounded localhost rehearsal are now
+   implemented: see [recovery and operations](pilot_recovery_and_operations.md).
+   Customer-sized disaster recovery and external anchoring remain pending. Hash chaining
    detects inconsistent edits; it is not tamper-proof storage or an external
    signed anchor. Configure restricted remote log retention and alerts.
 3. Run independent security/dependency review, realistic load/soak tests, disk-full

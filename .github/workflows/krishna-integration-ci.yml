@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '24'
       - name: Install Python dependencies
-        run: python -m pip install -r garuda_v3/requirements.txt
+        run: python -m pip install -r garuda_v3/requirements.txt -r garuda_v3/requirements-pilot.txt
       - name: Install Node dependencies
         run: npm install --ignore-scripts
       - name: Compile Garuda Python modules
@@ -51,3 +51,5 @@ jobs:
         run: python -m unittest garuda_v3.tests.test_v15_system_integration -v
       - name: Localhost launcher smoke test
         run: python start_local.py --smoke --current-python --skip-install --no-browser
+      - name: Shadow pilot encrypted recovery rehearsal
+        run: GARUDA_DEPLOYMENT_PROFILE=pilot python -m garuda_v3.pilot_rehearsal --output "$RUNNER_TEMP/krishna-pilot-rehearsal.json"
