@@ -87,6 +87,8 @@ def _publish_new(destination, content):
 
 def backup_runtime(runtime, destination, key_file, tenant):
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    if not hasattr(sqlite3.Connection, 'serialize'):
+        raise ValueError('Encrypted recovery requires Python 3.11+ with SQLite serialization support')
     tenant = tenant_name(tenant)
     key = read_key(key_file)
     runtime = Path(runtime).resolve(strict=True)
@@ -133,6 +135,8 @@ def backup_runtime(runtime, destination, key_file, tenant):
 def restore_runtime(archive, destination, key_file, tenant):
     from cryptography.exceptions import InvalidTag
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    if not hasattr(sqlite3.Connection, 'deserialize'):
+        raise ValueError('Encrypted recovery requires Python 3.11+ with SQLite serialization support')
     tenant = tenant_name(tenant)
     key = read_key(key_file)
     with Path(archive).open('rb') as stream:

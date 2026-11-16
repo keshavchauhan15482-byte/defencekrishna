@@ -154,6 +154,12 @@ This evidence discipline is intentional: **failed and negative experiments remai
 
 Pinned Python dependencies are in [`garuda_v3/requirements.txt`](garuda_v3/requirements.txt): **NumPy, scikit-learn, pandas, pytest**.
 
+Optional encrypted pilot recovery requires **Python 3.11+ on POSIX** and
+`python -m pip install -r garuda_v3/requirements-pilot.txt` (also needed for the
+complete backup test suite). See the [recovery/operations runbook](docs/release/pilot_recovery_and_operations.md)
+for tenant-bound backup, shadow-only restore, health monitoring and measured local
+rehearsal. These controls do not certify enterprise readiness or forecast accuracy.
+
 ### 1) Clone
 
 ```bash

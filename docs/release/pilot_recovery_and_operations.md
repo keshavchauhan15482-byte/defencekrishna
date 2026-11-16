@@ -11,7 +11,8 @@ access-control or multi-tenant isolation system.
 
 ## Encrypted backup and offline restore
 
-Install `garuda_v3/requirements-pilot.txt` in the service environment. Generate a
+Use Python 3.11+ on POSIX (tested with Python 3.12) and install
+`garuda_v3/requirements-pilot.txt` in the service environment. Generate a
 dedicated random 32-byte key in a private file owned by the service account:
 
 ```sh
