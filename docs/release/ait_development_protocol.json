@@ -1,0 +1,19 @@
+{
+  "schema": "ait-development-forecast-diagnostic-1",
+  "scope": "Development cross-campaign diagnostic; not a new final release claim",
+  "train": ["AIT-fox"],
+  "validation": ["AIT-harrison"],
+  "test": ["AIT-russellmitchell"],
+  "reserved_not_decoded": ["wardbeck", "wheeler", "wilson"],
+  "history": 8,
+  "horizon": 4,
+  "window_seconds": 10,
+  "seeds": [42, 43, 44],
+  "state_epochs": 5,
+  "risk_epochs": 5,
+  "stride": 24,
+  "fpr_budget": 0.01,
+  "packet_feature_certification": false,
+  "five_stage_certification": false,
+  "compromise_prediction_certification": false
+}

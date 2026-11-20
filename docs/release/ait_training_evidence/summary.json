@@ -1,0 +1,416 @@
+{
+  "scope": "Development cross-campaign diagnostic; not a new final release claim",
+  "seeds": [
+    {
+      "seed": 42,
+      "split_counts": [
+        446,
+        553,
+        407
+      ],
+      "models": {
+        "logistic_regression": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.5593869731800766,
+            "precision": 0.906832298136646,
+            "recall": 0.40443213296398894,
+            "fpr": 0.32608695652173914,
+            "pr_auc": 0.907552303327173,
+            "brier": 0.11741842596969973,
+            "confusion_matrix": [
+              [
+                31,
+                15
+              ],
+              [
+                215,
+                146
+              ]
+            ]
+          },
+          "validation_alert_selection": {
+            "threshold": 0.9323881785838912,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.38493723849372385,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.3411005866472492,
+              0.43020669023482233
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        },
+        "lstm": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.11428571428571428,
+            "precision": 0.9166666666666666,
+            "recall": 0.060941828254847646,
+            "fpr": 0.043478260869565216,
+            "pr_auc": 0.8828218762879226,
+            "brier": 0.20272256258074595,
+            "confusion_matrix": [
+              [
+                44,
+                2
+              ],
+              [
+                339,
+                22
+              ]
+            ]
+          },
+          "state_mse": 0.044208284467458725,
+          "state_persistence_mse": 0.060631874948740005,
+          "state_gate_passed": true,
+          "risk_head_trained": true,
+          "validation_alert_selection": {
+            "threshold": 0.6080022474345177,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.04811715481171548,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.030743192410054423,
+              0.07132699468289215
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        },
+        "gnn_lstm": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "pr_auc": 0.8662506363965801,
+            "brier": 0.19858357016601766,
+            "confusion_matrix": [
+              [
+                46,
+                0
+              ],
+              [
+                361,
+                0
+              ]
+            ]
+          },
+          "state_mse": 0.04494854807853699,
+          "state_persistence_mse": 0.060631874948740005,
+          "state_gate_passed": true,
+          "risk_head_trained": true,
+          "validation_alert_selection": {
+            "threshold": 0.6458658339558985,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.0020920502092050207,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              5.296472280968642e-05,
+              0.01160056984425376
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        }
+      }
+    },
+    {
+      "seed": 43,
+      "split_counts": [
+        446,
+        553,
+        407
+      ],
+      "models": {
+        "logistic_regression": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.5593869731800766,
+            "precision": 0.906832298136646,
+            "recall": 0.40443213296398894,
+            "fpr": 0.32608695652173914,
+            "pr_auc": 0.907552303327173,
+            "brier": 0.11741842596969973,
+            "confusion_matrix": [
+              [
+                31,
+                15
+              ],
+              [
+                215,
+                146
+              ]
+            ]
+          },
+          "validation_alert_selection": {
+            "threshold": 0.9323881785838912,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.38493723849372385,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.3411005866472492,
+              0.43020669023482233
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        },
+        "lstm": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "pr_auc": 0.8850605902267041,
+            "brier": 0.20472190990986378,
+            "confusion_matrix": [
+              [
+                46,
+                0
+              ],
+              [
+                361,
+                0
+              ]
+            ]
+          },
+          "state_mse": 0.044307831674814224,
+          "state_persistence_mse": 0.060631874948740005,
+          "state_gate_passed": true,
+          "risk_head_trained": true,
+          "validation_alert_selection": {
+            "threshold": null,
+            "status": "no_useful_validation_policy",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.0,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.0,
+              0.0076876189676482205
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        },
+        "gnn_lstm": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.08421052631578947,
+            "precision": 0.8421052631578947,
+            "recall": 0.0443213296398892,
+            "fpr": 0.06521739130434782,
+            "pr_auc": 0.8857799765199845,
+            "brier": 0.20352440164451624,
+            "confusion_matrix": [
+              [
+                43,
+                3
+              ],
+              [
+                345,
+                16
+              ]
+            ]
+          },
+          "state_mse": 0.043561264872550964,
+          "state_persistence_mse": 0.060631874948740005,
+          "state_gate_passed": true,
+          "risk_head_trained": true,
+          "validation_alert_selection": {
+            "threshold": 0.623303581139339,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.07112970711297072,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.049759204714277826,
+              0.09798077950661851
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        }
+      }
+    },
+    {
+      "seed": 44,
+      "split_counts": [
+        446,
+        553,
+        407
+      ],
+      "models": {
+        "logistic_regression": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.5593869731800766,
+            "precision": 0.906832298136646,
+            "recall": 0.40443213296398894,
+            "fpr": 0.32608695652173914,
+            "pr_auc": 0.907552303327173,
+            "brier": 0.11741842596969973,
+            "confusion_matrix": [
+              [
+                31,
+                15
+              ],
+              [
+                215,
+                146
+              ]
+            ]
+          },
+          "validation_alert_selection": {
+            "threshold": 0.9323881785838912,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.38493723849372385,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.3411005866472492,
+              0.43020669023482233
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        },
+        "lstm": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.175,
+            "precision": 0.8974358974358975,
+            "recall": 0.09695290858725762,
+            "fpr": 0.08695652173913043,
+            "pr_auc": 0.8851663781508265,
+            "brier": 0.20962734737636957,
+            "confusion_matrix": [
+              [
+                42,
+                4
+              ],
+              [
+                326,
+                35
+              ]
+            ]
+          },
+          "state_mse": 0.04719842970371246,
+          "state_persistence_mse": 0.060631874948740005,
+          "state_gate_passed": true,
+          "risk_head_trained": true,
+          "validation_alert_selection": {
+            "threshold": 0.5936716311665198,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.07112970711297072,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.049759204714277826,
+              0.09798077950661851
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        },
+        "gnn_lstm": {
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.2930232558139535,
+            "precision": 0.9130434782608695,
+            "recall": 0.1745152354570637,
+            "fpr": 0.13043478260869565,
+            "pr_auc": 0.8826298745669126,
+            "brier": 0.2068752645706362,
+            "confusion_matrix": [
+              [
+                40,
+                6
+              ],
+              [
+                298,
+                63
+              ]
+            ]
+          },
+          "state_mse": 0.04519180208444595,
+          "state_persistence_mse": 0.060631874948740005,
+          "state_gate_passed": true,
+          "risk_head_trained": true,
+          "validation_alert_selection": {
+            "threshold": 0.6031155936893676,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.09832635983263599,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.07314357791394831,
+              0.1286046108781042
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          }
+        }
+      }
+    }
+  ],
+  "model_weights_promoted": false,
+  "automatic_containment": false,
+  "five_stage_claim": false,
+  "precompromise_claim": false,
+  "target": "Future completed-flow attack presence, NOT imminent compromise",
+  "raw_sources_synthetic_testbeds": true
+}

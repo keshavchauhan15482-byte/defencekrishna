@@ -1,0 +1,285 @@
+{
+  "scope": "Post-exposure development risk-head diagnostic; no fresh final claim",
+  "candidates_predeclared_in_code": true,
+  "rows": [
+    {
+      "seed": 42,
+      "architecture": "lstm",
+      "selected_readout": "history_only",
+      "selection": "validation recall then FPR then Brier; train-only tree fitting",
+      "validation_policy": {
+        "threshold": 0.9592896825396824,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.17364016736401675,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          0.1407433041582353,
+          0.21063535968874206
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.18407960199004975,
+        "precision": 0.9024390243902439,
+        "recall": 0.10249307479224377,
+        "fpr": 0.08695652173913043,
+        "pr_auc": 0.894881791652425,
+        "brier": 0.11711731284194678,
+        "confusion_matrix": [
+          [
+            42,
+            4
+          ],
+          [
+            324,
+            37
+          ]
+        ]
+      },
+      "backbone_sha256": "5713b451e6c8f129cde1eeadaf270677a5d398134601e0209a9c76fcc9d5a5e1",
+      "backbone_unchanged": true,
+      "rollout_risk_value_established": false
+    },
+    {
+      "seed": 42,
+      "architecture": "gnn_lstm",
+      "selected_readout": "history_only",
+      "selection": "validation recall then FPR then Brier; train-only tree fitting",
+      "validation_policy": {
+        "threshold": 0.9592896825396824,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.17364016736401675,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          0.1407433041582353,
+          0.21063535968874206
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.18407960199004975,
+        "precision": 0.9024390243902439,
+        "recall": 0.10249307479224377,
+        "fpr": 0.08695652173913043,
+        "pr_auc": 0.894881791652425,
+        "brier": 0.11711731284194678,
+        "confusion_matrix": [
+          [
+            42,
+            4
+          ],
+          [
+            324,
+            37
+          ]
+        ]
+      },
+      "backbone_sha256": "0ec55037387781eef0c55ebe3b55ef71e32dba31ead1755674c1df86bad37373",
+      "backbone_unchanged": true,
+      "rollout_risk_value_established": false
+    },
+    {
+      "seed": 43,
+      "architecture": "lstm",
+      "selected_readout": "history_only",
+      "selection": "validation recall then FPR then Brier; train-only tree fitting",
+      "validation_policy": {
+        "threshold": 0.968547619047619,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.13598326359832635,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          0.1065408453207462,
+          0.17001495121731566
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.11855670103092783,
+        "precision": 0.8518518518518519,
+        "recall": 0.06371191135734072,
+        "fpr": 0.08695652173913043,
+        "pr_auc": 0.8932826588214804,
+        "brier": 0.11703513715826215,
+        "confusion_matrix": [
+          [
+            42,
+            4
+          ],
+          [
+            338,
+            23
+          ]
+        ]
+      },
+      "backbone_sha256": "d4ead863075296815ba32367bf556a822e1196bfa44b739d84673c18e330b5fd",
+      "backbone_unchanged": true,
+      "rollout_risk_value_established": false
+    },
+    {
+      "seed": 43,
+      "architecture": "gnn_lstm",
+      "selected_readout": "history_only",
+      "selection": "validation recall then FPR then Brier; train-only tree fitting",
+      "validation_policy": {
+        "threshold": 0.968547619047619,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.13598326359832635,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          0.1065408453207462,
+          0.17001495121731566
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.11855670103092783,
+        "precision": 0.8518518518518519,
+        "recall": 0.06371191135734072,
+        "fpr": 0.08695652173913043,
+        "pr_auc": 0.8932826588214804,
+        "brier": 0.11703513715826215,
+        "confusion_matrix": [
+          [
+            42,
+            4
+          ],
+          [
+            338,
+            23
+          ]
+        ]
+      },
+      "backbone_sha256": "d46bd604cba44d165294cc7e0bbf65fbb2461397c9f7996df31537e4294c952f",
+      "backbone_unchanged": true,
+      "rollout_risk_value_established": false
+    },
+    {
+      "seed": 44,
+      "architecture": "lstm",
+      "selected_readout": "history_plus_rollout",
+      "selection": "validation recall then FPR then Brier; train-only tree fitting",
+      "validation_policy": {
+        "threshold": 0.9564027777777777,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.20292887029288703,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          0.16776082249390847,
+          0.24181926558574346
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.1925925925925926,
+        "precision": 0.8863636363636364,
+        "recall": 0.10803324099722991,
+        "fpr": 0.10869565217391304,
+        "pr_auc": 0.9069593506217879,
+        "brier": 0.11067690914007508,
+        "confusion_matrix": [
+          [
+            41,
+            5
+          ],
+          [
+            322,
+            39
+          ]
+        ]
+      },
+      "backbone_sha256": "803759517a316381df3db94c16eb5fed32e789073738509e881a3b3bfcdb9e64",
+      "backbone_unchanged": true,
+      "rollout_risk_value_established": false
+    },
+    {
+      "seed": 44,
+      "architecture": "gnn_lstm",
+      "selected_readout": "history_plus_rollout",
+      "selection": "validation recall then FPR then Brier; train-only tree fitting",
+      "validation_policy": {
+        "threshold": 0.961168650793651,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.200836820083682,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          0.1658205943346532,
+          0.23960212551926618
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.18407960199004975,
+        "precision": 0.9024390243902439,
+        "recall": 0.10249307479224377,
+        "fpr": 0.08695652173913043,
+        "pr_auc": 0.9157469213497492,
+        "brier": 0.10740444253564788,
+        "confusion_matrix": [
+          [
+            42,
+            4
+          ],
+          [
+            324,
+            37
+          ]
+        ]
+      },
+      "backbone_sha256": "880c1ad00ea08f06aada35f01c4fdae1635a60808039ae5b8799298073df4a0f",
+      "backbone_unchanged": true,
+      "rollout_risk_value_established": false
+    }
+  ],
+  "automatic_promotion": false,
+  "automatic_containment": false,
+  "caveat": "Same campaigns and correlated targets; source/domain and five-stage generalisation remain unproven"
+}

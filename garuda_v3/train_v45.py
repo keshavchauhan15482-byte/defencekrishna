@@ -85,6 +85,8 @@ def build_train_command(args: argparse.Namespace) -> list[str]:
         "0.01",
         "--split-manifest",
         args.split_manifest,
+        "--evaluation-scope",
+        "new_predeclared_holdout",
     ]
     if args.stage_supervision:
         command.append("--stage-supervision")

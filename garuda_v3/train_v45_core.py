@@ -259,7 +259,7 @@ def run(args):
     report = {
         "schema": SCHEMA,
         "protocol": "V45 state-first forecasting",
-        "evaluation_scope": "new_predeclared_holdout",
+        "evaluation_scope": getattr(args, 'evaluation_scope', 'development_reused_holdout'),
         "config": vars(args),
         "split_boundaries": boundaries,
         "split_counts": [len(x[0]) for x in arrays],
@@ -441,7 +441,7 @@ def run(args):
             "runtime_evidence": "network-only",
             "unknown_labels_masked": True,
             "automatic_containment_approved": False,
-            "evaluation_scope": "new_predeclared_holdout",
+            "evaluation_scope": getattr(args, 'evaluation_scope', 'development_reused_holdout'),
         }
         model.save(out / f"{architecture}.npz", metadata)
         result["training_seconds"] = round(time.monotonic() - started, 2)
@@ -469,6 +469,7 @@ def main():
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument("--fpr-budget", type=float, default=0.01)
     parser.add_argument("--stage-supervision", action="store_true")
+    parser.add_argument("--evaluation-scope", choices=['development_reused_holdout', 'new_predeclared_holdout'], default='development_reused_holdout')
     args = parser.parse_args()
     if args.history != 8 or args.horizon != 4:
         parser.error("V45 protocol is frozen at 8 observed and 4 future windows")

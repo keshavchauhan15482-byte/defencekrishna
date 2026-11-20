@@ -1,0 +1,826 @@
+{
+  "schema": "garuda-observed-graph-v3.1",
+  "protocol": "V45 state-first forecasting",
+  "evaluation_scope": "development_reused_holdout",
+  "config": {
+    "graphs": [
+      "/workspace/scratch/ca9f1b3a363b/ait-development-cache/fox-graph.npz",
+      "/workspace/scratch/ca9f1b3a363b/ait-development-cache/harrison-graph.npz",
+      "/workspace/scratch/ca9f1b3a363b/ait-development-cache/russellmitchell-graph.npz"
+    ],
+    "split_manifest": "/workspace/scratch/ca9f1b3a363b/defencekrishna-stage-data/docs/release/ait_development_protocol.json",
+    "output": "/workspace/scratch/ca9f1b3a363b/ait-three-seed-run/seed42",
+    "history": 8,
+    "horizon": 4,
+    "stride": 24,
+    "seed": 42,
+    "state_epochs": 5,
+    "risk_epochs": 5,
+    "stage_epochs": 0,
+    "patience": 3,
+    "fpr_budget": 0.01,
+    "stage_supervision": false,
+    "evaluation_scope": "development_reused_holdout"
+  },
+  "split_boundaries": {
+    "method": "predeclared campaign holdout",
+    "manifest": {
+      "schema": "ait-development-forecast-diagnostic-1",
+      "scope": "Development cross-campaign diagnostic; not a new final release claim",
+      "train": [
+        "AIT-fox"
+      ],
+      "validation": [
+        "AIT-harrison"
+      ],
+      "test": [
+        "AIT-russellmitchell"
+      ],
+      "reserved_not_decoded": [
+        "wardbeck",
+        "wheeler",
+        "wilson"
+      ],
+      "history": 8,
+      "horizon": 4,
+      "window_seconds": 10,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "state_epochs": 5,
+      "risk_epochs": 5,
+      "stride": 24,
+      "fpr_budget": 0.01,
+      "packet_feature_certification": false,
+      "five_stage_certification": false,
+      "compromise_prediction_certification": false
+    }
+  },
+  "split_counts": [
+    446,
+    553,
+    407
+  ],
+  "selection": "state checkpoint by validation MSE including epoch-0 persistence; risk/stage heads fitted separately after state acceptance",
+  "target": "network-only future malicious-flow evidence; cumulative 10/20/30/40 second targets; not compromise probability",
+  "models": {
+    "logistic_regression": {
+      "validation_alert_selection": {
+        "threshold": 0.9323881785838912,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.38493723849372385,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          0.3411005866472492,
+          0.43020669023482233
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.5593869731800766,
+        "precision": 0.906832298136646,
+        "recall": 0.40443213296398894,
+        "fpr": 0.32608695652173914,
+        "pr_auc": 0.907552303327173,
+        "brier": 0.11741842596969973,
+        "confusion_matrix": [
+          [
+            31,
+            15
+          ],
+          [
+            215,
+            146
+          ]
+        ]
+      }
+    },
+    "lstm": {
+      "state_training": {
+        "best_epoch": 5,
+        "epochs_run": 5,
+        "validation_state_mse": 0.03402257710695267,
+        "validation_persistence_mse": 0.044912535697221756,
+        "persistence_gate": {
+          "passed": true,
+          "learned_validation_mse": 0.03402257710695267,
+          "persistence_validation_mse": 0.044912535697221756,
+          "relative_improvement": 0.2424703575786466,
+          "minimum_relative_improvement": 0.0,
+          "status": "accepted"
+        },
+        "curve": [
+          {
+            "epoch": 0,
+            "validation_state_mse": 0.044912535697221756,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 1,
+            "train_state_mse": 0.04531894437968731,
+            "validation_state_mse": 0.043353594839572906,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 2,
+            "train_state_mse": 0.04393677094152996,
+            "validation_state_mse": 0.04167129099369049,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 3,
+            "train_state_mse": 0.04130468437714236,
+            "validation_state_mse": 0.03827438876032829,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 4,
+            "train_state_mse": 0.037672790831753185,
+            "validation_state_mse": 0.03543909266591072,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 5,
+            "train_state_mse": 0.035618528191532405,
+            "validation_state_mse": 0.03402257710695267,
+            "persistence_mse": 0.044912535697221756
+          }
+        ]
+      },
+      "validation_state_mse": 0.03402257710695267,
+      "validation_persistence_mse": 0.044912535697221756,
+      "calibration": {
+        "status": "fitted",
+        "counts": [
+          992,
+          1220
+        ],
+        "slope": 0.4133375025200313,
+        "intercept": 0.22728811422962308,
+        "scope": "validation only; no test labels used"
+      },
+      "validation_alert_selection": {
+        "threshold": 0.6080022474345177,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.04811715481171548,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          0.030743192410054423,
+          0.07132699468289215
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "per_family_alert_metrics": {
+        "unspecified": {
+          "examples": 407,
+          "unknown_target_examples": 0,
+          "positives": 361,
+          "negatives": 46,
+          "false_positives": 2,
+          "true_positives": 22,
+          "fpr": 0.043478260869565216,
+          "recall": 0.060941828254847646,
+          "fpr_95pct": [
+            0.005309482849429967,
+            0.14838677592011587
+          ],
+          "recall_95pct": [
+            0.03858233964697779,
+            0.09081556842216104
+          ],
+          "policy_enabled": true,
+          "passed": false
+        }
+      },
+      "clean_history_warning_policy": {
+        "validation_selection": {
+          "threshold": null,
+          "status": "insufficient_validation_classes",
+          "fpr_budget": 0.01
+        },
+        "test": {
+          "samples": 46,
+          "positives": 0,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "pr_auc": null,
+          "brier": 0.3232262640060461,
+          "confusion_matrix": [
+            [
+              46,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      },
+      "horizon_metrics": [
+        {
+          "horizon_seconds": 10,
+          "validation_policy": {
+            "threshold": 0.6153210336209496,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.008849557522123894,
+            "validation_fpr": 0.004672897196261682,
+            "fpr_95pct": [
+              0.00011830051588732884,
+              0.02575931385327064
+            ],
+            "recall_95pct": [
+              0.0018287229076958495,
+              0.025642985525124302
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          },
+          "test": {
+            "samples": 407,
+            "positives": 224,
+            "f1": 0.008733624454148471,
+            "precision": 0.2,
+            "recall": 0.004464285714285714,
+            "fpr": 0.02185792349726776,
+            "pr_auc": 0.4760720704416498,
+            "brier": 0.25459576178934173,
+            "confusion_matrix": [
+              [
+                179,
+                4
+              ],
+              [
+                223,
+                1
+              ]
+            ]
+          }
+        },
+        {
+          "horizon_seconds": 20,
+          "validation_policy": {
+            "threshold": 0.6080022474345177,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.049783549783549784,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.039726497691849584
+            ],
+            "recall_95pct": [
+              0.031816692427929526,
+              0.07376581917756984
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          },
+          "test": {
+            "samples": 407,
+            "positives": 356,
+            "f1": 0.11578947368421053,
+            "precision": 0.9166666666666666,
+            "recall": 0.06179775280898876,
+            "fpr": 0.0392156862745098,
+            "pr_auc": 0.8680493368485463,
+            "brier": 0.20464865629956117,
+            "confusion_matrix": [
+              [
+                49,
+                2
+              ],
+              [
+                334,
+                22
+              ]
+            ]
+          }
+        },
+        {
+          "horizon_seconds": 30,
+          "validation_policy": {
+            "threshold": 0.6080022474345177,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.04811715481171548,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.030743192410054423,
+              0.07132699468289215
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          },
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.11428571428571428,
+            "precision": 0.9166666666666666,
+            "recall": 0.060941828254847646,
+            "fpr": 0.043478260869565216,
+            "pr_auc": 0.8828218762879226,
+            "brier": 0.20272256258074595,
+            "confusion_matrix": [
+              [
+                44,
+                2
+              ],
+              [
+                339,
+                22
+              ]
+            ]
+          }
+        },
+        {
+          "horizon_seconds": 40,
+          "validation_policy": {
+            "threshold": 0.6080022474345177,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.04811715481171548,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              0.030743192410054423,
+              0.07132699468289215
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          },
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.11428571428571428,
+            "precision": 0.9166666666666666,
+            "recall": 0.060941828254847646,
+            "fpr": 0.043478260869565216,
+            "pr_auc": 0.8828218762879226,
+            "brier": 0.20272256258074595,
+            "confusion_matrix": [
+              [
+                44,
+                2
+              ],
+              [
+                339,
+                22
+              ]
+            ]
+          }
+        }
+      ],
+      "measured_compromise_lead_time_seconds": null,
+      "risk_head_trained": true,
+      "state_gate_passed": true,
+      "automatic_containment_approved": false,
+      "state_mse": 0.044208284467458725,
+      "state_persistence_mse": 0.060631874948740005,
+      "risk_training": {
+        "best_epoch": 5,
+        "epochs_run": 5,
+        "validation_risk_bce": 0.6978881359100342,
+        "curve": [
+          {
+            "epoch": 0,
+            "validation_risk_bce": 0.7162813544273376
+          },
+          {
+            "epoch": 1,
+            "train_risk_bce": 0.7139437964984349,
+            "validation_risk_bce": 0.7069244980812073
+          },
+          {
+            "epoch": 2,
+            "train_risk_bce": 0.7017216426985604,
+            "validation_risk_bce": 0.703589677810669
+          },
+          {
+            "epoch": 3,
+            "train_risk_bce": 0.6971588262489864,
+            "validation_risk_bce": 0.7031155228614807
+          },
+          {
+            "epoch": 4,
+            "train_risk_bce": 0.6940110070364816,
+            "validation_risk_bce": 0.7018433213233948
+          },
+          {
+            "epoch": 5,
+            "train_risk_bce": 0.6914026779787881,
+            "validation_risk_bce": 0.6978881359100342
+          }
+        ]
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.11428571428571428,
+        "precision": 0.9166666666666666,
+        "recall": 0.060941828254847646,
+        "fpr": 0.043478260869565216,
+        "pr_auc": 0.8828218762879226,
+        "brier": 0.20272256258074595,
+        "confusion_matrix": [
+          [
+            44,
+            2
+          ],
+          [
+            339,
+            22
+          ]
+        ]
+      },
+      "supervised_stages": [],
+      "training_seconds": 1.9
+    },
+    "gnn_lstm": {
+      "state_training": {
+        "best_epoch": 5,
+        "epochs_run": 5,
+        "validation_state_mse": 0.03400610759854317,
+        "validation_persistence_mse": 0.044912535697221756,
+        "persistence_gate": {
+          "passed": true,
+          "learned_validation_mse": 0.03400610759854317,
+          "persistence_validation_mse": 0.044912535697221756,
+          "relative_improvement": 0.24283705939482836,
+          "minimum_relative_improvement": 0.0,
+          "status": "accepted"
+        },
+        "curve": [
+          {
+            "epoch": 0,
+            "validation_state_mse": 0.044912535697221756,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 1,
+            "train_state_mse": 0.045307964352624755,
+            "validation_state_mse": 0.04337431490421295,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 2,
+            "train_state_mse": 0.04411948738353593,
+            "validation_state_mse": 0.04202771559357643,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 3,
+            "train_state_mse": 0.04176784985299621,
+            "validation_state_mse": 0.03865215182304382,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 4,
+            "train_state_mse": 0.03782244651977505,
+            "validation_state_mse": 0.03571454808115959,
+            "persistence_mse": 0.044912535697221756
+          },
+          {
+            "epoch": 5,
+            "train_state_mse": 0.03556333415742431,
+            "validation_state_mse": 0.03400610759854317,
+            "persistence_mse": 0.044912535697221756
+          }
+        ]
+      },
+      "validation_state_mse": 0.03400610759854317,
+      "validation_persistence_mse": 0.044912535697221756,
+      "calibration": {
+        "status": "fitted",
+        "counts": [
+          992,
+          1220
+        ],
+        "slope": 0.9639274230402346,
+        "intercept": 0.2283652040351699,
+        "scope": "validation only; no test labels used"
+      },
+      "validation_alert_selection": {
+        "threshold": 0.6458658339558985,
+        "status": "validation_selected",
+        "fpr_budget": 0.01,
+        "validation_recall": 0.0020920502092050207,
+        "validation_fpr": -0.0,
+        "fpr_95pct": [
+          0.0,
+          0.047995064055142256
+        ],
+        "recall_95pct": [
+          5.296472280968642e-05,
+          0.01160056984425376
+        ],
+        "confidence_gate_passed": false,
+        "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+      },
+      "per_family_alert_metrics": {
+        "unspecified": {
+          "examples": 407,
+          "unknown_target_examples": 0,
+          "positives": 361,
+          "negatives": 46,
+          "false_positives": 0,
+          "true_positives": 0,
+          "fpr": 0.0,
+          "recall": 0.0,
+          "fpr_95pct": [
+            0.0,
+            0.0770618270519007
+          ],
+          "recall_95pct": [
+            0.0,
+            0.010166471123729186
+          ],
+          "policy_enabled": true,
+          "passed": false
+        }
+      },
+      "clean_history_warning_policy": {
+        "validation_selection": {
+          "threshold": null,
+          "status": "insufficient_validation_classes",
+          "fpr_budget": 0.01
+        },
+        "test": {
+          "samples": 46,
+          "positives": 0,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "pr_auc": null,
+          "brier": 0.3328739191918578,
+          "confusion_matrix": [
+            [
+              46,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      },
+      "horizon_metrics": [
+        {
+          "horizon_seconds": 10,
+          "validation_policy": {
+            "threshold": null,
+            "status": "no_useful_validation_policy",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.0,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.017090034374465955
+            ],
+            "recall_95pct": [
+              0.0,
+              0.010822659317415429
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          },
+          "test": {
+            "samples": 407,
+            "positives": 224,
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "pr_auc": 0.4911638694595334,
+            "brier": 0.2614998422279822,
+            "confusion_matrix": [
+              [
+                183,
+                0
+              ],
+              [
+                224,
+                0
+              ]
+            ]
+          }
+        },
+        {
+          "horizon_seconds": 20,
+          "validation_policy": {
+            "threshold": 0.6458658339558985,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.0021645021645021645,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.039726497691849584
+            ],
+            "recall_95pct": [
+              5.479894866520359e-05,
+              0.012000335030363143
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          },
+          "test": {
+            "samples": 407,
+            "positives": 356,
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "pr_auc": 0.8535608519999539,
+            "brier": 0.2009229283746622,
+            "confusion_matrix": [
+              [
+                51,
+                0
+              ],
+              [
+                356,
+                0
+              ]
+            ]
+          }
+        },
+        {
+          "horizon_seconds": 30,
+          "validation_policy": {
+            "threshold": 0.6458658339558985,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.0020920502092050207,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              5.296472280968642e-05,
+              0.01160056984425376
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          },
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "pr_auc": 0.8662506363965801,
+            "brier": 0.19859110684038955,
+            "confusion_matrix": [
+              [
+                46,
+                0
+              ],
+              [
+                361,
+                0
+              ]
+            ]
+          }
+        },
+        {
+          "horizon_seconds": 40,
+          "validation_policy": {
+            "threshold": 0.6458658339558985,
+            "status": "validation_selected",
+            "fpr_budget": 0.01,
+            "validation_recall": 0.0020920502092050207,
+            "validation_fpr": -0.0,
+            "fpr_95pct": [
+              0.0,
+              0.047995064055142256
+            ],
+            "recall_95pct": [
+              5.296472280968642e-05,
+              0.01160056984425376
+            ],
+            "confidence_gate_passed": false,
+            "independence_caveat": "Binomial intervals are descriptive; overlapping windows are correlated."
+          },
+          "test": {
+            "samples": 407,
+            "positives": 361,
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fpr": 0.0,
+            "pr_auc": 0.8662506363965801,
+            "brier": 0.19858357016601766,
+            "confusion_matrix": [
+              [
+                46,
+                0
+              ],
+              [
+                361,
+                0
+              ]
+            ]
+          }
+        }
+      ],
+      "measured_compromise_lead_time_seconds": null,
+      "risk_head_trained": true,
+      "state_gate_passed": true,
+      "automatic_containment_approved": false,
+      "state_mse": 0.04494854807853699,
+      "state_persistence_mse": 0.060631874948740005,
+      "risk_training": {
+        "best_epoch": 1,
+        "epochs_run": 4,
+        "validation_risk_bce": 0.6882326602935791,
+        "curve": [
+          {
+            "epoch": 0,
+            "validation_risk_bce": 0.6904057264328003
+          },
+          {
+            "epoch": 1,
+            "train_risk_bce": 0.683002233505249,
+            "validation_risk_bce": 0.6882326602935791
+          },
+          {
+            "epoch": 2,
+            "train_risk_bce": 0.6766224333218166,
+            "validation_risk_bce": 0.689001202583313
+          },
+          {
+            "epoch": 3,
+            "train_risk_bce": 0.6744460591248104,
+            "validation_risk_bce": 0.6909475922584534
+          },
+          {
+            "epoch": 4,
+            "train_risk_bce": 0.672740502016885,
+            "validation_risk_bce": 0.6912976503372192
+          }
+        ]
+      },
+      "test": {
+        "samples": 407,
+        "positives": 361,
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "pr_auc": 0.8662506363965801,
+        "brier": 0.19858357016601766,
+        "confusion_matrix": [
+          [
+            46,
+            0
+          ],
+          [
+            361,
+            0
+          ]
+        ]
+      },
+      "supervised_stages": [],
+      "training_seconds": 8.3
+    }
+  },
+  "automatic_containment_approved": false,
+  "checkpoint_sha256": {
+    "logistic_regression.npz": "2b6335085799a9114a2e38619b6ca4db498fde58fbd275c1c89d00fbc22e508a",
+    "lstm_test_predictions.npz": "1ad200b13f90d0ad6b32c6a18cace1a13d1648659b0ca8b75bc17c8d909aa2a7",
+    "gnn_lstm_test_predictions.npz": "a35425eaa5e979763035bbcff1670afda92d1f3cffc836f231fb8d0e58472f99",
+    "gnn_lstm.npz": "0ec55037387781eef0c55ebe3b55ef71e32dba31ead1755674c1df86bad37373",
+    "lstm.npz": "5713b451e6c8f129cde1eeadaf270677a5d398134601e0209a9c76fcc9d5a5e1"
+  }
+}
