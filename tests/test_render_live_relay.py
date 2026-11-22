@@ -57,6 +57,24 @@ class RelayTests(unittest.TestCase):
         finally:
             conn.close()
 
+    def test_root_landing_explains_backend_is_api_not_website(self):
+        for path in ("/", "/status"):
+            conn=http.client.HTTPConnection("127.0.0.1",self.server.server_port,timeout=5)
+            try:
+                conn.request("GET",path)
+                response=conn.getresponse()
+                content_type=response.getheader("Content-Type","")
+                body=response.read().decode("utf-8")
+                self.assertEqual(response.status,200)
+                self.assertIn("text/html",content_type)
+                self.assertIn("Backend online",body)
+                self.assertIn("Open Krishna Defence dashboard",body)
+                self.assertIn("Awaiting an authorized network capture sensor",body)
+                self.assertNotIn(SENSOR,body)
+                self.assertNotIn(VIEWER,body)
+            finally:
+                conn.close()
+
     def test_health_and_authenticated_read(self):
         code, payload = self.request("GET", "/health")
         self.assertEqual(code, 200)
