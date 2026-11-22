@@ -37,6 +37,20 @@ Each bounded **600-second** real capture:
 
 Separate data lanes stay unchanged: original immutable training data + model checkpoint; newly collected Garuda forecast data; anonymous website page-request counters `krishna_site_activity_events`. No retraining or weight changes occur automatically.
 
+## If you downloaded the ZIP (folder `defencekrishna-main`)
+
+ZIP downloads do **not** contain a `.git` directory, so `git pull` will not work in this folder. After the fix lands on `main`, use these two commands from inside your existing `defencekrishna-main` folder to update only the sensor runner and its macOS launcher, **without deleting local secret files or training data**:
+
+~~~bash
+curl -fLsS --output garuda_v3/sensor_runner.py https://raw.githubusercontent.com/keshavchauhan15482-byte/defencekrishna/main/garuda_v3/sensor_runner.py
+curl -fLsS --output scripts/start-garuda-sensor-macos.sh https://raw.githubusercontent.com/keshavchauhan15482-byte/defencekrishna/main/scripts/start-garuda-sensor-macos.sh
+bash scripts/start-garuda-sensor-macos.sh
+~~~
+
+The fixed sensor checks Render's sensor-token authorization **before** requesting privileged packet capture. If the saved token has the wrong value, the process exits with HTTP 401 and no capture starts. Never paste token values into GitHub, URLs, or ChatGPT.
+
+The Mac's `sudo tcpdump -i en0 -c 3 -nn` permission test captures 3 packets and is not an AI inference test. The packet-trained model's parser currently supports **IPv4 only**; the fixed runner captures IPv4 (`ip` BPF) rather than storing unrelated IPv6 frames. Genuine IPv4 traffic over eight contiguous 60-second windows is still required for a valid forecast. If your own Mac/network currently runs IPv6-only traffic, the runner may withhold the forecast; it does not fabricate detections.
+
 ## Important limits
 
 **This is a 10-minute near-live closed-capture prototype, not 10-second streaming or inline prevention.** Public Vercel and Render cloud access does not grant remote packet capture on a user Mac. It only monitors the explicitly authorized interface you choose. Input can be withheld when it lacks eight contiguous packet windows, exceeds 256 MiB/64 host nodes, has unsupported link-layer or IPv6 traffic, or falls outside model support. Unsupported results do not become zero risk. You can check the local log for `real_capture_processed`, `sensor_delivery_accepted`, or `delivery_pending_retry`.

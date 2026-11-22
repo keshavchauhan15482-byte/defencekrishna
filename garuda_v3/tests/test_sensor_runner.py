@@ -34,6 +34,7 @@ class PacketSensorRuntimeTests(unittest.TestCase):
             def __init__(self, command, **kwargs):
                 self.cmd = command
                 self.stdout = io.BytesIO(b"\xd4\xc3\xb2\xa1" + b"\0" * 64)
+                self.stderr = io.BytesIO(b"tcpdump: capturing on authorized interface")
                 self.returncode = 0
             def wait(self, timeout=None):
                 return 0
@@ -43,7 +44,8 @@ class PacketSensorRuntimeTests(unittest.TestCase):
         made=[]
         def make(*args,**kwargs):
             made.append(args[0])
-            self.assertTrue(kwargs["start_new_session"])
+            self.assertEqual(kwargs["process_group"],0)
+            self.assertNotIn("start_new_session",kwargs)
             return Proc(*args,**kwargs)
 
         with tempfile.TemporaryDirectory() as tmp:
@@ -54,9 +56,27 @@ class PacketSensorRuntimeTests(unittest.TestCase):
             self.assertEqual(captured.stat().st_size,68)
             self.assertFalse(made[0][0].endswith("sh"))
             self.assertEqual(made[0][1:3],["-i","en0"])
-            self.assertEqual(made[0][-2:],["-w","-"])
+            self.assertEqual(made[0][-3:],["-w","-","ip"])
             with self.assertRaises(ValueError):
                 _capture_stream("; rm -rf /",Path(tmp),90,use_sudo=False)
+
+    def test_tcpdump_error_is_explained_instead_of_hidden(self):
+        class Proc:
+            def __init__(self, command, **kwargs):
+                self.stdout=io.BytesIO(b"")
+                self.stderr=io.BytesIO(b"sudo: a password is required\\n")
+                self.returncode=1
+            def wait(self, timeout=None):
+                return 1
+            def poll(self):
+                return 1
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch("garuda_v3.sensor_runner.shutil.which",return_value="/usr/sbin/tcpdump"):
+                with patch("garuda_v3.sensor_runner.subprocess.Popen",side_effect=Proc):
+                    with self.assertRaisesRegex(RuntimeError, "sudo: a password is required"):
+                        _capture_stream("en0",Path(tmp),90,use_sudo=False)
+            self.assertEqual(list(Path(tmp).glob("*.pcap")),[])
+            self.assertEqual(list(Path(tmp).glob("*.pcap.ready")),[])
 
     def test_capture_requires_explicit_interval_and_real_interface(self):
         for value in ("", "-i", "any;evil", "../../net", "x y"):

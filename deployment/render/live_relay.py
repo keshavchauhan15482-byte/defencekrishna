@@ -203,6 +203,17 @@ class RelayHandler(BaseHTTPRequestHandler):
                 except Exception:
                     return self.reply(503, {"status": "unavailable", "service": "persistent_telemetry"})
             return self.reply(200, {"status": "ready", "service": "advisory_telemetry_relay"})
+        if url.path == "/api/sensor/verify" and not url.query:
+            # A no-write, authenticated sensor-token check. A Mac can test
+            # its locally held credential BEFORE privileged packet capture.
+            if not self.server.state.feed.authorized(self.headers.get("Authorization", "")):
+                return self.reply(401, {"error": "Sensor authorization required"})
+            if not self.server.state.sensor_rate_ok():
+                return self.reply(429, {"error": "Sensor quota exceeded"})
+            return self.reply(200, {
+                "authorized": True, "mode": "SHADOW_ONLY",
+                "packet_capture": "local_authorized_host_only",
+            })
         if url.path != "/api/live/events":
             return self.reply(404, {"error": "Unknown endpoint"})
         if not self.server.state.authorized_viewer(self.headers.get("Authorization", "")):

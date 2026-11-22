@@ -55,12 +55,16 @@ if [[ ! -x ".venv-garuda-sensor/bin/python" ]]; then
   "$PYTHON" -m venv .venv-garuda-sensor
 fi
 .venv-garuda-sensor/bin/python -m pip install --disable-pip-version-check "numpy==2.3.5"
-EXTRA=()
-if [[ "$MODE" == "--once" ]]; then EXTRA+=(--once); fi
-
 echo "Starting packet-trained Garuda shadow sensor on YOUR authorized interface: $IFACE"
 echo "Only tcpdump obtains OS capture permission. No packet payloads leave this Mac."
 echo "Forecasts are 60/120/180/240s from genuine completed 600s PCAP batches."
 echo "To stop the sensor, press Ctrl+C in this Terminal."
-exec .venv-garuda-sensor/bin/python -m garuda_v3.sensor_runner \
-  --interface "$IFACE" --authorized "${EXTRA[@]}"
+# macOS ships Bash 3.2. Under set -u, expanding an empty array may fail with
+# "EXTRA[@]: unbound variable". Use explicit execution branches instead.
+if [[ "$MODE" == "--once" ]]; then
+  exec .venv-garuda-sensor/bin/python -m garuda_v3.sensor_runner \
+    --interface "$IFACE" --authorized --once
+else
+  exec .venv-garuda-sensor/bin/python -m garuda_v3.sensor_runner \
+    --interface "$IFACE" --authorized
+fi
