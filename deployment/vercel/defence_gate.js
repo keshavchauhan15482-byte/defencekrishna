@@ -64,4 +64,18 @@ function inspectRequest(request){
   }
   return {allowed:false,status:404,lane:"BOUNDARY",reason:"NO_PUBLIC_FIXTURE"};
 }
-module.exports={inspectRequest,parseRecord,MAX_PROBE_LENGTH};
+function checkKnownApiInput(value){
+  // Only parse bounded, untrusted QUERY values on actual read-only API routes.
+  // Never inspect model outputs or treat a risk score as enforcement authority.
+  if(typeof value!=="string")return null;
+  if(value.length>MAX_PROBE_LENGTH)
+    return {lane:"BOUNDARY",status:422,reason:"API_INPUT_TOO_LARGE"};
+  for(const rule of KNOWN){
+    if(rule.test.test(value))
+      return {lane:"ARJUNA",status:403,reason:rule.id};
+  }
+  if(STRUCTURAL.test(value))
+    return {lane:"KRISHNA",status:403,reason:"STRUCTURAL_ANOMALY_REVIEW"};
+  return null;
+}
+module.exports={inspectRequest,parseRecord,checkKnownApiInput,MAX_PROBE_LENGTH};
