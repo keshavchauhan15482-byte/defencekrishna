@@ -32,6 +32,8 @@ jobs:
         run: npm install --ignore-scripts
       - name: Compile Garuda Python modules
         run: python -m compileall -q garuda_v3
+      - name: Validate owned-Mac sensor bootstrap shell syntax
+        run: bash -n scripts/start-garuda-sensor-macos.sh
       - name: Published evidence console regression
         run: node --test garuda_v3/tests/test_evidence_ui.mjs
       - name: ChatGPT Sites live adapter regression
