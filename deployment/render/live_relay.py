@@ -137,11 +137,64 @@ class RelayHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(raw)
 
+    def reply_homepage(self):
+        """Human-readable health landing page, not a public inference route."""
+        try:
+            sensor = self.server.state.store.snapshot(0)["state"] if self.server.state.store else "waiting"
+            healthy = True
+        except Exception:
+            sensor = "unavailable"
+            healthy = False
+        details = {
+            "waiting": "Awaiting an authorized network capture sensor",
+            "near_live": "Recent authenticated model capture received",
+            "stale": "Model sensor has not sent a recent capture",
+            "unavailable": "Persistent storage unavailable",
+            "disabled": "Capture sensor not configured",
+        }
+        message = details.get(sensor, "Sensor state unavailable")
+        page = (
+            '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<title>Krishna Defence System | Backend</title>'
+            '<style>body{margin:0;min-height:100vh;display:grid;place-items:center;'
+            'background:#0b0f16;color:#edf3fc;font:16px/1.6 system-ui,Arial,sans-serif}'
+            'main{width:min(560px,90vw);padding:36px;border:1px solid #344052;'
+            'border-radius:18px;background:#151b25}h1{margin:0;color:#fca36f}'
+            'p{color:#b8c5d3}a{color:#8bb8ff}small{color:#9bacbf}'
+            '.ok{color:#7ce8af}</style></head><body><main>'
+            '<small>KRISHNA DEFENCE SYSTEM · AUTHENTICATED TELEMETRY RELAY</small>'
+            '<h1>Backend ' + ('online' if healthy else 'unavailable') + '</h1>'
+            '<p class="ok">Python API: ' + ('online' if healthy else 'storage check failed') + '</p>'
+            '<p>PostgreSQL: ' + ('connected' if healthy else 'unavailable') + '</p>'
+            '<p>Garuda AI sensor: ' + message + '</p>'
+            '<p>Original trained model runs only on an authorized capture sensor. '
+            'This relay does not expose packet contents, prediction inference, or '
+            'automatic blocking.</p>'
+            '<p><a href="https://krishna-defence-system.vercel.app/">'
+            'Open Krishna Defence dashboard</a></p>'
+            '<small>Read-only health: /health · Sensor and viewer routes require authentication.</small>'
+            '</main></body></html>'
+        ).encode("utf-8")
+        self.send_response(200 if healthy else 503)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(page)))
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Content-Security-Policy",
+                         "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'")
+        self.end_headers()
+        self.wfile.write(page)
+
     def do_OPTIONS(self):
         self.reply(405, {"error": "Cross-origin browser requests unsupported"})
 
     def do_GET(self):
         url = urlsplit(self.path)
+        if url.path in ("/", "/status") and not url.query:
+            return self.reply_homepage()
         if url.path == "/health" and not url.query:
             if self.server.state.store is not None:
                 try:

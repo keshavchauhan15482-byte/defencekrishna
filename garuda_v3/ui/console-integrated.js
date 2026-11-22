@@ -6,6 +6,9 @@ const routes={arjuna:'ARJUNA · REVIEWED KNOWN MEMORY',krishna:'KRISHNA · UNKNO
 const MAX_POINTS=48;
 const MOTION_MS=220;
 const SENSOR_POLL_MS=2600;
+// Vercel runs only a cloud telemetry relay; the local Python model endpoints
+// (/bridge/status, /bridge/response) must not be checked as cloud health.
+const IS_HOSTED_RELAY=!!document.getElementById('hosting-boundary');
 let busy=false,points=[],threats=0,blocks=0,rows=0;
 let liveTimer=null;
 let hasLiveTarget=false;
@@ -187,8 +190,22 @@ async function pollLive(){
     near_live:['Near-live sensor connected','NEAR-LIVE · SHADOW ONLY'],
   };
   const pair=states[d.state]||states.waiting;
-  text('connection',pair[0]);
-  text('mode',pair[1]);
+  if(IS_HOSTED_RELAY){
+   const cloudState=d.state==='near_live'
+     ?'Backend linked · sensor active'
+     :d.state==='stale'?'Backend linked · capture stale'
+     :'Backend linked · waiting for sensor';
+   text('connection',cloudState);
+   text('mode',d.state==='near_live'?'RENDER CONNECTED · SHADOW AI':'RENDER CONNECTED · SENSOR WAITING');
+   text('proof-runtime','Render telemetry connected · PostgreSQL available');
+   text('runtime-detail','The cloud relay is online. Garuda inference requires a separate authorized packet sensor; no recorded replay is presented as live.');
+   text('proof-posture','SHADOW ONLY · NO AUTO BLOCK');
+   const proof=$('proof-runtime');
+   if(proof){proof.classList.add('runtime-ok');proof.classList.remove('runtime-warn');}
+  }else{
+   text('connection',pair[0]);
+   text('mode',pair[1]);
+  }
   text('live-sensor-message',
        d.state==='near_live'?'Last authenticated capture received '+d.sensor_age_seconds+'s ago. Advisory only; no automatic containment.':
        d.state==='stale'?'No recent sensor capture. Last update '+d.sensor_age_seconds+'s ago; existing score is historical.':
@@ -196,8 +213,14 @@ async function pollLive(){
        'No real captures received yet. Auto-replay is disabled.');
   text('live-state',d.state==='near_live'?'Real capture received · advisory forecast':pair[1]);
  }catch(e){
-  text('connection','Sensor feed offline');
+  text('connection',IS_HOSTED_RELAY?'Render telemetry unavailable':'Sensor feed offline');
   text('mode','OFFLINE · NO LIVE DATA');
+  if(IS_HOSTED_RELAY){
+   text('proof-runtime','Render telemetry unavailable');
+   text('runtime-detail','Cloud API health check failed. Historical model evidence is separate; live model output is not confirmed.');
+   const proof=$('proof-runtime');
+   if(proof){proof.classList.remove('runtime-ok');proof.classList.add('runtime-warn');}
+  }
   text('live-sensor-message','Live endpoint unavailable: '+e.message);
  }finally{livePollBusy=false}
 }
@@ -278,8 +301,18 @@ function renderLatestState(state){
 
 addSensorPanel();
 startLiveGraph();
-counters();proofStatus();pollLive();
+if(IS_HOSTED_RELAY){
+ text('patterns','—');
+ text('mutations','—');
+ text('proof-runtime','Checking Render telemetry relay');
+ text('runtime-detail','The cloud relay delivers stored metadata; the trained Garuda model remains on an authorized capture sensor.');
+ text('proof-posture','SHADOW ONLY · NO AUTO BLOCK');
+}else{
+ counters();
+ proofStatus();
+ setInterval(counters,5000);
+ setInterval(proofStatus,10000);
+}
+pollLive();
 setInterval(pollLive,SENSOR_POLL_MS);
-setInterval(counters,5000);
-setInterval(proofStatus,10000);
 })();
