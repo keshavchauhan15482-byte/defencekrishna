@@ -160,6 +160,11 @@ complete backup test suite). See the [recovery/operations runbook](docs/release/
 for tenant-bound backup, shadow-only restore, health monitoring and measured local
 rehearsal. These controls do not certify enterprise readiness or forecast accuracy.
 
+Local-only endurance and restart testing is documented in the
+[crash-safety runbook](docs/release/local_soak_crash_safety.md). Pilot runtimes now
+require a single POSIX owner; restart requires containment reapproval rather than
+silently resuming old policy records. No public hosting is enabled.
+
 ### 1) Clone
 
 ```bash

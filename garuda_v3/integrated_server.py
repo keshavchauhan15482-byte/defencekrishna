@@ -89,6 +89,12 @@ class IntegratedHandler(Handler):
 class IntegratedApp(App):
     def __init__(self, artifacts, runtime, reader_token, operator_token, policy_key='', allowed_cidrs=(), enforce=False, lab_automation=False, bundle_metadata=None):
         super().__init__(artifacts, runtime, reader_token, operator_token, policy_key, allowed_cidrs, enforce, lab_automation)
+        try:self._initialize_integrated(lab_automation,bundle_metadata)
+        except BaseException:
+            self.policy.close()
+            raise
+
+    def _initialize_integrated(self,lab_automation,bundle_metadata):
         self.bundle_metadata = dict(bundle_metadata or {})
         self.v15 = V15EvidenceBridge()
         # V127 dual-runtime integration. Startup fails closed if any V116/V118/V122

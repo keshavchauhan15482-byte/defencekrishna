@@ -64,8 +64,10 @@ def readiness(app):
         space_ok = free >= minimum
     except (OSError, AttributeError):
         free, space_ok = None, False
-    ready = bool(integrity and space_ok)
+    publication_ok = not getattr(app.policy, 'publication_error', False)
+    ready = bool(integrity and space_ok and publication_ok)
     return dict(status='ready' if ready else 'not_ready', audit_integrity=bool(integrity),
         runtime_space_ok=space_ok, runtime_free_bytes=free, minimum_free_bytes=minimum,
+        policy_publication_ok=publication_ok,
         profile=getattr(app, 'deployment_profile', 'local'),
-        scope='loaded local runtime, audit and free space only; not gateway, freshness, model qualification or enterprise certification')
+        scope='loaded local runtime, audit, publication fault and free space only; not gateway, freshness, model qualification or enterprise certification')

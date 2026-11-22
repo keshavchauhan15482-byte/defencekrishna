@@ -55,3 +55,5 @@ jobs:
         run: python start_local.py --smoke --current-python --skip-install --no-browser
       - name: Shadow pilot encrypted recovery rehearsal
         run: GARUDA_DEPLOYMENT_PROFILE=pilot python -m garuda_v3.pilot_rehearsal --output "$RUNNER_TEMP/krishna-pilot-rehearsal.json"
+      - name: Local process crash and endurance smoke
+        run: GARUDA_DEPLOYMENT_PROFILE=pilot python -m garuda_v3.local_soak --seconds 20 --workers 4 --output "$RUNNER_TEMP/krishna-local-soak.json"
