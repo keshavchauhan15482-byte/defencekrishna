@@ -22,8 +22,9 @@ MAX_CURSOR = 9007199254740991
 
 
 class RelayState:
-    def __init__(self, sensor_token: str, viewer_token: str):
+    def __init__(self, sensor_token: str, viewer_token: str, store=None):
         self.feed = LiveFeed(sensor_token)
+        self.store = store
         if not viewer_token or not 32 <= len(viewer_token) <= 256:
             raise ValueError("RENDER_VIEWER_TOKEN must be 32..256 characters")
         if any(ord(c) < 33 or ord(c) > 126 for c in viewer_token):
@@ -52,6 +53,8 @@ class RelayState:
             return True
 
     def accept(self, payload):
+        if self.store is not None:
+            return self.store.accept(payload)
         with self._ingest_lock:
             # Idempotency for network retries within the bounded memory horizon.
             if isinstance(payload, dict):
@@ -74,7 +77,7 @@ class RelayState:
             return self.feed.append(payload)
 
     def events(self, after: int):
-        result = self.feed.snapshot(after)
+        result = self.store.snapshot(after) if self.store is not None else self.feed.snapshot(after)
         # Never return capture SHA, model SHA, host addresses or raw inputs.
         result["events"] = [{
             key: item[key] for key in (
@@ -127,7 +130,11 @@ class RelayHandler(BaseHTTPRequestHandler):
         value = int(cursor)
         if value > MAX_CURSOR:
             return self.reply(422, {"error": "Invalid event cursor"})
-        return self.reply(200, self.server.state.events(value))
+        try:
+            feed = self.server.state.events(value)
+        except Exception:
+            return self.reply(503, {"error": "Persistent telemetry storage unavailable"})
+        return self.reply(200, feed)
 
     def do_POST(self):
         if urlsplit(self.path).path != "/api/live/ingest":
@@ -154,6 +161,8 @@ class RelayHandler(BaseHTTPRequestHandler):
             event = self.server.state.accept(data)
         except (ValueError, TypeError, LiveFeedError, UnicodeDecodeError):
             return self.reply(422, {"error": "Malformed, conflicting or stale sensor event"})
+        except Exception:
+            return self.reply(503, {"error": "Persistent telemetry storage unavailable"})
         return self.reply(202, {"accepted": True, "event_id": event["id"],
                                 "mode": "SHADOW_ONLY", "automatic_containment": False})
 
@@ -169,12 +178,17 @@ class RelayServer(ThreadingHTTPServer):
 def main():
     sensor = os.environ.get("GARUDA_LIVE_SENSOR_TOKEN", "")
     viewer = os.environ.get("RENDER_VIEWER_TOKEN", "")
-    state = RelayState(sensor, viewer)
+    database_url = os.environ.get("DATABASE_URL", "")
+    if not database_url:
+        raise RuntimeError("DATABASE_URL required: do not deploy RAM-only history")
+    from deployment.render.postgres_store import PostgresEventStore
+    store = PostgresEventStore(database_url, sensor)
+    state = RelayState(sensor, viewer, store=store)
     port = int(os.environ.get("PORT", "10000"))
     if not 1 <= port <= 65535:
         raise ValueError("PORT out of range")
     server = RelayServer(("0.0.0.0", port), state)
-    print("Krishna advisory relay ready: /health. No model inference or policy action.", flush=True)
+    print("Krishna advisory relay ready: persistent PostgreSQL metadata-only mode. No model inference or policy action.", flush=True)
     try:
         server.serve_forever()
     finally:
