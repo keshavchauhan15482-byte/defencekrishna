@@ -53,6 +53,12 @@ test("Static premium Vercel build preserves the original console and labels unav
     "console-v132-extra.css","console-v131-overlay.js","console-v132-extra.js"]){
     assert.ok(existsSync(join(root,"public",asset)));
   }
+  const bootstrap=readFileSync(join(root,"scripts/start-garuda-sensor-macos.sh"),"utf8");
+  assert.ok(bootstrap.includes("route -n get default"));
+  assert.ok(bootstrap.includes("Type AUTHORIZED"));
+  assert.ok(bootstrap.indexOf("Type AUTHORIZED")<bootstrap.indexOf("pip install"));
+  assert.ok(bootstrap.includes("sudo")===false); // sudo permission is scoped to the Python sensor runner
+  assert.ok(bootstrap.includes("--authorized"));
   const cfg=JSON.parse(readFileSync(join(root,"vercel.json"),"utf8"));
   assert.ok(cfg.rewrites.some(x=>x.source==="/bridge/live/events"));
 });
