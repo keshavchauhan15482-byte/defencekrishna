@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import getpass
+import http.client
 import json
 import os
 import secrets
@@ -21,6 +22,7 @@ import sys
 import threading
 import time
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from .live_publisher import deliver_pending, read_private_token, validate_endpoint
 from .shadow_agent import ShadowAgent
@@ -177,6 +179,77 @@ def _capture_stream(interface, inbox, seconds, *, use_sudo=True, max_bytes=MAX_P
             temp.unlink()
 
 
+
+class SensorHeartbeat:
+    """Reports genuine local capture-worker liveness, never model evidence."""
+
+    def __init__(self, publish_url, token, model_sha256, capture_seconds):
+        endpoint = validate_endpoint(publish_url)
+        self._endpoint = endpoint
+        self._token = token
+        self._model = model_sha256
+        self._duration = capture_seconds
+        self._state = "capturing"
+        self._lock = threading.Lock()
+        self._stop = threading.Event()
+        self._worker = None
+
+    def set_state(self, state):
+        if state not in ("capturing", "processing"):
+            raise ValueError("Invalid sensor process heartbeat state")
+        with self._lock:
+            self._state = state
+
+    def _send(self):
+        with self._lock:
+            current = self._state
+        payload = json.dumps({
+            "schema": "krishna-sensor-heartbeat-v1",
+            "kind": "heartbeat",
+            "state": current,
+            "capture_seconds": self._duration,
+            "model_sha256": self._model,
+        }, separators=(",", ":")).encode("utf-8")
+        connector = (http.client.HTTPSConnection if self._endpoint.scheme == "https"
+                     else http.client.HTTPConnection)
+        conn = connector(self._endpoint.hostname, self._endpoint.port, timeout=8)
+        try:
+            conn.request(
+                "POST", "/api/sensor/heartbeat", body=payload, headers={
+                    "Authorization": "Bearer " + self._token,
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                }
+            )
+            response = conn.getresponse()
+            response.read(2048)
+            if response.status != 202:
+                raise RuntimeError("Server did not accept sensor heartbeat")
+        finally:
+            conn.close()
+
+    def start(self):
+        if self._worker is not None:
+            return
+        def worker():
+            while not self._stop.is_set():
+                try:
+                    self._send()
+                except (OSError, RuntimeError, ValueError) as exc:
+                    # Network outage never becomes fabricated inference evidence.
+                    print(json.dumps({"event": "sensor_heartbeat_unavailable",
+                                      "reason": type(exc).__name__}), flush=True)
+                if self._stop.wait(30):
+                    break
+        self._worker = threading.Thread(target=worker, daemon=True)
+        self._worker.start()
+
+    def stop(self):
+        self._stop.set()
+        if self._worker:
+            self._worker.join(timeout=10)
+
+
 def run(args):
     if not args.authorized:
         raise ValueError("--authorized required: capture only interfaces you own/control")
@@ -187,14 +260,12 @@ def run(args):
     if inbox.is_symlink():
         raise ValueError("Inbox symlink not allowed")
     inbox.mkdir(parents=True, exist_ok=True, mode=0o700)
-    _ensure_token(args.token_file)
+    token = _ensure_token(args.token_file)
     database = Path(args.database).expanduser()
     database.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     agent = ShadowAgent(args.artifacts, database)
     try:
         duration = required_capture_seconds(agent.service.meta)
-        horizons = [duration * (i + 1) // (agent.service.meta["history"] + 2)
-                    for i in range(4)]
         print(json.dumps({
             "sensor": "packet_shadow_v1",
             "interface": args.interface,
@@ -209,11 +280,19 @@ def run(args):
             "automatic_containment": False,
             "remote_raw_packets": False,
         }), flush=True)
-        while True:
-            capture = _capture_stream(args.interface, inbox, duration,
-                                      use_sudo=not args.no_sudo)
-            try:
-                result = agent.process(capture)
+        # Obtain operator OS permission before reporting a running sensor.
+        if not args.no_sudo:
+            subprocess.run(["sudo", "-v"], check=True)
+        heartbeat = SensorHeartbeat(args.publish_url, token, agent.service.model_hash, duration)
+        heartbeat.start()
+        try:
+            while True:
+                heartbeat.set_state("capturing")
+                capture = _capture_stream(args.interface, inbox, duration,
+                                          use_sudo=not args.no_sudo)
+                heartbeat.set_state("processing")
+                try:
+                    result = agent.process(capture)
                 status = result.get("status", "unknown")
                 print(json.dumps({
                     "event": "real_capture_processed",
@@ -237,12 +316,15 @@ def run(args):
                             capture.unlink()
                     else:
                         print(json.dumps({"event": "delivery_pending_retry"}), flush=True)
-            finally:
+                finally:
+                    pass
+                # Retry any pending older forecasts that remain inside the
+                # freshness window. Never substitute a recorded demo.
+                deliver_pending(agent, args.publish_url, token)
                 if args.once:
                     break
-            # Retry any pending older forecasts that remain inside the freshness
-            # window. No simulated/recorded data is ever substituted.
-            deliver_pending(agent, args.publish_url, read_private_token(args.token_file))
+        finally:
+            heartbeat.stop()
     finally:
         agent.db.close()
 
