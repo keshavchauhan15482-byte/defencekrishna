@@ -156,6 +156,12 @@ test("Vercel serverless API never needs browser sensor secrets and sanitizes eve
     await handler({method:"GET",query:{after:"invalid"}},invalid);
     assert.equal(invalid.code,422);
     assert.equal(requestCount,1);
+    const malicious=mockResponse();
+    await handler({method:"GET",query:{after:"' OR 1=1--"}},malicious);
+    assert.equal(malicious.code,403);
+    assert.equal(malicious.body.lane,"ARJUNA");
+    assert.equal(malicious.headers["X-Krishna-Decision"],"deny");
+    assert.equal(requestCount,1); // malicious input never reaches Render
     const blocked=mockResponse();
     await handler({method:"POST",query:{}},blocked);
     assert.equal(blocked.code,405);
