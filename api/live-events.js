@@ -3,6 +3,8 @@
  * Vercel serverless same-origin gateway to authenticated Render advisory feed.
  * No sensor token, viewer token or Render backend URL appears in browser JS.
  */
+const {checkKnownApiInput}=require("../deployment/vercel/defence_gate.js");
+
 module.exports = async function handler(request, response) {
   response.setHeader("Cache-Control", "no-store");
   response.setHeader("X-Content-Type-Options", "nosniff");
@@ -11,6 +13,15 @@ module.exports = async function handler(request, response) {
     return response.status(405).json({error:"GET required"});
   }
   const raw = request.query?.after ?? "0";
+  const inspection=checkKnownApiInput(raw);
+  if(inspection){
+    response.setHeader("X-Krishna-Lane",inspection.lane);
+    response.setHeader("X-Krishna-Decision","deny");
+    return response.status(inspection.status).json({
+      error:"Disallowed request parameter",reason:inspection.reason,
+      lane:inspection.lane,automatic_containment:false
+    });
+  }
   if (typeof raw !== "string" || !/^\d{1,16}$/.test(raw) ||
       !Number.isSafeInteger(Number(raw))) {
     return response.status(422).json({error:"Invalid event cursor"});
