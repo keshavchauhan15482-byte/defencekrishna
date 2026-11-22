@@ -93,8 +93,13 @@ token file whose contents equal `GARUDA_LIVE_SENSOR_TOKEN` on Render. Example:
 ~~~sh
 mkdir -p garuda_v3/runtime/live-inbox
 umask 077
-# Write the previously created *sensor* secret to the local private file.
-chmod 600 garuda_v3/runtime/live-sensor.key
+python - <<'PY'
+from pathlib import Path
+import getpass
+path = Path("garuda_v3/runtime/live-sensor.key")
+path.write_text(getpass.getpass("Enter Render GARUDA_LIVE_SENSOR_TOKEN: "))
+path.chmod(0o600)
+PY
 python -m garuda_v3.live_publisher \
   --artifacts garuda_v3/artifacts/residual_run \
   --inbox garuda_v3/runtime/live-inbox \
