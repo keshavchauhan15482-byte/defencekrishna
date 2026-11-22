@@ -6,6 +6,7 @@ packet payloads, source IPs, or promote new observations into model training.
 from __future__ import annotations
 
 import json
+import re
 import threading
 import time
 from urllib.parse import urlsplit
@@ -44,6 +45,18 @@ class PostgresEventStore:
                 cur.execute("""
                     CREATE INDEX IF NOT EXISTS krishna_live_forecasts_received
                     ON krishna_live_forecasts (received_at DESC)
+                """)
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS krishna_site_activity_events (
+                        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                        request_uuid TEXT NOT NULL UNIQUE,
+                        observed_at DOUBLE PRECISION NOT NULL,
+                        kind TEXT NOT NULL CHECK (kind = 'page_load')
+                    )
+                """)
+                cur.execute("""
+                    CREATE INDEX IF NOT EXISTS krishna_site_activity_at
+                    ON krishna_site_activity_events (observed_at DESC)
                 """)
 
     def _validated_event(self, payload):
@@ -130,4 +143,50 @@ class PostgresEventStore:
             "events": events,
             "sensor_age_seconds": round(age, 1) if age is not None else None,
             "gap": bool(earliest and after > 0 and after < int(earliest[0]) - 1),
+        }
+
+    def record_site_request(self, event):
+        """Persist one actually received first-party site request, not a model forecast.
+
+        No IP, user agent, cookie, referrer, arbitrary request data or device ID
+        is collected. A generated request UUID is for idempotent transport only.
+        """
+        if (not isinstance(event, dict) or
+                set(event) != {"schema", "kind", "request_uuid"} or
+                event.get("schema") != "krishna-site-activity-v1" or
+                event.get("kind") != "page_load" or
+                not isinstance(event.get("request_uuid"), str) or
+                not re.fullmatch(r"[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}", event["request_uuid"])):
+            raise LiveFeedError("Only anonymous first-party page_load records are permitted")
+        observed = self._clock()
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO krishna_site_activity_events
+                        (request_uuid, observed_at, kind)
+                    VALUES (%s, %s, 'page_load')
+                    ON CONFLICT (request_uuid) DO NOTHING RETURNING id
+                """, (event["request_uuid"], observed))
+                result = cur.fetchone()
+        return {"accepted": True, "stored": bool(result), "mode": "HTTP_ACTIVITY_ONLY"}
+
+    def site_activity_snapshot(self):
+        """Read-only, aggregate actual HTTP request counts (not unique users)."""
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT COUNT(*)::bigint,
+                           COUNT(*) FILTER (WHERE observed_at >= %s)::bigint,
+                           MAX(observed_at)
+                    FROM krishna_site_activity_events
+                """, (self._clock() - 86400,))
+                count, day_count, latest = cur.fetchone()
+        return {
+            "source": "first_party_page_requests",
+            "description": "Observed page-load requests; not unique visitors or network attacks",
+            "total_requests": int(count),
+            "requests_24h": int(day_count),
+            "last_request_at": float(latest) if latest is not None else None,
+            "is_model_input": False,
+            "automatic_containment": False,
         }
