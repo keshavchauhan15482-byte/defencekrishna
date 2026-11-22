@@ -15,6 +15,7 @@ class FakeDb:
         self.next_id = 1
         self.activity = []
         self.next_activity_id = 1
+        self.heartbeat = None
 
     def connect(self, _dsn):
         return FakeConnection(self)
@@ -45,6 +46,13 @@ class FakeCursor:
         self.last = None
         self.list_results = []
         if key.startswith("CREATE"): return
+        if key.startswith("INSERT INTO KRISHNA_SENSOR_HEARTBEAT"):
+            seen,state,duration,model=params
+            self.db.heartbeat=(seen,state,duration,model)
+            return
+        if key.startswith("SELECT SEEN_AT,STATE,CAPTURE_SECONDS"):
+            self.last=self.db.heartbeat[:3] if self.db.heartbeat else None
+            return
         if key.startswith("INSERT INTO KRISHNA_SITE_ACTIVITY_EVENTS"):
             request_uuid, observed_at = params
             if not any(row["uuid"] == request_uuid for row in self.db.activity):
@@ -161,6 +169,32 @@ class PersistentStoreTests(unittest.TestCase):
         clock[0]+=86401
         self.assertEqual(make().site_activity_snapshot()["requests_24h"],0)
         self.assertEqual(make().site_activity_snapshot()["total_requests"],1)
+
+    def test_real_sensor_heartbeat_is_separate_from_predictions(self):
+        clock=[1000.0]
+        db=FakeDb()
+        make=lambda:PostgresEventStore("postgresql://placeholder/test",TOKEN,
+                  connect=db.connect,clock=lambda:clock[0])
+        store=make()
+        heartbeat={"schema":"krishna-sensor-heartbeat-v1","kind":"heartbeat",
+                   "state":"capturing","capture_seconds":600,"model_sha256":"a"*64}
+        self.assertEqual(store.sensor_status_snapshot()["state"],"absent")
+        self.assertTrue(store.record_sensor_heartbeat(heartbeat)["accepted"])
+        self.assertEqual(len(db.records),0)
+        self.assertEqual(len(db.activity),0)
+        newer=make()
+        status=newer.sensor_status_snapshot()
+        self.assertEqual(status["state"],"capturing")
+        self.assertEqual(status["capture_seconds"],600)
+        self.assertNotIn("model_sha256",status)
+        for bad in ({**heartbeat,"state":"blocked"},
+                    {**heartbeat,"capture_seconds":0},
+                    {**heartbeat,"source_ip":"private"}):
+            with self.assertRaises(LiveFeedError):
+                newer.record_sensor_heartbeat(bad)
+        clock[0]+=91
+        self.assertEqual(make().sensor_status_snapshot()["state"],"stale")
+        self.assertEqual(len(db.records),0)
 
     def test_no_training_data_or_raw_packets_in_persistent_events(self):
         db = FakeDb()
