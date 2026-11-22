@@ -37,6 +37,13 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual(result['capacity_rejections'], 1)
         self.assertEqual(result['status_classes']['5xx'], 1)
 
+    def test_publication_fault_forces_not_ready(self):
+        app=SimpleNamespace(policy=SimpleNamespace(verify=lambda: True,
+            folder=Path(tempfile.gettempdir()),publication_error=True))
+        report=readiness(app)
+        self.assertEqual(report['status'],'not_ready')
+        self.assertFalse(report['policy_publication_ok'])
+
     def test_real_http_bounded_concurrency_and_metrics_auth(self):
         metrics = OperationalMetrics()
         app = SimpleNamespace(deployment_profile='local', operations=metrics,

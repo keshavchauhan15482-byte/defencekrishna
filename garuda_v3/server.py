@@ -32,8 +32,11 @@ class App:
         if (Path(runtime)/'restore.incomplete').exists():raise ValueError('Incomplete restore; recover into a new directory before startup')
         self.operations=OperationalMetrics()
         self.reader=reader_token;self.operator=operator_token;self.service=ForecastService(artifacts)
-        self.policy=PolicyStore(runtime,policy_key,allowed_cidrs,enforce)
-        self.response=ResponseCoordinator(self.policy,lab_automation)
+        self.policy=PolicyStore(runtime,policy_key,allowed_cidrs,enforce,exclusive=self.deployment_profile=='pilot')
+        try:self.response=ResponseCoordinator(self.policy,lab_automation)
+        except BaseException:
+            self.policy.close()
+            raise
         self.compute=threading.BoundedSemaphore(1);self.rates=collections.defaultdict(collections.deque);self.rate_lock=threading.Lock()
     def role(self,token):
         if hmac.compare_digest(token,self.operator):return 'operator'

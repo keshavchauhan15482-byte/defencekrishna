@@ -60,6 +60,9 @@ def handle_console(handler):
                 from .ps_evidence import published_comparison
                 handler.respond(200, published_comparison())
             elif path == '/bridge/replay':
+                if not app.rate_ok('console_replay'):
+                    handler.respond(429, {'error': 'Recorded replay quota reached; retry after one minute'})
+                    return True
                 if not app.compute.acquire(False):
                     handler.respond(503, {'error': 'Inference busy'})
                     return True
