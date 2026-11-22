@@ -97,7 +97,12 @@ class Handler(BaseHTTPRequestHandler):
             if len(self.headers.get_all('Authorization',[]))>1:
                 self.close_connection=True
                 return self.respond(400,{'error':'Duplicate Authorization rejected'})
-            if getattr(self.server.app,'deployment_profile','local')=='pilot' and urlsplit(self.path).path!='/health':
+            # The sensor can only post strictly validated advisory results; it never
+            # inherits the pilot viewer/operator role or any policy capability.
+            sensor_ingest = (self.command == 'POST' and urlsplit(self.path).path == '/api/live/ingest'
+                             and getattr(self.server.app, 'live_feed', None) is not None
+                             and self.server.app.live_feed.authorized(self.headers.get('Authorization', '')))
+            if getattr(self.server.app,'deployment_profile','local')=='pilot' and urlsplit(self.path).path!='/health' and not sensor_ingest:
                 auth=self.headers.get_all('Authorization',[])
                 role=self.server.app.role(auth[0][7:]) if len(auth)==1 and auth[0].startswith('Bearer ') else None
                 if not role:return self.respond(401,{'error':'Pilot profile requires authentication for all console and API routes'})
