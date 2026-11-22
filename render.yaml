@@ -11,6 +11,6 @@ services:
     autoDeployTrigger: commit
     envVars:
       - key: GARUDA_LIVE_SENSOR_TOKEN
-        generateValue: true
+        sync: false
       - key: RENDER_VIEWER_TOKEN
-        generateValue: true
+        sync: false
