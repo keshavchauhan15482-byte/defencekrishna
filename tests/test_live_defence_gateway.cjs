@@ -88,7 +88,7 @@ test("Real loopback HTTP security exercise: Arjuna, Krishna, Sudarshan and safe 
     r=await fetch(base+"/api/security-check?record=demo-public&record=demo-private");
     assert.equal(r.status,422);
     r=await fetch(base+"/api/security-check?record=demo-public&unexpected=yes");
-    assert.equal(r.status,422);
+    assert.equal(r.status,200); // extra untrusted metadata has NO policy authority
     r=await fetch(base+"/api/security-check?record="+encodeURIComponent("a".repeat(513)));
     assert.equal(r.status,422);
   });
@@ -99,7 +99,8 @@ test("A browser cannot choose a privilege lane or override Garuda shadow safety"
     const result=inspectRequest({method:"GET",
       url:"/api/security-check?record=demo-private"+suffix,headers:{}});
     assert.equal(result.allowed,false);
-    assert.equal(result.status,422);
+    assert.equal(result.status,403);
+    assert.equal(result.lane,"SUDARSHAN");
   }
 });
 
@@ -130,4 +131,23 @@ test("Vercel rewritten request.query delivers actual record without raw URL sear
  assert.equal(mismatch.status,422);
  const multi=inspectRequest({...request,query:{record:["demo-public","demo-private"]}});
  assert.equal(multi.status,422);
+});
+
+
+test("Vercel share/routing metadata is never treated as a privilege or dummy record",()=>{
+  const base="/api/security-check?record=demo-public&__vercel_protection_bypass=opaque";
+  assert.equal(inspectRequest({
+    method:"GET",url:base,
+    query:{record:"demo-public",__vercel_protection_bypass:"opaque"},headers:{}
+  }).status,200);
+  const privateResult=inspectRequest({
+    method:"GET",url:"/api/security-check?record=demo-private&lane=allow",
+    query:{record:"demo-private",lane:"allow",garuda:"allow"},headers:{}
+  });
+  assert.equal(privateResult.status,403);
+  assert.equal(privateResult.lane,"SUDARSHAN");
+  const duplicate=inspectRequest({
+    method:"GET",url:"/api/security-check?record=demo-public&record=demo-private",headers:{}
+  });
+  assert.equal(duplicate.status,422);
 });
