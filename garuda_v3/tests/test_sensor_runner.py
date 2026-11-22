@@ -34,6 +34,7 @@ class PacketSensorRuntimeTests(unittest.TestCase):
             def __init__(self, command, **kwargs):
                 self.cmd = command
                 self.stdout = io.BytesIO(b"\xd4\xc3\xb2\xa1" + b"\0" * 64)
+                self.stderr = io.BytesIO(b"tcpdump: capturing on authorized interface")
                 self.returncode = 0
             def wait(self, timeout=None):
                 return 0
