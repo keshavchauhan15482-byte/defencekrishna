@@ -230,6 +230,31 @@ class SensorHeartbeat:
         with self._lock:
             self._state = state
 
+    def verify(self):
+        """Validate saved Render token without creating a fake heartbeat."""
+        connector = (http.client.HTTPSConnection if self._endpoint.scheme == "https"
+                     else http.client.HTTPConnection)
+        conn = connector(self._endpoint.hostname, self._endpoint.port, timeout=20)
+        try:
+            conn.request("GET", "/api/sensor/verify", headers={
+                "Authorization": "Bearer " + self._token,
+                "Accept": "application/json",
+            })
+            response = conn.getresponse()
+            response.read(2048)
+            if response.status == 401:
+                raise RuntimeError(
+                    "Render rejected the saved GARUDA_LIVE_SENSOR_TOKEN (HTTP 401). "
+                    "Recheck it privately in the Render Environment settings."
+                )
+            if response.status != 200:
+                raise RuntimeError(
+                    f"Render sensor preflight returned HTTP {response.status}; "
+                    "check that the latest backend is live."
+                )
+        finally:
+            conn.close()
+
     def _send(self):
         with self._lock:
             current = self._state
@@ -254,7 +279,9 @@ class SensorHeartbeat:
             response = conn.getresponse()
             response.read(2048)
             if response.status != 202:
-                raise RuntimeError("Server did not accept sensor heartbeat")
+                raise RuntimeError(
+                    f"Render sensor heartbeat returned HTTP {response.status}"
+                )
         finally:
             conn.close()
 
@@ -310,10 +337,13 @@ def run(args):
             "automatic_containment": False,
             "remote_raw_packets": False,
         }), flush=True)
-        # Obtain operator OS permission before reporting a running sensor.
+        # Confirm the private Render token before OS capture permission and
+        # before emitting any heartbeat or forecasting claims.
+        heartbeat = SensorHeartbeat(args.publish_url, token, agent.service.model_hash, duration)
+        heartbeat.verify()
+        print(json.dumps({"event": "render_sensor_token_verified", "mode": "SHADOW_ONLY"}), flush=True)
         if not args.no_sudo:
             subprocess.run(["sudo", "-v"], check=True)
-        heartbeat = SensorHeartbeat(args.publish_url, token, agent.service.model_hash, duration)
         heartbeat.start()
         try:
             while True:
