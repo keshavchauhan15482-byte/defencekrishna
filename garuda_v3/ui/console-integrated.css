@@ -148,3 +148,19 @@ main{width:min(96vw,1900px);max-width:none;padding-left:2.2vw;padding-right:2.2v
 @media(prefers-reduced-motion:reduce){
  .vercel-shadow-only .ops-pulse-new{animation:none!important}
 }
+
+
+/* Real backend defence probe contract; never merged into Garuda live counters. */
+.vercel-shadow-only .live-defence-proof{margin-top:22px;border-color:#4c665b}
+.vercel-shadow-only .live-defence-actions{
+ display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin:15px 0 18px
+}
+.vercel-shadow-only .live-defence-actions span{
+ font-size:12px;color:#9bbbac;font-variant-numeric:tabular-nums
+}
+.vercel-shadow-only .live-defence-pass td:last-child{color:#97e4b6;font-weight:600}
+.vercel-shadow-only #live-defence-proof td{font-size:12px;line-height:1.7}
+.vercel-shadow-only #live-defence-proof .metric-note{
+ margin:14px 0 0;border-left:3px solid #7cabff;padding:10px 14px;
+ background:#7cabff08;color:#a9bacd
+}
