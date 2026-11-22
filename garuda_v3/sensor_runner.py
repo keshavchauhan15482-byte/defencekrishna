@@ -84,7 +84,8 @@ def _capture_stream(interface, inbox, seconds, *, use_sudo=True, max_bytes=MAX_P
     """
     import re
 
-    if not isinstance(interface, str) or not re.fullmatch(r"[a-zA-Z0-9_.:-]{1,32}", interface):
+    if (not isinstance(interface, str) or interface.startswith("-") or
+            not re.fullmatch(r"[a-zA-Z0-9_.:-]{1,32}", interface)):
         raise ValueError("Interface must be a simple local interface name (e.g. en0)")
     if not isinstance(seconds, int) or not 90 <= seconds <= 600:
         raise ValueError("Capture duration must be 90..600 seconds")
