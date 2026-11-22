@@ -39,8 +39,26 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(js.includes("proofStatus();")); // still works for the local-only console
   assert.ok(js.includes("setInterval(counters,5000)")); // but only in non-hosted branch
   const hosted=readFileSync(join(root,"public","hosted-mode.js"),"utf8");
-  assert.ok(hosted.includes('setDisabled("campaign"'));
+  assert.equal(hosted.includes('setDisabled("campaign"'),false);
   assert.ok(hosted.includes('setDisabled("analyze-file"'));
+  assert.ok(hosted.includes('addHostedDefenceLab()'));
+  assert.ok(hosted.includes('button.onclick=()=>selectScenario(i)'));
+  assert.ok(hosted.includes('campaign.onclick=()=>{'));
+  assert.ok(hosted.includes('replay.onclick=()=>{'));
+  assert.ok(hosted.includes('BROWSER DEMO · NOT LIVE DATA'));
+  assert.ok(hosted.includes('DEFENCE_WALKTHROUGHS.length'));
+  assert.equal((hosted.match(/key:"(?:syn_flood|port_scan|lateral_smb|burst_ddos|dns_tunnel|c2_beacon|exfil_spike|clean_baseline)"/g)||[]).length,8);
+  const walkthrough=hosted.slice(hosted.indexOf('function addHostedDefenceLab()'),hosted.indexOf('function boot(){'));
+  assert.equal(walkthrough.includes('fetch('),false);
+  assert.equal(walkthrough.includes('setLiveScore('),false);
+  assert.equal(walkthrough.includes('pushLivePoint('),false);
+  assert.equal(walkthrough.includes('animateMetric('),false);
+  assert.ok(walkthrough.includes('button.disabled=false'));
+  assert.ok(walkthrough.includes('campaign.disabled=false'));
+  assert.ok(page.includes('Attack scenarios are interactive browser-only defensive walkthroughs'));
+  const css=readFileSync(join(root,"public","console-integrated.css"),"utf8");
+  assert.ok(css.includes('hosted-lab-steps'));
+  assert.ok(css.includes('hosted-demo-selected'));
   assert.ok(hosted.includes('recordFirstPartyPageRequest()'));
   assert.ok(hosted.includes('addSensorActivationPanel()'));
   assert.ok(hosted.includes('krishna:sensor-status'));
