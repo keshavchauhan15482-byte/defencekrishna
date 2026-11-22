@@ -6,10 +6,12 @@ Render terminates external TLS; this process listens on the platform PORT.
 """
 from __future__ import annotations
 
+import collections
 import hmac
 import json
 import os
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
@@ -32,10 +34,22 @@ class RelayState:
             raise ValueError("GARUDA_LIVE_SENSOR_TOKEN must be configured")
         self.viewer_token = viewer_token
         self._ingest_lock = threading.Lock()
+        self._rate_lock = threading.Lock()
+        self._sensor_times = collections.deque()
 
     def authorized_viewer(self, header: str):
         return (isinstance(header, str) and header.startswith("Bearer ") and
                 hmac.compare_digest(header[7:], self.viewer_token))
+
+    def sensor_rate_ok(self):
+        with self._rate_lock:
+            now = time.monotonic()
+            while self._sensor_times and self._sensor_times[0] < now - 60:
+                self._sensor_times.popleft()
+            if len(self._sensor_times) >= 60:
+                return False
+            self._sensor_times.append(now)
+            return True
 
     def accept(self, payload):
         with self._ingest_lock:
@@ -74,7 +88,7 @@ class RelayState:
 
 class RelayHandler(BaseHTTPRequestHandler):
     server_version = "KrishnaLiveRelay/1"
-    protocol_version = "HTTP/1.1"
+    protocol_version = "HTTP/1.0"  # close each response; no unread-body reuse
 
     def log_message(self, _format, *_args):
         # No source IP, query, tokens, hashes or payloads in application logs.
@@ -120,6 +134,8 @@ class RelayHandler(BaseHTTPRequestHandler):
             return self.reply(404, {"error": "Unknown endpoint"})
         if not self.server.state.feed.authorized(self.headers.get("Authorization", "")):
             return self.reply(401, {"error": "Sensor authorization required"})
+        if not self.server.state.sensor_rate_ok():
+            return self.reply(429, {"error": "Sensor quota exceeded"})
         if self.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
             return self.reply(415, {"error": "JSON required"})
         sizes = self.headers.get_all("Content-Length", [])
