@@ -42,6 +42,13 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.equal(hosted.includes('setDisabled("campaign"'),false);
   assert.ok(hosted.includes('setDisabled("analyze-file"'));
   assert.ok(hosted.includes('addHostedDefenceLab()'));
+  assert.ok(hosted.includes('addRealHttpDefenceProof()'));
+  assert.ok(hosted.includes('Run 5 safe HTTP tests'));
+  assert.ok(hosted.includes('"/api/security-check?record="'));
+  assert.ok(hosted.includes('HTTP checks verified'));
+  assert.ok(css.includes('live-defence-pass'));
+  assert.ok(existsSync(join(root,"api","security-check.js")));
+  assert.ok(existsSync(join(root,"deployment","vercel","defence_gate.js")));
   assert.ok(hosted.includes('button.onclick=()=>selectScenario(i)'));
   assert.ok(hosted.includes('campaign.onclick=()=>{'));
   assert.ok(hosted.includes('replay.onclick=()=>{'));
