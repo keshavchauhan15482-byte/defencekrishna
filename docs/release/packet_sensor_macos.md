@@ -9,12 +9,12 @@ Run in macOS Terminal on your **own/authorized network**:
 ~~~bash
 git clone https://github.com/keshavchauhan15482-byte/defencekrishna.git
 cd defencekrishna
-bash scripts/start-garuda-sensor-macos.sh en0
+bash scripts/start-garuda-sensor-macos.sh
 ~~~
 
-If you already have the repository, run `git pull --ff-only` instead of cloning. Replace `en0` with your authorized interface; see `route -n get default | grep interface:`. Python 3.12+ and macOS's built-in tcpdump are required. The script creates its own environment and installs pinned NumPy; it does not modify training data.
+If you already have the repository, run `git pull --ff-only` instead of cloning. The script suggests this Mac's default interface from `route -n get default`, verifies it exists, and **requires you to type `AUTHORIZED`** before any capture starts. To choose a different interface explicitly, pass its name (for example `en0`); only inspect networks you own or have explicit permission to monitor. Python 3.12+ and macOS's built-in tcpdump are required. The script creates its own environment and installs pinned NumPy; it does not modify training data.
 
-The first time, the Python sensor privately asks for Render `GARUDA_LIVE_SENSOR_TOKEN`. Obtain it in the **krishna-shadow-telemetry** Render service Environment Settings; do not use `RENDER_VIEWER_TOKEN` or `RENDER_ACTIVITY_TOKEN`. Do NOT share/paste credentials in chat or GitHub. This token is stored only in an ignored private local file with file mode 0600. The Mac will ask for an OS `sudo` permission to capture packets. Garuda inference itself runs as your normal user.
+The local shell first asks you to confirm lawful ownership/authorization; there is no silent or remote packet capture. The first time, the Python sensor privately asks for Render `GARUDA_LIVE_SENSOR_TOKEN`. Obtain it in the **krishna-shadow-telemetry** Render service Environment Settings; do not use `RENDER_VIEWER_TOKEN` or `RENDER_ACTIVITY_TOKEN`. Do NOT share/paste credentials in chat or GitHub. This token is stored only in an ignored private local file with file mode 0600. The Mac will ask for an OS `sudo` permission to capture packets. Garuda inference itself runs as your normal user.
 
 To run one capture then stop, instead use:
 

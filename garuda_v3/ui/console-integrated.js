@@ -162,6 +162,21 @@ async function pollLive(){
  livePollBusy=true;
  try{
   const d=await api('/bridge/live/events?after='+liveCursor);
+  if(IS_HOSTED_RELAY){
+   const heartbeat=d.sensor_status||{};
+   document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{
+     backend:'online',
+     sensor:['absent','capturing','processing','stale'].includes(heartbeat.state)?
+       heartbeat.state:'absent',
+     captureSeconds:Number.isSafeInteger(heartbeat.capture_seconds)?
+       heartbeat.capture_seconds:null,
+     sensorAge:Number.isFinite(heartbeat.sensor_age_seconds)?
+       heartbeat.sensor_age_seconds:null,
+     forecast:['waiting','near_live','stale','disabled'].includes(d.state)?
+       d.state:'waiting',
+     forecastAge:Number.isFinite(d.sensor_age_seconds)?d.sensor_age_seconds:null
+   }}));
+  }
   if(d.site_activity && d.site_activity.is_model_input===false){
    document.dispatchEvent(new CustomEvent('krishna:site-activity',{detail:d.site_activity}));
   }
@@ -222,6 +237,9 @@ async function pollLive(){
     IS_HOSTED_RELAY&&['capturing','processing'].includes(d.sensor_status?.state)?
     'Real packet sensor '+d.sensor_status.state+' · awaiting forecast':pair[1]);
  }catch(e){
+  if(IS_HOSTED_RELAY){
+   document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{backend:'offline',sensor:'unavailable',forecast:'unavailable'}}));
+  }
   text('connection',IS_HOSTED_RELAY?'Render telemetry unavailable':'Sensor feed offline');
   text('mode','OFFLINE · NO LIVE DATA');
   if(IS_HOSTED_RELAY){
