@@ -116,6 +116,11 @@ class RelayHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         url = urlsplit(self.path)
         if url.path == "/health" and not url.query:
+            if self.server.state.store is not None:
+                try:
+                    self.server.state.store.snapshot(0)
+                except Exception:
+                    return self.reply(503, {"status": "unavailable", "service": "persistent_telemetry"})
             return self.reply(200, {"status": "ready", "service": "advisory_telemetry_relay"})
         if url.path != "/api/live/events":
             return self.reply(404, {"error": "Unknown endpoint"})
