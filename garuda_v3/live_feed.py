@@ -14,7 +14,7 @@ class LiveFeedError(ValueError):
 
 
 class LiveFeed:
-    HORIZONS = (10, 20, 30, 40)
+    HORIZONS = ((10, 20, 30, 40), (60, 120, 180, 240))
     MAX_AGE = 300
     STALE_AFTER = 120
 
@@ -63,8 +63,11 @@ class LiveFeed:
         trajectory = data["trajectory"]
         if not isinstance(trajectory, list) or len(trajectory) != 4:
             raise LiveFeedError("Four future horizons required")
+        horizons = tuple(row.get('horizon_seconds') if isinstance(row, dict) else None for row in trajectory)
+        if horizons not in self.HORIZONS:
+            raise LiveFeedError('Only 10s or 60s model horizon sequences permitted')
         clean = []
-        for horizon, row in zip(self.HORIZONS, trajectory):
+        for horizon, row in zip(horizons, trajectory):
             if not isinstance(row, dict) or set(row) != {"horizon_seconds", "malicious_flow_probability"}:
                 raise LiveFeedError("Invalid trajectory shape")
             p = row["malicious_flow_probability"]
