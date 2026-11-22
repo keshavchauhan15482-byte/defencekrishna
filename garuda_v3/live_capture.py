@@ -25,8 +25,11 @@ def capture_once(interface, inbox, seconds=90):
     binary = shutil.which("tcpdump")
     if not binary:
         raise RuntimeError("tcpdump is not installed or unavailable in PATH")
-    folder = Path(inbox).resolve()
-    if not folder.is_dir() or folder.is_symlink():
+    requested = Path(inbox)
+    if requested.is_symlink():
+        raise ValueError('Capture inbox must not be a symlink')
+    folder = requested.resolve()
+    if not folder.is_dir():
         raise ValueError("Capture inbox must exist and not be a symlink")
     temporary = folder / ("pending-" + secrets.token_hex(12) + ".pcap")
     completed = folder / ("capture-" + secrets.token_hex(12) + ".pcap.ready")
@@ -37,7 +40,7 @@ def capture_once(interface, inbox, seconds=90):
         proc = subprocess.Popen(
             [binary, "-i", interface, "-s", "0", "-w", str(temporary)],
             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL, umask=0o077,
         )
         try:
             proc.wait(timeout=seconds)
