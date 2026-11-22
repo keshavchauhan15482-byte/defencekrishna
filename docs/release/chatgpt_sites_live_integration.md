@@ -32,6 +32,7 @@ model stays on a private owned sensor host. The Site is not a packet sniffer.
 2. Bring into that Site's actual server-side source:
    - `site_integration/chatgpt_sites/live_routes.mjs`
    - `site_integration/chatgpt_sites/schema.sql`
+   - `site_integration/chatgpt_sites/live_client.mjs` (browser-side client)
    from GitHub main, and adapt imports to the Site's actual framework/router.
    The generic Web Fetch adapter exports `handleKrishnaLiveRequest(request, env)`.
    In the Site's existing fetch/router entrypoint, **before its fallback routes**:
