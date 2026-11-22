@@ -46,7 +46,6 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(hosted.includes('Run 5 safe HTTP tests'));
   assert.ok(hosted.includes('"/api/security-check?record="'));
   assert.ok(hosted.includes('HTTP checks verified'));
-  assert.ok(css.includes('live-defence-pass'));
   assert.ok(existsSync(join(root,"api","security-check.js")));
   assert.ok(existsSync(join(root,"deployment","vercel","defence_gate.js")));
   assert.ok(handler.toString().includes("checkKnownApiInput"));
@@ -66,6 +65,7 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(walkthrough.includes('campaign.disabled=false'));
   assert.ok(page.includes('Attack scenarios are interactive browser-only defensive walkthroughs'));
   const css=readFileSync(join(root,"public","console-integrated.css"),"utf8");
+  assert.ok(css.includes('live-defence-pass'));
   assert.ok(css.includes('hosted-lab-steps'));
   assert.ok(css.includes('hosted-demo-selected'));
   assert.ok(hosted.includes('recordFirstPartyPageRequest()'));
