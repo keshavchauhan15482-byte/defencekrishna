@@ -30,10 +30,21 @@ function parseRecord(request){
   if(url.pathname!=="/api/security-check")
     return {error:"INVALID_ROUTE",status:404};
   const keys=[...url.searchParams.keys()];
-  if(keys.length>1||keys.some(k=>k!=="record")||
-     url.searchParams.getAll("record").length!==1)
+  const supplied=url.searchParams.getAll("record");
+  // Vercel serverless may provide query parameters in request.query while
+  // request.url is only the rewritten pathname (observed in deployment).
+  const query=(request.query&&typeof request.query==="object"&&!Array.isArray(request.query))
+    ? request.query:{};
+  const objectKeys=Object.keys(query);
+  if(keys.length>1||keys.some(k=>k!=="record")||supplied.length>1||
+     objectKeys.some(k=>k!=="record")||objectKeys.length>1)
     return {error:"INVALID_PARAMETERS",status:422};
-  const value=url.searchParams.get("record");
+  const obj=Object.prototype.hasOwnProperty.call(query,"record")?query.record:null;
+  if(obj!==null&&typeof obj!=="string")
+    return {error:"INVALID_PARAMETERS",status:422};
+  if(supplied.length===1&&obj!==null&&supplied[0]!==obj)
+    return {error:"CONFLICTING_PARAMETERS",status:422};
+  const value=supplied.length===1?supplied[0]:obj;
   if(value===null||value.length===0||value.length>MAX_PROBE_LENGTH)
     return {error:"INVALID_INPUT",status:422};
   return {value};
