@@ -44,25 +44,17 @@ class RelayState:
                 source = payload.get("capture_sha256")
                 model = payload.get("model_sha256")
                 if isinstance(source, str) and isinstance(model, str):
-                    previous = self.feed.snapshot()["events"]
-                    for item in previous:
+                    for item in self.feed.snapshot()["events"]:
                         if (item["capture_sha256"] == source.lower() and
                                 item["model_sha256"] == model.lower()):
-                            # Still validate freshness/schema first. Duplicates
-                            # with mutated fields must never silently pass.
-                            from copy import deepcopy
-                            if (payload.get("automatic_containment") is False and
-                                    payload.get("schema") == "krishna-live-v1" and
-                                    payload.get("kind") == "forecast" and
-                                    set(payload) == {
-                                        "schema", "kind", "capture_sha256", "model_sha256",
-                                        "cutoff_epoch_seconds", "trajectory", "alert",
-                                        "supported", "automatic_containment"
-                                    } and
-                                    payload.get("cutoff_epoch_seconds") == item["cutoff_epoch_seconds"] and
-                                    payload.get("alert") == item["alert"] and
-                                    payload.get("supported") == item["supported"] and
-                                    payload.get("trajectory") == item["trajectory"]):
+                            # Independently validate every retry, including
+                            # timestamp freshness, bounded fields and scores.
+                            validation = LiveFeed("validation-only-secret-" + "x" * 32)
+                            candidate = validation.append(payload)
+                            keys = ("capture_sha256", "model_sha256",
+                                    "cutoff_epoch_seconds", "trajectory",
+                                    "alert", "supported")
+                            if all(candidate[key] == item[key] for key in keys):
                                 return dict(item)
                             raise LiveFeedError("Conflicting capture provenance")
             return self.feed.append(payload)
