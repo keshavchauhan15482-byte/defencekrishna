@@ -114,3 +114,20 @@ test("No privileged HTTP client header may make dummy private record accessible"
     assert.equal(body.lane,"SUDARSHAN");
   });
 });
+
+test("Vercel rewritten request.query delivers actual record without raw URL search",()=>{
+ const request={method:"GET",url:"/api/security-check",headers:{}};
+ const publicResult=inspectRequest({...request,query:{record:"demo-public"}});
+ assert.equal(publicResult.status,200);
+ const malicious=inspectRequest({...request,query:{record:"' OR 1=1--"}});
+ assert.equal(malicious.status,403);
+ assert.equal(malicious.lane,"ARJUNA");
+ const privateResult=inspectRequest({...request,query:{record:"demo-private"}});
+ assert.equal(privateResult.status,403);
+ assert.equal(privateResult.lane,"SUDARSHAN");
+ const mismatch=inspectRequest({...request,
+   url:"/api/security-check?record=demo-public",query:{record:"demo-private"}});
+ assert.equal(mismatch.status,422);
+ const multi=inspectRequest({...request,query:{record:["demo-public","demo-private"]}});
+ assert.equal(multi.status,422);
+});
