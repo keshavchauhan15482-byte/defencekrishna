@@ -43,6 +43,13 @@ test("Site request becomes a private metadata-only authenticated event",async()=
   await handler({...request(),method:"GET"},res);
   assert.equal(res.code,405);
   res=response();
+  await handler({...request(),query:{probe:"<script>alert(1)</script>"}},res);
+  assert.equal(res.code,403);
+  assert.equal(res.body.lane,"ARJUNA");
+  res=response();
+  await handler({...request(),query:{test:"safe"}},res);
+  assert.equal(res.code,422);
+  res=response();
   await handler({...request(),headers:{...request().headers,"content-length":"1024"}},res);
   assert.equal(res.code,413);
   assert.equal(calls,1);

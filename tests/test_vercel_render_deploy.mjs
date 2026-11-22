@@ -42,13 +42,21 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.equal(hosted.includes('setDisabled("campaign"'),false);
   assert.ok(hosted.includes('setDisabled("analyze-file"'));
   assert.ok(hosted.includes('addHostedDefenceLab()'));
+  assert.ok(hosted.includes('addRealHttpDefenceProof()'));
+  assert.ok(hosted.includes('Run 5 safe HTTP tests'));
+  assert.ok(hosted.includes('"/api/security-check?record="'));
+  assert.ok(hosted.includes('HTTP checks verified'));
+  assert.ok(existsSync(join(root,"api","security-check.js")));
+  assert.ok(existsSync(join(root,"deployment","vercel","defence_gate.js")));
+  assert.ok(handler.toString().includes("checkKnownApiInput"));
+  assert.ok(readFileSync(join(root,"api","site-activity.js"),"utf8").includes("checkKnownApiInput"));
   assert.ok(hosted.includes('button.onclick=()=>selectScenario(i)'));
   assert.ok(hosted.includes('campaign.onclick=()=>{'));
   assert.ok(hosted.includes('replay.onclick=()=>{'));
   assert.ok(hosted.includes('BROWSER DEMO · NOT LIVE DATA'));
   assert.ok(hosted.includes('DEFENCE_WALKTHROUGHS.length'));
   assert.equal((hosted.match(/key:"(?:syn_flood|port_scan|lateral_smb|burst_ddos|dns_tunnel|c2_beacon|exfil_spike|clean_baseline)"/g)||[]).length,8);
-  const walkthrough=hosted.slice(hosted.indexOf('function addHostedDefenceLab()'),hosted.indexOf('function boot(){'));
+  const walkthrough=hosted.slice(hosted.indexOf('function addHostedDefenceLab()'),hosted.indexOf('function addRealHttpDefenceProof()'));
   assert.equal(walkthrough.includes('fetch('),false);
   assert.equal(walkthrough.includes('setLiveScore('),false);
   assert.equal(walkthrough.includes('pushLivePoint('),false);
@@ -57,6 +65,7 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(walkthrough.includes('campaign.disabled=false'));
   assert.ok(page.includes('Attack scenarios are interactive browser-only defensive walkthroughs'));
   const css=readFileSync(join(root,"public","console-integrated.css"),"utf8");
+  assert.ok(css.includes('live-defence-pass'));
   assert.ok(css.includes('hosted-lab-steps'));
   assert.ok(css.includes('hosted-demo-selected'));
   assert.ok(hosted.includes('recordFirstPartyPageRequest()'));
@@ -147,6 +156,12 @@ test("Vercel serverless API never needs browser sensor secrets and sanitizes eve
     await handler({method:"GET",query:{after:"invalid"}},invalid);
     assert.equal(invalid.code,422);
     assert.equal(requestCount,1);
+    const malicious=mockResponse();
+    await handler({method:"GET",query:{after:"' OR 1=1--"}},malicious);
+    assert.equal(malicious.code,403);
+    assert.equal(malicious.body.lane,"ARJUNA");
+    assert.equal(malicious.headers["X-Krishna-Decision"],"deny");
+    assert.equal(requestCount,1); // malicious input never reaches Render
     const blocked=mockResponse();
     await handler({method:"POST",query:{}},blocked);
     assert.equal(blocked.code,405);

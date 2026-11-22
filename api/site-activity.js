@@ -5,12 +5,26 @@
  * Logged activity is a request count, NOT a unique visitor or AI prediction.
  */
 const {randomUUID}=require("node:crypto");
+const {checkKnownApiInput}=require("../deployment/vercel/defence_gate.js");
 
 module.exports=async function handler(request,response){
   response.setHeader("Cache-Control","no-store");
   response.setHeader("X-Content-Type-Options","nosniff");
   response.setHeader("Cross-Origin-Resource-Policy","same-origin");
   if(request.method!=="POST")return response.status(405).json({error:"POST required"});
+  const query=request.query||{};
+  for(const [key,value] of Object.entries(query)){
+    const inspection=checkKnownApiInput(value);
+    if(inspection){
+      response.setHeader("X-Krishna-Lane",inspection.lane);
+      response.setHeader("X-Krishna-Decision","deny");
+      return response.status(inspection.status).json({
+        error:"Disallowed request parameter",lane:inspection.lane
+      });
+    }
+  }
+  if(Object.keys(query).length>0)
+    return response.status(422).json({error:"Query parameters unsupported"});
   const origin=request.headers?.origin;
   const host=request.headers?.host;
   const fetchSite=request.headers?.["sec-fetch-site"];
