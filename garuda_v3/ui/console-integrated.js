@@ -99,7 +99,7 @@ function render(f,source='lab'){
  const values=trajectory.map(p=>Number(p.malicious_flow_probability)*100).filter(Number.isFinite);
  if(!values.length){text('future','Insufficient evidence: no forecast returned');return null;}
  const risk=clampRisk(Math.max(...values));
- lastFutureText='Forecast horizons: '+values.map((v,i)=>'H'+(i+1)+' '+clampRisk(v).toFixed(1)+'%').join('  ·  ');
+ lastFutureText='Forecast horizons: '+values.map((v,i)=>'+'+String(trajectory[i].horizon_seconds)+'s '+clampRisk(v).toFixed(1)+'%').join('  ·  ');
  text('future',lastFutureText);
  // The global gauge and timeline belong exclusively to real capture events.
  if(source==='sensor'){
