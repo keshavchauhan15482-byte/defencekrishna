@@ -21,7 +21,7 @@ OWN SENSOR / PRIVATE PYTHON
     -> live_publisher with local durable SQLite outbox
     -> HTTPS POST https://<your-render-service>.onrender.com/api/live/ingest
 RENDER PYTHON
-  Authenticated, bounded metadata-only relay (128 events in RAM)
+  Authenticated metadata-only relay backed by separate PostgreSQL history
     -> GET /api/live/events protected by independent viewer token
 VERCEL
   /api/live-events serverless function (stores viewer token server-side)
@@ -36,29 +36,41 @@ Do NOT change the private `garuda_v3.integrated_server` listener from
 
 ## 1. Deploy Render relay (first)
 
-1. In Render create a **Blueprint** from
+1. First confirm the existing Render PostgreSQL database named `krishna-live-telemetry` is available in the same workspace and Singapore region. Do **not** create a second database.
+2. In Render create a **Blueprint** from
    `keshavchauhan15482-byte/defencekrishna` on `main` using root
    `render.yaml`. This creates the Python web service
    `krishna-shadow-telemetry`. The `/health` endpoint should respond with
    `{"status":"ready","service":"advisory_telemetry_relay"}`.
-2. Set two **different**, randomly generated 40+ character secrets when
+3. Set two **different**, randomly generated 40+ character secrets when
    prompted by Render Blueprint:
    - `GARUDA_LIVE_SENSOR_TOKEN` = independent device ingest secret
    - `RENDER_VIEWER_TOKEN` = server-to-server Vercel read secret
-3. Store both only in the platform's secret manager or a private `chmod 600`
+4. Store both only in the platform's secret manager or a private `chmod 600`
    file on your own computer. Never commit, paste into this chat, or put in
    browser JavaScript/screenshots. You can generate each locally using
    `python -c "import secrets; print(secrets.token_urlsafe(48))"`.
-4. Note the **actual HTTPS Render service URL** displayed by Render. Do not
+5. Note the **actual HTTPS Render service URL** displayed by Render. Do not
    assume its name in advance.
 
 Health checking does not establish live data: before a sensor publishes, the
 feed is `waiting`.
 
-If using Render free instance, it may sleep while idle. Memory-only events
-will disappear on restart and scaling to multiple instances is not supported.
-Always-on/production telemetry requires persistent storage, proper
-observability and a privacy/security review.
+The Render relay now REQUIRES `DATABASE_URL` from the **separate** existing
+`krishna-live-telemetry` PostgreSQL resource. It creates only its own
+`krishna_live_forecasts` table and never edits trained model weights, recorded
+datasets, training labels, or inference checkpoints. Forecast metadata
+persists across web-service restarts. The web API reads at most 128 rows per
+poll; the database retains prior rows instead of silently truncating history.
+Raw PCAP files remain on the owned sensor and are not uploaded to PostgreSQL.
+
+The currently provisioned **free** Render PostgreSQL instance is scheduled
+to expire on **22 December 2026**. Free database persistence is therefore NOT
+indefinite. Before expiry, migrate/upgrade to long-lived storage and establish
+backup, retention, user access and privacy controls. If Render's free web
+service sleeps, the dashboard shows stale/offline until it wakes; the retained
+database history remains separate. Production always-on operation needs
+adequate hosting, observability and independent review.
 
 ## 2. Deploy Vercel frontend
 
@@ -132,10 +144,11 @@ The dashboard polls every 2.6 seconds for *new events*; this is **not** a
 - Wrong ingest token => HTTP 401.
 - Invalid sensor event or synthetic historical timestamp => HTTP 422.
 - Authentic supported PCAP processed in private sensor => publisher prints
-  `sensor_delivery_accepted`; Render replies 202; Vercel dashboard gets **one**
+  `sensor_delivery_accepted`; Render replies 202, saves an independent PostgreSQL row; Vercel dashboard gets **one**
   new score and graph point per distinct accepted capture.
 - Valid repeated delivery does not generate another graph point.
-- No new sample => STALE. A Render restart loses prior memory events.
+- No new sample => STALE. A Render restart preserves PostgreSQL history; the 128-row API page limit does not delete stored records.
+- Every stored record includes immutable capture hash, checkpoint hash, timestamps and four prediction horizons; it is **not** used for automatic model retraining.
 - Attacks blocked, zero-day detections and automatic containment remain **not
   established** by this telemetry transport. Remote Upload / Attack Lab controls
   are deliberately disabled on the Vercel static deployment rather than
