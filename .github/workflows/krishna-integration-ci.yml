@@ -34,6 +34,8 @@ jobs:
         run: python -m compileall -q garuda_v3
       - name: Published evidence console regression
         run: node --test garuda_v3/tests/test_evidence_ui.mjs
+      - name: ChatGPT Sites live adapter regression
+        run: node --test tests/site_live_routes.test.mjs
       - name: Python Garuda regression
         run: |
           task_tmp=$(mktemp -d "$RUNNER_TEMP/krishna-tests.XXXXXX")
