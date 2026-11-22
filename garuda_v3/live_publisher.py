@@ -31,6 +31,20 @@ def read_private_token(filename):
     return token
 
 
+def read_sites_bypass_token(filename):
+    """Optional ChatGPT Sites sign-in bypass for sensor-to-site requests only."""
+    path = Path(filename)
+    if path.is_symlink():
+        raise ValueError("Bypass token must not be a symlink")
+    info = path.stat()
+    if not stat.S_ISREG(info.st_mode) or (os.name == "posix" and info.st_mode & 0o077):
+        raise ValueError("Bypass token must be a private regular file (chmod 600)")
+    token = path.read_text(encoding="ascii").strip()
+    if not 32 <= len(token) <= 4096 or any(ord(c) < 33 or ord(c) > 126 for c in token):
+        raise ValueError("Invalid Sites bypass token")
+    return token
+
+
 def validate_endpoint(url):
     parsed = urlsplit(url)
     if parsed.scheme not in ("http", "https") or not parsed.hostname:
@@ -63,18 +77,23 @@ def event_from_result(result):
     }
 
 
-def publish(url, token, record):
+def publish(url, token, record, sites_bypass_token=None):
     parsed = validate_endpoint(url)
     raw = json.dumps(event_from_result(record), allow_nan=False, separators=(",", ":")).encode()
     if len(raw) > 8192:
         raise ValueError("Event exceeds 8 KiB")
     connector = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
     connection = connector(parsed.hostname, parsed.port, timeout=8)
+    headers = {
+        "Authorization": "Bearer " + token, "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+    if sites_bypass_token:
+        # Sites consumes this gate-only credential before the app receives the
+        # independent sensor Authorization header. Never expose either in JS.
+        headers["OAI-Sites-Authorization"] = "Bearer " + sites_bypass_token
     try:
-        connection.request("POST", parsed.path, body=raw, headers={
-            "Authorization": "Bearer " + token, "Content-Type": "application/json",
-            "Accept": "application/json",
-        })
+        connection.request("POST", parsed.path, body=raw, headers=headers)
         response = connection.getresponse()
         body = response.read(2048)
         if response.status != 202:
@@ -87,7 +106,7 @@ def publish(url, token, record):
         connection.close()
 
 
-def deliver_pending(agent, url, token):
+def deliver_pending(agent, url, token, sites_bypass_token=None):
     db = agent.db
     db.execute("""CREATE TABLE IF NOT EXISTS live_deliveries(
         capture_sha256 TEXT, model_sha256 TEXT, delivered_at REAL,
@@ -108,7 +127,7 @@ def deliver_pending(agent, url, token):
                            (capture, model, time.time()))
             continue
         try:
-            receipt = publish(url, token, record)
+            receipt = publish(url, token, record, sites_bypass_token)
         except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
             print(json.dumps({"event": "sensor_delivery_failed", "reason": type(exc).__name__}), flush=True)
             break  # Keep the outbox row pending; delivery is not falsely confirmed.
@@ -125,6 +144,7 @@ def main():
     p.add_argument("--database", required=True)
     p.add_argument("--publish-url", required=True)
     p.add_argument("--token-file", required=True)
+    p.add_argument("--sites-bypass-file", default=None, help="Optional private ChatGPT Sites sign-in bypass token file")
     p.add_argument("--interval", type=int, default=10)
     p.add_argument("--once", action="store_true")
     args = p.parse_args()
@@ -132,6 +152,7 @@ def main():
         p.error("--interval must be at least 2 seconds")
     validate_endpoint(args.publish_url)
     token = read_private_token(args.token_file)
+    sites_bypass_token = read_sites_bypass_token(args.sites_bypass_file) if args.sites_bypass_file else None
     inbox = Path(args.inbox)
     if not inbox.is_dir():
         p.error("Capture inbox does not exist")
@@ -148,7 +169,7 @@ def main():
                 except (ValueError, OSError, KeyError) as exc:
                     print(json.dumps({"event": "capture_rejected",
                                       "reason": type(exc).__name__}), flush=True)
-            deliver_pending(agent, args.publish_url, token)
+            deliver_pending(agent, args.publish_url, token, sites_bypass_token)
             if args.once:
                 break
             time.sleep(args.interval)
