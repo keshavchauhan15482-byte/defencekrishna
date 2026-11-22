@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo 'No frontend dependencies required'",
+  "buildCommand": "node deployment/vercel/build_site.mjs",
+  "outputDirectory": "public",
+  "rewrites": [
+    {"source": "/", "destination": "/console.html"},
+    {"source": "/bridge/live/events", "destination": "/api/live-events"}
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {"key": "Referrer-Policy", "value": "no-referrer"},
+        {"key": "X-Content-Type-Options", "value": "nosniff"},
+        {"key": "X-Frame-Options", "value": "DENY"}
+      ]
+    },
+    {
+      "source": "/bridge/live/events",
+      "headers": [{"key": "Cache-Control", "value": "no-store"}]
+    }
+  ]
+}
