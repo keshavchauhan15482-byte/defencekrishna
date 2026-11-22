@@ -94,6 +94,44 @@ class RelayTests(unittest.TestCase):
         altered = dict(evt, alert=False)
         self.assertEqual(self.request("POST", "/api/live/ingest", altered, token=SENSOR)[0], 422)
 
+    def test_independent_site_traffic_ingest_requires_a_third_token(self):
+        from garuda_v3.live_feed import LiveFeedError
+
+        activity_token="activity-"+"Z"*40
+        with self.assertRaises(ValueError):
+            RelayState(SENSOR,VIEWER,activity_token=VIEWER)
+
+        class ActivityStore:
+            def __init__(self):
+                self.requests=[]
+            def record_site_request(self,data):
+                if set(data)!={"schema","kind","request_uuid"} or data["kind"]!="page_load":
+                    raise LiveFeedError("Invalid site activity")
+                self.requests.append(data)
+                return {"accepted":True,"stored":True,"mode":"HTTP_ACTIVITY_ONLY"}
+            def snapshot(self,after):
+                return {"state":"waiting","events":[],"cursor":0,
+                        "sensor_age_seconds":None,"gap":False}
+            def site_activity_snapshot(self):
+                return {"source":"first_party_page_requests","total_requests":len(self.requests),
+                        "requests_24h":len(self.requests),"last_request_at":time.time(),
+                        "is_model_input":False}
+        store=ActivityStore()
+        self.app.activity_token=activity_token
+        self.app.store=store
+        data={"schema":"krishna-site-activity-v1","kind":"page_load",
+              "request_uuid":"01234567-89ab-4cde-8f01-23456789abcd"}
+        self.assertEqual(self.request("POST","/api/site-activity/ingest",data)[0],401)
+        self.assertEqual(self.request("POST","/api/site-activity/ingest",data,token=SENSOR)[0],401)
+        self.assertEqual(self.request("POST","/api/site-activity/ingest",data,token=activity_token)[0],202)
+        self.assertEqual(self.request("POST","/api/site-activity/ingest",{**data,"kind":"attack"},token=activity_token)[0],422)
+        self.assertEqual(len(store.requests),1)
+        code,feed=self.request("GET","/api/live/events",token=VIEWER)
+        self.assertEqual(code,200)
+        self.assertEqual(feed["state"],"waiting")
+        self.assertEqual(feed["site_activity"]["total_requests"],1)
+        self.assertFalse(feed["site_activity"]["is_model_input"])
+
     def test_no_cors_or_public_inference_endpoint(self):
         self.assertEqual(self.request("OPTIONS", "/api/live/ingest")[0], 405)
         self.assertEqual(self.request("GET", "/api/forecast", token=SENSOR)[0], 404)
