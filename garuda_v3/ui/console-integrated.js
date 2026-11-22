@@ -16,6 +16,7 @@ let lastLiveValue=0;
 let targetLiveValue=0;
 let lastFutureText='Waiting for forecast horizons…';
 let liveCursor=0,livePollBusy=false;
+let lastSensorForecast=null;
 let scanPhase=0;
 const metricAnimations=new Map();
 
@@ -59,7 +60,9 @@ function animateMetric(id,target,{decimals=0,suffix=''}={}){
 function drawPoints(series){
  const line=$('line'),area=$('area');if(!line||!area)return;
  if(!series.length){line.setAttribute('d','');area.setAttribute('d','');return;}
- const denom=Math.max(1,MAX_POINTS-1);
+ // Each plotted point is a model estimate. Stretch the four REAL forecast
+ // horizons across the width instead of leaving a single dot at the edge.
+ const denom=Math.max(1,series.length-1);
  const xy=series.map((v,i)=>[40+i*740/denom,230-clampRisk(v)*2]);
  const path=xy.map((p,i)=>(i?'L':'M')+p.join(' ')).join(' ');
  line.setAttribute('d',path);
@@ -68,7 +71,8 @@ function drawPoints(series){
  if(point){const p=xy.at(-1);point.setAttribute('cx',p[0]);point.setAttribute('cy',p[1]);point.style.opacity='1';}
 }
 
-function seedLiveGraph(value){points=Array(MAX_POINTS).fill(clampRisk(value));drawPoints(points)}
+// No fake prefilled model scores are allowed on Vercel.
+function seedLiveGraph(value){if(!IS_HOSTED_RELAY){points=Array(MAX_POINTS).fill(clampRisk(value));drawPoints(points)}}
 function pushLivePoint(value){points.push(clampRisk(value));if(points.length>MAX_POINTS)points=points.slice(-MAX_POINTS);drawPoints(points)}
 function setLiveScore(value){const v=clampRisk(value);text('score',v.toFixed(1)+'%');text('chart-score',v.toFixed(1))}
 function updateScanBeam(){
@@ -99,7 +103,7 @@ function render(f,source='lab'){
  const values=trajectory.map(p=>Number(p.malicious_flow_probability)*100).filter(Number.isFinite);
  if(!values.length){text('future','Insufficient evidence: no forecast returned');return null;}
  const risk=clampRisk(Math.max(...values));
- lastFutureText='Forecast horizons: '+values.map((v,i)=>'+'+String(trajectory[i].horizon_seconds)+'s '+clampRisk(v).toFixed(1)+'%').join('  ·  ');
+ lastFutureText='MODEL OUTPUT · future horizons: '+values.map((v,i)=>'+'+String(trajectory[i].horizon_seconds)+'s '+clampRisk(v).toFixed(1)+'%').join('  ·  ');
  text('future',lastFutureText);
  // The global gauge and timeline belong exclusively to real capture events.
  if(source==='sensor'){
@@ -107,7 +111,8 @@ function render(f,source='lab'){
   hasLiveTarget=true;
   lastLiveValue=risk;
   setLiveScore(risk);
-  pushLivePoint(risk);
+  if(IS_HOSTED_RELAY)drawPoints(values);
+  else pushLivePoint(risk);
  }
  return risk;
 }
@@ -186,6 +191,14 @@ async function pollLive(){
    liveCursor=event.id;
    if(event.kind!=='forecast')continue;
    render({trajectory:event.trajectory},'sensor');
+   lastSensorForecast={score:event.score,supported:event.supported===true,
+     cutoffEpoch:event.cutoff_epoch_seconds,id:event.id};
+   if(IS_HOSTED_RELAY){
+     document.dispatchEvent(new CustomEvent('krishna:forecast-received',{detail:{
+       id:event.id,score:event.score,supported:event.supported===true,
+       alert:event.alert===true,cutoffEpoch:event.cutoff_epoch_seconds
+     }}));
+   }
    if(event.alert){threats+=1;animateMetric('threats',threats);}
    const scope=event.supported?'Support flag reported':'UNVERIFIED INPUT SUPPORT';
    feed('Sensor capture · '+event.score.toFixed(1)+'%','Advisory shadow forecast · '+scope+' · No automatic action');
@@ -197,6 +210,28 @@ async function pollLive(){
      const td=document.createElement('td');td.textContent=value;tr.append(td);
    }
    $('events').prepend(tr);while($('events').children.length>100)$('events').lastChild.remove();
+  }
+  if(IS_HOSTED_RELAY){
+    const metric=$('score')?.closest('article');
+    const metricLabel=metric?.querySelector('label');
+    const metricHint=metric?.querySelector('small');
+    if(metricLabel)metricLabel.textContent=lastSensorForecast?
+      'LAST MODEL ESTIMATE':'FORECAST · AWAITING CAPTURE';
+    if(metricHint)metricHint.textContent=!lastSensorForecast?
+      'No forecast received; sensor heartbeat is separate':
+      (lastSensorForecast.supported?'Input support reported':'INPUT SUPPORT UNVERIFIED')+
+      (d.state==='stale'?' · HISTORICAL / STALE':
+        d.state==='near_live'?' · recent capture':' · not live');
+    if(metric)metric.classList.toggle('forecast-stale',
+      Boolean(lastSensorForecast)&&d.state!=='near_live');
+    const chart=$('traj-svg');
+    if(chart)chart.setAttribute('aria-label',lastSensorForecast?
+      'Four genuine future risk horizon estimates from the last completed PCAP; '+
+        (d.state==='stale'?'stale; ':'')+
+        (lastSensorForecast.supported?'input support reported':'input support unverified'):
+      'Waiting for real model forecast; no fabricated graph points');
+    const observed=$('threats')?.closest('article')?.querySelector('small');
+    if(observed)observed.textContent='Advisory flags · not confirmed attacks';
   }
   const states={
     disabled:['Sensor not configured','DISABLED · NO LIVE DATA'],
@@ -233,7 +268,9 @@ async function pollLive(){
        IS_HOSTED_RELAY&&['capturing','processing'].includes(d.sensor_status?.state)?
        'Private sensor is '+d.sensor_status.state+' real packets ('+d.sensor_status.capture_seconds+'s batches). No model output has been fabricated.':
        'No real captures received yet. Auto-replay is disabled.');
-  text('live-state',d.state==='near_live'?'Real capture received · advisory forecast':
+  text('live-state',
+    d.state==='near_live'?'NEW CLOSED-CAPTURE MODEL FORECAST · ADVISORY':
+    d.state==='stale'?'STALE LAST FORECAST · LIVE SENSOR STATUS SEPARATE':
     IS_HOSTED_RELAY&&['capturing','processing'].includes(d.sensor_status?.state)?
     'Real packet sensor '+d.sensor_status.state+' · awaiting forecast':pair[1]);
  }catch(e){
@@ -248,6 +285,12 @@ async function pollLive(){
    const proof=$('proof-runtime');
    if(proof){proof.classList.remove('runtime-ok');proof.classList.add('runtime-warn');}
   }
+  if(IS_HOSTED_RELAY&&lastSensorForecast){
+    const metric=$('score')?.closest('article');
+    if(metric)metric.classList.add('forecast-stale');
+    const hint=metric?.querySelector('small');
+    if(hint)hint.textContent='Cloud feed offline · last score historical';
+  }
   text('live-sensor-message','Live endpoint unavailable: '+e.message);
  }finally{livePollBusy=false}
 }
@@ -260,7 +303,8 @@ function addSensorPanel(){
  else document.querySelector('main')?.prepend(root);
  const demo=$('manual-replay');if(demo)demo.onclick=replay;
  const alertLabel=$('threats')?.closest('article')?.querySelector('label');
- if(alertLabel)alertLabel.textContent='MODEL ALERTS · LAB + SENSOR';
+ if(alertLabel)alertLabel.textContent=IS_HOSTED_RELAY?
+   'ADVISORY MODEL FLAGS':'MODEL ALERTS · LAB + SENSOR';
 }
 
 for(const [key,name,desc] of scenarios){

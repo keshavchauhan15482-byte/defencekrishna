@@ -61,6 +61,26 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(css.includes('hosted-demo-selected'));
   assert.ok(hosted.includes('recordFirstPartyPageRequest()'));
   assert.ok(hosted.includes('addSensorActivationPanel()'));
+  assert.ok(hosted.includes('addOperationalHeartbeatPanel()'));
+  assert.ok(hosted.includes('LIVE OPERATIONAL TELEMETRY'));
+  assert.ok(hosted.includes('ops-heartbeat-age'));
+  assert.ok(hosted.includes('ops-forecast-age'));
+  assert.ok(hosted.includes('ops-support'));
+  assert.ok(hosted.includes('krishna:forecast-received'));
+  assert.ok(hosted.includes('krishna:sensor-status'));
+  assert.ok(hosted.includes('estimated-lastHeartbeatTimestamp>10000'));
+  assert.ok(hosted.includes('d.sensorAge')); // status derives from authenticated Render heartbeat
+  assert.equal(hosted.includes('setLiveScore('),false);
+  assert.equal(hosted.includes('pushLivePoint('),false);
+  assert.ok(hosted.includes('Actual model horizons from last completed PCAP'));
+  assert.ok(css.includes('ops-heartbeat-trace'));
+  assert.ok(css.includes('forecast-stale'));
+  assert.ok(js.includes('if(IS_HOSTED_RELAY)drawPoints(values)'));
+  assert.ok(js.includes('LAST MODEL ESTIMATE'));
+  assert.ok(js.includes('INPUT SUPPORT UNVERIFIED'));
+  assert.ok(js.includes('STALE LAST FORECAST'));
+  assert.ok(js.includes('krishna:forecast-received'));
+  assert.ok(js.includes("series.length-1"));
   assert.ok(hosted.includes('krishna:sensor-status'));
   assert.ok(hosted.includes('No genuine forecast received'));
   assert.ok(hosted.includes('Copy Mac command'));
