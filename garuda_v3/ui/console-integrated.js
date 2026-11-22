@@ -159,6 +159,9 @@ async function pollLive(){
  livePollBusy=true;
  try{
   const d=await api('/bridge/live/events?after='+liveCursor);
+  if(d.site_activity && d.site_activity.is_model_input===false){
+   document.dispatchEvent(new CustomEvent('krishna:site-activity',{detail:d.site_activity}));
+  }
   if(d.gap)feed('Sensor event gap','Older samples expired from bounded in-memory event feed');
   for(const event of d.events||[]){
    if(event.id<=liveCursor)continue;

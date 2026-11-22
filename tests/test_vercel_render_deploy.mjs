@@ -35,6 +35,8 @@ test("Static premium Vercel build preserves the original console and labels unav
   const hosted=readFileSync(join(root,"public","hosted-mode.js"),"utf8");
   assert.ok(hosted.includes('setDisabled("campaign"'));
   assert.ok(hosted.includes('setDisabled("analyze-file"'));
+  assert.ok(hosted.includes('recordFirstPartyPageRequest()'));
+  assert.ok(hosted.includes('ACTUAL WEBSITE HTTP ACTIVITY'));
   for(const asset of ["console-integrated.css","console-v131-overlay.css",
     "console-v132-extra.css","console-v131-overlay.js","console-v132-extra.js"]){
     assert.ok(existsSync(join(root,"public",asset)));
@@ -57,6 +59,9 @@ test("Vercel serverless API never needs browser sensor secrets and sanitizes eve
       assert.equal(opts.headers.Authorization,"Bearer "+"v".repeat(40));
       return new Response(JSON.stringify({
         state:"near_live",cursor:5,sensor_age_seconds:1,gap:false,
+        site_activity:{source:"first_party_page_requests",
+          total_requests:8,requests_24h:3,last_request_at:1760000000,
+          email:"should-not-be-exposed",is_model_input:false},
         events:[{
           id:5,kind:"forecast",capture_sha256:"sensitive-hash",
           trajectory:[10,20,30,40].map(x=>({horizon_seconds:x,malicious_flow_probability:.2})),
@@ -71,6 +76,9 @@ test("Vercel serverless API never needs browser sensor secrets and sanitizes eve
     assert.equal(res.body.events.length,1);
     assert.equal(res.body.events[0].capture_sha256,undefined);
     assert.equal(res.body.events[0].automatic_containment,false);
+    assert.equal(res.body.site_activity.total_requests,8);
+    assert.equal(res.body.site_activity.email,undefined);
+    assert.equal(res.body.site_activity.is_model_input,false);
     assert.equal(requestCount,1);
     const invalid=mockResponse();
     await handler({method:"GET",query:{after:"invalid"}},invalid);

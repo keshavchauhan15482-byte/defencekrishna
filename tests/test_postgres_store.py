@@ -13,6 +13,8 @@ class FakeDb:
     def __init__(self):
         self.records = []
         self.next_id = 1
+        self.activity = []
+        self.next_activity_id = 1
 
     def connect(self, _dsn):
         return FakeConnection(self)
@@ -43,6 +45,18 @@ class FakeCursor:
         self.last = None
         self.list_results = []
         if key.startswith("CREATE"): return
+        if key.startswith("INSERT INTO KRISHNA_SITE_ACTIVITY_EVENTS"):
+            request_uuid, observed_at = params
+            if not any(row["uuid"] == request_uuid for row in self.db.activity):
+                self.db.activity.append({"id":self.db.next_activity_id,"uuid":request_uuid,"at":observed_at})
+                self.last=(self.db.next_activity_id,)
+                self.db.next_activity_id+=1
+            return
+        if key.startswith("SELECT COUNT(*)::BIGINT"):
+            cutoff = params[0]
+            times = [row["at"] for row in self.db.activity]
+            self.last=(len(times),len([x for x in times if x>=cutoff]),max(times,default=None))
+            return
         if key.startswith("INSERT"):
             h, m, received, cutoff, raw = params
             if not any(row["h"] == h and row["m"] == m for row in self.db.records):
@@ -116,6 +130,37 @@ class PersistentStoreTests(unittest.TestCase):
         with self.assertRaises(LiveFeedError):
             restarted.accept({**observation, "cutoff_epoch_seconds": 1})
         self.assertEqual(len(db.records), 1)
+
+    def test_real_page_requests_persist_independently_of_training(self):
+        clock=[1000.0]
+        db=FakeDb()
+        make=lambda: PostgresEventStore("postgresql://placeholder/test",TOKEN,
+                                      connect=db.connect,clock=lambda:clock[0])
+        store=make()
+        entry={"schema":"krishna-site-activity-v1","kind":"page_load",
+               "request_uuid":"01234567-89ab-4cde-8f01-23456789abcd"}
+        r=store.record_site_request(entry)
+        self.assertTrue(r["stored"])
+        self.assertEqual(len(db.activity),1)
+        self.assertEqual(len(db.records),0)
+        r=make().record_site_request(entry)
+        self.assertFalse(r["stored"])
+        counts=make().site_activity_snapshot()
+        self.assertEqual(counts["total_requests"],1)
+        self.assertEqual(counts["requests_24h"],1)
+        self.assertEqual(counts["last_request_at"],1000)
+        self.assertFalse(counts["is_model_input"])
+        for bad in (
+            {**entry,"user_ip":"127.0.0.1"},
+            {**entry,"kind":"attack"},
+            {**entry,"request_uuid":"user-identifier"},
+        ):
+            with self.assertRaises(LiveFeedError):
+                store.record_site_request(bad)
+        self.assertEqual(len(db.activity),1)
+        clock[0]+=86401
+        self.assertEqual(make().site_activity_snapshot()["requests_24h"],0)
+        self.assertEqual(make().site_activity_snapshot()["total_requests"],1)
 
     def test_no_training_data_or_raw_packets_in_persistent_events(self):
         db = FakeDb()

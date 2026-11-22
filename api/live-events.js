@@ -61,11 +61,26 @@ module.exports = async function handler(request, response) {
         verified_precompromise:false,
       };
     });
+    const activity=parsed.site_activity;
+    if(!activity||activity.source!=="first_party_page_requests"||
+       !Number.isSafeInteger(activity.total_requests)||activity.total_requests<0||
+       !Number.isSafeInteger(activity.requests_24h)||activity.requests_24h<0||
+       (activity.last_request_at!==null && (
+        typeof activity.last_request_at!=="number"||
+        !Number.isFinite(activity.last_request_at)))) {
+      throw Error("Site activity summary unavailable");
+    }
     return response.status(200).json({
       state:parsed.state,cursor:parsed.cursor,
       events,source:"completed_capture_shadow",
       sensor_age_seconds:parsed.sensor_age_seconds,
       gap:parsed.gap===true,automatic_containment:false,
+      site_activity:{
+        source:"first_party_page_requests",is_model_input:false,
+        total_requests:activity.total_requests,
+        requests_24h:activity.requests_24h,
+        last_request_at:activity.last_request_at,
+      },
     });
   } catch {
     return response.status(503).json({error:"Live telemetry backend unavailable; no live data claimed"});

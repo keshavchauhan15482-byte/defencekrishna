@@ -22,7 +22,7 @@ MAX_CURSOR = 9007199254740991
 
 
 class RelayState:
-    def __init__(self, sensor_token: str, viewer_token: str, store=None):
+    def __init__(self, sensor_token: str, viewer_token: str, store=None, activity_token=''):
         self.feed = LiveFeed(sensor_token)
         self.store = store
         if not viewer_token or not 32 <= len(viewer_token) <= 256:
@@ -33,6 +33,15 @@ class RelayState:
             raise ValueError("Sensor and viewer tokens must be independent")
         if not self.feed.enabled:
             raise ValueError("GARUDA_LIVE_SENSOR_TOKEN must be configured")
+        if activity_token and (not 32 <= len(activity_token) <= 256 or
+                any(ord(c) < 33 or ord(c) > 126 for c in activity_token)):
+            raise ValueError("RENDER_ACTIVITY_TOKEN must be a strong non-whitespace ASCII secret")
+        if activity_token and (hmac.compare_digest(activity_token, viewer_token) or
+                               hmac.compare_digest(activity_token, sensor_token)):
+            raise ValueError("Activity token must be independent of sensor and viewer tokens")
+        self.activity_token = activity_token
+        self._activity_times = collections.deque()
+        self._activity_lock = threading.Lock()
         self.viewer_token = viewer_token
         self._ingest_lock = threading.Lock()
         self._rate_lock = threading.Lock()
@@ -41,6 +50,22 @@ class RelayState:
     def authorized_viewer(self, header: str):
         return (isinstance(header, str) and header.startswith("Bearer ") and
                 hmac.compare_digest(header[7:], self.viewer_token))
+
+    def authorized_activity(self, header):
+        return (bool(self.activity_token) and isinstance(header, str) and
+                header.startswith("Bearer ") and
+                hmac.compare_digest(header[7:], self.activity_token))
+
+    def activity_rate_ok(self):
+        # Global small pilot quota; do not collect identifying client metadata.
+        with self._activity_lock:
+            now = time.monotonic()
+            while self._activity_times and self._activity_times[0] < now - 60:
+                self._activity_times.popleft()
+            if len(self._activity_times) >= 120:
+                return False
+            self._activity_times.append(now)
+            return True
 
     def sensor_rate_ok(self):
         with self._rate_lock:
@@ -86,6 +111,8 @@ class RelayState:
                 "automatic_containment", "verified_precompromise"
             )
         } for item in result["events"]]
+        if self.store is not None:
+            result["site_activity"] = self.store.site_activity_snapshot()
         return result
 
 
@@ -141,7 +168,37 @@ class RelayHandler(BaseHTTPRequestHandler):
             return self.reply(503, {"error": "Persistent telemetry storage unavailable"})
         return self.reply(200, feed)
 
+    def _handle_site_activity(self):
+        # Browser never sees this token: only Vercel's trusted serverless
+        # relay uses it, and cannot trigger any forecast or blocking policy.
+        if not self.server.state.authorized_activity(self.headers.get("Authorization", "")):
+            return self.reply(401, {"error": "Private activity gateway credential required"})
+        if not self.server.state.activity_rate_ok():
+            return self.reply(429, {"error": "Activity ingest quota exceeded"})
+        if self.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
+            return self.reply(415, {"error": "Activity JSON required"})
+        sizes = self.headers.get_all("Content-Length", [])
+        if (self.headers.get("Transfer-Encoding") or len(sizes) != 1 or
+                not sizes[0].isascii() or not sizes[0].isdecimal() or
+                len(sizes[0]) > 5 or not 0 < int(sizes[0]) <= 512):
+            self.close_connection = True
+            return self.reply(413, {"error": "Activity record must be 1..512 bytes"})
+        try:
+            raw = self.rfile.read(int(sizes[0]))
+            if len(raw) != int(sizes[0]):
+                raise ValueError("Incomplete activity record")
+            if self.server.state.store is None:
+                return self.reply(503, {"error": "Persistent activity storage not configured"})
+            result = self.server.state.store.record_site_request(json.loads(raw.decode("utf-8")))
+        except (ValueError, TypeError, LiveFeedError, UnicodeDecodeError):
+            return self.reply(422, {"error": "Unsupported activity record"})
+        except Exception:
+            return self.reply(503, {"error": "Activity storage unavailable"})
+        return self.reply(202, result)
+
     def do_POST(self):
+        if urlsplit(self.path).path == "/api/site-activity/ingest":
+            return self._handle_site_activity()
         if urlsplit(self.path).path != "/api/live/ingest":
             return self.reply(404, {"error": "Unknown endpoint"})
         if not self.server.state.feed.authorized(self.headers.get("Authorization", "")):
@@ -188,7 +245,7 @@ def main():
         raise RuntimeError("DATABASE_URL required: do not deploy RAM-only history")
     from deployment.render.postgres_store import PostgresEventStore
     store = PostgresEventStore(database_url, sensor)
-    state = RelayState(sensor, viewer, store=store)
+    state = RelayState(sensor, viewer, store=store, activity_token=os.environ.get("RENDER_ACTIVITY_TOKEN", ""))
     port = int(os.environ.get("PORT", "10000"))
     if not 1 <= port <= 65535:
         raise ValueError("PORT out of range")
