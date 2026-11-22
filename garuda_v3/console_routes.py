@@ -52,6 +52,12 @@ def handle_console(handler):
             elif path == '/health':
                 handler.respond(200, {'status': 'alive', 'console_build': CONSOLE_BUILD,
                     'surface': 'console.html', 'single_port': True})
+            elif path == '/bridge/live/events':
+                params = parse_qs(url.query)
+                after = params.get('after', ['0'])
+                if len(after) != 1 or not after[0].isascii() or not after[0].isdecimal():
+                    raise ValueError('Invalid live event cursor')
+                handler.respond(200, app.live_feed.snapshot(int(after[0])))
             elif path == '/bridge/status':
                 handler.respond(200, app.integrated_status())
             elif path == '/bridge/response':

@@ -18,6 +18,7 @@ from urllib.parse import urlsplit
 from .bundle_manifest import bundle_public_metadata, resolve_active_bundle
 from .console_routes import handle_console
 from .latest_state_runtime import LatestStateForecastService, LatestStateRuntimeError
+from .live_feed import LiveFeed, LiveFeedError
 from .response import ResponseCoordinator
 from .server import App, Handler, Server
 from .ui_contract import harden_ui_asset
@@ -62,7 +63,35 @@ class IntegratedHandler(Handler):
             value = "default-src 'self'; script-src 'self' 'nonce-" + nonce + "'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'"
         return super().send_header(keyword, value)
 
+    def _handle_live_ingest(self):
+        if self.command != 'POST':
+            return self.respond(405, {'error': 'POST required'})
+        if not self._static_request_allowed():
+            return None
+        if self.headers.get('Sec-Fetch-Site') == 'cross-site':
+            return self.respond(403, {'error': 'Cross-site sensor request denied'})
+        app = self.server.app
+        if not app.live_feed.authorized(self.headers.get('Authorization', '')):
+            return self.respond(401, {'error': 'Sensor bearer token required'})
+        if self.headers.get('Content-Type', '').split(';')[0].lower() != 'application/json':
+            return self.respond(415, {'error': 'Sensor JSON required'})
+        values = self.headers.get_all('Content-Length', [])
+        if len(values) != 1 or not values[0].isascii() or not values[0].isdecimal() or not 0 < int(values[0]) <= 8192:
+            return self.respond(413, {'error': 'Sensor event must be 1..8192 bytes'})
+        if not app.rate_ok('live_sensor'):
+            return self.respond(429, {'error': 'Sensor event quota exceeded'})
+        try:
+            raw = self.rfile.read(int(values[0]))
+            if len(raw) != int(values[0]):
+                raise LiveFeedError('Incomplete sensor event')
+            event = app.live_feed.append(json.loads(raw))
+        except (LiveFeedError, ValueError, TypeError, UnicodeDecodeError):
+            return self.respond(422, {'error': 'Malformed, unsupported or historical sensor event'})
+        return self.respond(202, {'accepted': True, 'event_id': event['id'], 'mode': 'SHADOW_ONLY'})
+
     def handle_request(self):
+        if urlsplit(self.path).path == '/api/live/ingest':
+            return self._handle_live_ingest()
         if handle_console(self):
             return None
         url = urlsplit(self.path)
@@ -96,6 +125,10 @@ class IntegratedApp(App):
 
     def _initialize_integrated(self,lab_automation,bundle_metadata):
         self.bundle_metadata = dict(bundle_metadata or {})
+        sensor_token = os.environ.get('GARUDA_LIVE_SENSOR_TOKEN', '')
+        if sensor_token and sensor_token in (self.reader, self.operator):
+            raise ValueError('Sensor credential must differ from reader and operator tokens')
+        self.live_feed = LiveFeed(sensor_token)
         self.v15 = V15EvidenceBridge()
         # V127 dual-runtime integration. Startup fails closed if any V116/V118/V122
         # pin drifts or the V123 evidence is no longer PASS.
@@ -175,6 +208,7 @@ class IntegratedApp(App):
         support_gate_present = self.service.support_gate is not None
         return {
             'runtime_bundle': self.bundle_metadata,
+            'live_sensor': {'enabled': self.live_feed.enabled, 'mode': 'SHADOW_ONLY', 'automatic_containment': False},
             'runtime_model': self.service.meta,
             'runtime_model_sha256': self.service.model_hash,
             'latest_state_runtime': self.latest_state.public_status(),
