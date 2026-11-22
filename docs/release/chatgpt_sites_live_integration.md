@@ -58,6 +58,9 @@ model stays on a private owned sensor host. The Site is not a packet sniffer.
    On a publicly accessible Site that has no sign-in gate for this route, omit it.
 6. Rewire the **existing hosted UI**:
    - Stop any automatic `/replay` or `/bridge/replay` polling presented as LIVE.
+   - Import `createKrishnaSiteLiveClient` from `live_client.mjs`, or adapt its
+     exact same-origin contract. Call `start()` once and connect `onEvent` to
+     the existing gauge/graph/feed and `onState` to status indicators.
    - Poll same-origin `/bridge/live/events?after=LAST_ID` every 2.6 seconds,
      starting at 0.
    - Update score/trajectory/alerts only for newly returned `events`.
