@@ -58,3 +58,93 @@ main{width:min(96vw,1900px);max-width:none;padding-left:2.2vw;padding-right:2.2v
  .vercel-shadow-only .hosted-lab-campaign-list{grid-template-columns:1fr}
  .vercel-shadow-only .hosted-lab-detail{padding:17px}
 }
+
+
+/* Hosted LIVE evidence: pulse ticks represent new authenticated DB heartbeats
+   (not generated packet rates or model forecasts). The time bar is a clock. */
+.vercel-shadow-only .ops-live-panel{
+ margin-top:16px;
+ border:1px solid #364854;
+ background:linear-gradient(115deg,#111b24,#121419 76%);
+}
+.vercel-shadow-only .ops-state-pill{
+ border:1px solid #6e839855;border-radius:20px;
+ padding:8px 12px;font-size:10px;font-weight:750;letter-spacing:.7px;
+ background:#8192a212;color:#b5c3d2;
+}
+.vercel-shadow-only .ops-is-online .ops-state-pill{
+ border-color:#73dfb555;background:#7fe6b515;color:#a4ffcf;
+ box-shadow:0 0 16px #79f3a51f;
+}
+.vercel-shadow-only .ops-is-offline .ops-state-pill{
+ border-color:#f3a45855;background:#f3a4580a;color:#ffbe84;
+}
+.vercel-shadow-only .ops-grid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:12px;margin:16px 0 20px
+}
+.vercel-shadow-only .ops-grid article{
+ border:1px solid #ffffff19;border-radius:11px;
+ background:#090f15a8;padding:16px 14px;display:flex;flex-direction:column;gap:8px
+}
+.vercel-shadow-only .ops-grid article small{
+ color:#9baec1;font-size:10px;letter-spacing:.9px;font-weight:700
+}
+.vercel-shadow-only .ops-grid article strong{
+ font-size:22px;line-height:1.2;color:#f1f5fa;
+ font-weight:700;font-variant-numeric:tabular-nums
+}
+.vercel-shadow-only .ops-is-online #ops-worker{color:#9aefc7}
+.vercel-shadow-only .ops-grid article span{font-size:11px;color:#a3aebb;line-height:1.45}
+.vercel-shadow-only .ops-pulse-head{
+ display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;
+ color:#b6c4d0;font-size:11px;margin-bottom:8px
+}
+.vercel-shadow-only .ops-pulse-head b{color:#9aefc7;font-variant-numeric:tabular-nums}
+.vercel-shadow-only .ops-heartbeat-trace{
+ display:grid;grid-template-columns:repeat(24,minmax(0,1fr));align-items:center;
+ gap:5px;padding:11px 8px 6px;border:1px solid #ffffff15;border-radius:10px;
+ background:#050e12;
+}
+.vercel-shadow-only .ops-pulse-tick{
+ display:block;height:18px;border-radius:3px;background:#243039;transition:background .2s
+}
+.vercel-shadow-only .ops-pulse-observed{
+ background:#61e4a4;box-shadow:0 0 8px #61e4a44d
+}
+.vercel-shadow-only .ops-is-online .ops-pulse-new{
+ animation:opsVerifiedPulse 1s ease-in-out 1
+}
+@keyframes opsVerifiedPulse{
+ 0%{box-shadow:0 0 3px #61e4a448}
+ 50%{box-shadow:0 0 22px #61e4a4e6}
+ 100%{box-shadow:0 0 8px #61e4a44d}
+}
+.vercel-shadow-only .ops-age-track{
+ margin:8px 0 0;height:5px;border-radius:9px;
+ overflow:hidden;background:#26323a
+}
+.vercel-shadow-only #ops-age-fill{
+ display:block;height:100%;background:#61e4a4;
+ transition:width .95s linear
+}
+.vercel-shadow-only .ops-proof-note{
+ font-size:11px;margin:10px 0 0;color:#adb9c9;line-height:1.55
+}
+.vercel-shadow-only .metrics article.forecast-stale strong{
+ color:#ffc481!important;opacity:.85
+}
+.vercel-shadow-only .metrics article.forecast-stale small{
+ color:#ffbc91;font-weight:650
+}
+@media (max-width:1100px){
+ .vercel-shadow-only .ops-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:600px){
+ .vercel-shadow-only .ops-grid{grid-template-columns:1fr}
+ .vercel-shadow-only .ops-pulse-head{flex-direction:column}
+ .vercel-shadow-only .ops-heartbeat-trace{gap:3px}
+}
+@media(prefers-reduced-motion:reduce){
+ .vercel-shadow-only .ops-pulse-new{animation:none!important}
+}
