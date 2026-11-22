@@ -71,6 +71,12 @@ test('sensor credential check and fixed four-horizon schema',async()=>{
   assert.equal(await sensorAuthorized('Bearer bad',token),false);
   assert.equal(await sensorAuthorized(null,token),false);
   assert.equal(validateSensorPayload(sample()).trajectory.length,4);
+  const packet=sample();
+  packet.trajectory=[60,120,180,240].map((n,i)=>({
+    horizon_seconds:n,malicious_flow_probability:0.1+i/10,
+  }));
+  assert.equal(validateSensorPayload(packet).trajectory[3].horizon_seconds,240);
+  assert.throws(()=>validateSensorPayload({...packet,trajectory:packet.trajectory.slice(0,3)}));
   for(const change of [
     {automatic_containment:true},
     {cutoff_epoch_seconds:Date.now()/1000-1000},
