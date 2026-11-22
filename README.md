@@ -27,6 +27,7 @@
 | **Inspect the latest 3-seed research diagnostic and its limits** | [`docs/release/causal_native_forecast/README.md`](docs/release/causal_native_forecast/README.md) |
 | **Inspect the causal connection-start fix, risk skip head and fresh campaign audit** | [`docs/release/connection_start_forecast/README.md`](docs/release/connection_start_forecast/README.md) |
 | **Inspect the forecasting code** | [`garuda_v3/`](garuda_v3/) |
+| **Activate an owned Mac's real packet-trained sensor** | [`docs/release/packet_sensor_macos.md`](docs/release/packet_sensor_macos.md) |
 | **Try near-live owned-capture shadow monitoring** | [`docs/release/near_live_shadow_feed.md`](docs/release/near_live_shadow_feed.md) |
 | **Integrate the existing ChatGPT Sites hosted dashboard** | [`docs/release/chatgpt_sites_live_integration.md`](docs/release/chatgpt_sites_live_integration.md) |
 | **See all documentation** | [`docs/README.md`](docs/README.md) |
