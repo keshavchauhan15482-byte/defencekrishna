@@ -42,6 +42,7 @@ jobs:
           node --test tests/test_site_activity_gateway.mjs
           python -m unittest discover -s tests -p 'test_render_live_relay.py' -v
           python -m unittest discover -s tests -p 'test_postgres_store.py' -v
+          python -m unittest garuda_v3.tests.test_sensor_runner -v
       - name: Python Garuda regression
         run: |
           task_tmp=$(mktemp -d "$RUNNER_TEMP/krishna-tests.XXXXXX")
