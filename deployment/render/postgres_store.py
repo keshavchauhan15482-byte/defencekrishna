@@ -58,6 +58,15 @@ class PostgresEventStore:
                     CREATE INDEX IF NOT EXISTS krishna_site_activity_at
                     ON krishna_site_activity_events (observed_at DESC)
                 """)
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS krishna_sensor_heartbeat (
+                        singleton SMALLINT PRIMARY KEY CHECK (singleton = 1),
+                        seen_at DOUBLE PRECISION NOT NULL,
+                        state TEXT NOT NULL CHECK (state IN ('capturing','processing')),
+                        capture_seconds INTEGER NOT NULL,
+                        model_sha256 TEXT NOT NULL
+                    )
+                """)
 
     def _validated_event(self, payload):
         # Validate against the existing strict contract using the SAME clock
@@ -189,4 +198,55 @@ class PostgresEventStore:
             "last_request_at": float(latest) if latest is not None else None,
             "is_model_input": False,
             "automatic_containment": False,
+        }
+
+    def record_sensor_heartbeat(self, event):
+        """Declare actual on-host capture process liveness, never a forecast."""
+        import re
+        if (not isinstance(event, dict) or set(event) != {
+            "schema", "kind", "state", "capture_seconds", "model_sha256"
+        } or event.get("schema") != "krishna-sensor-heartbeat-v1"
+                or event.get("kind") != "heartbeat"
+                or event.get("state") not in ("capturing", "processing")
+                or type(event.get("capture_seconds")) is not int
+                or not 90 <= event["capture_seconds"] <= 600
+                or not isinstance(event.get("model_sha256"), str)
+                or not re.fullmatch(r"[0-9a-fA-F]{64}", event["model_sha256"])):
+            raise LiveFeedError("Unsupported packet sensor heartbeat")
+        now = self._clock()
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO krishna_sensor_heartbeat (
+                        singleton, seen_at, state, capture_seconds, model_sha256
+                    ) VALUES (1,%s,%s,%s,%s)
+                    ON CONFLICT (singleton) DO UPDATE SET
+                        seen_at=EXCLUDED.seen_at,
+                        state=EXCLUDED.state,
+                        capture_seconds=EXCLUDED.capture_seconds,
+                        model_sha256=EXCLUDED.model_sha256
+                """, (now, event["state"], event["capture_seconds"],
+                      event["model_sha256"].lower()))
+        return {"accepted": True, "mode": "SHADOW_CAPTURE_HEARTBEAT"}
+
+    def sensor_status_snapshot(self):
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT seen_at,state,capture_seconds
+                    FROM krishna_sensor_heartbeat
+                    WHERE singleton=1
+                """)
+                row = cur.fetchone()
+        if row is None:
+            return {
+                "state": "absent", "sensor_age_seconds": None,
+                "capture_seconds": None, "source": "authenticated_sensor_heartbeat"
+            }
+        age = max(0, self._clock() - float(row[0]))
+        return {
+            "state": "stale" if age > 90 else row[1],
+            "sensor_age_seconds": round(age, 1),
+            "capture_seconds": int(row[2]),
+            "source": "authenticated_sensor_heartbeat",
         }
