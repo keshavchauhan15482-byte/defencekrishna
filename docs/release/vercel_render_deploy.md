@@ -172,3 +172,12 @@ authenticated, rate-limited research service, benchmark checkpoint RAM/startup
 and capture support, isolate each tenant, and keep autonomous policy endpoints
 disabled until independently reviewed. The existing localhost-only integrated
 runtime is **not** ready to bind directly to the public internet.
+
+
+## Automatically saved website activity — separated from trained AI
+
+The deployed Vercel console records a single **anonymous real page-load HTTP request** per page load via `POST /api/site-activity`. The Vercel function generates a random transport UUID server-side and forwards only `kind=page_load` to Render's `/api/site-activity/ingest` using a third, independent secret `RENDER_ACTIVITY_TOKEN`. Render persists these events in the separate `krishna_site_activity_events` PostgreSQL table and returns last-24-hours and lifetime request counts through the authenticated existing read-only telemetry route. The premium website renders these counts in the **Observed requests** panel. The counter counts actual first-party requests, **not unique people**, detected attacks, blocked threats, packet traffic, nor Garuda AI inferences; these raw anonymous request records are never used to retrain or update the checkpoint.
+
+The original `krishna_live_forecasts` PostgreSQL table remains **dedicated to actual model outputs from compatible completed PCAP/CSV network captures**. Data must originate from an owned sensor using the pinned model and separate `GARUDA_LIVE_SENSOR_TOKEN`. The website activity counter does not enter that table and cannot generate fake model forecasts. The Vercel-side secret and Render-side secret must match and must never appear in browser source or GitHub files. Check the same-origin POST is 202, then GET `/bridge/live/events?after=0` includes `site_activity`. Before any genuine capture, `events=[]` and `state=waiting` are the correct model status.
+
+This site HTTP telemetry is limited to page-load counts and deliberately does not save IPs, cookies, user agents, referrers, or full URLs. It is not a packet sniffer or SIEM. For real network-level Garuda inference, a compatible authorized capture sensor is still required. The free PostgreSQL database expires on **22 December 2026** unless migrated or upgraded; arrange backup/migration and a longer-term storage plan before then.
