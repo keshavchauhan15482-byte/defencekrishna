@@ -288,11 +288,11 @@ def run(args):
         try:
             while True:
                 heartbeat.set_state("capturing")
-                capture = _capture_stream(args.interface, inbox, duration,
-                                          use_sudo=not args.no_sudo)
+                capture = _capture_stream(
+                    args.interface, inbox, duration, use_sudo=not args.no_sudo
+                )
                 heartbeat.set_state("processing")
-                try:
-                    result = agent.process(capture)
+                result = agent.process(capture)
                 status = result.get("status", "unknown")
                 print(json.dumps({
                     "event": "real_capture_processed",
@@ -301,25 +301,24 @@ def run(args):
                     "risk_support": result.get("runtime_support", {}).get("supported"),
                 }), flush=True)
                 if status == "forecast":
-                    deliver_pending(agent, args.publish_url, read_private_token(args.token_file))
+                    deliver_pending(agent, args.publish_url, token)
                     row = agent.db.execute(
                         "SELECT delivered_at FROM live_deliveries WHERE capture_sha256=? AND model_sha256=?",
                         (result["capture_sha256"], result["model_sha256"]),
                     ).fetchone()
                     if row:
-                        print(json.dumps({"event": "render_persisted", "source": "genuine_closed_pcap",
-                                          "mode": "SHADOW_ONLY"}), flush=True)
-                        # Discard the sensitive raw capture only AFTER the
-                        # authenticated Render/database receipt is confirmed.
-                        # To keep PCAPs for independent audit, use --keep-pcaps.
+                        print(json.dumps({
+                            "event": "render_persisted",
+                            "source": "genuine_closed_pcap",
+                            "mode": "SHADOW_ONLY"
+                        }), flush=True)
+                        # Remove sensitive raw data only AFTER DB acceptance.
+                        # Use --keep-pcaps for local audit retention.
                         if not args.keep_pcaps:
                             capture.unlink()
                     else:
                         print(json.dumps({"event": "delivery_pending_retry"}), flush=True)
-                finally:
-                    pass
-                # Retry any pending older forecasts that remain inside the
-                # freshness window. Never substitute a recorded demo.
+                # No synthetic or recorded fallback is ever substituted.
                 deliver_pending(agent, args.publish_url, token)
                 if args.once:
                     break
@@ -327,7 +326,6 @@ def run(args):
             heartbeat.stop()
     finally:
         agent.db.close()
-
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
