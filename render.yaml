@@ -15,6 +15,8 @@ services:
         generateValue: true
       - key: RENDER_VIEWER_TOKEN
         generateValue: true
+      - key: RENDER_ACTIVITY_TOKEN
+        generateValue: true
       - key: DATABASE_URL
         fromDatabase:
           name: krishna-live-telemetry
