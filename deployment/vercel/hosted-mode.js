@@ -372,6 +372,77 @@ function addOperationalHeartbeatPanel(){
   render();
 }
 
+
+// SAFE PUBLIC DEFENCE CHECK: real HTTP status codes from the Vercel backend
+// against disposable dummy records. These are intentionally few and bounded:
+// no scanning, data exfiltration, destructive SQL, flood or unauthorized users.
+function addRealHttpDefenceProof(){
+  if(document.getElementById("live-defence-proof"))return;
+  const lab=document.getElementById("lab");
+  if(!lab)return;
+  const root=document.createElement("section");
+  root.id="live-defence-proof";
+  root.className="panel live-defence-proof";
+  root.setAttribute("aria-label","Real HTTP defence tests using synthetic dummy records");
+  root.innerHTML='<div class="panel-head"><div><span class="eyebrow">REAL HTTP DEFENCE CHECK · DUMMY RECORDS ONLY</span><h2>Verify actual requests are blocked.</h2></div><span class="pill">SERVER-SIDE RESULTS</span></div>'
+   +'<p class="muted">Unlike the browser-only attack walkthrough, these buttons send a few real HTTPS requests to a protected synthetic fixture on this Vercel website. HTTP 403 means this request was denied. It does not prove Garuda predicted the attack or protected unrelated production endpoints.</p>'
+   +'<div class="live-defence-actions"><button id="run-safe-http-probes" type="button" class="primary">Run 5 safe HTTP tests ↗</button><span id="live-defence-progress" role="status">Not run yet</span></div>'
+   +'<div class="table-wrap"><table><thead><tr><th>TEST (DUMMY INPUT)</th><th>ACTUAL HTTP</th><th>SERVER / EDGE</th><th>RESULT</th></tr></thead><tbody id="live-defence-rows"><tr><td colspan="4">Click to verify actual allow/deny responses on your deployment.</td></tr></tbody></table></div>'
+   +'<p class="metric-note">Enforcement lanes: Arjuna = fixed known signatures, Krishna = structural anomaly review, Sudarshan = dummy resource scope control. Garuda is separate shadow-only capture forecasting, not the source of these blocks. No IP lockdown is triggered.</p>';
+  lab.after(root);
+  const tests=[
+   {label:"Benign public dummy",record:"demo-public",expect:200},
+   {label:"SQL injection probe",record:"' OR 1=1--",expect:403},
+   {label:"Cross-site scripting probe",record:"<script>alert(1)</script>",expect:403},
+   {label:"Unknown structure probe",record:"__proto__[isAdmin]",expect:403},
+   {label:"Unauthorized dummy record",record:"demo-private",expect:403},
+  ];
+  const button=root.querySelector("#run-safe-http-probes");
+  const rows=root.querySelector("#live-defence-rows");
+  const status=root.querySelector("#live-defence-progress");
+  button.addEventListener("click",async()=>{
+    button.disabled=true;
+    rows.replaceChildren();
+    let verified=0;
+    for(const item of tests){
+      const tr=document.createElement("tr");
+      const name=document.createElement("td");
+      const code=document.createElement("td");
+      const lane=document.createElement("td");
+      const outcome=document.createElement("td");
+      name.textContent=item.label;
+      code.textContent="…";
+      lane.textContent="Pending";
+      outcome.textContent="Waiting";
+      tr.append(name,code,lane,outcome);
+      rows.append(tr);
+      try{
+        const response=await fetch("/api/security-check?record="+encodeURIComponent(item.record),{
+          method:"GET",credentials:"omit",cache:"no-store",
+          signal:AbortSignal.timeout(10000),
+        });
+        code.textContent=String(response.status);
+        const header=response.headers.get("X-Krishna-Lane");
+        lane.textContent=header||"EDGE / UNKNOWN";
+        const ok=response.status===item.expect;
+        outcome.textContent=ok?
+          "PASS · actual HTTP response matched":"REVIEW · unexpected HTTP response";
+        tr.classList.toggle("live-defence-pass",ok);
+        if(ok)verified++;
+      }catch{
+        code.textContent="Network error";
+        lane.textContent="No reliable response";
+        outcome.textContent="NOT VERIFIED";
+      }
+      status.textContent="Completed "+(tests.indexOf(item)+1)+"/"+tests.length+
+        " checks; "+verified+" matched expectations";
+    }
+    status.textContent="HTTP checks verified "+verified+"/"+tests.length+
+      "; these prove bounded fixture rules, not full-site attack protection";
+    button.disabled=false;
+  });
+}
+
 function boot(){
   document.body.classList.add("vercel-shadow-only");
   addOperationalHeartbeatPanel();
@@ -386,6 +457,7 @@ function boot(){
   // attack campaigns require a separate authenticated inference service.
   setDisabled("analyze-file",reason);
   addHostedDefenceLab();
+  addRealHttpDefenceProof();
   const status=document.getElementById("upload-status");
   if(status)status.textContent="Model file analysis requires a private inference backend; unavailable on this public static site.";
   // Hosted defence demo updates the lab progress independently. The real
