@@ -5,13 +5,14 @@ const scenarios=[['syn_flood','SYN Flood','Reviewed known replay'],['port_scan',
 const routes={arjuna:'ARJUNA · REVIEWED KNOWN MEMORY',krishna:'KRISHNA · UNKNOWN FORECAST TRIAGE',sudarshana:'SUDARSHANA'};
 const MAX_POINTS=48;
 const MOTION_MS=220;
-const REPLAY_MS=2600;
+const SENSOR_POLL_MS=2600;
 let busy=false,points=[],threats=0,blocks=0,rows=0;
 let liveTimer=null;
 let hasLiveTarget=false;
 let lastLiveValue=0;
 let targetLiveValue=0;
 let lastFutureText='Waiting for forecast horizons…';
+let liveCursor=0,livePollBusy=false;
 let scanPhase=0;
 const metricAnimations=new Map();
 
@@ -85,23 +86,26 @@ function startLiveGraph(){
  liveTimer=setInterval(()=>{
   updateScanBeam();
   if(document.hidden||!hasLiveTarget)return;
-  const delta=targetLiveValue-lastLiveValue;
-  lastLiveValue=Math.abs(delta)<0.04?targetLiveValue:lastLiveValue+delta*0.18;
-  setLiveScore(lastLiveValue);
-  pushLivePoint(lastLiveValue);
-  text('live-state',liveStatus());
+  // Moving the scan decoration must not manufacture new measurements.
+  // Graph points are appended only when a distinct sensor event arrives.
  },MOTION_MS);
 }
 
-function render(f){
+function render(f,source='lab'){
  const trajectory=f.trajectory||[];
  const values=trajectory.map(p=>Number(p.malicious_flow_probability)*100).filter(Number.isFinite);
  if(!values.length){text('future','Insufficient evidence: no forecast returned');return null;}
  const risk=clampRisk(Math.max(...values));
- targetLiveValue=risk;
  lastFutureText='Forecast horizons: '+values.map((v,i)=>'H'+(i+1)+' '+clampRisk(v).toFixed(1)+'%').join('  ·  ');
  text('future',lastFutureText);
- if(!hasLiveTarget){hasLiveTarget=true;lastLiveValue=risk;seedLiveGraph(risk);setLiveScore(risk);}
+ // The global gauge and timeline belong exclusively to real capture events.
+ if(source==='sensor'){
+  targetLiveValue=risk;
+  hasLiveTarget=true;
+  lastLiveValue=risk;
+  setLiveScore(risk);
+  pushLivePoint(risk);
+ }
  return risk;
 }
 
@@ -138,15 +142,72 @@ async function run(key){
 }
 
 async function replay(){
- if(busy||document.hidden)return;
+ if(busy)return;
  busy=true;
  try{
   const d=await api('/bridge/replay?scenario=standard');
-  if(d.forecast)render(d.forecast);
-  text('connection','Runtime connected');text('mode','Live scan · active');text('live-state',liveStatus());
+  if(d.forecast)render(d.forecast,'replay');
+  text('mode','RECORDED DEMO · NOT LIVE');
+  text('live-sensor-message','Recorded replay displayed in forecast details. It is not live traffic.');
  }catch(e){
-  text('connection','Runtime offline');text('mode','Live scan · reconnecting');text('live-state','Waiting for runtime');
+  text('live-sensor-message','Recorded replay unavailable: '+e.message);
  }finally{busy=false}
+}
+
+async function pollLive(){
+ if(livePollBusy||document.hidden)return;
+ livePollBusy=true;
+ try{
+  const d=await api('/bridge/live/events?after='+liveCursor);
+  if(d.gap)feed('Sensor event gap','Older samples expired from bounded in-memory event feed');
+  for(const event of d.events||[]){
+   if(event.id<=liveCursor)continue;
+   liveCursor=event.id;
+   if(event.kind!=='forecast')continue;
+   render({trajectory:event.trajectory},'sensor');
+   if(event.alert){threats+=1;animateMetric('threats',threats);}
+   const scope=event.supported?'Support flag reported':'UNVERIFIED INPUT SUPPORT';
+   feed('Sensor capture · '+event.score.toFixed(1)+'%','Advisory shadow forecast · '+scope+' · No automatic action');
+   if(!rows++)$('events').replaceChildren();
+   const tr=document.createElement('tr');
+   for(const value of [new Date(event.cutoff_epoch_seconds*1000).toLocaleTimeString()+' / SENSOR',
+      event.score.toFixed(1)+'%','GARUDA · SHADOW',
+      'Completed PCAP/CSV capture · '+scope+' · NO CONTAINMENT']){
+     const td=document.createElement('td');td.textContent=value;tr.append(td);
+   }
+   $('events').prepend(tr);while($('events').children.length>100)$('events').lastChild.remove();
+  }
+  const states={
+    disabled:['Sensor not configured','DISABLED · NO LIVE DATA'],
+    waiting:['Waiting for completed capture','WAITING FOR SENSOR'],
+    stale:['Sensor data stale','STALE · LAST CAPTURE'],
+    near_live:['Near-live sensor connected','NEAR-LIVE · SHADOW ONLY'],
+  };
+  const pair=states[d.state]||states.waiting;
+  text('connection',pair[0]);
+  text('mode',pair[1]);
+  text('live-sensor-message',
+       d.state==='near_live'?'Last authenticated capture received '+d.sensor_age_seconds+'s ago. Advisory only; no automatic containment.':
+       d.state==='stale'?'No recent sensor capture. Last update '+d.sensor_age_seconds+'s ago; existing score is historical.':
+       d.state==='disabled'?'Set GARUDA_LIVE_SENSOR_TOKEN and start the local live_publisher. Auto-replay is disabled.':
+       'No real captures received yet. Auto-replay is disabled.');
+  text('live-state',d.state==='near_live'?'Real capture received · advisory forecast':pair[1]);
+ }catch(e){
+  text('connection','Sensor feed offline');
+  text('mode','OFFLINE · NO LIVE DATA');
+  text('live-sensor-message','Live endpoint unavailable: '+e.message);
+ }finally{livePollBusy=false}
+}
+
+function addSensorPanel(){
+ const root=document.createElement('section');root.id='live-telemetry';root.className='panel';
+ root.innerHTML='<div class="panel-head"><div><span class="eyebrow">NEAR-LIVE TELEMETRY · SHADOW ONLY</span><h2>Real capture sensor status</h2></div><button type="button" id="manual-replay" class="primary">Recorded demo (manual)</button></div><p class="muted" id="live-sensor-message">Checking local sensor feed… No data is simulated.</p><p class="muted">A completed capture must contain genuine recent timestamps. Forecasts are advisory and cannot authorize Arjuna, Krishna or Sudarshana containment.</p>';
+ const metrics=document.querySelector('.metrics');
+ if(metrics)metrics.after(root);
+ else document.querySelector('main')?.prepend(root);
+ const demo=$('manual-replay');if(demo)demo.onclick=replay;
+ const alertLabel=$('threats')?.closest('article')?.querySelector('label');
+ if(alertLabel)alertLabel.textContent='MODEL ALERTS · LAB + SENSOR';
 }
 
 for(const [key,name,desc] of scenarios){
@@ -212,9 +273,10 @@ function renderLatestState(state){
  text('latest-state-detail',JSON.stringify({model:state.model,model_sha256:state.model_sha256,cutoff:state.cutoff_epoch_seconds,observed:state.ingestion,candidate_decision_forecast:state.candidate_decision_forecast,horizons:horizons.map(p=>({seconds:p.horizon_seconds,bytes_log:p.state_vector[feature]})),reason:state.reason,automatic_containment:state.automatic_containment},null,2));
 }
 
+addSensorPanel();
 startLiveGraph();
-counters();proofStatus();replay();
-setInterval(replay,REPLAY_MS);
+counters();proofStatus();pollLive();
+setInterval(pollLive,SENSOR_POLL_MS);
 setInterval(counters,5000);
 setInterval(proofStatus,10000);
 })();
