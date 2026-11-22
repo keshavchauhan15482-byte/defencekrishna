@@ -111,12 +111,16 @@ def _capture_stream(interface, inbox, seconds, *, use_sudo=True, max_bytes=MAX_P
     ]
     proc = None
     errors = []
+    stderr_text = []
     try:
         with os.fdopen(fd, "wb") as output:
             proc = subprocess.Popen(
                 command, stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                start_new_session=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                # Own process group, but stay in the Mac Terminal's session:
+                # sudo timestamp caching is often scoped to the controlling TTY.
+                # start_new_session=True detaches it and can make sudo -n fail.
+                process_group=0,
             )
 
             def copy_bytes():
@@ -138,8 +142,25 @@ def _capture_stream(interface, inbox, seconds, *, use_sudo=True, max_bytes=MAX_P
                 except (OSError, ValueError) as exc:
                     errors.append(type(exc).__name__)
 
+            def read_stderr():
+                # Bounded diagnostics; tcpdump -w prints status/errors, not
+                # packet payloads. Drain the pipe even after filling the cap.
+                try:
+                    kept = bytearray()
+                    while True:
+                        chunk = proc.stderr.read(4096)
+                        if not chunk:
+                            break
+                        if len(kept) < 2048:
+                            kept.extend(chunk[:2048 - len(kept)])
+                    stderr_text.append(bytes(kept).decode("utf-8", errors="replace").strip())
+                except (OSError, ValueError):
+                    stderr_text.append("Unable to read tcpdump diagnostics")
+
             reader = threading.Thread(target=copy_bytes, daemon=True)
+            diagnostic_reader = threading.Thread(target=read_stderr, daemon=True)
             reader.start()
+            diagnostic_reader.start()
             try:
                 proc.wait(timeout=seconds)
             except subprocess.TimeoutExpired:
@@ -156,14 +177,22 @@ def _capture_stream(interface, inbox, seconds, *, use_sudo=True, max_bytes=MAX_P
                     proc.wait(timeout=5)
                     errors.append("tcpdump failed to stop cleanly")
             reader.join(timeout=15)
-            if reader.is_alive():
-                errors.append("Packet writer did not terminate")
+            diagnostic_reader.join(timeout=15)
+            if reader.is_alive() or diagnostic_reader.is_alive():
+                errors.append("Packet capture output did not terminate")
             output.flush()
             os.fsync(output.fileno())
         if errors:
             raise RuntimeError("; ".join(errors))
         if proc.returncode not in (0, -signal.SIGINT, 128 + signal.SIGINT, 130):
-            raise RuntimeError("tcpdump exited before a valid capture was finished")
+            # Never print the sensor token; TCPDUMP stderr contains only its
+            # own operational messages because stdout is binary -w PCAP.
+            detail = stderr_text[0].replace("\\r", " ").replace("\\n", " ")[:400] if stderr_text else ""
+            raise RuntimeError(
+                f"tcpdump failed (exit {proc.returncode})"
+                + (": " + detail if detail else
+                   "; run 'sudo tcpdump -i en0 -c 3 -nn' to check Mac capture permission")
+            )
         if not temp.is_file() or not 24 < temp.stat().st_size <= max_bytes:
             raise RuntimeError("Capture is empty or exceeded the bounded size")
         # Only a *closed* PCAP becomes visible to the inference worker.
