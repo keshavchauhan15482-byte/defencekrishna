@@ -32,6 +32,12 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(js.includes("pollLive()"));
   assert.equal(js.includes("setInterval(replay,"),false);
   assert.equal(js.includes("pushLivePoint(lastLiveValue)"),false);
+  assert.ok(js.includes("IS_HOSTED_RELAY"));
+  assert.ok(js.includes("Backend linked · waiting for sensor"));
+  assert.ok(js.includes("Render telemetry connected · PostgreSQL available"));
+  assert.ok(js.includes("if(IS_HOSTED_RELAY){"));
+  assert.ok(js.includes("proofStatus();")); // still works for the local-only console
+  assert.ok(js.includes("setInterval(counters,5000)")); // but only in non-hosted branch
   const hosted=readFileSync(join(root,"public","hosted-mode.js"),"utf8");
   assert.ok(hosted.includes('setDisabled("campaign"'));
   assert.ok(hosted.includes('setDisabled("analyze-file"'));
