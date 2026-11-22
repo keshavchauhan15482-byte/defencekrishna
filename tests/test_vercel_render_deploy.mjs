@@ -59,6 +59,11 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(bootstrap.indexOf("Type AUTHORIZED")<bootstrap.indexOf("pip install"));
   assert.ok(bootstrap.includes("sudo")===false); // sudo permission is scoped to the Python sensor runner
   assert.ok(bootstrap.includes("--authorized"));
+  assert.equal(bootstrap.includes("${EXTRA[@]}"),false);
+  assert.equal(bootstrap.includes('EXTRA=()'),false);
+  assert.ok(bootstrap.includes('if [[ "$MODE" == "--once" ]]'));
+  assert.ok(bootstrap.includes('--interface "$IFACE" --authorized --once'));
+  assert.ok(bootstrap.includes('--interface "$IFACE" --authorized'));
   const cfg=JSON.parse(readFileSync(join(root,"vercel.json"),"utf8"));
   assert.ok(cfg.rewrites.some(x=>x.source==="/bridge/live/events"));
 });
