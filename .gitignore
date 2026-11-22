@@ -25,3 +25,6 @@ datasets/ids2018/fresh_holdout/clean/Thursday-15-02-2018.pcap
 # Reproducible audited derivatives: python -m garuda_v3.pcap_packaging
 datasets/ids2018/prepared/
 garuda_v3/runtime/
+
+# Generated Vercel static output
+public/

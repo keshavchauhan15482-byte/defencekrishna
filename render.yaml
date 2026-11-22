@@ -1,0 +1,16 @@
+# Optional Render Blueprint: ONLY the shadow telemetry relay is exposed.
+# Garuda inference stays on the authorized private sensor host.
+services:
+  - type: web
+    name: krishna-shadow-telemetry
+    runtime: python
+    plan: free
+    buildCommand: python -m compileall -q deployment/render garuda_v3/live_feed.py
+    startCommand: python -m deployment.render.live_relay
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: GARUDA_LIVE_SENSOR_TOKEN
+        sync: false
+      - key: RENDER_VIEWER_TOKEN
+        sync: false
