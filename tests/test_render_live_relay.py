@@ -122,6 +122,16 @@ class RelayTests(unittest.TestCase):
         class ActivityStore:
             def __init__(self):
                 self.requests=[]
+                self.heartbeat=None
+            def record_sensor_heartbeat(self,data):
+                if data.get('kind')!='heartbeat':raise LiveFeedError('Invalid heartbeat')
+                self.heartbeat=data
+                return {'accepted':True,'mode':'SHADOW_CAPTURE_HEARTBEAT'}
+            def sensor_status_snapshot(self):
+                return {'state':self.heartbeat['state'] if self.heartbeat else 'absent',
+                        'sensor_age_seconds':0 if self.heartbeat else None,
+                        'capture_seconds':self.heartbeat['capture_seconds'] if self.heartbeat else None,
+                        'source':'authenticated_sensor_heartbeat'}
             def record_site_request(self,data):
                 if set(data)!={"schema","kind","request_uuid"} or data["kind"]!="page_load":
                     raise LiveFeedError("Invalid site activity")
@@ -149,6 +159,16 @@ class RelayTests(unittest.TestCase):
         self.assertEqual(feed["state"],"waiting")
         self.assertEqual(feed["site_activity"]["total_requests"],1)
         self.assertFalse(feed["site_activity"]["is_model_input"])
+        heartbeat={'schema':'krishna-sensor-heartbeat-v1','kind':'heartbeat',
+                   'state':'capturing','capture_seconds':600,'model_sha256':'a'*64}
+        self.assertEqual(self.request("POST","/api/sensor/heartbeat",heartbeat)[0],401)
+        self.assertEqual(self.request("POST","/api/sensor/heartbeat",heartbeat,token=VIEWER)[0],401)
+        self.assertEqual(self.request("POST","/api/sensor/heartbeat",heartbeat,token=SENSOR)[0],202)
+        code,feed=self.request("GET","/api/live/events",token=VIEWER)
+        self.assertEqual(code,200)
+        self.assertEqual(feed["sensor_status"]["state"],"capturing")
+        self.assertEqual(feed["sensor_status"]["capture_seconds"],600)
+        self.assertNotIn("model_sha256",feed["sensor_status"])
 
     def test_no_cors_or_public_inference_endpoint(self):
         self.assertEqual(self.request("OPTIONS", "/api/live/ingest")[0], 405)
