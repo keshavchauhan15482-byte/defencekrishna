@@ -375,6 +375,9 @@ function addOperationalHeartbeatPanel(){
 function boot(){
   document.body.classList.add("vercel-shadow-only");
   addOperationalHeartbeatPanel();
+  const chartFoot=document.querySelectorAll(".chart-foot span");
+  if(chartFoot[0])chartFoot[0].textContent="Actual model horizons from last completed PCAP";
+  if(chartFoot[1])chartFoot[1].textContent="Refreshes only when a real forecast arrives · heartbeat above is separate";
   addHttpTrafficPanel();
   addSensorActivationPanel();
   void recordFirstPartyPageRequest();
