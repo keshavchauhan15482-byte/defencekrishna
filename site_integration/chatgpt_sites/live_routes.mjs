@@ -27,7 +27,7 @@ function json(data, status = 200) {
       "Content-Type": "application/json; charset=utf-8",
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff",
-      "Access-Control-Allow-Origin": "null", // no wildcard browser cross-site reads
+      "Cross-Origin-Resource-Policy": "same-origin", // do not grant cross-origin reads
     }
   });
 }
