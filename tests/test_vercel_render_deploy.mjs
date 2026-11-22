@@ -42,6 +42,12 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(hosted.includes('setDisabled("campaign"'));
   assert.ok(hosted.includes('setDisabled("analyze-file"'));
   assert.ok(hosted.includes('recordFirstPartyPageRequest()'));
+  assert.ok(hosted.includes('addSensorActivationPanel()'));
+  assert.ok(hosted.includes('krishna:sensor-status'));
+  assert.ok(hosted.includes('No genuine forecast received'));
+  assert.ok(hosted.includes('Copy Mac command'));
+  assert.equal(hosted.includes('Bearer '),false);
+  assert.ok(js.includes("krishna:sensor-status"));
   assert.ok(hosted.includes('ACTUAL WEBSITE HTTP ACTIVITY'));
   for(const asset of ["console-integrated.css","console-v131-overlay.css",
     "console-v132-extra.css","console-v131-overlay.js","console-v132-extra.js"]){
