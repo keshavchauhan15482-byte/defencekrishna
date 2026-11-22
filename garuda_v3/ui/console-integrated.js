@@ -99,7 +99,7 @@ function render(f,source='lab'){
  const values=trajectory.map(p=>Number(p.malicious_flow_probability)*100).filter(Number.isFinite);
  if(!values.length){text('future','Insufficient evidence: no forecast returned');return null;}
  const risk=clampRisk(Math.max(...values));
- lastFutureText='Forecast horizons: '+values.map((v,i)=>'H'+(i+1)+' '+clampRisk(v).toFixed(1)+'%').join('  ·  ');
+ lastFutureText='Forecast horizons: '+values.map((v,i)=>'+'+String(trajectory[i].horizon_seconds)+'s '+clampRisk(v).toFixed(1)+'%').join('  ·  ');
  text('future',lastFutureText);
  // The global gauge and timeline belong exclusively to real capture events.
  if(source==='sensor'){
@@ -191,14 +191,19 @@ async function pollLive(){
   };
   const pair=states[d.state]||states.waiting;
   if(IS_HOSTED_RELAY){
-   const cloudState=d.state==='near_live'
-     ?'Backend linked · sensor active'
-     :d.state==='stale'?'Backend linked · capture stale'
-     :'Backend linked · waiting for sensor';
+   const heartbeat=d.sensor_status||{},present=heartbeat.state==='capturing'||heartbeat.state==='processing';
+   const cloudState=d.state==='near_live'?'Backend linked · real capture received':
+     present?'Backend linked · sensor '+heartbeat.state:
+     d.state==='stale'?'Backend linked · forecast stale':'Backend linked · waiting for sensor';
    text('connection',cloudState);
-   text('mode',d.state==='near_live'?'RENDER CONNECTED · SHADOW AI':'RENDER CONNECTED · SENSOR WAITING');
-   text('proof-runtime','Render telemetry connected · PostgreSQL available');
-   text('runtime-detail','The cloud relay is online. Garuda inference requires a separate authorized packet sensor; no recorded replay is presented as live.');
+   text('mode',d.state==='near_live'?'RENDER CONNECTED · SHADOW AI':
+     present?'RENDER CONNECTED · SENSOR '+heartbeat.state.toUpperCase():
+     'RENDER CONNECTED · SENSOR WAITING');
+   text('proof-runtime',present?'Render online · packet sensor '+heartbeat.state:
+     'Render telemetry connected · PostgreSQL available');
+   text('runtime-detail',present?
+     'Authorized packet sensor last heartbeat '+heartbeat.sensor_age_seconds+'s ago; '+heartbeat.capture_seconds+'s capture batches. Garuda forecasts appear only after a completed compatible capture.':
+     'Cloud relay is online. Garuda inference requires a separate authorized packet sensor; recorded replay is not live.');
    text('proof-posture','SHADOW ONLY · NO AUTO BLOCK');
    const proof=$('proof-runtime');
    if(proof){proof.classList.add('runtime-ok');proof.classList.remove('runtime-warn');}
@@ -210,8 +215,12 @@ async function pollLive(){
        d.state==='near_live'?'Last authenticated capture received '+d.sensor_age_seconds+'s ago. Advisory only; no automatic containment.':
        d.state==='stale'?'No recent sensor capture. Last update '+d.sensor_age_seconds+'s ago; existing score is historical.':
        d.state==='disabled'?'Set GARUDA_LIVE_SENSOR_TOKEN and start the local live_publisher. Auto-replay is disabled.':
+       IS_HOSTED_RELAY&&['capturing','processing'].includes(d.sensor_status?.state)?
+       'Private sensor is '+d.sensor_status.state+' real packets ('+d.sensor_status.capture_seconds+'s batches). No model output has been fabricated.':
        'No real captures received yet. Auto-replay is disabled.');
-  text('live-state',d.state==='near_live'?'Real capture received · advisory forecast':pair[1]);
+  text('live-state',d.state==='near_live'?'Real capture received · advisory forecast':
+    IS_HOSTED_RELAY&&['capturing','processing'].includes(d.sensor_status?.state)?
+    'Real packet sensor '+d.sensor_status.state+' · awaiting forecast':pair[1]);
  }catch(e){
   text('connection',IS_HOSTED_RELAY?'Render telemetry unavailable':'Sensor feed offline');
   text('mode','OFFLINE · NO LIVE DATA');

@@ -75,6 +75,21 @@ class LiveFeedTests(unittest.TestCase):
                 feed.append(payload)
         self.assertEqual(feed.snapshot()["events"], [])
 
+    def test_packet_trained_sixty_second_horizons_are_accepted(self):
+        clock=[1000.0]
+        feed=LiveFeed(TOKEN,clock=lambda:clock[0])
+        payload=make_event(1000)
+        payload["trajectory"]=[
+            {"horizon_seconds":w,"malicious_flow_probability":v}
+            for w,v in ((60,.1),(120,.2),(180,.3),(240,.4))]
+        event=feed.append(payload)
+        self.assertEqual([t["horizon_seconds"] for t in event["trajectory"]],[60,120,180,240])
+        bad=make_event(1000)
+        bad["trajectory"]=payload["trajectory"].copy()
+        bad["trajectory"][-1]={"horizon_seconds":40,"malicious_flow_probability":.4}
+        with self.assertRaises(LiveFeedError):
+            feed.append(bad)
+
     def test_bounded_history_and_cursor_gap(self):
         feed = LiveFeed(TOKEN, clock=lambda: 1000.0)
         for _ in range(133):

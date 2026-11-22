@@ -96,46 +96,15 @@ returns only score/timestamp/trajectory metadata. No Render token is
 present in static HTML. The Render ingest endpoint requires a different
 secret, and is never proxied by Vercel.
 
-## 3. Start a genuinely owned-network Garuda sensor
+## 3. Start real packet sensor from your authorized Mac
 
-On the PC or authorized lab machine with full compatible model artifacts,
-follow `docs/release/near_live_shadow_feed.md` and create a private sensor
-token file whose contents equal `GARUDA_LIVE_SENSOR_TOKEN` on Render. Example:
+The cloud services cannot capture packets from your Mac. Follow the new **one-command macOS activation** at [packet_sensor_macos.md](packet_sensor_macos.md) or use the explicit command below from a Git checkout:
 
-~~~sh
-mkdir -p garuda_v3/runtime/live-inbox
-umask 077
-python - <<'PY'
-from pathlib import Path
-import getpass
-path = Path("garuda_v3/runtime/live-sensor.key")
-path.write_text(getpass.getpass("Enter Render GARUDA_LIVE_SENSOR_TOKEN: "))
-path.chmod(0o600)
-PY
-python -m garuda_v3.live_publisher \
-  --artifacts garuda_v3/artifacts/residual_run \
-  --inbox garuda_v3/runtime/live-inbox \
-  --database garuda_v3/runtime/live-shadow.sqlite \
-  --publish-url https://YOUR-RENDER-SERVICE.onrender.com/api/live/ingest \
-  --token-file garuda_v3/runtime/live-sensor.key
+~~~bash
+bash scripts/start-garuda-sensor-macos.sh en0
 ~~~
 
-Start the capture worker on an interface that you **own or have explicit
-permission to monitor**. Requires installed `tcpdump` and capture permissions:
-
-~~~sh
-python -m garuda_v3.live_capture \
-  --interface YOUR_OWN_INTERFACE \
-  --inbox garuda_v3/runtime/live-inbox \
-  --capture-seconds 90 --repeat --authorized
-~~~
-
-Every successfully completed 90s+ PCAP may produce a new advisory forecast,
-provided it has enough contiguous graph windows and matches the runtime model
-contract. Fresh capture must have current packet timestamps; old recordings are
-rejected as near-live. No new captures for >120 seconds => `STALE`.
-The dashboard polls every 2.6 seconds for *new events*; this is **not** a
-2.6-second packet interception or a verified pre-compromise warning.
+The runner uses the packet-trained `garuda_v3/artifacts/calibrated_host_v6` checkpoint, **not the incompatible 10s flow-trained `residual_run` checkpoint**. It takes up to 600 seconds of actual authorized packet capture, sends an independent authenticated heartbeat every 30 seconds to confirm sensor liveness, then runs the pinned 60s/120s/180s/240s advisory forecast and persists it into `krishna_live_forecasts` only after Render confirms acceptance. Packet payloads stay local. No cloud automatic blocking or retraining is enabled.
 
 ## 4. Validate end-to-end
 

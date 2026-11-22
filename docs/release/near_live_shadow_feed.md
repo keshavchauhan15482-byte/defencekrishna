@@ -1,5 +1,7 @@
 # Near-live owned-traffic shadow feed (prototype)
 
+**IMPORTANT (22 November 2026):** For a real PCAP packet sensor connecting to Vercel/Render, use [packet_sensor_macos.md](packet_sensor_macos.md) with the **packet-trained calibrated_host_v6** checkpoint, 600s captures, and 60/120/180/240-second outputs. The older 90s + `residual_run` commands below are for a separate 10s **flow-trained** research environment and will withhold live PCAP packet inference. Do not treat the old example as an activated packet sensor.
+
 This is a **working, optional, same-origin near-live feed**, not a real-time inline IPS or a production SaaS. It uses the existing pinned risk checkpoint and completed-capture `ShadowAgent`. It does **not** retrain the model, improve accuracy, assert successful-compromise prediction, or approve Arjuna/Krishna/Sudarshana containment.
 
 The browser no longer silently polls recorded replay to animate the live gauge. Real captures add new graph points only when their inference result arrives. The lab still offers a clearly labelled **manual recorded demo**.

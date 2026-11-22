@@ -13,7 +13,7 @@
  */
 const INGEST = "/api/live/ingest";
 const FEED = "/bridge/live/events";
-const HORIZONS = [10, 20, 30, 40];
+const ALLOWED_HORIZONS = [[10, 20, 30, 40], [60, 120, 180, 240]];
 const MAX_BODY = 8192;
 const MAX_EVENTS = 128;
 const MAX_AGE = 300;
@@ -49,18 +49,21 @@ export function validateSensorPayload(data, now = Math.floor(Date.now() / 1000))
   if (typeof data.alert !== "boolean" || typeof data.supported !== "boolean" ||
       data.automatic_containment !== false) throw Error("No autonomous actions allowed");
   if (!Array.isArray(data.trajectory) || data.trajectory.length !== 4) throw Error("Exactly four horizons required");
+  const horizons = data.trajectory.map(x=>x?.horizon_seconds);
+  if (!ALLOWED_HORIZONS.some(allowed=>allowed.every((h,i)=>h===horizons[i])))
+    throw Error("Only 10s or 60s horizon sequences are supported");
   const trajectory = data.trajectory.map((item,i) => {
     if (!item || typeof item !== "object" || Array.isArray(item) ||
         Object.keys(item).length !== 2 ||
         !Object.prototype.hasOwnProperty.call(item,"horizon_seconds") ||
         !Object.prototype.hasOwnProperty.call(item,"malicious_flow_probability") ||
-        item.horizon_seconds !== HORIZONS[i] ||
+        item.horizon_seconds !== horizons[i] ||
         typeof item.malicious_flow_probability !== "number" ||
         !Number.isFinite(item.malicious_flow_probability) ||
         item.malicious_flow_probability < 0 || item.malicious_flow_probability > 1)
       throw Error("Invalid horizon/probability");
     return {
-      horizon_seconds: HORIZONS[i],
+      horizon_seconds: horizons[i],
       malicious_flow_probability: Math.round(item.malicious_flow_probability * 1e8)/1e8,
     };
   });

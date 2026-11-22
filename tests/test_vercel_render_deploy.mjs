@@ -65,6 +65,8 @@ test("Vercel serverless API never needs browser sensor secrets and sanitizes eve
       assert.equal(opts.headers.Authorization,"Bearer "+"v".repeat(40));
       return new Response(JSON.stringify({
         state:"near_live",cursor:5,sensor_age_seconds:1,gap:false,
+        sensor_status:{state:"capturing",capture_seconds:600,
+          sensor_age_seconds:12,model_sha256:"private-checkpoint"},
         site_activity:{source:"first_party_page_requests",
           total_requests:8,requests_24h:3,last_request_at:1760000000,
           email:"should-not-be-exposed",is_model_input:false},
