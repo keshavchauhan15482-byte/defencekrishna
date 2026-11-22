@@ -49,6 +49,8 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(css.includes('live-defence-pass'));
   assert.ok(existsSync(join(root,"api","security-check.js")));
   assert.ok(existsSync(join(root,"deployment","vercel","defence_gate.js")));
+  assert.ok(handler.toString().includes("checkKnownApiInput"));
+  assert.ok(readFileSync(join(root,"api","site-activity.js"),"utf8").includes("checkKnownApiInput"));
   assert.ok(hosted.includes('button.onclick=()=>selectScenario(i)'));
   assert.ok(hosted.includes('campaign.onclick=()=>{'));
   assert.ok(hosted.includes('replay.onclick=()=>{'));
