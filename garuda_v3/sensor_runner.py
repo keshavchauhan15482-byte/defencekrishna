@@ -107,7 +107,9 @@ def _capture_stream(interface, inbox, seconds, *, use_sudo=True, max_bytes=MAX_P
         flags |= os.O_NOFOLLOW
     fd = os.open(temp, flags, 0o600)
     command = (["sudo", "-n"] if use_sudo else []) + [
-        binary, "-i", interface, "-s", "0", "-U", "-w", "-"
+        # Current checkpoint/PCAP decoder supports IPv4 only.
+        # Exclude undecodable IPv6, ARP and other link frames at capture time.
+        binary, "-i", interface, "-s", "0", "-U", "-w", "-", "ip"
     ]
     proc = None
     errors = []
