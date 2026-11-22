@@ -81,6 +81,17 @@ module.exports = async function handler(request, response) {
         requests_24h:activity.requests_24h,
         last_request_at:activity.last_request_at,
       },
+      sensor_status: {
+        source: "authenticated_sensor_heartbeat",
+        state: ["absent","capturing","processing","stale"].includes(parsed.sensor_status?.state)
+          ? parsed.sensor_status.state : "absent",
+        sensor_age_seconds: Number.isFinite(parsed.sensor_status?.sensor_age_seconds)
+          ? parsed.sensor_status.sensor_age_seconds : null,
+        capture_seconds: Number.isSafeInteger(parsed.sensor_status?.capture_seconds)
+          && parsed.sensor_status.capture_seconds >= 90
+          && parsed.sensor_status.capture_seconds <= 600
+          ? parsed.sensor_status.capture_seconds : null,
+      },
     });
   } catch {
     return response.status(503).json({error:"Live telemetry backend unavailable; no live data claimed"});
