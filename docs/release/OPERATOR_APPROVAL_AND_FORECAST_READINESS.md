@@ -62,3 +62,13 @@ is missing, the sensor is stale or verified precompromise evidence is absent.
 The current public gateway deliberately sets verified_precompromise to false.
 A passing advisory audit would still never authorize containment. Restart the
 authorized local sensor using the existing Mac setup guide when it is stale.
+
+## Cloud-first dashboard (no local computer required)
+The hosted console now prioritizes actual persisted page-load request counts,
+including recent and previous five-minute windows. Its health is based on the
+authenticated cloud feed, not packet-sensor liveness. The local activation
+prompt is removed from the hosted UI; the optional research collector remains
+available independently. Page-load counts are not full network traffic, unique
+visitors, model input or attacks. No replacement packet inference or autonomous
+containment is claimed. Older relay versions report short-window counts as
+unavailable until the backend has updated.

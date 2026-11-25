@@ -181,20 +181,25 @@ class PostgresEventStore:
 
     def site_activity_snapshot(self):
         """Read-only, aggregate actual HTTP request counts (not unique users)."""
+        now = self._clock()
         with self._connect(self._dsn) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     SELECT COUNT(*)::bigint,
                            COUNT(*) FILTER (WHERE observed_at >= %s)::bigint,
-                           MAX(observed_at)
+                           MAX(observed_at),
+                           COUNT(*) FILTER (WHERE observed_at >= %s)::bigint,
+                           COUNT(*) FILTER (WHERE observed_at >= %s AND observed_at < %s)::bigint
                     FROM krishna_site_activity_events
-                """, (self._clock() - 86400,))
-                count, day_count, latest = cur.fetchone()
+                """, (now - 86400, now - 300, now - 600, now - 300))
+                count, day_count, latest, recent, prior = cur.fetchone()
         return {
             "source": "first_party_page_requests",
             "description": "Observed page-load requests; not unique visitors or network attacks",
             "total_requests": int(count),
             "requests_24h": int(day_count),
+            "requests_5m": int(recent),
+            "requests_previous_5m": int(prior),
             "last_request_at": float(latest) if latest is not None else None,
             "is_model_input": False,
             "automatic_containment": False,

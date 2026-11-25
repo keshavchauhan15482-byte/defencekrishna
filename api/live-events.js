@@ -112,6 +112,9 @@ module.exports = async function handler(request, response) {
         source:"first_party_page_requests",is_model_input:false,
         total_requests:activity.total_requests,
         requests_24h:activity.requests_24h,
+        // Rolling upgrade: older relays omit these fields; unknown is not zero.
+        requests_5m:Number.isSafeInteger(activity.requests_5m)&&activity.requests_5m>=0&&activity.requests_5m<=activity.requests_24h?activity.requests_5m:null,
+        requests_previous_5m:Number.isSafeInteger(activity.requests_previous_5m)&&activity.requests_previous_5m>=0&&activity.requests_previous_5m<=activity.requests_24h?activity.requests_previous_5m:null,
         last_request_at:activity.last_request_at,
       },
       sensor_status: {

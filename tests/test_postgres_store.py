@@ -63,7 +63,10 @@ class FakeCursor:
         if key.startswith("SELECT COUNT(*)::BIGINT"):
             cutoff = params[0]
             times = [row["at"] for row in self.db.activity]
-            self.last=(len(times),len([x for x in times if x>=cutoff]),max(times,default=None))
+            _, recent, prior, boundary = params
+            self.last=(len(times),len([x for x in times if x>=cutoff]),max(times,default=None),
+                       len([x for x in times if x>=recent]),
+                       len([x for x in times if prior<=x<boundary]))
             return
         if key.startswith("INSERT"):
             h, m, received, cutoff, raw = params
@@ -156,6 +159,12 @@ class PersistentStoreTests(unittest.TestCase):
         counts=make().site_activity_snapshot()
         self.assertEqual(counts["total_requests"],1)
         self.assertEqual(counts["requests_24h"],1)
+        self.assertEqual(counts["requests_5m"],1)
+        self.assertEqual(counts["requests_previous_5m"],0)
+        clock[0]+=300.1
+        counts=make().site_activity_snapshot()
+        self.assertEqual(counts["requests_5m"],0)
+        self.assertEqual(counts["requests_previous_5m"],1)
         self.assertEqual(counts["last_request_at"],1000)
         self.assertFalse(counts["is_model_input"])
         for bad in (
