@@ -46,3 +46,15 @@ test("Untrusted public forecast fields never authorize containment",()=>{
  assert.ok(r.blockers.includes("trusted_target_attribution_absent"));
  assert.ok(assess(null).blockers.includes("forecast_not_fresh"));
 });
+
+test("Forecast horizon expiry and gaps cannot pass advisory readiness",()=>{
+ const at=1760000000;
+ const feed={state:"near_live",gap:false,sensor_status:{state:"processing"},events:[{
+  cutoff_epoch_seconds:at,trajectory:[60,120,180,240].map(h=>({horizon_seconds:h,malicious_flow_probability:.2})),
+  supported:true,verified_precompromise:true}]};
+ assert.equal(assess(feed,at+239).advisory_evidence_ready,true);
+ assert.equal(assess(feed,at+240).advisory_evidence_ready,false);
+ assert.equal(assess(feed,at-1).forecast_window_open,false);
+ assert.equal(assess({...feed,gap:true},at+10).advisory_evidence_ready,false);
+ assert.equal(assess(feed,at+1).automatic_containment,false);
+});

@@ -69,14 +69,26 @@ module.exports = async function handler(request, response) {
     }
     // Explicitly project event fields so upstream never leaks hashes/raw inputs.
     const events = parsed.events.map(event => {
-      if (!Number.isSafeInteger(event.id) || !Array.isArray(event.trajectory) ||
+      if (!event || !Number.isSafeInteger(event.id) || event.id < 1 ||
+          !Number.isFinite(event.cutoff_epoch_seconds) || event.cutoff_epoch_seconds <= 0 ||
+          !Number.isFinite(event.score) || event.score < 0 || event.score > 100 ||
+          !Array.isArray(event.trajectory) ||
           event.trajectory.length !== 4 || event.automatic_containment !== false) {
         throw Error("Invalid shadow feed event");
       }
+      const trajectory=event.trajectory.map(point=>{
+        if(!point || !Number.isSafeInteger(point.horizon_seconds) ||
+          !Number.isFinite(point.malicious_flow_probability) ||
+          point.malicious_flow_probability<0 || point.malicious_flow_probability>1)
+          throw Error("Invalid forecast point");
+        return {horizon_seconds:point.horizon_seconds,malicious_flow_probability:point.malicious_flow_probability};
+      });
+      if(![10,60].some(step=>trajectory.every((p,i)=>p.horizon_seconds===step*(i+1))))
+        throw Error("Invalid forecast horizon contract");
       return {
         id:event.id,kind:"forecast",source:"completed_capture_shadow",
         cutoff_epoch_seconds:event.cutoff_epoch_seconds,
-        trajectory:event.trajectory,score:event.score,
+        trajectory,score:event.score,
         alert:event.alert===true,supported:event.supported===true,
         operating_mode:"SHADOW_ONLY",automatic_containment:false,
         verified_precompromise:false,
