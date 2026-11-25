@@ -7,12 +7,17 @@
 const {randomUUID}=require("node:crypto");
 const {checkKnownApiInput}=require("../deployment/vercel/defence_gate.js");
 
+const {historicalDeny}=require("../deployment/vercel/historical_inspection.js");
+const {applySignedContainment}=require("../deployment/vercel/signed_scope.js");
 module.exports=async function handler(request,response){
   response.setHeader("Cache-Control","no-store");
   response.setHeader("X-Content-Type-Options","nosniff");
   response.setHeader("Cross-Origin-Resource-Policy","same-origin");
   if(request.method!=="POST")return response.status(405).json({error:"POST required"});
+  if(applySignedContainment(request,response,"site-activity"))return;
   const query=request.query||{};
+  const queryKeys=Object.keys(query);
+  if(queryKeys.length>8)return response.status(422).json({error:"Too many query parameters"});
   for(const [key,value] of Object.entries(query)){
     const inspection=checkKnownApiInput(value);
     if(inspection){
@@ -23,8 +28,16 @@ module.exports=async function handler(request,response){
       });
     }
   }
-  if(Object.keys(query).length>0)
+  if(queryKeys.length>0){
+    const historical=await historicalDeny(query[queryKeys[0]]);
+    if(historical){
+      response.setHeader("X-Krishna-Lane",historical.lane);
+      response.setHeader("X-Krishna-Decision","deny");
+      response.setHeader("X-Krishna-Engine",historical.engine);
+      return response.status(403).json({error:"Disallowed request parameter",lane:historical.lane});
+    }
     return response.status(422).json({error:"Query parameters unsupported"});
+  }
   const origin=request.headers?.origin;
   const host=request.headers?.host;
   const fetchSite=request.headers?.["sec-fetch-site"];
