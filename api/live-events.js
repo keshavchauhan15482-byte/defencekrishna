@@ -5,6 +5,8 @@
  */
 const {checkKnownApiInput}=require("../deployment/vercel/defence_gate.js");
 
+const {historicalDeny}=require("../deployment/vercel/historical_inspection.js");
+const {applySignedContainment}=require("../deployment/vercel/signed_scope.js");
 module.exports = async function handler(request, response) {
   response.setHeader("Cache-Control", "no-store");
   response.setHeader("X-Content-Type-Options", "nosniff");
@@ -12,6 +14,7 @@ module.exports = async function handler(request, response) {
   if (request.method !== "GET") {
     return response.status(405).json({error:"GET required"});
   }
+  if(applySignedContainment(request,response,"live-events"))return;
   const raw = request.query?.after ?? "0";
   const inspection=checkKnownApiInput(raw);
   if(inspection){
@@ -24,6 +27,13 @@ module.exports = async function handler(request, response) {
   }
   if (typeof raw !== "string" || !/^\d{1,16}$/.test(raw) ||
       !Number.isSafeInteger(Number(raw))) {
+    const historical=await historicalDeny(raw);
+    if(historical){
+      response.setHeader("X-Krishna-Lane",historical.lane);
+      response.setHeader("X-Krishna-Decision","deny");
+      response.setHeader("X-Krishna-Engine",historical.engine);
+      return response.status(403).json({error:"Disallowed request parameter",lane:historical.lane,reason:historical.reason,automatic_containment:false});
+    }
     return response.status(422).json({error:"Invalid event cursor"});
   }
   const token = process.env.RENDER_VIEWER_TOKEN;

@@ -5,21 +5,46 @@
   "buildCommand": "node deployment/vercel/build_site.mjs",
   "outputDirectory": "public",
   "rewrites": [
-    {"source": "/", "destination": "/console.html"},
-    {"source": "/bridge/live/events", "destination": "/api/live-events"}
+    {
+      "source": "/",
+      "destination": "/console.html"
+    },
+    {
+      "source": "/bridge/live/events",
+      "destination": "/api/live-events"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        {"key": "Referrer-Policy", "value": "no-referrer"},
-        {"key": "X-Content-Type-Options", "value": "nosniff"},
-        {"key": "X-Frame-Options", "value": "DENY"}
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
       ]
     },
     {
       "source": "/bridge/live/events",
-      "headers": [{"key": "Cache-Control", "value": "no-store"}]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
-  ]
+  ],
+  "functions": {
+    "api/*.js": {
+      "includeFiles": "{deployment/vercel/legacy_worker.js,defence-stack-patch.js,{detection,counter}-engine.js,sudarshana-core.js,semantic-*.js,behavioral-*.js,meta-learner-*.js,statistical-*.js,sql-tokenizer.js,schema-validator.js,bloom-filter.js,reinforcement-*.js}"
+    }
+  }
 }
