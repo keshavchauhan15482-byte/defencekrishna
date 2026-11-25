@@ -44,7 +44,7 @@
   ],
   "functions": {
     "api/*.js": {
-      "includeFiles": "{deployment/vercel/legacy_worker.js,defence-stack-patch.js,detection-engine.js,counter-engine.js,sudarshana-core.js,semantic-feature-extractor.js,behavioral-sequence-model.js,meta-learner-fusion.js,statistical-anomaly-detector.js,sql-tokenizer.js,schema-validator.js,bloom-filter.js,reinforcement-mutation-generator.js}"
+      "includeFiles": "{deployment/vercel/legacy_worker.js,defence-stack-patch.js,{detection,counter}-engine.js,sudarshana-core.js,semantic-*.js,behavioral-*.js,meta-learner-*.js,statistical-*.js,sql-tokenizer.js,schema-validator.js,bloom-filter.js,reinforcement-*.js}"
     }
   }
 }
