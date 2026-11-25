@@ -52,3 +52,13 @@ private staging environment. An independent operator must approve any proposed
 scope. Until then keep Garuda advisory and retain deterministic server-side
 request blocking. No new dataset results or production readiness scores are
 claimed by this release.
+
+## Strict hosted evidence audit
+The public gateway projects only numeric forecast horizons and probabilities;
+invalid scores, cutoffs or mixed horizon contracts fail closed. Run
+`node scripts/check_hosted_readiness.cjs --require-advisory-evidence` for a
+nonzero exit if the forecast window has elapsed, continuity or model support
+is missing, the sensor is stale or verified precompromise evidence is absent.
+The current public gateway deliberately sets verified_precompromise to false.
+A passing advisory audit would still never authorize containment. Restart the
+authorized local sensor using the existing Mac setup guide when it is stale.
