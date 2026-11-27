@@ -4,6 +4,7 @@
  * No sensor token, viewer token or Render backend URL appears in browser JS.
  */
 const {checkKnownApiInput}=require("../deployment/vercel/defence_gate.js");
+const {readBoundedJson}=require("../deployment/vercel/bounded_json.js");
 
 const {historicalDeny}=require("../deployment/vercel/historical_inspection.js");
 const {applySignedContainment}=require("../deployment/vercel/signed_scope.js");
@@ -58,11 +59,7 @@ module.exports = async function handler(request, response) {
        redirect:"error",signal:AbortSignal.timeout(20_000),cache:"no-store"}
     );
     if (!upstream.ok) throw Error("Upstream unavailable");
-    const contentLength = Number(upstream.headers.get("content-length") || 0);
-    if (contentLength > 131072) throw Error("Upstream response too large");
-    const text = await upstream.text();
-    if (text.length > 131072) throw Error("Upstream response too large");
-    const parsed = JSON.parse(text);
+    const parsed = await readBoundedJson(upstream);
     if (!parsed || !["waiting","disabled","stale","near_live"].includes(parsed.state) ||
         !Array.isArray(parsed.events) || parsed.events.length > 128) {
       throw Error("Malformed upstream response");
@@ -107,7 +104,7 @@ module.exports = async function handler(request, response) {
       state:parsed.state,cursor:parsed.cursor,
       events,source:"completed_capture_shadow",
       sensor_age_seconds:parsed.sensor_age_seconds,
-      gap:parsed.gap===true,automatic_containment:false,
+      gap:parsed.gap!==false,automatic_containment:false,
       site_activity:{
         source:"first_party_page_requests",is_model_input:false,
         total_requests:activity.total_requests,
