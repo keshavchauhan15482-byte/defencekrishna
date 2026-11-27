@@ -5,6 +5,7 @@
  */
 const {checkKnownApiInput}=require("../deployment/vercel/defence_gate.js");
 const {readBoundedJson}=require("../deployment/vercel/bounded_json.js");
+const {coordinate}=require("../deployment/vercel/garuda_coordination.js");
 
 const {historicalDeny}=require("../deployment/vercel/historical_inspection.js");
 const {applySignedContainment}=require("../deployment/vercel/signed_scope.js");
@@ -105,6 +106,7 @@ module.exports = async function handler(request, response) {
       events,source:"completed_capture_shadow",
       sensor_age_seconds:parsed.sensor_age_seconds,
       gap:parsed.gap!==false,automatic_containment:false,
+      defence_coordination:coordinate({state:parsed.state,gap:parsed.gap,events,sensor_status:parsed.sensor_status}),
       site_activity:{
         source:"first_party_page_requests",is_model_input:false,
         total_requests:activity.total_requests,
