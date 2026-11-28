@@ -115,7 +115,17 @@ module.exports = async function handler(request, response) {
       bounded(h.ewma_mae,1e9)&&bounded(h.persistence_mae,1e9)&&bounded(h.expected_requests_per_minute,1e9)&&
       Array.isArray(h.trajectory)&&h.trajectory.length===4&&h.trajectory.every((p,i)=>p?.horizon_seconds===[60,120,180,300][i]&&Number.isSafeInteger(p.conditional_index)&&bounded(p.conditional_index,100)&&bounded(p.expected_page_requests,5e9))&&h.score===h.trajectory[0].conditional_index;
     const httpForecast=validHttp?{source:h.source,issued_at:h.issued_at,history_minutes:h.history_minutes,audit_samples:h.audit_samples,method:h.method,ewma_mae:h.ewma_mae,persistence_mae:h.persistence_mae,expected_requests_per_minute:h.expected_requests_per_minute,score:h.score,trajectory:h.trajectory.map(p=>({horizon_seconds:p.horizon_seconds,expected_page_requests:p.expected_page_requests,conditional_index:p.conditional_index})),condition:h.condition,is_attack_probability:false,automatic_containment:false,validation_scope:h.validation_scope}:null;
+    const pRuntime=parsed.packet_runtime;
+    const runtimeValid=pRuntime?.execution==="cloud_on_demand"&&pRuntime.packet_source==="external_authorized_graph_required"&&pRuntime.live_prediction===false&&pRuntime.automatic_containment===false&&["ready","unavailable","busy"].includes(pRuntime.status);
+    const packetRuntime=runtimeValid?{
+      status:pRuntime.status,execution:"cloud_on_demand",packet_source:"external_authorized_graph_required",
+      support_gate_configured:typeof pRuntime.support_gate_configured==="boolean"?pRuntime.support_gate_configured:null,
+      history_seconds:Number.isSafeInteger(pRuntime.history_seconds)&&pRuntime.history_seconds>0&&pRuntime.history_seconds<=3600?pRuntime.history_seconds:null,
+      window_seconds:[10,60].includes(pRuntime.window_seconds)?pRuntime.window_seconds:null,
+      live_prediction:false,automatic_containment:false
+    }:null;
     return response.status(200).json({
+      packet_runtime:packetRuntime,
       fixture_receipts:projectReceipts(parsed.fixture_receipts),
       http_forecast:httpForecast,
       fixture_risk:fixtureRisk,

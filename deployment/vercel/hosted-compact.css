@@ -100,3 +100,13 @@ body.hosted-compact #hosted-defence-feed .primary{display:inline-block;text-deco
 body.hosted-compact #hosted-defence-feed>p.muted{font-size:11px}
 @media(max-width:900px){body.hosted-compact .workspace{grid-template-columns:minmax(0,1fr)!important}body.hosted-compact .workspace>#hosted-defence-feed{min-height:0}}
 @media(prefers-reduced-motion:reduce){body.hosted-compact .premium-risk-svg *{animation:none!important;transition:none!important}}
+
+/* Only Garuda packet panel; no changes to the HTTP graphs, feed or lab. */
+body.hosted-compact #packet-ai-panel .packet-readiness{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}
+body.hosted-compact #packet-ai-panel .packet-readiness article{border:1px solid #7895b52b;border-radius:8px;background:#0b1420;padding:9px}
+body.hosted-compact #packet-ai-panel .packet-readiness small{display:block;color:#8196af;font-size:10px;letter-spacing:.5px}
+body.hosted-compact #packet-ai-panel .packet-readiness b{display:block;color:#d4e4f5;font-size:12px;margin-top:4px}
+body.hosted-compact #packet-ai-panel #packet-archive{font-size:11px;color:#93a8bc;margin-top:10px}
+body.hosted-compact #packet-ai-panel #packet-archive summary{cursor:pointer}
+body.hosted-compact #packet-ai-panel #packet-horizons{font-size:12px;color:#7fd7ff;line-height:1.6}
+body.hosted-compact #prediction[data-forecast-state="ACTIVE_ADVISORY"] #packet-ai-panel #packet-archive{display:none}

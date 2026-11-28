@@ -128,6 +128,7 @@ class RelayState:
                     result["http_forecast"] = self.store.http_forecast_snapshot()
                 except Exception:
                     result["http_forecast"] = None
+            result["packet_runtime"] = self.cloud_inference.status()
         return result
 
 
