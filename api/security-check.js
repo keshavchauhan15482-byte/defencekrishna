@@ -6,6 +6,7 @@
  */
 const {inspectRequest,parseRecord}=require("../deployment/vercel/defence_gate.js");
 const {historicalDeny}=require("../deployment/vercel/historical_inspection.js");
+const {recordFixtureDecision}=require("../deployment/vercel/fixture_telemetry.js");
 const {applySignedContainment}=require("../deployment/vercel/signed_scope.js");
 module.exports=async function securityCheck(request,response){
   response.setHeader("Cache-Control","no-store");
@@ -22,6 +23,9 @@ module.exports=async function securityCheck(request,response){
   response.setHeader("X-Krishna-Engine",decision.engine||"bounded-route-guard");
   response.setHeader("X-Krishna-Lane",decision.lane);
   response.setHeader("X-Krishna-Decision",decision.allowed?"allow":"deny");
+  // Best-effort aggregate denial receipt; enforcement is independent of telemetry.
+  const logged=await recordFixtureDecision(decision);
+  response.setHeader("X-Krishna-Fixture-Telemetry",logged?"recorded":"not-recorded");
   // Do not forward source IP, browser cookies, headers, private records, or
   // attack payloads into the Render model/heartbeat PostgreSQL tables.
   return response.status(decision.status).json(decision.allowed?
