@@ -43,3 +43,11 @@ test("compact dashboard keeps actual page activity distinct and hides inactive c
  assert.ok(js.includes('drawPoints(view.active?values:[])'));
  assert.ok(host.includes('count(d.total_requests)')&&host.includes('in last 24h · not attacks'));
 });
+
+test("premium graph and server receipt feed are included in hosted build",()=>{
+ const root=path.resolve(__dirname,"..");
+ cp.execFileSync(process.execPath,["deployment/vercel/build_site.mjs"],{cwd:root});
+ const page=fs.readFileSync(path.join(root,"public","console.html"),"utf8"),js=fs.readFileSync(path.join(root,"public","console-integrated.js"),"utf8");
+ for(const id of ["hosted-chart-stack","hosted-defence-feed","defence-receipts","http-forecast-area","observed-risk-area"])assert.ok(page.includes('id="'+id+'"'),id);
+ assert.ok(js.includes('Event prediction: unavailable')&&js.includes('renderDefenceReceipts(d.fixture_receipts,d.fixture_risk,d.http_forecast)'));
+});

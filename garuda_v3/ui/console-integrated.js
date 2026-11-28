@@ -20,21 +20,61 @@ let liveCursor=0,livePollBusy=false;
 let lastSensorForecast=null;
 let hostedForecastEvent=null,hostedFeed=null,hostedClock=null,hostedClockAt=0;
 let observedRiskHistory=[];
+let lastReceiptSignature=null;
+function plotPremium(id,points,color){
+ const line=$(id+'-line'),area=$(id+'-area'),dots=$(id+'-dots');
+ if(!line||!area||!dots)return;
+ const path=points.map((p,i)=>(i?'L':'M')+p.x.toFixed(2)+' '+p.y.toFixed(2)).join(' ');
+ line.setAttribute('d',path);
+ area.setAttribute('d',points.length>1?path+' L'+points.at(-1).x.toFixed(2)+' 98 L'+points[0].x.toFixed(2)+' 98 Z':'');
+ dots.replaceChildren();
+ const ns='http://www.w3.org/2000/svg';
+ for(const p of points){
+  const c=document.createElementNS(ns,'circle');c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);
+  c.setAttribute('r',p===points.at(-1)?'3.8':'2.3');c.setAttribute('fill',color);c.setAttribute('stroke','#101722');c.setAttribute('stroke-width','1');
+  const t=document.createElementNS(ns,'title');t.textContent=p.label;c.append(t);dots.append(c);
+ }
+}
+const RECEIPT_LABELS={SQLI_SIGNATURE:'SQL injection signature',XSS_SIGNATURE:'Cross-site scripting signature',TRAVERSAL_SIGNATURE:'Path traversal signature',COMMAND_SIGNATURE:'Command injection signature',HISTORICAL_DANGER_PATTERN:'Known danger pattern',STRUCTURAL_ANOMALY_REVIEW:'Structural anomaly',HISTORICAL_STRUCTURE_REVIEW:'Historical structural anomaly',FIXTURE_SCOPE_DENIED:'Restricted dummy-record access',UNSPECIFIED_RULE:'Guard rule · reason unavailable'};
+function renderDefenceReceipts(d,risk,forecast){
+ const root=$('defence-receipts');if(!root)return;
+ const ok=d?.source==='server_recorded_fixture_denials'&&d.scope==='synthetic_fixture_only'&&Array.isArray(d.events)&&d.events.length<=12;
+ text('defence-feed-status',ok?'Live receipts':'Unavailable');
+ const obs=risk?.is_prediction===false&&Number.isSafeInteger(risk.score)?risk.score+'/100':'Unavailable';
+ const projected=forecast?.is_attack_probability===false&&Number.isSafeInteger(forecast.score)?forecast.score+'/100':'Unavailable';
+ text('defence-feed-context','Current global observed risk: '+obs+' · conditional HTTP +60s: '+projected+' (not tied to any event)');
+ const sig=ok?JSON.stringify(d.events):'offline';
+ if(sig===lastReceiptSignature)return;lastReceiptSignature=sig;root.replaceChildren();
+ if(!ok||!d.events.length){const p=document.createElement('p');p.className='muted';p.textContent=ok?'No recorded fixture denials in the last 30 minutes.':'Receipt feed unavailable; no block claim.';root.append(p);return;}
+ for(const e of d.events){
+  if(!Object.hasOwn(RECEIPT_LABELS,e.reason)||!['ARJUNA','KRISHNA','SUDARSHAN'].includes(e.lane)||e.decision!=='DENY'||e.status!==403)continue;
+  const card=document.createElement('article');card.className='defence-receipt';card.dataset.lane=e.lane;
+  const title=document.createElement('div');title.className='receipt-title';
+  const name=document.createElement('span');name.textContent=RECEIPT_LABELS[e.reason];
+  const badge=document.createElement('span');badge.className='receipt-denied';badge.textContent='BLOCKED · 403';title.append(name,badge);
+  const meta=document.createElement('p');meta.className='receipt-meta';meta.textContent='By '+e.lane+' · '+new Date(e.observed_at*1000).toLocaleTimeString()+' · receipt #'+e.id;
+  const prediction=document.createElement('p');prediction.className='receipt-prediction';prediction.textContent='Event prediction: unavailable · no verified correlation';
+  card.append(title,meta,prediction);root.append(card);
+ }
+}
+
 function renderHttpForecast(d){
  const valid=d?.source==='recorded_http_traffic_forecast_v1'&&d.condition==='no_new_fixture_denials'&&d.is_attack_probability===false&&Number.isSafeInteger(d.score)&&Array.isArray(d.trajectory)&&d.trajectory.length===4;
- if(!valid){text('http-forecast-score','—');text('http-forecast-status','Unavailable');text('http-forecast-detail','Insufficient history or offline');text('http-forecast-points','Waiting for fresh recorded history.');text('http-forecast-audit','Not an attack probability.');$('http-forecast-line')?.setAttribute('d','');return;}
+ if(!valid){text('http-forecast-score','—');text('http-forecast-status','Unavailable');text('http-forecast-detail','Insufficient history or offline');text('http-forecast-points','Waiting for fresh recorded history.');text('http-forecast-audit','Not an attack probability.');plotPremium('http-forecast',[],'#ff985d');return;}
  text('http-forecast-score',String(d.score));text('http-forecast-detail','Conditional · no new fixture denials');
  text('http-forecast-status',d.method.toUpperCase()+' · experimental');
  text('http-forecast-points',d.trajectory.map(p=>'+'+p.horizon_seconds+'s: '+p.conditional_index+'/100 · '+p.expected_page_requests+' expected page requests').join('  |  '));
  text('http-forecast-audit',d.history_minutes+' closed minutes · '+d.audit_samples+' historical one-step comparisons · EWMA MAE '+d.ewma_mae+' vs persistence '+d.persistence_mae+'. Conditional on no new fixture denials; not an attack probability.');
- $('http-forecast-line')?.setAttribute('d',d.trajectory.map((p,i)=>(i?'L':'M')+((p.horizon_seconds-60)*400/240)+' '+(95-p.conditional_index*.9)).join(' '));
+ plotPremium('http-forecast',d.trajectory.map(p=>({x:34+(p.horizon_seconds-60)*390/240,y:98-p.conditional_index*.88,label:'+'+p.horizon_seconds+'s: '+p.conditional_index+'/100 conditional index'})),'#ff985d');
 }
 function renderObservedRisk(d){
  const valid=d?.source==='observed_fixture_http_index'&&d.is_prediction===false&&Number.isSafeInteger(d.score)&&d.score>=0&&d.score<=100;
- if(!valid){text('observed-risk-score','—');text('observed-risk-state','Unavailable');text('observed-risk-detail','No verified observation');observedRiskHistory=[];$('observed-risk-line')?.setAttribute('d','');return;}
+ if(!valid){text('observed-risk-score','—');text('observed-risk-state','Unavailable');text('observed-risk-detail','No verified observation');observedRiskHistory=[];plotPremium('observed-risk',[],'#39d5ff');return;}
  text('observed-risk-score',String(d.score));text('observed-risk-state',d.score>=35?'Elevated fixture activity':'Low observed fixture activity');text('observed-risk-detail',d.denials_recent_minute_buckets+' recent fixture denials · not prediction');
- observedRiskHistory.push(d.score);observedRiskHistory=observedRiskHistory.slice(-36);
- $('observed-risk-line')?.setAttribute('d',observedRiskHistory.map((v,i)=>(i?'L':'M')+(i*400/35)+' '+(95-v*.9)).join(' '));
+ if(!Number.isFinite(d.observed_at))return;
+ if(observedRiskHistory.at(-1)?.at!==d.observed_at)observedRiskHistory.push({at:d.observed_at,score:d.score});
+ observedRiskHistory=observedRiskHistory.filter(p=>p.at>=d.observed_at-180&&p.at<=d.observed_at).slice(-36);
+ plotPremium('observed-risk',observedRiskHistory.map(p=>({x:424-(d.observed_at-p.at)*390/180,y:98-p.score*.88,label:new Date(p.at*1000).toLocaleTimeString()+' · '+p.score+'/100 observed index'})),'#39d5ff');
 }
 let scanPhase=0;
 const metricAnimations=new Map();
@@ -226,6 +266,7 @@ async function pollLive(){
    hostedFeed={online:true,state:d.state,gap:d.gap,sensor_status:d.sensor_status};
    renderObservedRisk(d.fixture_risk);
    renderHttpForecast(d.http_forecast);
+   renderDefenceReceipts(d.fixture_receipts,d.fixture_risk,d.http_forecast);
    const heartbeat=d.sensor_status||{};
    document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{
      backend:'online',
@@ -352,7 +393,7 @@ async function pollLive(){
     if(hint)hint.textContent='Cloud feed offline · last score historical';
   }
   text('live-sensor-message','Live endpoint unavailable: '+e.message);
-  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);renderHttpForecast(null);}
+  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);renderHttpForecast(null);renderDefenceReceipts(null,null,null);}
  }finally{livePollBusy=false}
 }
 

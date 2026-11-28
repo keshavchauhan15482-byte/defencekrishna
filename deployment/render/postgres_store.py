@@ -15,6 +15,8 @@ from garuda_v3.live_feed import LiveFeed, LiveFeedError
 from deployment.render.observed_index import observed_index
 from deployment.render.http_forecast import forecast as forecast_http
 
+FIXTURE_REASONS = {"ARJUNA": ["SQLI_SIGNATURE","XSS_SIGNATURE","TRAVERSAL_SIGNATURE","COMMAND_SIGNATURE","HISTORICAL_DANGER_PATTERN","UNSPECIFIED_RULE"],"KRISHNA": ["STRUCTURAL_ANOMALY_REVIEW","HISTORICAL_STRUCTURE_REVIEW","UNSPECIFIED_RULE"],"SUDARSHAN": ["FIXTURE_SCOPE_DENIED","UNSPECIFIED_RULE"]}
+
 
 class PostgresEventStore:
     def __init__(self, database_url: str, sensor_token: str, connect=None, clock=None):
@@ -80,9 +82,24 @@ class PostgresEventStore:
                     )
                 """)
 
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS krishna_fixture_receipts (
+                        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                        request_uuid TEXT NOT NULL UNIQUE,
+                        observed_at DOUBLE PRECISION NOT NULL,
+                        lane TEXT NOT NULL,
+                        reason TEXT NOT NULL
+                    )
+                """)
+                cur.execute("""
+                    CREATE INDEX IF NOT EXISTS krishna_fixture_receipts_time
+                    ON krishna_fixture_receipts(observed_at DESC)
+                """)
+
     def record_fixture_denial(self, event):
-        if (not isinstance(event,dict) or set(event)!={"schema","request_uuid","lane"}
-                or event["schema"]!="fixture-denial-v1" or event["lane"] not in ("ARJUNA","KRISHNA","SUDARSHAN")
+        if (not isinstance(event,dict) or not ((event.get("schema")=="fixture-denial-v1" and set(event)=={"schema","request_uuid","lane"}) or (event.get("schema")=="fixture-denial-v2" and set(event)=={"schema","request_uuid","lane","reason"}))
+                or not isinstance(event["lane"],str) or event["lane"] not in FIXTURE_REASONS
+                or event.get("reason","UNSPECIFIED_RULE") not in FIXTURE_REASONS[event["lane"]]
                 or not isinstance(event["request_uuid"],str)
                 or not re.fullmatch(r"[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}",event["request_uuid"])):
             raise LiveFeedError("Invalid fixture decision")
@@ -90,6 +107,13 @@ class PostgresEventStore:
         minute=int(now//60)*60
         with self._connect(self._dsn) as conn:
             with conn.cursor() as cur:
+                cur.execute("DELETE FROM krishna_fixture_receipts WHERE observed_at < %s",(now-3600,))
+                cur.execute("""
+                    INSERT INTO krishna_fixture_receipts(request_uuid,observed_at,lane,reason)
+                    VALUES(%s,%s,%s,%s) ON CONFLICT(request_uuid) DO NOTHING RETURNING id
+                """,(event["request_uuid"],now,event["lane"],event.get("reason","UNSPECIFIED_RULE")))
+                if cur.fetchone() is None:
+                    return {"accepted":True,"scope":"synthetic_fixture_denials_only"}
                 cur.execute("DELETE FROM krishna_fixture_denial_buckets WHERE minute_epoch < %s",(minute-3600,))
                 cur.execute("""
                     INSERT INTO krishna_fixture_denial_buckets(minute_epoch,lane,denials,last_at)
@@ -99,6 +123,22 @@ class PostgresEventStore:
                     last_at=GREATEST(krishna_fixture_denial_buckets.last_at,EXCLUDED.last_at)
                 """,(minute,event["lane"],now))
         return {"accepted":True,"scope":"synthetic_fixture_denials_only"}
+
+    def fixture_receipts_snapshot(self):
+        now=self._clock()
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT id,observed_at,lane,reason FROM krishna_fixture_receipts
+                    WHERE observed_at >= %s AND observed_at <= %s
+                    ORDER BY id DESC LIMIT 12
+                """,(now-1800,now))
+                rows=cur.fetchall()
+        return {"source":"server_recorded_fixture_denials","events":[
+            {"id":int(i),"observed_at":float(at),"lane":lane,"reason":reason,
+             "decision":"DENY","status":403,"event_prediction_probability":None}
+            for i,at,lane,reason in rows if lane in FIXTURE_REASONS and reason in FIXTURE_REASONS[lane]],
+            "observed_at":now,"scope":"synthetic_fixture_only","automatic_containment":False}
 
     def fixture_risk_snapshot(self, activity):
         now=self._clock()
