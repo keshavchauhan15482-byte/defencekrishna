@@ -45,7 +45,7 @@ jobs:
           node --test tests/test_live_defence_gateway.cjs
           node --test tests/test_production_scope.cjs
           node --test tests/test_operator_readiness.cjs
-          node --test tests/test_bounded_feed.cjs tests/test_hosted_pilot_audit.cjs tests/test_hosted_forecast_view.cjs tests/test_fixture_receipts.cjs
+          node --test tests/test_bounded_feed.cjs tests/test_hosted_pilot_audit.cjs tests/test_hosted_forecast_view.cjs tests/test_fixture_receipts.cjs tests/test_scenario_fixture.cjs
           python -m unittest discover -s tests -p 'test_render_live_relay.py' -v
           python -m unittest discover -s tests -p 'test_observed_index.py' -v
           python -m unittest discover -s tests -p 'test_http_forecast.py' -v

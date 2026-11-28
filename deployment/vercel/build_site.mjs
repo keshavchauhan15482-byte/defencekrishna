@@ -24,7 +24,7 @@ const scripts=["forecast-view.js",...assets.filter(x=>x.endsWith(".js")),"hosted
   .map(x=>'<script src="/'+x+'"></script>').join("\n");
 if (!html.includes("</head>") || !html.includes("</body>"))throw Error("Expected console.html document");
 html=html.replace("</head>",styles+"\n</head>").replace("</body>",scripts+"\n</body>");
-const banner='<div id="hosting-boundary" role="status" style="padding:12px 3%;background:#1c1720;color:#f0b97e;border-bottom:1px solid #ff925455;font-size:12px">VERCEL HOSTED MODE · Hosted HTTP monitoring and request guards need no local setup. Optional packet forecasts require genuine supported captures. Attack scenarios are interactive browser-only defensive walkthroughs, not real attack executions. File analysis remains private.</div>';
+const banner='<div id="hosting-boundary" role="status" style="padding:12px 3%;background:#1c1720;color:#f0b97e;border-bottom:1px solid #ff925455;font-size:12px">VERCEL HOSTED MODE · Hosted HTTP monitoring and request guards need no local setup. Optional packet forecasts require genuine supported captures. Attack scenarios run fixed synthetic server-side policy checks, not real attack executions. File analysis remains private.</div>';
 const labSection='<section id="lab" class="panel">';
 if (!html.includes(labSection)) throw Error("Expected Attack Lab section");
 const comparison='<div id="lab-comparison" class="panel" style="scroll-margin-top:140px">'

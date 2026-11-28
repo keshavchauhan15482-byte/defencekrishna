@@ -50,7 +50,7 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(existsSync(join(root,"deployment","vercel","defence_gate.js")));
   assert.ok(handler.toString().includes("checkKnownApiInput"));
   assert.ok(readFileSync(join(root,"api","site-activity.js"),"utf8").includes("checkKnownApiInput"));
-  assert.ok(hosted.includes('button.onclick=()=>selectScenario(i)'));
+  assert.ok(hosted.includes('button.onclick=()=>executeScenario(i)'));
   assert.ok(hosted.includes('campaign.onclick=()=>{'));
   assert.ok(hosted.includes('replay.onclick=()=>{'));
   assert.ok(hosted.includes('BROWSER DEMO · NOT LIVE DATA'));
@@ -63,7 +63,7 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.equal(walkthrough.includes('animateMetric('),false);
   assert.ok(walkthrough.includes('button.disabled=false'));
   assert.ok(walkthrough.includes('campaign.disabled=false'));
-  assert.ok(page.includes('Attack scenarios are interactive browser-only defensive walkthroughs'));
+  assert.ok(page.includes('Attack scenarios run fixed synthetic server-side policy checks'));
   const css=readFileSync(join(root,"public","console-integrated.css"),"utf8");
   assert.ok(css.includes('live-defence-pass'));
   assert.ok(css.includes('hosted-lab-steps'));
