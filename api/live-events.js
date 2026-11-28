@@ -130,6 +130,7 @@ module.exports = async function handler(request, response) {
       Array.isArray(replay.features)&&replay.features.join(",")==="flow_count_log,bytes_log,packets_log"&&stateVector(replay.last_observed)&&Array.isArray(replay.trajectory)&&replay.trajectory.length===4&&replay.trajectory.every((p,i)=>p?.horizon_seconds===60*(i+1)&&stateVector(p.state));
     const packetReplay=replayValid?{source:replay.source,mode:"REPLAY_ONLY",capture_cutoff:replay.capture_cutoff,history_seconds:480,features:replay.features,last_observed:replay.last_observed,trajectory:replay.trajectory.map(p=>({horizon_seconds:p.horizon_seconds,state:p.state})),live:false,risk_validated:false,automatic_containment:false}:null;
     return response.status(200).json({
+      pattern_memory:require("../deployment/vercel/pattern_memory.js").projectPatternMemory(parsed.pattern_memory),
       packet_replay:packetReplay,
       packet_runtime:packetRuntime,
       fixture_receipts:projectReceipts(parsed.fixture_receipts),

@@ -128,6 +128,11 @@ class RelayState:
                     result["http_forecast"] = self.store.http_forecast_snapshot()
                 except Exception:
                     result["http_forecast"] = None
+            if hasattr(self.store,"pattern_memory_snapshot"):
+                try:
+                    result["pattern_memory"]=self.store.pattern_memory_snapshot()
+                except Exception:
+                    result["pattern_memory"]=None
             result["packet_runtime"] = self.cloud_inference.status()
             result["packet_replay"] = self.cloud_inference.historical_state()
         return result

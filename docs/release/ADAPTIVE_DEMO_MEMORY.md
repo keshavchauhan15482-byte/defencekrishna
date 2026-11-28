@@ -1,0 +1,2 @@
+# Adaptive demo memory
+Authenticated synthetic fixture receipts create persistent category profiles; repeated deduplicated receipts advance review revisions at 2, 4 and 8 confirmations. No arbitrary payload storage, attack discovery, executable rule mutation, Garuda retraining or automatic enforcement. Clean baseline is not a denial. Counts start at zero; no backfill. Receipt dedup applies within existing retention.
