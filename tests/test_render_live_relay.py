@@ -200,3 +200,19 @@ class RelayTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class HistoricalStateReplayTests(unittest.TestCase):
+    def test_fixed_actual_checkpoint_replay_never_live(self):
+        from deployment.render.cloud_inference import CloudInference
+        service=CloudInference()
+        result=service.historical_state()
+        self.assertIsNotNone(result)
+        self.assertEqual(result["mode"],"REPLAY_ONLY")
+        self.assertFalse(result["live"])
+        self.assertFalse(result["risk_validated"])
+        self.assertFalse(result["automatic_containment"])
+        self.assertEqual([p["horizon_seconds"] for p in result["trajectory"]],[60,120,180,240])
+        self.assertTrue(all(0<=v<=1 for p in result["trajectory"] for v in p["state"]))
+        self.assertNotIn("score",result)
+        self.assertNotIn("node_names",result)
+        self.assertEqual(service.historical_state(),result)

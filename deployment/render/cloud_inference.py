@@ -17,6 +17,7 @@ class CloudInference:
         self.lock=threading.Lock()
         self._status_cache=None
         self._status_at=0.0
+        self._replay_cache=None
 
     def load(self):
         if self.model is None:
@@ -49,6 +50,22 @@ class CloudInference:
             self._status_cache=result
             self._status_at=time.monotonic()
             return dict(result)
+        finally:
+            self.lock.release()
+
+    def historical_state(self):
+        # Compute the fixed historical sample once per worker, never accept
+        # external replay inputs and never publish into the live event stream.
+        if self._replay_cache is not None:
+            return self._replay_cache
+        if not self.lock.acquire(blocking=False):
+            return None
+        try:
+            from deployment.render.packet_replay import run
+            self._replay_cache=run(self.load(), CHECKPOINT)
+            return self._replay_cache
+        except Exception:
+            return None
         finally:
             self.lock.release()
 
