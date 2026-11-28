@@ -1,6 +1,6 @@
 """Authenticated metadata-only Garuda sensor relay for Render.
 
-Not an AI inference host, packet sensor, WAF, or production multi-tenant service.
+Includes private on-demand graph inference; not an ingress packet sensor or WAF.
 Only bounded shadow evidence is accepted. Secrets are never returned to browsers.
 Render terminates external TLS; this process listens on the platform PORT.
 """
@@ -16,6 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
 from garuda_v3.live_feed import LiveFeed, LiveFeedError
+from deployment.render.cloud_inference import CloudInference, MAX_GRAPH_BYTES
 
 MAX_BODY = 8192
 MAX_CURSOR = 9007199254740991
@@ -25,6 +26,7 @@ class RelayState:
     def __init__(self, sensor_token: str, viewer_token: str, store=None, activity_token=''):
         self.feed = LiveFeed(sensor_token)
         self.store = store
+        self.cloud_inference = CloudInference()
         if not viewer_token or not 32 <= len(viewer_token) <= 256:
             raise ValueError("RENDER_VIEWER_TOKEN must be 32..256 characters")
         if any(ord(c) < 33 or ord(c) > 126 for c in viewer_token):
@@ -170,7 +172,7 @@ class RelayHandler(BaseHTTPRequestHandler):
             '<p>PostgreSQL: ' + ('connected' if healthy else 'unavailable') + '</p>'
             '<p>Garuda AI sensor: ' + message + '</p>'
             '<p>Original trained model runs only on an authorized capture sensor. '
-            'This relay does not expose packet contents, prediction inference, or '
+            'This relay does not publicly expose packet contents, prediction inference, or '
             'automatic blocking.</p>'
             '<p><a href="https://krishna-defence-system.vercel.app/">'
             'Open Krishna Defence dashboard</a></p>'
@@ -203,6 +205,10 @@ class RelayHandler(BaseHTTPRequestHandler):
                 except Exception:
                     return self.reply(503, {"status": "unavailable", "service": "persistent_telemetry"})
             return self.reply(200, {"status": "ready", "service": "advisory_telemetry_relay"})
+        if url.path == "/api/cloud-inference/status" and not url.query:
+            if not self.server.state.authorized_viewer(self.headers.get("Authorization", "")):
+                return self.reply(401, {"error": "Viewer authorization required"})
+            return self.reply(200, self.server.state.cloud_inference.status())
         if url.path == "/api/sensor/verify" and not url.query:
             # A no-write, authenticated sensor-token check. A Mac can test
             # its locally held credential BEFORE privileged packet capture.
@@ -287,7 +293,36 @@ class RelayHandler(BaseHTTPRequestHandler):
             return self.reply(503, {"error": "Persistent sensor status storage unavailable"})
         return self.reply(202, receipt)
 
+    def _handle_cloud_graph(self):
+        if not self.server.state.feed.authorized(self.headers.get("Authorization", "")):
+            return self.reply(401, {"error": "Sensor authorization required"})
+        if not self.server.state.sensor_rate_ok():
+            return self.reply(429, {"error": "Sensor quota exceeded"})
+        if self.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
+            return self.reply(415, {"error": "JSON required"})
+        sizes=self.headers.get_all("Content-Length", [])
+        if (self.headers.get("Transfer-Encoding") or len(sizes)!=1 or not sizes[0].isascii()
+                or not sizes[0].isdecimal() or len(sizes[0])>6 or not 0<int(sizes[0])<=MAX_GRAPH_BYTES):
+            self.close_connection=True
+            return self.reply(413, {"error": "Bounded graph required"})
+        try:
+            raw=self.rfile.read(int(sizes[0]))
+            if len(raw)!=int(sizes[0]):
+                raise ValueError("Incomplete graph")
+            result=self.server.state.cloud_inference.predict(json.loads(raw.decode("utf-8")))
+        except (ValueError, KeyError, TypeError, UnicodeDecodeError, OverflowError, RecursionError):
+            return self.reply(422, {"error": "Invalid, incomplete or stale observed graph"})
+        except Exception:
+            return self.reply(503, {"error": "Cloud inference unavailable"})
+        if result.get("status")!="forecast":
+            return self.reply(422, result)
+        # Keep cloud results private until independent source/continuity
+        # evidence and dashboard integration are verified. No policy action.
+        return self.reply(200, result)
+
     def do_POST(self):
+        if self.path=="/api/cloud-inference/graph":
+            return self._handle_cloud_graph()
         if urlsplit(self.path).path == "/api/sensor/heartbeat":
             return self._handle_sensor_heartbeat()
         if urlsplit(self.path).path == "/api/site-activity/ingest":
@@ -343,7 +378,7 @@ def main():
     if not 1 <= port <= 65535:
         raise ValueError("PORT out of range")
     server = RelayServer(("0.0.0.0", port), state)
-    print("Krishna advisory relay ready: persistent PostgreSQL metadata-only mode. No model inference or policy action.", flush=True)
+    print("Krishna advisory relay ready: persistent PostgreSQL metadata and private on-demand inference. No policy action.", flush=True)
     try:
         server.serve_forever()
     finally:
