@@ -16,6 +16,8 @@ class FakeDb:
         self.activity = []
         self.next_activity_id = 1
         self.heartbeat = None
+        self.receipts = {}
+        self.patterns = {}
 
     def connect(self, _dsn):
         return FakeConnection(self)
@@ -45,7 +47,35 @@ class FakeCursor:
         key = " ".join(sql.split()).upper()
         self.last = None
         self.list_results = []
-        if key.startswith("CREATE"): return
+        if key.startswith("CREATE") or key.startswith("LOCK TABLE"): return
+        if key.startswith("SELECT LANE,REASON,LEAST(COUNT(*)"):
+            grouped={}
+            for lane,reason,at in self.db.receipts.values():
+                count,last=grouped.get((lane,reason),(0,at))
+                grouped[(lane,reason)]=(min(8,count+1),max(last,at))
+            self.list_results=[(lane,reason,count,last) for (lane,reason),(count,last) in grouped.items()]
+            return
+        if key.startswith("DELETE FROM KRISHNA_FIXTURE_"): return
+        if key.startswith("INSERT INTO KRISHNA_FIXTURE_RECEIPTS"):
+            uuid,at,lane,reason=params
+            if uuid not in self.db.receipts:
+                self.db.receipts[uuid]=(lane,reason,at)
+                self.last=(len(self.db.receipts),)
+            return
+        if key.startswith("INSERT INTO KRISHNA_FIXTURE_DENIAL_BUCKETS"): return
+        if key.startswith("INSERT INTO KRISHNA_DEMO_PATTERN_MEMORY"):
+            if len(params)==4:
+                lane,reason,count,last=params
+                old=self.db.patterns.get((lane,reason),(0,last))
+                self.db.patterns[(lane,reason)]=(max(count,old[0]),max(last,old[1]))
+            else:
+                lane,reason,last=params
+                old=self.db.patterns.get((lane,reason),(0,last))
+                self.db.patterns[(lane,reason)]=(min(8,old[0]+1),max(last,old[1]))
+            return
+        if key.startswith("SELECT LANE,REASON,CONFIRMATIONS,LAST_SEEN"):
+            self.list_results=[(lane,reason,count,last) for (lane,reason),(count,last) in self.db.patterns.items()]
+            return
         if key.startswith("INSERT INTO KRISHNA_SENSOR_HEARTBEAT"):
             seen,state,duration,model=params
             self.db.heartbeat=(seen,state,duration,model)
@@ -204,6 +234,44 @@ class PersistentStoreTests(unittest.TestCase):
         clock[0]+=91
         self.assertEqual(make().sensor_status_snapshot()["state"],"stale")
         self.assertEqual(len(db.records),0)
+
+    def test_existing_receipts_backfill_idempotent(self):
+        db=FakeDb()
+        db.receipts={"a":("ARJUNA","DEMO_PORT_SCAN",998.),
+                     "b":("ARJUNA","DEMO_PORT_SCAN",999.),
+                     "c":("KRISHNA","DEMO_DNS_TUNNEL",999.),
+                     "d":("KRISHNA","UNSPECIFIED_RULE",999.)}
+        store=lambda:PostgresEventStore("postgresql://placeholder/test",TOKEN,connect=db.connect,clock=lambda:1000.)
+        for _ in range(3):
+            state=store().pattern_memory_snapshot()
+            self.assertEqual(state["patterns_saved"],2)
+            self.assertEqual(state["candidate_revisions"],1)
+        store().record_fixture_denial({"schema":"fixture-denial-v2","request_uuid":"00000000-0000-4000-8000-000000000005","lane":"ARJUNA","reason":"DEMO_PORT_SCAN"})
+        state=store().pattern_memory_snapshot()
+        self.assertEqual(next(p for p in state["profiles"] if p["reason"]=="DEMO_PORT_SCAN")["confirmations"],3)
+        self.assertEqual(state["candidate_revisions"],1)
+
+    def test_fixture_memory_dedup_and_versions(self):
+        db=FakeDb()
+        store=lambda:PostgresEventStore("postgresql://placeholder/test",TOKEN,connect=db.connect,clock=lambda:1000.)
+        def entry(i,reason="DEMO_DNS_TUNNEL"):
+            return {"schema":"fixture-denial-v2","request_uuid":f"00000000-0000-4000-8000-{i:012x}","lane":"KRISHNA","reason":reason}
+        self.assertEqual(store().pattern_memory_snapshot()["patterns_saved"],0)
+        store().record_fixture_denial(entry(1))
+        store().record_fixture_denial(entry(1))
+        self.assertEqual(store().pattern_memory_snapshot()["profiles"][0]["confirmations"],1)
+        store().record_fixture_denial(entry(2))
+        self.assertEqual(store().pattern_memory_snapshot()["candidate_revisions"],1)
+        for i in range(3,12):store().record_fixture_denial(entry(i))
+        p=store().pattern_memory_snapshot()
+        self.assertEqual(p["patterns_saved"],1)
+        self.assertEqual(p["candidate_revisions"],3)
+        self.assertEqual(p["profiles"][0]["confirmations"],8)
+        self.assertFalse(p["model_retrained"])
+        store().record_fixture_denial(entry(12,"UNSPECIFIED_RULE"))
+        self.assertEqual(store().pattern_memory_snapshot()["patterns_saved"],1)
+        with self.assertRaises(LiveFeedError):store().record_fixture_denial(entry(13,"UNREVIEWED"))
+        self.assertEqual(store().pattern_memory_snapshot()["patterns_saved"],1)
 
     def test_no_training_data_or_raw_packets_in_persistent_events(self):
         db = FakeDb()

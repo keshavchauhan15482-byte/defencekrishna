@@ -96,6 +96,42 @@ class PostgresEventStore:
                     ON krishna_fixture_receipts(observed_at DESC)
                 """)
 
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS krishna_demo_pattern_memory (
+                        lane TEXT NOT NULL CHECK (lane IN ('ARJUNA','KRISHNA','SUDARSHAN')),
+                        reason TEXT NOT NULL,
+                        confirmations INTEGER NOT NULL CHECK (confirmations BETWEEN 1 AND 8),
+                        last_seen DOUBLE PRECISION NOT NULL,
+                        PRIMARY KEY(lane,reason)
+                    )
+                """)
+
+                # Serialize with receipt writes while recovering retained
+                # observations. Max, not addition, makes restarts idempotent.
+                cur.execute("LOCK TABLE krishna_fixture_receipts IN SHARE ROW EXCLUSIVE MODE")
+                cur.execute("""
+                    SELECT lane,reason,LEAST(COUNT(*),8)::INTEGER,MAX(observed_at)
+                    FROM krishna_fixture_receipts GROUP BY lane,reason
+                """)
+                for lane,reason,count,last in cur.fetchall():
+                    if lane not in FIXTURE_REASONS or reason not in FIXTURE_REASONS[lane] or reason=="UNSPECIFIED_RULE":
+                        continue
+                    cur.execute("""
+                        INSERT INTO krishna_demo_pattern_memory(lane,reason,confirmations,last_seen)
+                        VALUES(%s,%s,%s,%s)
+                        ON CONFLICT(lane,reason) DO UPDATE SET
+                        confirmations=GREATEST(krishna_demo_pattern_memory.confirmations,EXCLUDED.confirmations),
+                        last_seen=GREATEST(krishna_demo_pattern_memory.last_seen,EXCLUDED.last_seen)
+                    """,(lane,reason,count,last))
+
+    def pattern_memory_snapshot(self):
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT lane,reason,confirmations,last_seen FROM krishna_demo_pattern_memory ORDER BY last_seen DESC,lane,reason")
+                rows=cur.fetchall()
+        from deployment.render.pattern_memory import summarize
+        return summarize(rows,FIXTURE_REASONS,self._clock())
+
     def record_fixture_denial(self, event):
         if (not isinstance(event,dict) or not ((event.get("schema")=="fixture-denial-v1" and set(event)=={"schema","request_uuid","lane"}) or (event.get("schema")=="fixture-denial-v2" and set(event)=={"schema","request_uuid","lane","reason"}))
                 or not isinstance(event["lane"],str) or event["lane"] not in FIXTURE_REASONS
@@ -114,6 +150,15 @@ class PostgresEventStore:
                 """,(event["request_uuid"],now,event["lane"],event.get("reason","UNSPECIFIED_RULE")))
                 if cur.fetchone() is None:
                     return {"accepted":True,"scope":"synthetic_fixture_denials_only"}
+                reason=event.get("reason","UNSPECIFIED_RULE")
+                if reason!="UNSPECIFIED_RULE":
+                    cur.execute("""
+                        INSERT INTO krishna_demo_pattern_memory(lane,reason,confirmations,last_seen)
+                        VALUES(%s,%s,1,%s)
+                        ON CONFLICT(lane,reason) DO UPDATE SET
+                        confirmations=LEAST(8,krishna_demo_pattern_memory.confirmations+1),
+                        last_seen=GREATEST(krishna_demo_pattern_memory.last_seen,EXCLUDED.last_seen)
+                    """,(event["lane"],reason,now))
                 cur.execute("DELETE FROM krishna_fixture_denial_buckets WHERE minute_epoch < %s",(minute-3600,))
                 cur.execute("""
                     INSERT INTO krishna_fixture_denial_buckets(minute_epoch,lane,denials,last_at)

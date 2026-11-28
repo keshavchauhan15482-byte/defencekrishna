@@ -36,6 +36,29 @@ function plotPremium(id,points,color){
  }
 }
 const RECEIPT_LABELS={DEMO_SYN_FLOOD:'SYN Flood · demo policy',DEMO_PORT_SCAN:'Port Scan · demo policy',DEMO_LATERAL_SMB:'SMB Lateral · demo policy',DEMO_DDOS_BURST:'DDoS Burst · demo policy',DEMO_DNS_TUNNEL:'DNS Tunnel · demo policy',DEMO_C2_BEACON:'C2 Beacon · demo policy',DEMO_EXFIL_SPIKE:'Exfil Spike · demo policy',SQLI_SIGNATURE:'SQL injection signature',XSS_SIGNATURE:'Cross-site scripting signature',TRAVERSAL_SIGNATURE:'Path traversal signature',COMMAND_SIGNATURE:'Command injection signature',HISTORICAL_DANGER_PATTERN:'Known danger pattern',STRUCTURAL_ANOMALY_REVIEW:'Structural anomaly',HISTORICAL_STRUCTURE_REVIEW:'Historical structural anomaly',FIXTURE_SCOPE_DENIED:'Restricted dummy-record access',UNSPECIFIED_RULE:'Guard rule · reason unavailable'};
+function renderPatternMemory(d){
+ const valid=d?.source==='authenticated_fixture_pattern_memory_v1'&&d.scope==='synthetic_fixture_only'&&d.model_retrained===false&&d.automatic_containment===false&&Number.isSafeInteger(d.patterns_saved)&&Number.isSafeInteger(d.candidate_revisions)&&Array.isArray(d.profiles);
+ const archive=$('pattern-memory-panel')?.dataset;
+ const legacy=Number(archive?.archivePatterns),generated=Number(archive?.archiveGenerated),reported=Number(archive?.archiveReported);
+ const hasArchive=Number.isSafeInteger(legacy)&&legacy>=0&&Number.isSafeInteger(generated)&&generated>=0&&Number.isSafeInteger(reported)&&reported>=0&&reported<=legacy;
+ text('patterns',hasArchive?legacy:(valid?d.patterns_saved:'—'));
+ text('mutations',hasArchive?generated:(valid?d.candidate_revisions:'—'));
+ const p=$('patterns')?.closest('article'),m=$('mutations')?.closest('article');
+ if(p?.querySelector('label'))p.querySelector('label').textContent='PATTERNS SAVED';
+ if(m?.querySelector('label'))m.querySelector('label').textContent=hasArchive?'ARCHIVED MUTATIONS GENERATED':'CANDIDATE MUTATIONS';
+ if(p?.querySelector('small'))p.querySelector('small').textContent=(hasArchive?'Archived learned entries · ':'')+(valid?d.patterns_saved+' live demo categories':'Live memory unavailable');
+ if(m?.querySelector('small'))m.querySelector('small').textContent=(hasArchive?'Recorded generation count · ':'')+(valid?d.candidate_revisions+' live review revisions':'Live revisions unavailable');
+ const root=$('pattern-memory-profiles');if(!root)return;
+ root.replaceChildren();
+ text('pattern-memory-status',valid?'SHADOW · '+d.patterns_saved+' patterns':'Unavailable');
+ if(!valid||!d.profiles.length){const n=document.createElement('p');n.className='muted';n.textContent=valid?'Run a demo scenario to record its first pattern.':'No verified learning snapshot.';root.append(n);return;}
+ for(const entry of d.profiles.slice(0,6)){
+  const row=document.createElement('article');row.className='defence-receipt';
+  const title=document.createElement('strong');title.textContent=(RECEIPT_LABELS[entry.reason]||'Fixture category')+' · v'+entry.version;
+  const detail=document.createElement('p');detail.className='receipt-meta';detail.textContent=entry.lane+' · '+entry.confirmations+(entry.confirmations===8?'+':'')+' confirmations · '+entry.review_state;
+  row.append(title,detail);root.append(row);
+ }
+}
 function renderDefenceReceipts(d,risk,forecast){
  const root=$('defence-receipts');if(!root)return;
  const ok=d?.source==='server_recorded_fixture_denials'&&d.scope==='synthetic_fixture_only'&&Array.isArray(d.events)&&d.events.length<=12;
@@ -290,6 +313,7 @@ async function pollLive(){
    renderHttpForecast(d.http_forecast);
    renderPacketReplay(d.packet_replay);
    renderDefenceReceipts(d.fixture_receipts,d.fixture_risk,d.http_forecast);
+   renderPatternMemory(d.pattern_memory);
    const heartbeat=d.sensor_status||{};
    document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{
      backend:'online',
@@ -416,7 +440,7 @@ async function pollLive(){
     if(hint)hint.textContent='Cloud feed offline · last score historical';
   }
   text('live-sensor-message','Live endpoint unavailable: '+e.message);
-  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);renderHttpForecast(null);renderPacketReplay(null);renderDefenceReceipts(null,null,null);}
+  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);renderHttpForecast(null);renderPacketReplay(null);renderDefenceReceipts(null,null,null);renderPatternMemory(null);}
  }finally{livePollBusy=false}
 }
 

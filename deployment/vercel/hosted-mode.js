@@ -475,7 +475,7 @@ function boot(){
   if(status)status.textContent="Model file analysis requires a private inference backend; unavailable on this public static site.";
   // Demo fixture decisions share the verified HTTP counter and receipt feed.
   // Packet capture and AI model state remain untouched.
-  for(const id of ["patterns","mutations"]){const metric=document.getElementById(id);if(metric){metric.textContent="N/A";const note=metric.closest("article")?.querySelector("small");if(note)note.textContent="Learning runtime not connected";}}
+  // Pattern counters use only the verified cloud snapshot.
   const head=document.getElementById("console-build");
   if(head)head.textContent="VERCEL · CLOUD MONITORING";
   const info=document.getElementById("live-sensor-message");
