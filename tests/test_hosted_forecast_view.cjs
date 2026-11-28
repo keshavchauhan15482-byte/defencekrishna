@@ -66,3 +66,5 @@ test("historical state replay is separate from live risk",()=>{
  for(const id of ["packet-state-replay","packet-replay-flow","packet-replay-bytes","packet-replay-packets","packet-readiness","hosted-defence-feed","http-forecast-area"])assert.ok(page.includes('id="'+id+'"'),id);
  assert.ok(page.includes("HISTORICAL REPLAY")&&page.includes("not attack probability"));
 });
+
+test("archived memory counts are explicit and private",async()=>{const {archiveCounts}=await import("../deployment/vercel/archive_counts.mjs");assert.deepEqual(archiveCounts(JSON.stringify({learnedPatterns:[{token:"private",syntheticMutationsCount:3},{token:"private2"},{syntheticMutationsCount:-1}]})),{patterns:3,generated:3,reported:1});});

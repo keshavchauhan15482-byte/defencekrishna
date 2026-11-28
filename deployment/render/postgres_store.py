@@ -106,6 +106,24 @@ class PostgresEventStore:
                     )
                 """)
 
+                # Serialize with receipt writes while recovering retained
+                # observations. Max, not addition, makes restarts idempotent.
+                cur.execute("LOCK TABLE krishna_fixture_receipts IN SHARE ROW EXCLUSIVE MODE")
+                cur.execute("""
+                    SELECT lane,reason,LEAST(COUNT(*),8)::INTEGER,MAX(observed_at)
+                    FROM krishna_fixture_receipts GROUP BY lane,reason
+                """)
+                for lane,reason,count,last in cur.fetchall():
+                    if lane not in FIXTURE_REASONS or reason not in FIXTURE_REASONS[lane] or reason=="UNSPECIFIED_RULE":
+                        continue
+                    cur.execute("""
+                        INSERT INTO krishna_demo_pattern_memory(lane,reason,confirmations,last_seen)
+                        VALUES(%s,%s,%s,%s)
+                        ON CONFLICT(lane,reason) DO UPDATE SET
+                        confirmations=GREATEST(krishna_demo_pattern_memory.confirmations,EXCLUDED.confirmations),
+                        last_seen=GREATEST(krishna_demo_pattern_memory.last_seen,EXCLUDED.last_seen)
+                    """,(lane,reason,count,last))
+
     def pattern_memory_snapshot(self):
         with self._connect(self._dsn) as conn:
             with conn.cursor() as cur:

@@ -38,12 +38,16 @@ function plotPremium(id,points,color){
 const RECEIPT_LABELS={DEMO_SYN_FLOOD:'SYN Flood · demo policy',DEMO_PORT_SCAN:'Port Scan · demo policy',DEMO_LATERAL_SMB:'SMB Lateral · demo policy',DEMO_DDOS_BURST:'DDoS Burst · demo policy',DEMO_DNS_TUNNEL:'DNS Tunnel · demo policy',DEMO_C2_BEACON:'C2 Beacon · demo policy',DEMO_EXFIL_SPIKE:'Exfil Spike · demo policy',SQLI_SIGNATURE:'SQL injection signature',XSS_SIGNATURE:'Cross-site scripting signature',TRAVERSAL_SIGNATURE:'Path traversal signature',COMMAND_SIGNATURE:'Command injection signature',HISTORICAL_DANGER_PATTERN:'Known danger pattern',STRUCTURAL_ANOMALY_REVIEW:'Structural anomaly',HISTORICAL_STRUCTURE_REVIEW:'Historical structural anomaly',FIXTURE_SCOPE_DENIED:'Restricted dummy-record access',UNSPECIFIED_RULE:'Guard rule · reason unavailable'};
 function renderPatternMemory(d){
  const valid=d?.source==='authenticated_fixture_pattern_memory_v1'&&d.scope==='synthetic_fixture_only'&&d.model_retrained===false&&d.automatic_containment===false&&Number.isSafeInteger(d.patterns_saved)&&Number.isSafeInteger(d.candidate_revisions)&&Array.isArray(d.profiles);
- text('patterns',valid?d.patterns_saved:'—');text('mutations',valid?d.candidate_revisions:'—');
+ const archive=$('pattern-memory-panel')?.dataset;
+ const legacy=Number(archive?.archivePatterns),generated=Number(archive?.archiveGenerated),reported=Number(archive?.archiveReported);
+ const hasArchive=Number.isSafeInteger(legacy)&&legacy>=0&&Number.isSafeInteger(generated)&&generated>=0&&Number.isSafeInteger(reported)&&reported>=0&&reported<=legacy;
+ text('patterns',hasArchive?legacy:(valid?d.patterns_saved:'—'));
+ text('mutations',hasArchive?generated:(valid?d.candidate_revisions:'—'));
  const p=$('patterns')?.closest('article'),m=$('mutations')?.closest('article');
  if(p?.querySelector('label'))p.querySelector('label').textContent='PATTERNS SAVED';
- if(m?.querySelector('label'))m.querySelector('label').textContent='CANDIDATE MUTATIONS';
- if(p?.querySelector('small'))p.querySelector('small').textContent=valid?'Persistent demo pattern memory':'Awaiting verified memory';
- if(m?.querySelector('small'))m.querySelector('small').textContent=valid?'Review profile revisions · not model training':'Awaiting verified memory';
+ if(m?.querySelector('label'))m.querySelector('label').textContent=hasArchive?'ARCHIVED MUTATIONS GENERATED':'CANDIDATE MUTATIONS';
+ if(p?.querySelector('small'))p.querySelector('small').textContent=(hasArchive?'Archived learned entries · ':'')+(valid?d.patterns_saved+' live demo categories':'Live memory unavailable');
+ if(m?.querySelector('small'))m.querySelector('small').textContent=(hasArchive?'Recorded generation count · ':'')+(valid?d.candidate_revisions+' live review revisions':'Live revisions unavailable');
  const root=$('pattern-memory-profiles');if(!root)return;
  root.replaceChildren();
  text('pattern-memory-status',valid?'SHADOW · '+d.patterns_saved+' patterns':'Unavailable');

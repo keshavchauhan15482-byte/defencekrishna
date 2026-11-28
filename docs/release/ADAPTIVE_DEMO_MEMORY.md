@@ -1,2 +1,4 @@
 # Adaptive demo memory
 Authenticated synthetic fixture receipts create persistent category profiles; repeated deduplicated receipts advance review revisions at 2, 4 and 8 confirmations. No arbitrary payload storage, attack discovery, executable rule mutation, Garuda retraining or automatic enforcement. Clean baseline is not a denial. Counts start at zero; no backfill. Receipt dedup applies within existing retention.
+
+Initialization recovers retained receipt categories using max(existing,retained count), under a receipt table lock; restarting does not double count. Expired receipts cannot be recovered. The build separately reads archived counter-memory.json and exposes only aggregate entry and explicitly recorded synthetic generation counts; no default multiplier and no validation claim. Archived counts and live category/revision counts are distinct, not summed.

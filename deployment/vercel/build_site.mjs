@@ -5,6 +5,7 @@
 import {readFileSync, writeFileSync, mkdirSync, copyFileSync} from "node:fs";
 import {resolve, dirname, join} from "node:path";
 import {fileURLToPath} from "node:url";
+import {archiveCounts} from "./archive_counts.mjs";
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"../..");
 const target=join(root,"public");
@@ -54,5 +55,8 @@ html=html.replace('<details id="packet-archive">',"<section id=\"packet-state-re
 if(!html.includes('id="packet-state-replay"'))throw Error("Packet replay anchor missing");
 html=html.replace('<a href="#live-defence-proof" class="primary">Verify HTTP defence</a>',"<details id=\"pattern-memory-panel\" open><summary><b>Adaptive pattern memory</b> · <span id=\"pattern-memory-status\">Connecting</span></summary><p class=\"muted\">Verified synthetic fixture categories update bounded review profiles. Repeated receipts advance versions at 2, 4 and 8 confirmations. No automatic rule promotion or model weight retraining.</p><div id=\"pattern-memory-profiles\" aria-live=\"polite\"></div></details><a href=\"#live-defence-proof\" class=\"primary\">Verify HTTP defence</a>");
 if(!html.includes('id="pattern-memory-panel"'))throw Error("Pattern memory anchor missing");
+const archive=archiveCounts(readFileSync(join(root,"counter-memory.json"),"utf8"));
+html=html.replace('id="pattern-memory-panel"','id="pattern-memory-panel" data-archive-patterns="'+archive.patterns+'" data-archive-generated="'+archive.generated+'" data-archive-reported="'+archive.reported+'"');
+console.log("Archive aggregate only: patterns="+archive.patterns+" recorded_generated_mutations="+archive.generated+" rows_with_counts="+archive.reported);
 writeFileSync(join(target,"console.html"),html,"utf8");
 console.log("Krishna premium console prepared for Vercel (no packet/model secrets copied)");
