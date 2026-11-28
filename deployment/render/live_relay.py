@@ -118,6 +118,11 @@ class RelayState:
             result["sensor_status"] = self.store.sensor_status_snapshot()
             if hasattr(self.store,"fixture_risk_snapshot"):
                 result["fixture_risk"] = self.store.fixture_risk_snapshot(result["site_activity"])
+            if hasattr(self.store,"fixture_receipts_snapshot"):
+                try:
+                    result["fixture_receipts"] = self.store.fixture_receipts_snapshot()
+                except Exception:
+                    result["fixture_receipts"] = None
             if hasattr(self.store,"http_forecast_snapshot"):
                 try:
                     result["http_forecast"] = self.store.http_forecast_snapshot()

@@ -5,6 +5,7 @@
  */
 const {checkKnownApiInput}=require("../deployment/vercel/defence_gate.js");
 const {readBoundedJson}=require("../deployment/vercel/bounded_json.js");
+const {projectReceipts}=require("../deployment/vercel/fixture_receipts.js");
 
 const {historicalDeny}=require("../deployment/vercel/historical_inspection.js");
 const {applySignedContainment}=require("../deployment/vercel/signed_scope.js");
@@ -115,6 +116,7 @@ module.exports = async function handler(request, response) {
       Array.isArray(h.trajectory)&&h.trajectory.length===4&&h.trajectory.every((p,i)=>p?.horizon_seconds===[60,120,180,300][i]&&Number.isSafeInteger(p.conditional_index)&&bounded(p.conditional_index,100)&&bounded(p.expected_page_requests,5e9))&&h.score===h.trajectory[0].conditional_index;
     const httpForecast=validHttp?{source:h.source,issued_at:h.issued_at,history_minutes:h.history_minutes,audit_samples:h.audit_samples,method:h.method,ewma_mae:h.ewma_mae,persistence_mae:h.persistence_mae,expected_requests_per_minute:h.expected_requests_per_minute,score:h.score,trajectory:h.trajectory.map(p=>({horizon_seconds:p.horizon_seconds,expected_page_requests:p.expected_page_requests,conditional_index:p.conditional_index})),condition:h.condition,is_attack_probability:false,automatic_containment:false,validation_scope:h.validation_scope}:null;
     return response.status(200).json({
+      fixture_receipts:projectReceipts(parsed.fixture_receipts),
       http_forecast:httpForecast,
       fixture_risk:fixtureRisk,
       state:parsed.state,cursor:parsed.cursor,server_epoch_seconds:Date.now()/1000,

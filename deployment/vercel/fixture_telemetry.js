@@ -2,6 +2,8 @@
 // Metadata from the actual fixture guard only. Never forward payload, identity,
 // headers, arbitrary client score or user-supplied event fields.
 const {randomUUID}=require("node:crypto");
+const REASONS={"ARJUNA":["SQLI_SIGNATURE","XSS_SIGNATURE","TRAVERSAL_SIGNATURE","COMMAND_SIGNATURE","HISTORICAL_DANGER_PATTERN","UNSPECIFIED_RULE"],"KRISHNA":["STRUCTURAL_ANOMALY_REVIEW","HISTORICAL_STRUCTURE_REVIEW","UNSPECIFIED_RULE"],"SUDARSHAN":["FIXTURE_SCOPE_DENIED","UNSPECIFIED_RULE"]};
+function fixtureReason(lane,reason){return REASONS[lane]?.includes(reason)?reason:"UNSPECIFIED_RULE";}
 async function recordFixtureDecision(decision){
  const lane=decision?.lane;
  if(decision?.status!==403||decision.allowed!==false||!["ARJUNA","KRISHNA","SUDARSHAN"].includes(lane))return false;
@@ -10,8 +12,8 @@ async function recordFixtureDecision(decision){
  try{
   const url=new URL(base);
   if(url.protocol!=="https:"||url.username||url.password||url.search||url.hash||url.pathname!=="/")return false;
-  const r=await fetch(new URL("/api/fixture-decisions/ingest",url),{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({schema:"fixture-denial-v1",request_uuid:randomUUID(),lane}),redirect:"error",signal:AbortSignal.timeout(2500),cache:"no-store"});
+  const r=await fetch(new URL("/api/fixture-decisions/ingest",url),{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({schema:"fixture-denial-v2",request_uuid:randomUUID(),lane,reason:fixtureReason(lane,decision.reason)}),redirect:"error",signal:AbortSignal.timeout(2500),cache:"no-store"});
   return r.status===202;
  }catch{return false;}
 }
-module.exports={recordFixtureDecision};
+module.exports={recordFixtureDecision,fixtureReason};
