@@ -1,18 +1,7 @@
 (() => {
   "use strict";
-  const panel = document.createElement("section");
-  panel.className = "panel";
-  panel.id = "lab-comparison";
-  panel.innerHTML = `
-    <h2>Krishna ON / OFF comparison</h2>
-    <p>OFF shows a simulated outage. ON checks the hosted guard using fixed dummy records.</p>
-    <p>Garuda · Forecast unavailable for this demo run.</p>
-    <button type="button">Run comparison</button>
-    <p role="status" aria-live="polite">Ready</p>
-    <ol aria-label="Comparison evidence"></ol>`;
-  const anchor = document.getElementById("lab");
-  if (anchor) anchor.before(panel);
-  else document.querySelector("main")?.append(panel);
+  const panel = document.getElementById("lab-comparison");
+  if (!panel) return;
   const button = panel.querySelector("button");
   const status = panel.querySelector('[role="status"]');
   const evidence = panel.querySelector("ol");
@@ -57,4 +46,6 @@
       button.disabled = false;
     }
   });
+  status.textContent = "Ready";
+  button.disabled = false;
 })();
