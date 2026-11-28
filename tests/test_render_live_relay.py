@@ -91,6 +91,18 @@ class RelayTests(unittest.TestCase):
         self.assertEqual(self.request("GET", "/api/live/events?after=-1", token=VIEWER)[0], 422)
         self.assertEqual(self.request("GET", "/api/live/events", token=VIEWER)[1]["state"], "waiting")
 
+
+    def test_private_cloud_inference_readiness_and_graph_auth(self):
+        self.assertEqual(self.request("GET","/api/cloud-inference/status")[0],401)
+        self.assertEqual(self.request("POST","/api/cloud-inference/graph",{})[0],401)
+        self.assertEqual(self.request("POST","/api/cloud-inference/graph",{},token=VIEWER)[0],401)
+        self.assertEqual(self.request("POST","/api/cloud-inference/graph",{},token=SENSOR)[0],422)
+        code,body=self.request("GET","/api/cloud-inference/status",token=VIEWER)
+        self.assertEqual(code,200)
+        self.assertEqual(body["status"],"ready")
+        self.assertFalse(body["live_prediction"])
+        self.assertFalse(body["automatic_containment"])
+
     def test_sensor_auth_projection_replay_and_shadow_only(self):
         evt = sample()
         self.assertEqual(self.request("POST", "/api/live/ingest", evt)[0], 401)
