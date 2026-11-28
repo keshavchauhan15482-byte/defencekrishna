@@ -12,6 +12,7 @@ import time
 from urllib.parse import urlsplit
 
 from garuda_v3.live_feed import LiveFeed, LiveFeedError
+from deployment.render.observed_index import observed_index
 
 
 class PostgresEventStore:
@@ -67,6 +68,52 @@ class PostgresEventStore:
                         model_sha256 TEXT NOT NULL
                     )
                 """)
+
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS krishna_fixture_denial_buckets (
+                        minute_epoch BIGINT NOT NULL,
+                        lane TEXT NOT NULL CHECK (lane IN ('ARJUNA','KRISHNA','SUDARSHAN')),
+                        denials INTEGER NOT NULL CHECK (denials BETWEEN 1 AND 120),
+                        last_at DOUBLE PRECISION NOT NULL,
+                        PRIMARY KEY(minute_epoch,lane)
+                    )
+                """)
+
+    def record_fixture_denial(self, event):
+        if (not isinstance(event,dict) or set(event)!={"schema","request_uuid","lane"}
+                or event["schema"]!="fixture-denial-v1" or event["lane"] not in ("ARJUNA","KRISHNA","SUDARSHAN")
+                or not isinstance(event["request_uuid"],str)
+                or not re.fullmatch(r"[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}",event["request_uuid"])):
+            raise LiveFeedError("Invalid fixture decision")
+        now=self._clock()
+        minute=int(now//60)*60
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM krishna_fixture_denial_buckets WHERE minute_epoch < %s",(minute-3600,))
+                cur.execute("""
+                    INSERT INTO krishna_fixture_denial_buckets(minute_epoch,lane,denials,last_at)
+                    VALUES(%s,%s,1,%s)
+                    ON CONFLICT(minute_epoch,lane) DO UPDATE SET
+                    denials=LEAST(120,krishna_fixture_denial_buckets.denials+1),
+                    last_at=GREATEST(krishna_fixture_denial_buckets.last_at,EXCLUDED.last_at)
+                """,(minute,event["lane"],now))
+        return {"accepted":True,"scope":"synthetic_fixture_denials_only"}
+
+    def fixture_risk_snapshot(self, activity):
+        now=self._clock()
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT COALESCE(SUM(denials),0),MAX(last_at)
+                    FROM krishna_fixture_denial_buckets
+                    WHERE minute_epoch >= %s AND last_at > %s
+                """,(int(now//60)*60-240,now-300))
+                count,latest=cur.fetchone()
+        age=max(0,now-float(latest)) if latest is not None else None
+        n=int(count)
+        return {"source":"observed_fixture_http_index","score":observed_index(activity["requests_5m"],n,age),
+                "denials_recent_minute_buckets":n,"requests_5m":activity["requests_5m"],
+                "observed_at":now,"is_prediction":False,"automatic_containment":False}
 
     def _validated_event(self, payload):
         # Validate against the existing strict contract using the SAME clock

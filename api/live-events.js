@@ -101,7 +101,13 @@ module.exports = async function handler(request, response) {
         !Number.isFinite(activity.last_request_at)))) {
       throw Error("Site activity summary unavailable");
     }
+    const risk=parsed.fixture_risk;
+    const fixtureRisk=risk?.source==="observed_fixture_http_index"&&risk.is_prediction===false&&risk.automatic_containment===false&&
+      Number.isSafeInteger(risk.score)&&risk.score>=0&&risk.score<=100&&Number.isSafeInteger(risk.denials_recent_minute_buckets)&&risk.denials_recent_minute_buckets>=0&&
+      Number.isSafeInteger(risk.requests_5m)&&risk.requests_5m>=0&&Number.isFinite(risk.observed_at)&&Math.abs(Date.now()/1000-risk.observed_at)<60?
+      {source:risk.source,score:risk.score,denials_recent_minute_buckets:risk.denials_recent_minute_buckets,requests_5m:risk.requests_5m,observed_at:risk.observed_at,is_prediction:false,automatic_containment:false}:null;
     return response.status(200).json({
+      fixture_risk:fixtureRisk,
       state:parsed.state,cursor:parsed.cursor,server_epoch_seconds:Date.now()/1000,
       events,source:"completed_capture_shadow",
       sensor_age_seconds:parsed.sensor_age_seconds,

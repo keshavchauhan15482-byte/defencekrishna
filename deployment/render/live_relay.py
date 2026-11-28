@@ -116,6 +116,8 @@ class RelayState:
         if self.store is not None:
             result["site_activity"] = self.store.site_activity_snapshot()
             result["sensor_status"] = self.store.sensor_status_snapshot()
+            if hasattr(self.store,"fixture_risk_snapshot"):
+                result["fixture_risk"] = self.store.fixture_risk_snapshot(result["site_activity"])
         return result
 
 
@@ -293,6 +295,28 @@ class RelayHandler(BaseHTTPRequestHandler):
             return self.reply(503, {"error": "Persistent sensor status storage unavailable"})
         return self.reply(202, receipt)
 
+    def _handle_fixture_decision(self):
+        if not self.server.state.authorized_activity(self.headers.get("Authorization","")):
+            return self.reply(401,{"error":"Private gateway required"})
+        if not self.server.state.activity_rate_ok():
+            return self.reply(429,{"error":"Telemetry quota exceeded"})
+        if self.headers.get("Content-Type","").split(";")[0].strip().lower()!="application/json":
+            return self.reply(415,{"error":"JSON required"})
+        sizes=self.headers.get_all("Content-Length",[])
+        if (self.headers.get("Transfer-Encoding") or len(sizes)!=1 or not sizes[0].isascii()
+                or not sizes[0].isdecimal() or len(sizes[0])>3 or not 0<int(sizes[0])<=512):
+            self.close_connection=True
+            return self.reply(413,{"error":"Bounded decision required"})
+        try:
+            raw=self.rfile.read(int(sizes[0]))
+            if len(raw)!=int(sizes[0]):raise ValueError("Incomplete decision")
+            if self.server.state.store is None:return self.reply(503,{"error":"Storage unavailable"})
+            return self.reply(202,self.server.state.store.record_fixture_denial(json.loads(raw.decode("utf-8"))))
+        except (ValueError,TypeError,LiveFeedError,UnicodeDecodeError,RecursionError):
+            return self.reply(422,{"error":"Invalid decision"})
+        except Exception:
+            return self.reply(503,{"error":"Storage unavailable"})
+
     def _handle_cloud_graph(self):
         if not self.server.state.feed.authorized(self.headers.get("Authorization", "")):
             return self.reply(401, {"error": "Sensor authorization required"})
@@ -321,6 +345,8 @@ class RelayHandler(BaseHTTPRequestHandler):
         return self.reply(200, result)
 
     def do_POST(self):
+        if self.path=="/api/fixture-decisions/ingest":
+            return self._handle_fixture_decision()
         if self.path=="/api/cloud-inference/graph":
             return self._handle_cloud_graph()
         if urlsplit(self.path).path == "/api/sensor/heartbeat":

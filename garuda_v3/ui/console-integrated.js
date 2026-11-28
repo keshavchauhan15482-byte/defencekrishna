@@ -19,6 +19,14 @@ let lastFutureText='Waiting for forecast horizons…';
 let liveCursor=0,livePollBusy=false;
 let lastSensorForecast=null;
 let hostedForecastEvent=null,hostedFeed=null,hostedClock=null,hostedClockAt=0;
+let observedRiskHistory=[];
+function renderObservedRisk(d){
+ const valid=d?.source==='observed_fixture_http_index'&&d.is_prediction===false&&Number.isSafeInteger(d.score)&&d.score>=0&&d.score<=100;
+ if(!valid){text('observed-risk-score','—');text('observed-risk-state','Unavailable');text('observed-risk-detail','No verified observation');observedRiskHistory=[];$('observed-risk-line')?.setAttribute('d','');return;}
+ text('observed-risk-score',String(d.score));text('observed-risk-state',d.score>=35?'Elevated fixture activity':'Low observed fixture activity');text('observed-risk-detail',d.denials_recent_minute_buckets+' recent fixture denials · not prediction');
+ observedRiskHistory.push(d.score);observedRiskHistory=observedRiskHistory.slice(-36);
+ $('observed-risk-line')?.setAttribute('d',observedRiskHistory.map((v,i)=>(i?'L':'M')+(i*400/35)+' '+(95-v*.9)).join(' '));
+}
 let scanPhase=0;
 const metricAnimations=new Map();
 
@@ -207,6 +215,7 @@ async function pollLive(){
    if(d.cursor<liveCursor){liveCursor=0;hostedForecastEvent=null;lastSensorForecast=null;}
    hostedClock=d.server_epoch_seconds;hostedClockAt=performance.now();
    hostedFeed={online:true,state:d.state,gap:d.gap,sensor_status:d.sensor_status};
+   renderObservedRisk(d.fixture_risk);
    const heartbeat=d.sensor_status||{};
    document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{
      backend:'online',
@@ -333,7 +342,7 @@ async function pollLive(){
     if(hint)hint.textContent='Cloud feed offline · last score historical';
   }
   text('live-sensor-message','Live endpoint unavailable: '+e.message);
-  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();}
+  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);}
  }finally{livePollBusy=false}
 }
 
