@@ -16,10 +16,11 @@ const assets=[
 for (const name of assets) copyFileSync(join(root,"garuda_v3","ui",name),join(target,name));
 copyFileSync(join(root,"deployment","vercel","hosted-mode.js"),join(target,"hosted-mode.js"));
 copyFileSync(join(root,"deployment","vercel","lab-comparison.js"),join(target,"lab-comparison.js"));
+for(const name of ["forecast-view.js","hosted-compact.css"])copyFileSync(join(root,"deployment","vercel",name),join(target,name));
 
 let html=readFileSync(join(root,"console.html"),"utf8");
-const styles=assets.filter(x=>x.endsWith(".css")).map(x=>'<link rel="stylesheet" href="/'+x+'">').join("\n");
-const scripts=[...assets.filter(x=>x.endsWith(".js")),"hosted-mode.js","lab-comparison.js"]
+const styles=[...assets.filter(x=>x.endsWith(".css")),"hosted-compact.css"].map(x=>'<link rel="stylesheet" href="/'+x+'">').join("\n");
+const scripts=["forecast-view.js",...assets.filter(x=>x.endsWith(".js")),"hosted-mode.js","lab-comparison.js"]
   .map(x=>'<script src="/'+x+'"></script>').join("\n");
 if (!html.includes("</head>") || !html.includes("</body>"))throw Error("Expected console.html document");
 html=html.replace("</head>",styles+"\n</head>").replace("</body>",scripts+"\n</body>");
@@ -32,6 +33,10 @@ const comparison='<div id="lab-comparison" class="panel" style="scroll-margin-to
   +'<button type="button" class="primary" disabled>Run comparison</button>'
   +'<p role="status" aria-live="polite">Loading comparison controls…</p><ol aria-label="Comparison evidence"></ol></div>';
 html=html.replace(labSection,labSection+comparison);
-html=html.replace("<main>",banner+'\n<main><div style="padding:12px 3%"><a class="primary" href="#lab">Open ON/OFF comparison</a></div>');
+html=html.replace("<main>",banner+"\n<main>");
+html=html.replace(/<body([^>]*)>/,(_m,attrs)=>'<body'+(attrs.includes("class=")?attrs.replace(/class="([^"]*)"/,(_a,v)=>'class="'+v+' hosted-compact"'):attrs+' class="hosted-compact"')+'>');
+html=html.replace(/<nav>.*?<\/nav>/,'<nav><a href="#prediction">Prediction</a><a href="#lab">Attack lab</a><a href="#live-defence-proof">HTTP defence</a><a href="#intelligence">System</a></nav>');
+html=html.replace('<section class="workspace">','<section class="workspace" id="prediction" data-forecast-state="WAITING">');
+html=html.replace('<div id="future" class="future">','<div id="forecast-freshness" role="status"><b id="forecast-status">Waiting for model</b><span id="forecast-cutoff"></span><span id="forecast-expiry"></span></div><div id="future" class="future">');
 writeFileSync(join(target,"console.html"),html,"utf8");
 console.log("Krishna premium console prepared for Vercel (no packet/model secrets copied)");
