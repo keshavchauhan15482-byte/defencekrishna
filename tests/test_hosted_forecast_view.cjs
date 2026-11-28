@@ -33,3 +33,13 @@ test("hosted build has compact-only CSS and graph policy before integration",()=
  assert.ok(css.includes(':not(#lab):not(#live-defence-proof)'));
  for(const file of ["console-integrated.js","hosted-mode.js","forecast-view.js"])cp.execFileSync(process.execPath,["--check",path.join(root,"public",file)]);
 });
+
+test("compact dashboard keeps actual page activity distinct and hides inactive chart",()=>{
+ const root=path.resolve(__dirname,"..");
+ cp.execFileSync(process.execPath,["deployment/vercel/build_site.mjs"],{cwd:root});
+ const page=fs.readFileSync(path.join(root,"public","console.html"),"utf8"),css=fs.readFileSync(path.join(root,"public","hosted-compact.css"),"utf8"),js=fs.readFileSync(path.join(root,"public","console-integrated.js"),"utf8"),host=fs.readFileSync(path.join(root,"public","hosted-mode.js"),"utf8");
+ assert.ok(page.includes('id="compact-request-total"')&&page.includes('id="forecast-unavailable"')&&page.includes('Open Attack Lab'));
+ assert.ok(css.includes('not([data-forecast-state="ACTIVE_ADVISORY"]) #traj-svg{display:none}'));
+ assert.ok(js.includes('drawPoints(view.active?values:[])'));
+ assert.ok(host.includes('count(d.total_requests)')&&host.includes('in last 24h · not attacks'));
+});

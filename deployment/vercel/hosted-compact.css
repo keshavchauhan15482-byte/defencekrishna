@@ -36,3 +36,33 @@ body.hosted-compact #prediction:not([data-forecast-state="ACTIVE_ADVISORY"]) #li
 body.hosted-compact .forecast-status-note{font-size:12px;color:#aeb8c7;margin:6px 0}
 body.hosted-compact .reveal-card{opacity:1!important;transform:none!important}
 @media(max-width:800px){body.hosted-compact main{width:100%!important;gap:12px;padding:15px!important}body.hosted-compact .hero h1{font-size:34px!important}body.hosted-compact .panel{padding:14px!important}}
+
+/* Keep the important surfaces within the first viewport. */
+body.hosted-compact.v130 header{position:relative;height:64px;top:auto}
+body.hosted-compact #hosting-boundary{padding:6px 3%!important;font-size:11px!important}
+body.hosted-compact.v130 main{padding-top:12px!important;gap:12px}
+body.hosted-compact.v130 .hero{min-height:0!important;padding:4px 0!important;align-items:flex-start}
+body.hosted-compact.v130 .hero h1{font-size:clamp(25px,3vw,42px)!important;letter-spacing:-1.2px;margin:0 0 7px}
+body.hosted-compact.v130 .hero h1 span{display:inline}
+body.hosted-compact .hero p{font-size:12px;max-width:850px}
+body.hosted-compact .compact-actions{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+body.hosted-compact .compact-actions a{font-size:11px;padding:6px 10px;text-decoration:none}
+body.hosted-compact.v130 .metrics{grid-template-columns:repeat(6,minmax(0,1fr))}
+body.hosted-compact.v130 .metrics article{padding:12px}
+body.hosted-compact.v130 .metrics strong{font-size:26px;line-height:1.5}
+body.hosted-compact .chart-top{margin-top:4px}
+body.hosted-compact .chart-top strong{font-size:27px}
+body.hosted-compact #traj-svg{max-height:170px;margin-top:4px}
+body.hosted-compact #prediction:not([data-forecast-state="ACTIVE_ADVISORY"]) #traj-svg{display:none}
+body.hosted-compact #prediction:not([data-forecast-state="ACTIVE_ADVISORY"]) .chart-foot{display:none}
+body.hosted-compact #forecast-unavailable{margin:8px 0;padding:10px 12px;border:1px solid #ff935742;border-radius:9px;background:#ff93570b;color:#ffbd91;font-size:13px}
+body.hosted-compact #prediction[data-forecast-state="ACTIVE_ADVISORY"] #forecast-unavailable{display:none}
+body.hosted-compact .future{margin-top:4px;font-size:11px}
+body.hosted-compact #cloud-monitoring-panel .ops-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+body.hosted-compact #cloud-monitoring-panel .ops-grid article{padding:8px}
+body.hosted-compact #cloud-monitoring-panel .ops-grid strong{font-size:18px}
+body.hosted-compact #cloud-monitoring-panel .ops-grid small{font-size:10px}
+body.hosted-compact #cloud-monitoring-panel p.muted{font-size:11px}
+body.hosted-compact #lab,body.hosted-compact #live-defence-proof,body.hosted-compact #intelligence{scroll-margin-top:10px}
+@media(max-width:950px){body.hosted-compact.v130 .metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:540px){body.hosted-compact.v130 .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}body.hosted-compact .hero h1 span{display:block}}

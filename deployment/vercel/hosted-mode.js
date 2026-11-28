@@ -66,12 +66,17 @@ function addCloudMonitoringPanel(){
     set("cloud-recent",count(d.requests_5m));
     set("cloud-prior",count(d.requests_previous_5m));
     set("cloud-last",new Date().toLocaleTimeString());
+    const total=document.getElementById("compact-request-total"),detail=document.getElementById("compact-request-detail");
+    if(total)total.textContent=count(d.total_requests);
+    if(detail)detail.textContent=count(d.requests_24h)+" in last 24h · not attacks";
     set("cloud-monitoring-state","Cloud telemetry online");
   });
   document.addEventListener("krishna:sensor-status",ev=>{
     if(ev.detail?.backend!=="online"){
       set("cloud-monitoring-state","Cloud feed unavailable");
       set("cloud-recent","Unavailable");set("cloud-prior","Unavailable");
+      const total=document.getElementById("compact-request-total"),detail=document.getElementById("compact-request-detail");
+      if(total)total.textContent="—";if(detail)detail.textContent="Cloud feed unavailable";
     }
   });
 }
@@ -433,6 +438,7 @@ function boot(){
   if(status)status.textContent="Model file analysis requires a private inference backend; unavailable on this public static site.";
   // Hosted defence demo updates the lab progress independently. The real
   // capture feed, risk gauge, model counters and event ledger remain untouched.
+  for(const id of ["patterns","mutations"]){const metric=document.getElementById(id);if(metric){metric.textContent="N/A";const note=metric.closest("article")?.querySelector("small");if(note)note.textContent="Learning runtime not connected";}}
   const head=document.getElementById("console-build");
   if(head)head.textContent="VERCEL · CLOUD MONITORING";
   const info=document.getElementById("live-sensor-message");
