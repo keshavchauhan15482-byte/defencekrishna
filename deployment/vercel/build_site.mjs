@@ -34,9 +34,9 @@ const comparison='<div id="lab-comparison" class="panel" style="scroll-margin-to
   +'<p role="status" aria-live="polite">Loading comparison controls…</p><ol aria-label="Comparison evidence"></ol></div>';
 html=html.replace(labSection,labSection+comparison);
 html=html.replace("<main>",banner+"\n<main>");
-html=html.replace(/<body([^>]*)>/,(_m,attrs)=>'<body'+(attrs.includes("class=")?attrs.replace(/class="([^"]*)"/,(_a,v)=>\'class="\'+v+\' hosted-compact"\'):attrs+\' class="hosted-compact"\')+\'>\');
-html=html.replace(/<nav>.*?<\\/nav>/,\'<nav><a href="#prediction">Prediction</a><a href="#lab">Attack lab</a><a href="#live-defence-proof">HTTP defence</a><a href="#intelligence">System</a></nav>\');
-html=html.replace(\'<section class="workspace">\',\'<section class="workspace" id="prediction" data-forecast-state="WAITING">\');
-html=html.replace(\'<div id="future" class="future">\',\'<div id="forecast-freshness" role="status"><b id="forecast-status">Waiting for model</b><span id="forecast-cutoff"></span><span id="forecast-expiry"></span></div><div id="future" class="future">\');
+html=html.replace(/<body([^>]*)>/,(_m,attrs)=>'<body'+(attrs.includes("class=")?attrs.replace(/class="([^"]*)"/,(_a,v)=>'class="'+v+' hosted-compact"'):attrs+' class="hosted-compact"')+'>');
+html=html.replace(/<nav>.*?<\/nav>/,'<nav><a href="#prediction">Prediction</a><a href="#lab">Attack lab</a><a href="#live-defence-proof">HTTP defence</a><a href="#intelligence">System</a></nav>');
+html=html.replace('<section class="workspace">','<section class="workspace" id="prediction" data-forecast-state="WAITING">');
+html=html.replace('<div id="future" class="future">','<div id="forecast-freshness" role="status"><b id="forecast-status">Waiting for model</b><span id="forecast-cutoff"></span><span id="forecast-expiry"></span></div><div id="future" class="future">');
 writeFileSync(join(target,"console.html"),html,"utf8");
 console.log("Krishna premium console prepared for Vercel (no packet/model secrets copied)");
