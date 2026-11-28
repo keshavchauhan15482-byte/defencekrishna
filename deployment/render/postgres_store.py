@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 
 from garuda_v3.live_feed import LiveFeed, LiveFeedError
 from deployment.render.observed_index import observed_index
+from deployment.render.http_forecast import forecast as forecast_http
 
 
 class PostgresEventStore:
@@ -114,6 +115,29 @@ class PostgresEventStore:
         return {"source":"observed_fixture_http_index","score":observed_index(activity["requests_5m"],n,age),
                 "denials_recent_minute_buckets":n,"requests_5m":activity["requests_5m"],
                 "observed_at":now,"is_prediction":False,"automatic_containment":False}
+
+    def http_forecast_snapshot(self):
+        now=self._clock()
+        closed=int(now//60)*60
+        with self._connect(self._dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT MIN(observed_at) FROM krishna_site_activity_events")
+                first=cur.fetchone()[0]
+                cur.execute("""
+                    SELECT (FLOOR(observed_at / 60)::bigint * 60), COUNT(*)
+                    FROM krishna_site_activity_events
+                    WHERE observed_at >= %s AND observed_at < %s
+                    GROUP BY 1 ORDER BY 1
+                """,(closed-3600,closed))
+                pages=cur.fetchall()
+                cur.execute("""
+                    SELECT minute_epoch, SUM(denials), MAX(last_at)
+                    FROM krishna_fixture_denial_buckets
+                    WHERE minute_epoch >= %s AND last_at > %s
+                    GROUP BY minute_epoch ORDER BY minute_epoch
+                """,(closed-240,now-300))
+                denials=cur.fetchall()
+        return forecast_http(now,first,pages,denials)
 
     def _validated_event(self, payload):
         # Validate against the existing strict contract using the SAME clock

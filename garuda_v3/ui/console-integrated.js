@@ -20,6 +20,15 @@ let liveCursor=0,livePollBusy=false;
 let lastSensorForecast=null;
 let hostedForecastEvent=null,hostedFeed=null,hostedClock=null,hostedClockAt=0;
 let observedRiskHistory=[];
+function renderHttpForecast(d){
+ const valid=d?.source==='recorded_http_traffic_forecast_v1'&&d.condition==='no_new_fixture_denials'&&d.is_attack_probability===false&&Number.isSafeInteger(d.score)&&Array.isArray(d.trajectory)&&d.trajectory.length===4;
+ if(!valid){text('http-forecast-score','—');text('http-forecast-status','Unavailable');text('http-forecast-detail','Insufficient history or offline');text('http-forecast-points','Waiting for fresh recorded history.');text('http-forecast-audit','Not an attack probability.');$('http-forecast-line')?.setAttribute('d','');return;}
+ text('http-forecast-score',String(d.score));text('http-forecast-detail','Conditional · no new fixture denials');
+ text('http-forecast-status',d.method.toUpperCase()+' · experimental');
+ text('http-forecast-points',d.trajectory.map(p=>'+'+p.horizon_seconds+'s: '+p.conditional_index+'/100 · '+p.expected_page_requests+' expected page requests').join('  |  '));
+ text('http-forecast-audit',d.history_minutes+' closed minutes · '+d.audit_samples+' historical one-step comparisons · EWMA MAE '+d.ewma_mae+' vs persistence '+d.persistence_mae+'. Conditional on no new fixture denials; not an attack probability.');
+ $('http-forecast-line')?.setAttribute('d',d.trajectory.map((p,i)=>(i?'L':'M')+((p.horizon_seconds-60)*400/240)+' '+(95-p.conditional_index*.9)).join(' '));
+}
 function renderObservedRisk(d){
  const valid=d?.source==='observed_fixture_http_index'&&d.is_prediction===false&&Number.isSafeInteger(d.score)&&d.score>=0&&d.score<=100;
  if(!valid){text('observed-risk-score','—');text('observed-risk-state','Unavailable');text('observed-risk-detail','No verified observation');observedRiskHistory=[];$('observed-risk-line')?.setAttribute('d','');return;}
@@ -185,7 +194,7 @@ function refreshHostedForecast(){
  text('forecast-cutoff',event&&Number.isFinite(event.cutoff_epoch_seconds)?'Capture: '+new Date(event.cutoff_epoch_seconds*1000).toLocaleString():'');
  text('forecast-expiry',view.active?'Expires in '+Math.max(0,Math.ceil(view.expiresAt-now))+'s':'');
  const label=metric?.querySelector('label'),hint=metric?.querySelector('small');
- if(label)label.textContent=view.active?'LIVE ADVISORY SCORE':'LIVE FORECAST SCORE';
+ if(label)label.textContent=view.active?'PACKET AI ADVISORY SCORE':'PACKET AI FORECAST SCORE';
  if(hint)hint.textContent=view.reason;
  const chart=$('traj-svg');
  if(view.active){
@@ -216,6 +225,7 @@ async function pollLive(){
    hostedClock=d.server_epoch_seconds;hostedClockAt=performance.now();
    hostedFeed={online:true,state:d.state,gap:d.gap,sensor_status:d.sensor_status};
    renderObservedRisk(d.fixture_risk);
+   renderHttpForecast(d.http_forecast);
    const heartbeat=d.sensor_status||{};
    document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{
      backend:'online',
@@ -342,7 +352,7 @@ async function pollLive(){
     if(hint)hint.textContent='Cloud feed offline · last score historical';
   }
   text('live-sensor-message','Live endpoint unavailable: '+e.message);
-  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);}
+  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);renderHttpForecast(null);}
  }finally{livePollBusy=false}
 }
 

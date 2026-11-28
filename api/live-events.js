@@ -106,7 +106,16 @@ module.exports = async function handler(request, response) {
       Number.isSafeInteger(risk.score)&&risk.score>=0&&risk.score<=100&&Number.isSafeInteger(risk.denials_recent_minute_buckets)&&risk.denials_recent_minute_buckets>=0&&
       Number.isSafeInteger(risk.requests_5m)&&risk.requests_5m>=0&&Number.isFinite(risk.observed_at)&&Math.abs(Date.now()/1000-risk.observed_at)<60?
       {source:risk.source,score:risk.score,denials_recent_minute_buckets:risk.denials_recent_minute_buckets,requests_5m:risk.requests_5m,observed_at:risk.observed_at,is_prediction:false,automatic_containment:false}:null;
+    const h=parsed.http_forecast;
+    const bounded=(n,max)=>Number.isFinite(n)&&n>=0&&n<=max;
+    const validHttp=h?.source==="recorded_http_traffic_forecast_v1"&&h.condition==="no_new_fixture_denials"&&h.is_attack_probability===false&&h.automatic_containment===false&&
+      h.validation_scope==="rolling_internal_page_count_audit"&&["ewma","persistence"].includes(h.method)&&Number.isFinite(h.issued_at)&&Math.abs(Date.now()/1000-h.issued_at)<60&&
+      Number.isSafeInteger(h.history_minutes)&&h.history_minutes>=12&&h.history_minutes<=60&&h.audit_samples===h.history_minutes-8&&
+      bounded(h.ewma_mae,1e9)&&bounded(h.persistence_mae,1e9)&&bounded(h.expected_requests_per_minute,1e9)&&
+      Array.isArray(h.trajectory)&&h.trajectory.length===4&&h.trajectory.every((p,i)=>p?.horizon_seconds===[60,120,180,300][i]&&Number.isSafeInteger(p.conditional_index)&&bounded(p.conditional_index,100)&&bounded(p.expected_page_requests,5e9))&&h.score===h.trajectory[0].conditional_index;
+    const httpForecast=validHttp?{source:h.source,issued_at:h.issued_at,history_minutes:h.history_minutes,audit_samples:h.audit_samples,method:h.method,ewma_mae:h.ewma_mae,persistence_mae:h.persistence_mae,expected_requests_per_minute:h.expected_requests_per_minute,score:h.score,trajectory:h.trajectory.map(p=>({horizon_seconds:p.horizon_seconds,expected_page_requests:p.expected_page_requests,conditional_index:p.conditional_index})),condition:h.condition,is_attack_probability:false,automatic_containment:false,validation_scope:h.validation_scope}:null;
     return response.status(200).json({
+      http_forecast:httpForecast,
       fixture_risk:fixtureRisk,
       state:parsed.state,cursor:parsed.cursor,server_epoch_seconds:Date.now()/1000,
       events,source:"completed_capture_shadow",

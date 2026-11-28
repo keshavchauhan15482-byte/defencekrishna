@@ -73,3 +73,9 @@ body.hosted-compact #observed-risk-note{font-size:12px;margin:6px 0}
 body.hosted-compact #observed-risk-score{color:#7cabff}
 @media(max-width:950px){body.hosted-compact.v130 .metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:540px){body.hosted-compact.v130 .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+body.hosted-compact.v130 .metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+body.hosted-compact #http-forecast-panel svg{width:100%;height:100px;display:block}
+body.hosted-compact #http-forecast-score{color:#7cabff}
+body.hosted-compact #http-forecast-audit,body.hosted-compact #http-forecast-points{font-size:12px;margin:6px 0}
+@media(max-width:700px){body.hosted-compact.v130 .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
