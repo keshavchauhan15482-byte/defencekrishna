@@ -129,6 +129,7 @@ class RelayState:
                 except Exception:
                     result["http_forecast"] = None
             result["packet_runtime"] = self.cloud_inference.status()
+            result["packet_replay"] = self.cloud_inference.historical_state()
         return result
 
 

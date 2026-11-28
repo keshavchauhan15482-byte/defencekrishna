@@ -58,3 +58,11 @@ test("packet readiness and archive stay scoped to packet panel",()=>{
  const page=fs.readFileSync(path.join(root,"public","console.html"),"utf8");
  for(const id of ["packet-ai-panel","packet-readiness","packet-model-ready","packet-source-ready","packet-support-ready","packet-archive","packet-horizons","hosted-defence-feed","http-forecast-area","observed-risk-area"])assert.ok(page.includes('id="'+id+'"'),id);
 });
+
+test("historical state replay is separate from live risk",()=>{
+ const root=path.resolve(__dirname,"..");
+ cp.execFileSync(process.execPath,["deployment/vercel/build_site.mjs"],{cwd:root});
+ const page=fs.readFileSync(path.join(root,"public","console.html"),"utf8");
+ for(const id of ["packet-state-replay","packet-replay-flow","packet-replay-bytes","packet-replay-packets","packet-readiness","hosted-defence-feed","http-forecast-area"])assert.ok(page.includes('id="'+id+'"'),id);
+ assert.ok(page.includes("HISTORICAL REPLAY")&&page.includes("not attack probability"));
+});

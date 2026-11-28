@@ -221,6 +221,15 @@ async function replay(){
  }finally{busy=false}
 }
 
+function renderPacketReplay(d){
+ const valid=d?.source==='fixed_historical_packet_state_inference'&&d.mode==='REPLAY_ONLY'&&d.live===false&&d.risk_validated===false&&Array.isArray(d.last_observed)&&Array.isArray(d.trajectory)&&d.trajectory.length===4;
+ text('packet-replay-status',valid?'REPLAY · NOT LIVE':'Replay unavailable');
+ for(const [i,key] of ['flow','bytes','packets'].entries()){
+   const values=valid?[d.last_observed[i],...d.trajectory.map(p=>p.state[i])]:[];
+   $('packet-replay-'+key)?.setAttribute('d',values.map((v,j)=>(j?'L':'M')+(35+j*96.25)+' '+(98-v*88)).join(' '));
+ }
+ text('packet-replay-note',valid?'Historical capture '+new Date(d.capture_cutoff*1000).toLocaleString()+' · 480s observed history · actual cloud GNN + LSTM state inference. Risk model failed development validation; no live attack probability or enforcement.':'Fixed historical state replay unavailable. Live packet prediction remains withheld.');
+}
 function refreshHostedForecast(){
  if(!IS_HOSTED_RELAY||!globalThis.KrishnaForecastView)return;
  const now=hostedClock===null?NaN:hostedClock+(performance.now()-hostedClockAt)/1000;
@@ -279,6 +288,7 @@ async function pollLive(){
    hostedFeed={online:true,state:d.state,gap:d.gap,sensor_status:d.sensor_status,packet_runtime:d.packet_runtime};
    renderObservedRisk(d.fixture_risk);
    renderHttpForecast(d.http_forecast);
+   renderPacketReplay(d.packet_replay);
    renderDefenceReceipts(d.fixture_receipts,d.fixture_risk,d.http_forecast);
    const heartbeat=d.sensor_status||{};
    document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{
@@ -406,7 +416,7 @@ async function pollLive(){
     if(hint)hint.textContent='Cloud feed offline · last score historical';
   }
   text('live-sensor-message','Live endpoint unavailable: '+e.message);
-  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);renderHttpForecast(null);renderDefenceReceipts(null,null,null);}
+  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();renderObservedRisk(null);renderHttpForecast(null);renderPacketReplay(null);renderDefenceReceipts(null,null,null);}
  }finally{livePollBusy=false}
 }
 

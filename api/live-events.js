@@ -124,7 +124,13 @@ module.exports = async function handler(request, response) {
       window_seconds:[10,60].includes(pRuntime.window_seconds)?pRuntime.window_seconds:null,
       live_prediction:false,automatic_containment:false
     }:null;
+    const replay=parsed.packet_replay;
+    const stateVector=v=>Array.isArray(v)&&v.length===3&&v.every(n=>Number.isFinite(n)&&n>=0&&n<=1);
+    const replayValid=replay?.source==="fixed_historical_packet_state_inference"&&replay.mode==="REPLAY_ONLY"&&replay.live===false&&replay.risk_validated===false&&replay.automatic_containment===false&&Number.isFinite(replay.capture_cutoff)&&replay.capture_cutoff>0&&replay.capture_cutoff<Date.now()/1000&&replay.history_seconds===480&&
+      Array.isArray(replay.features)&&replay.features.join(",")==="flow_count_log,bytes_log,packets_log"&&stateVector(replay.last_observed)&&Array.isArray(replay.trajectory)&&replay.trajectory.length===4&&replay.trajectory.every((p,i)=>p?.horizon_seconds===60*(i+1)&&stateVector(p.state));
+    const packetReplay=replayValid?{source:replay.source,mode:"REPLAY_ONLY",capture_cutoff:replay.capture_cutoff,history_seconds:480,features:replay.features,last_observed:replay.last_observed,trajectory:replay.trajectory.map(p=>({horizon_seconds:p.horizon_seconds,state:p.state})),live:false,risk_validated:false,automatic_containment:false}:null;
     return response.status(200).json({
+      packet_replay:packetReplay,
       packet_runtime:packetRuntime,
       fixture_receipts:projectReceipts(parsed.fixture_receipts),
       http_forecast:httpForecast,
