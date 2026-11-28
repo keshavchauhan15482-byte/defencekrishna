@@ -28,12 +28,13 @@ module.exports=async function securityCheck(request,response){
   response.setHeader("X-Krishna-Fixture-Telemetry",logged?"recorded":"not-recorded");
   // Do not forward source IP, browser cookies, headers, private records, or
   // attack payloads into the Render model/heartbeat PostgreSQL tables.
+  const scenario=decision.engine==="scenario-fixture-policy"?{scenario:decision.scenario,scope:decision.scope,reason:decision.reason}:{};
   return response.status(decision.status).json(decision.allowed?
-    {ok:true,record:{id:"demo-public",message:"Public synthetic test record"},
+    {...scenario,ok:true,record:{id:"demo-public",message:"Public synthetic test record"},
      lane:decision.lane,decision:"ALLOW",source:"REAL_HTTP_DEFENCE_GATE",
      garuda:"SHADOW_ONLY_NOT_BLOCK_AUTHORITY",
      automatic_ip_lockdown:false}:
-    {ok:false,lane:decision.lane,decision:"DENY",reason:decision.reason,
+    {...scenario,ok:false,lane:decision.lane,decision:"DENY",reason:decision.reason,
      source:"REAL_HTTP_DEFENCE_GATE",
      garuda:"SHADOW_ONLY_NOT_BLOCK_AUTHORITY",
      automatic_ip_lockdown:false});

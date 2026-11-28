@@ -12,6 +12,7 @@
  * Never accepts source IPs, rate-limit keys, policies or model probabilities
  * from a browser as trustworthy enforcement instructions.
  */
+const {inspectScenarioRecord}=require("./scenario_fixture.js");
 const MAX_PROBE_LENGTH=512;
 const DENY=Object.freeze({allowed:false,status:403});
 const KNOWN=Object.freeze([
@@ -56,6 +57,8 @@ function inspectRequest(request){
   const entry=parseRecord(request);
   if(entry.error)return {allowed:false,status:entry.status,lane:"BOUNDARY",reason:entry.error};
   const payload=entry.value;
+  const scenario=inspectScenarioRecord(payload);
+  if(scenario)return scenario;
   for(const rule of KNOWN){
     if(rule.test.test(payload)){
       return {...DENY,lane:"ARJUNA",reason:rule.id};

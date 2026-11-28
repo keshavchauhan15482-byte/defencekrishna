@@ -1,5 +1,5 @@
 "use strict";
-const REASONS={"ARJUNA":["SQLI_SIGNATURE","XSS_SIGNATURE","TRAVERSAL_SIGNATURE","COMMAND_SIGNATURE","HISTORICAL_DANGER_PATTERN","UNSPECIFIED_RULE"],"KRISHNA":["STRUCTURAL_ANOMALY_REVIEW","HISTORICAL_STRUCTURE_REVIEW","UNSPECIFIED_RULE"],"SUDARSHAN":["FIXTURE_SCOPE_DENIED","UNSPECIFIED_RULE"]};
+const REASONS={"ARJUNA":["DEMO_DDOS_BURST","DEMO_PORT_SCAN","DEMO_SYN_FLOOD","SQLI_SIGNATURE","XSS_SIGNATURE","TRAVERSAL_SIGNATURE","COMMAND_SIGNATURE","HISTORICAL_DANGER_PATTERN","UNSPECIFIED_RULE"],"KRISHNA":["DEMO_C2_BEACON","DEMO_DNS_TUNNEL","STRUCTURAL_ANOMALY_REVIEW","HISTORICAL_STRUCTURE_REVIEW","UNSPECIFIED_RULE"],"SUDARSHAN":["DEMO_EXFIL_SPIKE","DEMO_LATERAL_SMB","FIXTURE_SCOPE_DENIED","UNSPECIFIED_RULE"]};
 function projectReceipts(input,now=Date.now()/1000){
  if(input?.source!=="server_recorded_fixture_denials"||input.scope!=="synthetic_fixture_only"||input.automatic_containment!==false||!Number.isFinite(input.observed_at)||Math.abs(now-input.observed_at)>=60||!Array.isArray(input.events)||input.events.length>12)return null;
  const ids=new Set(),events=[];

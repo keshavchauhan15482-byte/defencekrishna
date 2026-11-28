@@ -35,7 +35,7 @@ function plotPremium(id,points,color){
   const t=document.createElementNS(ns,'title');t.textContent=p.label;c.append(t);dots.append(c);
  }
 }
-const RECEIPT_LABELS={SQLI_SIGNATURE:'SQL injection signature',XSS_SIGNATURE:'Cross-site scripting signature',TRAVERSAL_SIGNATURE:'Path traversal signature',COMMAND_SIGNATURE:'Command injection signature',HISTORICAL_DANGER_PATTERN:'Known danger pattern',STRUCTURAL_ANOMALY_REVIEW:'Structural anomaly',HISTORICAL_STRUCTURE_REVIEW:'Historical structural anomaly',FIXTURE_SCOPE_DENIED:'Restricted dummy-record access',UNSPECIFIED_RULE:'Guard rule · reason unavailable'};
+const RECEIPT_LABELS={DEMO_SYN_FLOOD:'SYN Flood · demo policy',DEMO_PORT_SCAN:'Port Scan · demo policy',DEMO_LATERAL_SMB:'SMB Lateral · demo policy',DEMO_DDOS_BURST:'DDoS Burst · demo policy',DEMO_DNS_TUNNEL:'DNS Tunnel · demo policy',DEMO_C2_BEACON:'C2 Beacon · demo policy',DEMO_EXFIL_SPIKE:'Exfil Spike · demo policy',SQLI_SIGNATURE:'SQL injection signature',XSS_SIGNATURE:'Cross-site scripting signature',TRAVERSAL_SIGNATURE:'Path traversal signature',COMMAND_SIGNATURE:'Command injection signature',HISTORICAL_DANGER_PATTERN:'Known danger pattern',STRUCTURAL_ANOMALY_REVIEW:'Structural anomaly',HISTORICAL_STRUCTURE_REVIEW:'Historical structural anomaly',FIXTURE_SCOPE_DENIED:'Restricted dummy-record access',UNSPECIFIED_RULE:'Guard rule · reason unavailable'};
 function renderDefenceReceipts(d,risk,forecast){
  const root=$('defence-receipts');if(!root)return;
  const ok=d?.source==='server_recorded_fixture_denials'&&d.scope==='synthetic_fixture_only'&&Array.isArray(d.events)&&d.events.length<=12;
