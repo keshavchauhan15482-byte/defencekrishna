@@ -64,6 +64,7 @@ module.exports = async function handler(request, response) {
         !Array.isArray(parsed.events) || parsed.events.length > 128) {
       throw Error("Malformed upstream response");
     }
+    if(!Number.isSafeInteger(parsed.cursor)||parsed.cursor<0)throw Error("Invalid feed cursor");
     // Explicitly project event fields so upstream never leaks hashes/raw inputs.
     const events = parsed.events.map(event => {
       if (!event || !Number.isSafeInteger(event.id) || event.id < 1 ||
@@ -101,7 +102,7 @@ module.exports = async function handler(request, response) {
       throw Error("Site activity summary unavailable");
     }
     return response.status(200).json({
-      state:parsed.state,cursor:parsed.cursor,
+      state:parsed.state,cursor:parsed.cursor,server_epoch_seconds:Date.now()/1000,
       events,source:"completed_capture_shadow",
       sensor_age_seconds:parsed.sensor_age_seconds,
       gap:parsed.gap!==false,automatic_containment:false,

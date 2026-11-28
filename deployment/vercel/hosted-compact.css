@@ -1,0 +1,38 @@
+/* Hosted-only concise dashboard; the private research console remains intact. */
+body.hosted-compact main{display:flex;flex-direction:column;gap:16px;max-width:1450px!important;width:95vw!important;margin:0 auto;padding-top:22px!important;padding-bottom:28px!important}
+body.hosted-compact main>section,body.hosted-compact main>footer{margin:0!important}
+body.hosted-compact main>section:not(.hero):not(.metrics):not(.workspace):not(.layers):not(#intelligence):not(#lab):not(#live-defence-proof):not(#cloud-monitoring-panel){display:none!important}
+body.hosted-compact main>div.eyebrow{display:none}
+body.hosted-compact header nav a:not([href="#prediction"]):not([href="#lab"]):not([href="#intelligence"]):not([href="#live-defence-proof"]){display:none!important}
+body.hosted-compact .hero{order:1;min-height:0!important;padding:12px 0!important;gap:20px;align-items:center}
+body.hosted-compact .hero h1{font-size:clamp(30px,4vw,60px)!important;line-height:1.05;margin:0 0 10px}
+body.hosted-compact .hero h1 br{display:none}
+body.hosted-compact .hero h1 span{display:block}
+body.hosted-compact .hero p{max-width:650px;margin:0}
+body.hosted-compact .hero .core{display:none}
+body.hosted-compact .hero-actions,body.hosted-compact .value-strip{display:none!important}
+body.hosted-compact .metrics{order:2}
+body.hosted-compact .workspace{order:3;grid-template-columns:minmax(0,1fr)!important}
+body.hosted-compact .workspace>aside{display:none!important}
+body.hosted-compact #traj-svg{max-height:300px;width:100%}
+body.hosted-compact .chart-panel:after,body.hosted-compact .chart-panel:before,body.hosted-compact #scan-line{display:none!important}
+body.hosted-compact #cloud-monitoring-panel{order:4;padding:14px 20px!important}
+body.hosted-compact #cloud-monitoring-panel p.muted{font-size:12px;margin:4px 0}
+body.hosted-compact #cloud-monitoring-panel .ops-grid{margin:4px 0}
+body.hosted-compact #lab{order:5}
+body.hosted-compact #live-defence-proof{order:6}
+body.hosted-compact #intelligence{order:7;padding:16px 0!important}
+body.hosted-compact #intelligence .garuda-lockup{display:none}
+body.hosted-compact .layers{order:8}
+body.hosted-compact footer{order:9}
+body.hosted-compact .panel{padding:18px!important}
+body.hosted-compact .panel-head{margin-bottom:8px}
+body.hosted-compact #forecast-freshness{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0;color:#aeb8c7;font-size:12px}
+body.hosted-compact #forecast-freshness b{color:#ffb17f}
+body.hosted-compact #prediction[data-forecast-state="ACTIVE_ADVISORY"] #forecast-freshness b{color:#66e6bb}
+body.hosted-compact #prediction:not([data-forecast-state="ACTIVE_ADVISORY"]) #line{stroke:#8892a3;stroke-dasharray:7 5}
+body.hosted-compact #prediction:not([data-forecast-state="ACTIVE_ADVISORY"]) #area{opacity:.2}
+body.hosted-compact #prediction:not([data-forecast-state="ACTIVE_ADVISORY"]) #live-point{opacity:0!important}
+body.hosted-compact .forecast-status-note{font-size:12px;color:#aeb8c7;margin:6px 0}
+body.hosted-compact .reveal-card{opacity:1!important;transform:none!important}
+@media(max-width:800px){body.hosted-compact main{width:100%!important;gap:12px;padding:15px!important}body.hosted-compact .hero h1{font-size:34px!important}body.hosted-compact .panel{padding:14px!important}}

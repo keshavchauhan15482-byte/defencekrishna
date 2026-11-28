@@ -5,7 +5,8 @@ const scenarios=[['syn_flood','SYN Flood','Reviewed known replay'],['port_scan',
 const routes={arjuna:'ARJUNA · REVIEWED KNOWN MEMORY',krishna:'KRISHNA · UNKNOWN FORECAST TRIAGE',sudarshana:'SUDARSHANA'};
 const MAX_POINTS=48;
 const MOTION_MS=220;
-const SENSOR_POLL_MS=2600;
+const SENSOR_POLL_MS=IS_HOSTED_POLL_INTERVAL();
+function IS_HOSTED_POLL_INTERVAL(){return document.getElementById('hosting-boundary')?5000:2600;}
 // Vercel runs only a cloud telemetry relay; the local Python model endpoints
 // (/bridge/status, /bridge/response) must not be checked as cloud health.
 const IS_HOSTED_RELAY=!!document.getElementById('hosting-boundary');
@@ -17,11 +18,12 @@ let targetLiveValue=0;
 let lastFutureText='Waiting for forecast horizons…';
 let liveCursor=0,livePollBusy=false;
 let lastSensorForecast=null;
+let hostedForecastEvent=null,hostedFeed=null,hostedClock=null,hostedClockAt=0;
 let scanPhase=0;
 const metricAnimations=new Map();
 
 function text(id,value){const el=$(id);if(el)el.textContent=value}
-async function api(path,body){const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});const d=await r.json();if(!r.ok)throw Error(d.error||'Runtime unavailable');return d}
+async function api(path,body){const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store',signal:AbortSignal.timeout(25000)});const d=await r.json();if(!r.ok)throw Error(d.error||'Runtime unavailable');return d}
 
 function feed(title,detail){
  const root=$('feed');if(!root)return;
@@ -59,7 +61,7 @@ function animateMetric(id,target,{decimals=0,suffix=''}={}){
 
 function drawPoints(series){
  const line=$('line'),area=$('area');if(!line||!area)return;
- if(!series.length){line.setAttribute('d','');area.setAttribute('d','');return;}
+ if(!series.length){line.setAttribute('d','');area.setAttribute('d','');const point=$('live-point');if(point)point.style.opacity='0';return;}
  // Each plotted point is a model estimate. Stretch the four REAL forecast
  // horizons across the width instead of leaving a single dot at the edge.
  const denom=Math.max(1,series.length-1);
@@ -162,12 +164,48 @@ async function replay(){
  }finally{busy=false}
 }
 
+function refreshHostedForecast(){
+ if(!IS_HOSTED_RELAY||!globalThis.KrishnaForecastView)return;
+ const now=hostedClock===null?NaN:hostedClock+(performance.now()-hostedClockAt)/1000;
+ const feed=hostedFeed?{...hostedFeed,sensor_status:{...hostedFeed.sensor_status,sensor_age_seconds:Number.isFinite(hostedFeed.sensor_status?.sensor_age_seconds)?hostedFeed.sensor_status.sensor_age_seconds+(performance.now()-hostedClockAt)/1000:null}}:null;
+ const view=globalThis.KrishnaForecastView.classify(hostedForecastEvent,feed,now);
+ const event=hostedForecastEvent,root=$('prediction'),metric=$('score')?.closest('article');
+ if(root)root.dataset.forecastState=view.state;
+ if(metric)metric.classList.toggle('forecast-stale',!view.active);
+ text('forecast-status',view.active?'ACTIVE ADVISORY':view.state+' · NO LIVE PREDICTION');
+ text('forecast-cutoff',event&&Number.isFinite(event.cutoff_epoch_seconds)?'Capture: '+new Date(event.cutoff_epoch_seconds*1000).toLocaleString():'');
+ text('forecast-expiry',view.active?'Expires in '+Math.max(0,Math.ceil(view.expiresAt-now))+'s':'');
+ const label=metric?.querySelector('label'),hint=metric?.querySelector('small');
+ if(label)label.textContent=view.active?'LIVE ADVISORY SCORE':'LIVE FORECAST SCORE';
+ if(hint)hint.textContent=view.reason;
+ const chart=$('traj-svg');
+ if(view.active){
+   const risk=Math.max(...view.remaining.map(p=>p.malicious_flow_probability))*100;
+   setLiveScore(risk);
+   text('live-state','SUPPORTED · ADVISORY ONLY');
+ }else{
+   text('score','—');text('chart-score','—');
+   text('live-state',view.state+' · NOT LIVE');
+ }
+ if(event&&Array.isArray(event.trajectory)){
+   const values=event.trajectory.map(p=>p.malicious_flow_probability*100);
+   drawPoints(values);
+   text('future',(view.active?'MODEL HORIZONS':'ARCHIVED MODEL OUTPUT · NOT LIVE')+' · '+event.trajectory.map(p=>'+'+p.horizon_seconds+'s '+(p.malicious_flow_probability*100).toFixed(1)+'%').join(' · '));
+ }else{
+   drawPoints([]);text('future',view.reason+' · No fabricated model points');
+ }
+ if(chart)chart.setAttribute('aria-label',view.active?'Supported advisory model forecast horizons':'Historical model output if available; no active forecast');
+}
 async function pollLive(){
  if(livePollBusy||document.hidden)return;
  livePollBusy=true;
  try{
   const d=await api('/bridge/live/events?after='+liveCursor);
   if(IS_HOSTED_RELAY){
+   if(!Number.isSafeInteger(d.cursor)||d.cursor<0||!Number.isFinite(d.server_epoch_seconds))throw Error('Invalid cloud forecast clock or cursor');
+   if(d.cursor<liveCursor){liveCursor=0;hostedForecastEvent=null;lastSensorForecast=null;}
+   hostedClock=d.server_epoch_seconds;hostedClockAt=performance.now();
+   hostedFeed={online:true,state:d.state,gap:d.gap,sensor_status:d.sensor_status};
    const heartbeat=d.sensor_status||{};
    document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{
      backend:'online',
@@ -190,7 +228,8 @@ async function pollLive(){
    if(event.id<=liveCursor)continue;
    liveCursor=event.id;
    if(event.kind!=='forecast')continue;
-   render({trajectory:event.trajectory},'sensor');
+   if(IS_HOSTED_RELAY)hostedForecastEvent=event;
+   else render({trajectory:event.trajectory},'sensor');
    lastSensorForecast={score:event.score,supported:event.supported===true,
      cutoffEpoch:event.cutoff_epoch_seconds,id:event.id};
    if(IS_HOSTED_RELAY){
@@ -199,7 +238,7 @@ async function pollLive(){
        alert:event.alert===true,cutoffEpoch:event.cutoff_epoch_seconds
      }}));
    }
-   if(event.alert){threats+=1;animateMetric('threats',threats);}
+   if(event.alert&&(!IS_HOSTED_RELAY||globalThis.KrishnaForecastView?.classify(event,hostedFeed,hostedClock).active)){threats+=1;animateMetric('threats',threats);}
    const scope=event.supported?'Support flag reported':'UNVERIFIED INPUT SUPPORT';
    feed('Sensor capture · '+event.score.toFixed(1)+'%','Advisory shadow forecast · '+scope+' · No automatic action');
    if(!rows++)$('events').replaceChildren();
@@ -273,6 +312,7 @@ async function pollLive(){
     d.state==='stale'?'STALE LAST FORECAST · LIVE SENSOR STATUS SEPARATE':
     IS_HOSTED_RELAY&&['capturing','processing'].includes(d.sensor_status?.state)?
     'Real packet sensor '+d.sensor_status.state+' · awaiting forecast':pair[1]);
+  if(IS_HOSTED_RELAY)refreshHostedForecast();
  }catch(e){
   if(IS_HOSTED_RELAY){
    document.dispatchEvent(new CustomEvent('krishna:sensor-status',{detail:{backend:'offline',sensor:'unavailable',forecast:'unavailable'}}));
@@ -292,6 +332,7 @@ async function pollLive(){
     if(hint)hint.textContent='Cloud feed offline · last score historical';
   }
   text('live-sensor-message','Live endpoint unavailable: '+e.message);
+  if(IS_HOSTED_RELAY){hostedFeed=null;refreshHostedForecast();}
  }finally{livePollBusy=false}
 }
 
@@ -386,4 +427,5 @@ if(IS_HOSTED_RELAY){
 }
 pollLive();
 setInterval(pollLive,SENSOR_POLL_MS);
+if(IS_HOSTED_RELAY)setInterval(refreshHostedForecast,1000);
 })();

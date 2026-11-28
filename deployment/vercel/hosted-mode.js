@@ -362,6 +362,10 @@ function addRealHttpDefenceProof(){
   const button=root.querySelector("#run-safe-http-probes");
   const rows=root.querySelector("#live-defence-rows");
   const status=root.querySelector("#live-defence-progress");
+  let sessionBlocks=0;
+  const blockMetric=document.getElementById("blocked");
+  const blockHint=blockMetric?.closest("article")?.querySelector("small");
+  if(blockHint)blockHint.textContent="Verified dummy denials · this tab";
   button.addEventListener("click",async()=>{
     button.disabled=true;
     rows.replaceChildren();
@@ -385,8 +389,13 @@ function addRealHttpDefenceProof(){
         });
         code.textContent=String(response.status);
         const header=response.headers.get("X-Krishna-Lane");
-        lane.textContent=header||"EDGE / UNKNOWN";
-        const ok=response.status===item.expect;
+        const engine=response.headers.get("X-Krishna-Engine");
+        const decision=response.headers.get("X-Krishna-Decision");
+        let body=null;try{body=await response.json();}catch{}
+        const attributable=["ARJUNA","KRISHNA","SUDARSHAN"].includes(header)&&["bounded-route-guard","historical-passive"].includes(engine)&&body?.lane===header&&body?.source==="REAL_HTTP_DEFENCE_GATE";
+        lane.textContent=attributable?header:"EDGE / UNKNOWN";
+        const ok=response.status===item.expect&&attributable&&(item.expect===200?decision==="allow"&&body?.record?.id==="demo-public":decision==="deny"&&body?.decision==="DENY"&&!Object.hasOwn(body,"record"));
+        if(ok&&item.expect===403&&blockMetric)blockMetric.textContent=String(++sessionBlocks);
         outcome.textContent=ok?
           "PASS · actual HTTP response matched":"REVIEW · unexpected HTTP response";
         tr.classList.toggle("live-defence-pass",ok);
@@ -409,7 +418,7 @@ function boot(){
   document.body.classList.add("vercel-shadow-only");
   const chartFoot=document.querySelectorAll(".chart-foot span");
   if(chartFoot[0])chartFoot[0].textContent="Actual model horizons from last completed PCAP";
-  if(chartFoot[1])chartFoot[1].textContent="Refreshes only when a real forecast arrives · heartbeat above is separate";
+  if(chartFoot[1])chartFoot[1].textContent="Fresh supported forecasts only · archived values shown separately";
   addHttpTrafficPanel();
   addCloudMonitoringPanel();
   addOperationalHeartbeatPanel();
