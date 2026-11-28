@@ -173,6 +173,7 @@ function refreshHostedForecast(){
  if(root)root.dataset.forecastState=view.state;
  if(metric)metric.classList.toggle('forecast-stale',!view.active);
  text('forecast-status',view.active?'ACTIVE ADVISORY':view.state+' · NO LIVE PREDICTION');
+ text('forecast-unavailable',view.reason+'. Fresh supported capture required. Website monitoring and defence checks are still available.');
  text('forecast-cutoff',event&&Number.isFinite(event.cutoff_epoch_seconds)?'Capture: '+new Date(event.cutoff_epoch_seconds*1000).toLocaleString():'');
  text('forecast-expiry',view.active?'Expires in '+Math.max(0,Math.ceil(view.expiresAt-now))+'s':'');
  const label=metric?.querySelector('label'),hint=metric?.querySelector('small');
@@ -189,12 +190,12 @@ function refreshHostedForecast(){
  }
  if(event&&Array.isArray(event.trajectory)){
    const values=event.trajectory.map(p=>p.malicious_flow_probability*100);
-   drawPoints(values);
+   drawPoints(view.active?values:[]);
    text('future',(view.active?'MODEL HORIZONS':'ARCHIVED MODEL OUTPUT · NOT LIVE')+' · '+event.trajectory.map(p=>'+'+p.horizon_seconds+'s '+(p.malicious_flow_probability*100).toFixed(1)+'%').join(' · '));
  }else{
    drawPoints([]);text('future',view.reason+' · No fabricated model points');
  }
- if(chart)chart.setAttribute('aria-label',view.active?'Supported advisory model forecast horizons':'Historical model output if available; no active forecast');
+ if(chart)chart.setAttribute('aria-label',view.active?'Supported advisory model forecast horizons':'No active forecast; archived model values are textual only');
 }
 async function pollLive(){
  if(livePollBusy||document.hidden)return;

@@ -38,5 +38,9 @@ html=html.replace(/<body([^>]*)>/,(_m,attrs)=>'<body'+(attrs.includes("class=")?
 html=html.replace(/<nav>.*?<\/nav>/,'<nav><a href="#prediction">Prediction</a><a href="#lab">Attack lab</a><a href="#live-defence-proof">HTTP defence</a><a href="#intelligence">System</a></nav>');
 html=html.replace('<section class="workspace">','<section class="workspace" id="prediction" data-forecast-state="WAITING">');
 html=html.replace('<div id="future" class="future">','<div id="forecast-freshness" role="status"><b id="forecast-status">Waiting for model</b><span id="forecast-cutoff"></span><span id="forecast-expiry"></span></div><div id="future" class="future">');
+// Hosted-only dashboard: actual HTTP observation and model forecasting are separate.
+html=html.replace('<h1>See the threat.<br><span>Before the impact.</span></h1>','<h1>See the threat. <span>Before the impact.</span></h1><div class="compact-actions"><a class="primary" href="#lab">Open Attack Lab</a><a class="primary" href="#live-defence-proof">Verify HTTP defence</a></div>');
+html=html.replace('<section class="metrics">','<section class="metrics"><article><label>OBSERVED PAGE REQUESTS</label><strong id="compact-request-total">—</strong><small id="compact-request-detail">Connecting to cloud</small></article>');
+html=html.replace('<div id="future" class="future">','<p id="forecast-unavailable" role="status">Waiting for a fresh, supported packet capture. Cloud HTTP activity is independent.</p><div id="future" class="future">');
 writeFileSync(join(target,"console.html"),html,"utf8");
 console.log("Krishna premium console prepared for Vercel (no packet/model secrets copied)");
