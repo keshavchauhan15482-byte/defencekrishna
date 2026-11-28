@@ -20,3 +20,5 @@ interface, use a shared platform interface, or fabricate heartbeat records.
 No paid compute provisioned. The current 21-feature host checkpoint and this
 34-feature service candidate are incompatible and are not interchangeable.
 No automatic promotion, production inference, containment, or frontend change.
+
+The first recovery run failed before training because a source PCAP ends in an incomplete record. The corrected run uses the existing offline `pcap_tail_clean` utility before feature extraction. It retains source SHA-256 provenance, hashes the cleaned derivative, excludes entire affected 10-second windows, and uploads integrity audits. The strict runtime parser is unchanged. No excluded window is imputed.

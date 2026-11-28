@@ -13,6 +13,7 @@ from pathlib import Path
 import numpy as np
 from .ps_complete import convert_pcap, attach_ids2018_weak_schedule, save_dataset, FEATURES
 from .data import campaign_examples
+from .pcap_tail_clean import clean
 from .train import batch
 from .train_v46 import run as train
 from .support_gate import fit, score
@@ -67,12 +68,24 @@ def execute(output):
         source=json.loads(Path(str(raw)+".source.json").read_text())
         if sha(raw)!=source["sha256"] or not source["original_member_crc_verified"]:
             raise ValueError("Capture provenance mismatch: "+campaign)
-        data=convert_pcap(raw,campaign=campaign,mode="service",max_nodes=32,max_packets=2_000_000)
-        data=attach_ids2018_weak_schedule(data,raw,campaign,max_packets=2_000_000)
+        cleaned=out/(campaign+".clean.pcap")
+        audit_path=out/(campaign+".integrity.json")
+        audit=clean(raw,cleaned,audit_path,window_seconds=10)
+        if audit["original_sha256"]!=source["sha256"] or sha(cleaned)!=audit["derivative_sha256"]:
+            raise ValueError("Cleaned capture provenance mismatch")
+        print("Audited "+campaign+": retained "+str(audit["complete_records"])+" records; excluded "+str(len(audit["excluded_windows"]))+" windows",flush=True)
+        data=convert_pcap(cleaned,campaign=campaign,mode="service",max_nodes=32,max_packets=2_000_000)
+        data=attach_ids2018_weak_schedule(data,cleaned,campaign,max_packets=2_000_000)
+        if any(int(v) in set(audit["excluded_windows"]) for v in data["times"]):
+            raise ValueError("Excluded window leaked into graph")
+        data["metadata"].update(source_sha256=source["sha256"],
+          cleaned_capture_sha256=audit["derivative_sha256"],integrity_audit_sha256=sha(audit_path),
+          release_evidence_eligible=False)
         graph=out/(campaign+".npz"); save_dataset(data,graph)
         graphs.append(str(graph)); datasets.append(data)
         provenance.append({"campaign":campaign,"role":role,"capture_sha256":source["sha256"],
-                           "graph_sha256":sha(graph),"windows":len(data["times"]),
+                           "cleaned_capture_sha256":audit["derivative_sha256"],"integrity_audit_sha256":sha(audit_path),
+                           "excluded_windows":len(audit["excluded_windows"]),"graph_sha256":sha(graph),"windows":len(data["times"]),
                            "label_counts":{str(v):int((data["y"]==v).sum()) for v in (-1,0,1)}})
     # Non-overlapping 80s history + 40s future examples within each campaign.
     splits,_=campaign_examples(datasets,manifest,8,4,12,allow_unknown=True)

@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -r garuda_v3/requirements.txt
-      - run: python -m unittest garuda_v3.tests.test_packet_recovery_v131 -v
+      - run: python -m unittest garuda_v3.tests.test_packet_recovery_v131 garuda_v3.tests.test_pcap_tail_clean -v
       - name: Real 34-feature packet recovery and three-seed audit
         run: python -m garuda_v3.packet_recovery_v131 --output "$RUNNER_TEMP/v131"
       - uses: actions/upload-artifact@v4
@@ -34,6 +34,7 @@ jobs:
             ${{ runner.temp }}/v131/recovery_report.json
             ${{ runner.temp }}/v131/development_support_gate.json
             ${{ runner.temp }}/v131/split.json
+            ${{ runner.temp }}/v131/*.integrity.json
             ${{ runner.temp }}/v131/seed-*/metrics.json
           if-no-files-found: warn
           retention-days: 14
