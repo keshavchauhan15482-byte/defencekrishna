@@ -15,10 +15,11 @@ const assets=[
 ];
 for (const name of assets) copyFileSync(join(root,"garuda_v3","ui",name),join(target,name));
 copyFileSync(join(root,"deployment","vercel","hosted-mode.js"),join(target,"hosted-mode.js"));
+copyFileSync(join(root,"deployment","vercel","lab-comparison.js"),join(target,"lab-comparison.js"));
 
 let html=readFileSync(join(root,"console.html"),"utf8");
 const styles=assets.filter(x=>x.endsWith(".css")).map(x=>'<link rel="stylesheet" href="/'+x+'">').join("\n");
-const scripts=[...assets.filter(x=>x.endsWith(".js")),"hosted-mode.js"]
+const scripts=[...assets.filter(x=>x.endsWith(".js")),"hosted-mode.js","lab-comparison.js"]
   .map(x=>'<script src="/'+x+'"></script>').join("\n");
 if (!html.includes("</head>") || !html.includes("</body>"))throw Error("Expected console.html document");
 html=html.replace("</head>",styles+"\n</head>").replace("</body>",scripts+"\n</body>");
