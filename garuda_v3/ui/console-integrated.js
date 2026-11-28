@@ -227,15 +227,27 @@ function refreshHostedForecast(){
  const feed=hostedFeed?{...hostedFeed,sensor_status:{...hostedFeed.sensor_status,sensor_age_seconds:Number.isFinite(hostedFeed.sensor_status?.sensor_age_seconds)?hostedFeed.sensor_status.sensor_age_seconds+(performance.now()-hostedClockAt)/1000:null}}:null;
  const view=globalThis.KrishnaForecastView.classify(hostedForecastEvent,feed,now);
  const event=hostedForecastEvent,root=$('prediction'),metric=$('score')?.closest('article');
+ const runtime=feed?.packet_runtime,heartbeat=feed?.sensor_status;
+ const sensorLive=['capturing','processing'].includes(heartbeat?.state)&&Number.isFinite(heartbeat.sensor_age_seconds)&&heartbeat.sensor_age_seconds>=0&&heartbeat.sensor_age_seconds<90;
+ text('packet-model-ready',runtime?.status==='ready'?'Checkpoint loaded':runtime?.status==='busy'?'Inference busy':'Not verified');
+ text('packet-source-ready',sensorLive?'Authenticated · '+heartbeat.state:heartbeat?.state==='stale'?'Stale heartbeat':'Awaiting authorized source');
+ text('packet-support-ready',runtime?.support_gate_configured===true?'Validation gate configured':runtime?.support_gate_configured===false?'Not fitted':'Unknown');
+ text('packet-history-ready',Number.isFinite(runtime?.history_seconds)?runtime.history_seconds+'s closed history':'—');
+ const blockers=[];
+ if(!sensorLive)blockers.push('No fresh authorized packet source');
+ if(runtime?.support_gate_configured===false)blockers.push('Cloud checkpoint lacks fitted support gate');
+ if(runtime?.status!=='ready')blockers.push('Cloud readiness not verified');
+ const archived=event&&Number.isFinite(event.cutoff_epoch_seconds)&&Array.isArray(event.trajectory)&&now>=event.cutoff_epoch_seconds+event.trajectory.at(-1)?.horizon_seconds;
+ const status=view.active?'ACTIVE ADVISORY':!feed?.online?'OFFLINE':!sensorLive?'AWAITING FRESH PACKETS':archived?'EXPIRED':view.state;
  if(root)root.dataset.forecastState=view.state;
  if(metric)metric.classList.toggle('forecast-stale',!view.active);
- text('forecast-status',view.active?'ACTIVE ADVISORY':view.state+' · NO LIVE PREDICTION');
- text('forecast-unavailable',view.reason+'. Fresh supported capture required. Website monitoring and defence checks are still available.');
+ text('forecast-status',view.active?'ACTIVE ADVISORY':status+' · NO LIVE PREDICTION');
+ text('forecast-unavailable',view.active?'':(blockers.length?blockers.join(' · '):view.reason)+'. Packet prediction withheld; HTTP forecast remains independent.');
  text('forecast-cutoff',event&&Number.isFinite(event.cutoff_epoch_seconds)?'Capture: '+new Date(event.cutoff_epoch_seconds*1000).toLocaleString():'');
  text('forecast-expiry',view.active?'Expires in '+Math.max(0,Math.ceil(view.expiresAt-now))+'s':'');
  const label=metric?.querySelector('label'),hint=metric?.querySelector('small');
  if(label)label.textContent=view.active?'PACKET AI ADVISORY SCORE':'PACKET AI FORECAST SCORE';
- if(hint)hint.textContent=view.reason;
+ if(hint)hint.textContent=view.active?view.reason:status+' · no live packet score';
  const chart=$('traj-svg');
  if(view.active){
    const risk=Math.max(...view.remaining.map(p=>p.malicious_flow_probability))*100;
@@ -243,14 +255,15 @@ function refreshHostedForecast(){
    text('live-state','SUPPORTED · ADVISORY ONLY');
  }else{
    text('score','—');text('chart-score','—');
-   text('live-state',view.state+' · NOT LIVE');
+   text('live-state',status+' · NOT LIVE');
  }
  if(event&&Array.isArray(event.trajectory)){
    const values=event.trajectory.map(p=>p.malicious_flow_probability*100);
    drawPoints(view.active?values:[]);
-   text('future',(view.active?'MODEL HORIZONS':'ARCHIVED MODEL OUTPUT · NOT LIVE')+' · '+event.trajectory.map(p=>'+'+p.horizon_seconds+'s '+(p.malicious_flow_probability*100).toFixed(1)+'%').join(' · '));
+   text('future','ARCHIVED MODEL OUTPUT · '+(event.supported?'support flag reported':'input support unverified')+' · '+event.trajectory.map(p=>'+'+p.horizon_seconds+'s '+(p.malicious_flow_probability*100).toFixed(1)+'%').join(' · '));
+   text('packet-horizons',view.active?view.remaining.map(p=>'+'+p.horizon_seconds+'s: '+(p.malicious_flow_probability*100).toFixed(1)+'%').join(' · '):'');
  }else{
-   drawPoints([]);text('future',view.reason+' · No fabricated model points');
+   drawPoints([]);text('future','No archived model result.');text('packet-horizons','');
  }
  if(chart)chart.setAttribute('aria-label',view.active?'Supported advisory model forecast horizons':'No active forecast; archived model values are textual only');
 }
@@ -263,7 +276,7 @@ async function pollLive(){
    if(!Number.isSafeInteger(d.cursor)||d.cursor<0||!Number.isFinite(d.server_epoch_seconds))throw Error('Invalid cloud forecast clock or cursor');
    if(d.cursor<liveCursor){liveCursor=0;hostedForecastEvent=null;lastSensorForecast=null;}
    hostedClock=d.server_epoch_seconds;hostedClockAt=performance.now();
-   hostedFeed={online:true,state:d.state,gap:d.gap,sensor_status:d.sensor_status};
+   hostedFeed={online:true,state:d.state,gap:d.gap,sensor_status:d.sensor_status,packet_runtime:d.packet_runtime};
    renderObservedRisk(d.fixture_risk);
    renderHttpForecast(d.http_forecast);
    renderDefenceReceipts(d.fixture_receipts,d.fixture_risk,d.http_forecast);

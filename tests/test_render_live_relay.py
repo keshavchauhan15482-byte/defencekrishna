@@ -102,6 +102,9 @@ class RelayTests(unittest.TestCase):
         self.assertEqual(body["status"],"ready")
         self.assertFalse(body["live_prediction"])
         self.assertFalse(body["automatic_containment"])
+        self.assertIs(body["support_gate_configured"],False)
+        self.assertGreater(body["history_seconds"],0)
+        self.assertIn(body["window_seconds"],(10,60))
 
     def test_sensor_auth_projection_replay_and_shadow_only(self):
         evt = sample()

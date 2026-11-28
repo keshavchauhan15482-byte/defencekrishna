@@ -15,6 +15,8 @@ class CloudInference:
         self.clock=clock
         self.model=None
         self.lock=threading.Lock()
+        self._status_cache=None
+        self._status_at=0.0
 
     def load(self):
         if self.model is None:
@@ -26,16 +28,29 @@ class CloudInference:
         return self.model
 
     def status(self):
-        with self.lock:
+        # A readiness check must not queue behind an in-flight inference.
+        # Cache only metadata from an actual integrity-checked load.
+        now=time.monotonic()
+        if self._status_cache is not None and now-self._status_at<60:
+            return dict(self._status_cache)
+        base={"execution":"cloud_on_demand","packet_source":"external_authorized_graph_required",
+              "automatic_containment":False,"live_prediction":False}
+        if not self.lock.acquire(blocking=False):
+            return dict(base,status="busy")
+        try:
             try:
                 model=self.load()
-                return {"status":"ready","execution":"cloud_on_demand","packet_source":"external_authorized_graph_required",
-                        "support_gate_configured":model.support_gate is not None,
-                        "history_seconds":model.meta["history"]*model.meta["window_seconds"],
-                        "automatic_containment":False,"live_prediction":False}
+                result=dict(base,status="ready",
+                            support_gate_configured=model.support_gate is not None,
+                            history_seconds=model.meta["history"]*model.meta["window_seconds"],
+                            window_seconds=model.meta["window_seconds"])
             except Exception:
-                return {"status":"unavailable","execution":"cloud_on_demand","packet_source":"external_authorized_graph_required",
-                        "automatic_containment":False,"live_prediction":False}
+                result=dict(base,status="unavailable")
+            self._status_cache=result
+            self._status_at=time.monotonic()
+            return dict(result)
+        finally:
+            self.lock.release()
 
     def predict(self, data):
         if not isinstance(data,dict) or set(data)!={"schema","capture_sha256","graph"} or data["schema"]!="garuda-cloud-observed-v1":
