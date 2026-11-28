@@ -35,7 +35,7 @@ function plotPremium(id,points,color){
   const t=document.createElementNS(ns,'title');t.textContent=p.label;c.append(t);dots.append(c);
  }
 }
-const RECEIPT_LABELS={DEMO_SYN_FLOOD:'SYN Flood · demo policy',DEMO_PORT_SCAN:'Port Scan · demo policy',DEMO_LATERAL_SMB:'SMB Lateral · demo policy',DEMO_DDOS_BURST:'DDoS Burst · demo policy',DEMO_DNS_TUNNEL:'DNS Tunnel · demo policy',DEMO_C2_BEACON:'C2 Beacon · demo policy',DEMO_EXFIL_SPIKE:'Exfil Spike · demo policy',SQLI_SIGNATURE:'SQL injection signature',XSS_SIGNATURE:'Cross-site scripting signature',TRAVERSAL_SIGNATURE:'Path traversal signature',COMMAND_SIGNATURE:'Command injection signature',HISTORICAL_DANGER_PATTERN:'Known danger pattern',STRUCTURAL_ANOMALY_REVIEW:'Structural anomaly',HISTORICAL_STRUCTURE_REVIEW:'Historical structural anomaly',FIXTURE_SCOPE_DENIED:'Restricted dummy-record access',UNSPECIFIED_RULE:'Guard rule · reason unavailable'};
+const RECEIPT_LABELS={DEMO_HOSPITAL_AVAILABILITY:"Hospital lab · availability fixture",DEMO_HOSPITAL_ANOMALY:"Hospital lab · anomaly fixture",DEMO_HOSPITAL_PRIVATE:"Hospital lab · restricted record fixture",DEMO_SYN_FLOOD:'SYN Flood · demo policy',DEMO_PORT_SCAN:'Port Scan · demo policy',DEMO_LATERAL_SMB:'SMB Lateral · demo policy',DEMO_DDOS_BURST:'DDoS Burst · demo policy',DEMO_DNS_TUNNEL:'DNS Tunnel · demo policy',DEMO_C2_BEACON:'C2 Beacon · demo policy',DEMO_EXFIL_SPIKE:'Exfil Spike · demo policy',SQLI_SIGNATURE:'SQL injection signature',XSS_SIGNATURE:'Cross-site scripting signature',TRAVERSAL_SIGNATURE:'Path traversal signature',COMMAND_SIGNATURE:'Command injection signature',HISTORICAL_DANGER_PATTERN:'Known danger pattern',STRUCTURAL_ANOMALY_REVIEW:'Structural anomaly',HISTORICAL_STRUCTURE_REVIEW:'Historical structural anomaly',FIXTURE_SCOPE_DENIED:'Restricted dummy-record access',UNSPECIFIED_RULE:'Guard rule · reason unavailable'};
 function renderPatternMemory(d){
  const valid=d?.source==='authenticated_fixture_pattern_memory_v1'&&d.scope==='synthetic_fixture_only'&&d.model_retrained===false&&d.automatic_containment===false&&Number.isSafeInteger(d.patterns_saved)&&Number.isSafeInteger(d.candidate_revisions)&&Array.isArray(d.profiles);
  const archive=$('pattern-memory-panel')?.dataset;
@@ -63,6 +63,10 @@ function renderDefenceReceipts(d,risk,forecast){
  const root=$('defence-receipts');if(!root)return;
  const ok=d?.source==='server_recorded_fixture_denials'&&d.scope==='synthetic_fixture_only'&&Array.isArray(d.events)&&d.events.length<=12;
  text('defence-feed-status',ok?'Live receipts':'Unavailable');
+ const count=ok&&Number.isSafeInteger(d.recorded_denials_30m)?d.recorded_denials_30m:null;
+ text('blocked',count===null?'—':count);
+ const hint=$('blocked')?.closest('article')?.querySelector('small');
+ if(hint)hint.textContent=count===null?'Cloud block count unavailable':'Server-recorded fixture denials · last 30 min';
  const obs=risk?.is_prediction===false&&Number.isSafeInteger(risk.score)?risk.score+'/100':'Unavailable';
  const projected=forecast?.is_attack_probability===false&&Number.isSafeInteger(forecast.score)?forecast.score+'/100':'Unavailable';
  text('defence-feed-context','Current global observed risk: '+obs+' · conditional HTTP +60s: '+projected+' (not tied to any event)');

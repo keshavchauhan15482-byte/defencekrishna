@@ -1,0 +1,2 @@
+# Hospital terminal lab cloud mirror
+Three fixed, inert hospital-labelled scenario IDs create real server-side synthetic fixture denials. They are cloud mirror checks, not independently attested local hospital events. No target URL, arbitrary attack payload, patient record or client supplied receipt is accepted. Hosted block count is the number of stored fixture denials in the preceding 30 minutes, shared across tabs. Existing graph/model unchanged.
