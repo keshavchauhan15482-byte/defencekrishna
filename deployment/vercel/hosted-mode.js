@@ -129,8 +129,7 @@ const DEFENCE_WALKTHROUGHS=Object.freeze([
 
 let verifiedFixtureBlocks=0;
 function incrementVerifiedFixtureBlocks(){
-  const metric=document.getElementById("blocked");
-  if(metric)metric.textContent=String(++verifiedFixtureBlocks);
+  ++verifiedFixtureBlocks; // session-local checks; hosted top counter uses DB receipts only
 }
 const SCENARIO_EXPECTATIONS=Object.freeze({"syn_flood":{"lane":"ARJUNA","reason":"DEMO_SYN_FLOOD","status":403},"port_scan":{"lane":"ARJUNA","reason":"DEMO_PORT_SCAN","status":403},"lateral_smb":{"lane":"SUDARSHAN","reason":"DEMO_LATERAL_SMB","status":403},"burst_ddos":{"lane":"ARJUNA","reason":"DEMO_DDOS_BURST","status":403},"dns_tunnel":{"lane":"KRISHNA","reason":"DEMO_DNS_TUNNEL","status":403},"c2_beacon":{"lane":"KRISHNA","reason":"DEMO_C2_BEACON","status":403},"exfil_spike":{"lane":"SUDARSHAN","reason":"DEMO_EXFIL_SPIKE","status":403},"clean_baseline":{"lane":"ARJUNA","reason":"DEMO_BASELINE_ALLOWED","status":200}});
 async function runScenarioFixture(key){
@@ -407,7 +406,7 @@ function addRealHttpDefenceProof(){
   const rows=root.querySelector("#live-defence-rows");
   const status=root.querySelector("#live-defence-progress");
   const blockHint=document.getElementById("blocked")?.closest("article")?.querySelector("small");
-  if(blockHint)blockHint.textContent="Verified dummy denials · this tab";
+  if(blockHint)blockHint.textContent="Server-recorded fixture denials · last 30 min";
   button.addEventListener("click",async()=>{
     button.disabled=true;
     rows.replaceChildren();

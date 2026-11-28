@@ -9,6 +9,9 @@ const FIXTURES=Object.freeze({
   "dns_tunnel":Object.freeze({signal:"review",reason:"DEMO_DNS_TUNNEL"}),
   "c2_beacon":Object.freeze({signal:"review",reason:"DEMO_C2_BEACON"}),
   "exfil_spike":Object.freeze({signal:"scope",reason:"DEMO_EXFIL_SPIKE"}),
+  "hospital_availability":Object.freeze({signal:"known",reason:"DEMO_HOSPITAL_AVAILABILITY"}),
+  "hospital_anomaly":Object.freeze({signal:"review",reason:"DEMO_HOSPITAL_ANOMALY"}),
+  "hospital_private":Object.freeze({signal:"scope",reason:"DEMO_HOSPITAL_PRIVATE"}),
   "clean_baseline":Object.freeze({signal:"normal",reason:"DEMO_BASELINE_ALLOWED"})
 });
 function inspectScenarioRecord(record){

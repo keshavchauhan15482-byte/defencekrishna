@@ -12,3 +12,5 @@ test("receipt projection strips untrusted metadata and refuses fabricated predic
  assert.equal(projectReceipts(fixture(),now+61),null);
 });
 test("coarse reason labels only",()=>{assert.equal(fixtureReason("ARJUNA","XSS_SIGNATURE"),"XSS_SIGNATURE");assert.equal(fixtureReason("SUDARSHAN","SQLI_SIGNATURE"),"UNSPECIFIED_RULE");});
+
+test("global count is independent of the displayed receipt limit",()=>{const f=fixture();f.recorded_denials_30m=20;assert.equal(projectReceipts(f,now).recorded_denials_30m,20);f.recorded_denials_30m=0;assert.equal(projectReceipts(f,now),null);});

@@ -15,7 +15,7 @@ from garuda_v3.live_feed import LiveFeed, LiveFeedError
 from deployment.render.observed_index import observed_index
 from deployment.render.http_forecast import forecast as forecast_http
 
-FIXTURE_REASONS = {"ARJUNA": ["DEMO_DDOS_BURST","DEMO_PORT_SCAN","DEMO_SYN_FLOOD","SQLI_SIGNATURE","XSS_SIGNATURE","TRAVERSAL_SIGNATURE","COMMAND_SIGNATURE","HISTORICAL_DANGER_PATTERN","UNSPECIFIED_RULE"],"KRISHNA": ["DEMO_C2_BEACON","DEMO_DNS_TUNNEL","STRUCTURAL_ANOMALY_REVIEW","HISTORICAL_STRUCTURE_REVIEW","UNSPECIFIED_RULE"],"SUDARSHAN": ["DEMO_EXFIL_SPIKE","DEMO_LATERAL_SMB","FIXTURE_SCOPE_DENIED","UNSPECIFIED_RULE"]}
+FIXTURE_REASONS = {"ARJUNA": ["DEMO_HOSPITAL_AVAILABILITY","DEMO_DDOS_BURST","DEMO_PORT_SCAN","DEMO_SYN_FLOOD","SQLI_SIGNATURE","XSS_SIGNATURE","TRAVERSAL_SIGNATURE","COMMAND_SIGNATURE","HISTORICAL_DANGER_PATTERN","UNSPECIFIED_RULE"],"KRISHNA": ["DEMO_HOSPITAL_ANOMALY","DEMO_C2_BEACON","DEMO_DNS_TUNNEL","STRUCTURAL_ANOMALY_REVIEW","HISTORICAL_STRUCTURE_REVIEW","UNSPECIFIED_RULE"],"SUDARSHAN": ["DEMO_HOSPITAL_PRIVATE","DEMO_EXFIL_SPIKE","DEMO_LATERAL_SMB","FIXTURE_SCOPE_DENIED","UNSPECIFIED_RULE"]}
 
 
 class PostgresEventStore:
@@ -174,7 +174,7 @@ class PostgresEventStore:
         with self._connect(self._dsn) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    SELECT id,observed_at,lane,reason FROM krishna_fixture_receipts
+                    SELECT id,observed_at,lane,reason,COUNT(*) OVER () FROM krishna_fixture_receipts
                     WHERE observed_at >= %s AND observed_at <= %s
                     ORDER BY id DESC LIMIT 12
                 """,(now-1800,now))
@@ -182,8 +182,9 @@ class PostgresEventStore:
         return {"source":"server_recorded_fixture_denials","events":[
             {"id":int(i),"observed_at":float(at),"lane":lane,"reason":reason,
              "decision":"DENY","status":403,"event_prediction_probability":None}
-            for i,at,lane,reason in rows if lane in FIXTURE_REASONS and reason in FIXTURE_REASONS[lane]],
-            "observed_at":now,"scope":"synthetic_fixture_only","automatic_containment":False}
+            for i,at,lane,reason,total in rows if lane in FIXTURE_REASONS and reason in FIXTURE_REASONS[lane]],
+            "observed_at":now,"scope":"synthetic_fixture_only","automatic_containment":False,
+            "recorded_denials_30m":int(rows[0][4]) if rows else 0}
 
     def fixture_risk_snapshot(self, activity):
         now=self._clock()
