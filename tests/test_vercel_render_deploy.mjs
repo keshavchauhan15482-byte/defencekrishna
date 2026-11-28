@@ -53,7 +53,9 @@ test("Static premium Vercel build preserves the original console and labels unav
   assert.ok(hosted.includes('button.onclick=()=>executeScenario(i)'));
   assert.ok(hosted.includes('campaign.onclick=()=>{'));
   assert.ok(hosted.includes('replay.onclick=()=>{'));
-  assert.ok(hosted.includes('BROWSER DEMO · NOT LIVE DATA'));
+  assert.ok(hosted.includes('SERVER DEMO · SYNTHETIC FIXTURE'));
+  assert.ok(hosted.includes('scenario-fixture-policy'));
+  assert.ok(hosted.includes('incrementVerifiedFixtureBlocks()'));
   assert.ok(hosted.includes('DEFENCE_WALKTHROUGHS.length'));
   assert.equal((hosted.match(/key:"(?:syn_flood|port_scan|lateral_smb|burst_ddos|dns_tunnel|c2_beacon|exfil_spike|clean_baseline)"/g)||[]).length,8);
   const walkthrough=hosted.slice(hosted.indexOf('function addHostedDefenceLab()'),hosted.indexOf('function addRealHttpDefenceProof()'));

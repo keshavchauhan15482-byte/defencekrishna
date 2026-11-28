@@ -81,9 +81,8 @@ function addCloudMonitoringPanel(){
   });
 }
 
-// The hosted Attack Lab is a browser-only educational walkthrough. The real
-// /bridge/simulate and /bridge/lab/probe routes belong to the PRIVATE lab and
-// must not be called on Vercel or represented as executed attacks or results.
+// Hosted Attack Lab runs one fixed inert scenario-policy check per click.
+// Private simulation/probe routes are never invoked or represented as real attacks.
 // Keep the order matched to console-integrated.js's eight fixed scenario cards.
 const DEFENCE_WALKTHROUGHS=Object.freeze([
   {key:"syn_flood",name:"SYN Flood",category:"Known-pattern review",
@@ -260,7 +259,7 @@ function addHostedDefenceLab(){
     replay.disabled=false;
     replay.removeAttribute("aria-disabled");
     replay.textContent="Open scenario demo ↗";
-    replay.title="Open browser-only defence walkthrough; not a PCAP replay";
+    replay.title="Run selected synthetic policy check; not a PCAP replay";
     replay.onclick=()=>{
       void executeScenario(chosen>=0?chosen:0);
       lab.scrollIntoView({behavior:"smooth",block:"start"});
@@ -474,8 +473,8 @@ function boot(){
   addRealHttpDefenceProof();
   const status=document.getElementById("upload-status");
   if(status)status.textContent="Model file analysis requires a private inference backend; unavailable on this public static site.";
-  // Hosted defence demo updates the lab progress independently. The real
-  // capture feed, risk gauge, model counters and event ledger remain untouched.
+  // Demo fixture decisions share the verified HTTP counter and receipt feed.
+  // Packet capture and AI model state remain untouched.
   for(const id of ["patterns","mutations"]){const metric=document.getElementById(id);if(metric){metric.textContent="N/A";const note=metric.closest("article")?.querySelector("small");if(note)note.textContent="Learning runtime not connected";}}
   const head=document.getElementById("console-build");
   if(head)head.textContent="VERCEL · CLOUD MONITORING";
